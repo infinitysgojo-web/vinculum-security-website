@@ -50,6 +50,7 @@ export default {
         },
         "navy-tint": "hsl(var(--navy-tint))",
         "gold-tint": "hsl(var(--gold-tint))",
+        brass: "hsl(var(--brass))",
       },
       borderRadius: {
         lg: "var(--radius)",
