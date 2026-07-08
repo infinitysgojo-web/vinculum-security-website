@@ -1,92 +1,59 @@
-# Vinculum Security — Build Plan
+# Redesign: "Imperial Folio" — vibrant, youthful UN-diplomat × modern classical Rome
 
-Replace the existing MOJJU template with a quiet, institute-style multi-page site for the Vinculum Security doctrine by James Wesley Ndua. All content pulled from the two uploaded PDFs (doctrine + handbook), respecting the section allow/exclude list.
+Roll the selected prototype's language across the whole site. Content stays; visuals become warm, editorial, and confident. And remove em dashes, and use good punctuation unless em dashes are needed use where necessary.
 
-Note on stack: this project is **classic Vite + React Router** (`src/pages/`, `src/App.tsx`), not TanStack file routing. The plan is the same shape as provided; routes just live in `src/pages/*.tsx` and are wired in `App.tsx`, and site-wide `<head>` metadata is set in `index.html` (with `react-helmet-async` for per-page titles/descriptions).
+## 1. Design tokens (index.css + tailwind.config.ts)
 
-## 1. Teardown
+Replace the current navy/gold/off-white tokens with the Forum Sunset palette:
 
-- Delete MOJJU sections in `src/components/` (Hero, Work, Process, Capabilities, Team, Contact, Footer, etc.) and MOJJU-specific assets in `src/assets/`.
-- Reset `src/index.css` design tokens.
-- Rewrite `src/App.tsx` route table and `src/pages/Index.tsx`.
-- Update `index.html` head (title, description, og/twitter). No og:image.
-- Wipe project memory entries that describe the MOJJU brand (design system, hero video, awards, team, process, contact) so they don't leak into future work.
+- `--background` → travertine cream `#F5EBDD`
+- `--foreground` → ink `#2B2B2B`
+- `--primary` → imperial blue `#1B3A6B` (headings, wordmark, hover surfaces)
+- `--accent` → terracotta `#C84B31` (eyebrows, links, selection, active states)
+- `--brass` → `#D4A24C` (hairline rules, Roman numerals, dividers) — new token
+- `--navy-tint` → keep as subtle cream card surface `#EFE4D0`
+- `--gold-tint` → `#F3E3C6` (alt table rows, quote surfaces)
+- Selection color: terracotta background, cream text
+- Focus ring: terracotta (was gold)
 
-## 2. Design system (globals)
+Type stays Cormorant Garamond + Inter (already loaded). Add `font-weight: 300` to the wordmark for the light-Cormorant hero feel. Radius stays small.
 
-In `src/index.css` and `tailwind.config.ts`:
+## 2. Shared components
 
-- `--background` `#FAF9F6` warm off-white
-- `--foreground` near-black on off-white
-- `--primary` navy `#1B2A4A` (header, nav, footer, headings)
-- `--accent` gold `#B08D45` (links, rules, hover, focus ring)
-- `--navy-tint` `#EAEEF5` (card surfaces)
-- `--gold-tint` `#F3ECDC` (alternating table rows, quote surfaces)
-- Border radius small (2–4px), no soft startup rounding
-- Fonts via `<link>` in `index.html`: **Source Serif 4** (headings) + **Inter** (body); expose as `font-serif` / `font-sans` in Tailwind
+- **SiteHeader**: switch from solid navy bar to cream ground with a 2px imperial-blue bottom rule (matches the prototype header). Wordmark in light Cormorant, imperial blue. Nav links in Inter uppercase micro-caps, terracotta hover, active = terracotta underline. Mobile hamburger toggles a cream dropdown with brass hairline separators.
+- **SiteFooter**: cream ground, brass hairline top rule, left = uppercase micro-cap nav (© 2026 James Wesley Ndua · First articulated MMXXVI · A Doctrine of Relational Security), right = three colored dots (terracotta / imperial blue / brass) as a signature motif.
+- **PageHeader**: terracotta eyebrow (was navy), oversized light Cormorant H1 in imperial blue, brass hairline underneath.
+- **PullQuote**: large italic Cormorant in terracotta (hero variant) OR imperial blue (in-body variant), brass left border, cite line in terracotta micro-caps.
+- **NavCard**: on hover, background flips to imperial blue with cream text; large Roman numeral (I–VI) in brass, top-right, animates from 30% → 100% opacity; a terracotta hairline sweeps left→right along the bottom on hover. Card grid uses `gap-px` on a brass/30 background for that hairline-divider look.
+- **GoldRule** → rename intent (keep filename): defaults to brass; add `variant="terracotta"` and `variant="blue"` for accent rules.
+- New **RomanNumeral** helper (tiny) so cards, sections, and case studies can share the ornamental numeral treatment.
 
-Motif rules:
+## 3. Page-level updates (content unchanged)
 
-- 1px gold horizontal rule as section divider
-- Small-caps navy eyebrow labels above serif H1s
-- No stock photography, no decorative icons
-- Scroll-triggered fade-in via a small `IntersectionObserver` hook (no framer-motion for this)
+**Home** — adopt the prototype directly: hero row with terracotta "EST. MMXXVI" eyebrow + huge light-Cormorant "Vinculum Security" wordmark left, right-aligned lede on the right, imperial-blue 2px baseline rule. Canonical definition becomes the terracotta italic pull-quote with a right-column "Core Doctrine" side note. Six NavCards in a `gap-px` brass-hairline grid with Roman numerals I–VI.
 
-## 3. Routing
+**The Doctrine / Foundations / Cases / Methodology / Practice / About** — reuse the same header/eyebrow/hairline treatment. Tables restyle: header row imperial blue with cream text, alt rows brass-tint `#F3E3C6`, first column serif italic. Foundations cards get Roman numerals I–XI. Cases keep the compact 4-row bond-integrity tables, restyled to the new tokens. About uses the terracotta pull-quote treatment for the founding quote.
 
-`src/App.tsx` wires react-router:
+**Motion** — keep the existing IntersectionObserver `FadeIn`; add a subtle CSS "rule-draw" animation for the brass underline in PageHeader (scale-x 0 → 1, 600ms ease-out). No framer-motion needed.
 
-```text
-/               → Home
-/doctrine       → The Doctrine
-/foundations    → Theoretical Foundations
-/cases          → Case Studies
-/methodology    → Methodology
-/practice       → Practice: Vinculum Diplomacy
-/about          → About the Author
-*               → NotFound (kept)
-```
+## 4. Head & meta
 
-Add `HelmetProvider` at the app root and a `<Helmet>` block in each page for per-route title + description + og:title/og:description + self-referential canonical + og:url. Sitewide fallback tags stay in `index.html`.
+`index.html` title and description stay ("Vinculum Security — A Doctrine of Relational Security"). Update `theme-color` meta (if present) to `#F5EBDD`. Per-page `<Helmet>` unchanged.
 
-## 4. Shared components (new)
+## 5. Accessibility
 
-- `SiteHeader` — sticky navy bar, serif wordmark "VINCULUM SECURITY" left, nav links right with gold underline on active/hover, mobile hamburger opens full-width dropdown panel.
-- `SiteFooter` — navy background, gold rule, two centered lines: "© 2026 James Wesley Ndua. All rights reserved." and "First articulated 2026."
-- `GoldRule` — short + full-width variants.
-- `PageHeader` — small-caps eyebrow + serif H1 + gold rule.
-- `FadeIn` — IntersectionObserver one-shot fade+rise wrapper.
-- `PullQuote` — gold left-border, serif italic, for canonical definition and founding quotes.
-- `NavCard` — home-page navigation cards.
+Contrast checked: ink `#2B2B2B` on cream = AAA; imperial blue on cream = AAA; terracotta on cream ≈ 4.6:1 (AA for body sizes ≥14px; keep terracotta reserved for headings, eyebrows, links, and hover surfaces — never long body copy). Focus-visible ring switches to terracotta. Single H1 per page preserved.
 
-## 5. Pages (content sourced verbatim from the PDFs)
+## 6. Guardrails
 
-**Home (`/`)** — eyebrow "A Doctrine of Relational Security", serif "VINCULUM SECURITY", gold rule, byline "James Wesley Ndua · Human Security Diplomat". Large pull-quote = canonical definition verbatim from Appendix A. Below the fold: 2–3 sentence plain-language summary from the Executive Summary. Six nav cards to the other pages.
+- Semantic tokens only in JSX — no hardcoded hex outside `index.css` / `tailwind.config.ts`.
+- Keep the doctrine content scope intact (no VIII–XI, no handbook Part V).
+- No stock imagery, no marble textures, no laurel clip-art — Roman feel comes from type, numerals, and the palette only.
 
-**The Doctrine (`/doctrine`)** — Section III only: III.A canonical definition (verbatim), III.B ontological claim, III.C comparative positioning as a clean semantic `<table>` (navy header row, gold-tint alt rows, columns Framework · Referent of Security · What Vinculum adds), III.D four-level Vinculum Continuum as four navy-tint cards with gold numerals (Interpersonal / Communal / Intergenerational / Institutional-Relational). One-line footnote acknowledging Section IV falsifiability without reproducing it.
+## 7. Verification
 
-**Theoretical Foundations (`/foundations`)** — 11 cards, one per tradition A–K from Section II (Human Security, Ubuntu, Political Realism, Securitization Theory, Positive Peace, R2P, YPS, African Continental Frameworks, Relational & Restorative Justice, Confucian Role Ethics, WPS). 2–3 sentences each summarizing the tradition's core move and what the doctrine takes from it. Two-column grid on desktop, stacked on mobile.
+TypeScript typecheck, then Playwright pass at 1280 and 390 widths across `/`, `/doctrine`, `/foundations`, `/cases`, `/methodology`, `/practice`, `/about`. Screenshot each; confirm terracotta pull-quote, brass hairline grid on nav cards, imperial-blue hover flip, and cream sticky header render correctly.
 
-**Case Studies (`/cases`)** — Section VII only. Six cards (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya). Each: case name (serif) + one summary sentence + compact 4-row bond-integrity table (Interpersonal / Communal / Intergenerational / Institutional-Relational · Score 1–5) with gold-tint alt rows, scores from Section VII. No practice-takeaway prose, no VII.G falsifiability framing.
+## 8. Memory
 
-**Methodology (`/methodology`)** — Section V only: V.A Diagnostic Method as plain prose, V.B Bond-Integrity Indicators as four typographic lists grouped by continuum level. No V.C scoring mechanics.
-
-**Practice: Vinculum Diplomacy (`/practice`)** — Intro pulled from handbook Executive Summary + Statement of Origination, including the founding pull-quote *"I cannot leave the community or the people and substitute it for a role or a room."* Summary of Part I (doctrine → practice; the core behavioral shift). Four Part II principles listed by name + one line each (Interpersonal, Communal, Intergenerational, Institutional-Relational Practice). One closing paragraph noting the handbook includes practical tools for negotiators and mediators — no scripts, worksheets, templates, or failure-modes detail.
-
-**About the Author (`/about`)** — from doctrine Section I. Name; role "Human Security Diplomat · Youth, Peace and Security Advocate"; location Nairobi, Kenya; founding pull-quote; brief "Why This Author, Why Now" note.
-
-## 6. Explicitly excluded (nowhere on the site)
-
-Doctrine Sections VIII, IX, X, XI. Handbook Part V and all appendices. No downloadable PDFs, no forms, no external CTAs.
-
-## 7. Head metadata
-
-`index.html`: title "Vinculum Security — A Doctrine of Relational Security", matching description + og/twitter tags, Organization JSON-LD, no og:image. Per-page `<Helmet>` sets unique title/description/canonical/og:url/og:title/og:description.
-
-## 8. Accessibility & responsiveness
-
-Single H1 per page, semantic `<nav>/<main>/<footer>`, focus-visible gold ring, mobile-first layout, sticky nav `sticky top-0 z-50` with a bottom gold rule.
-
-## 9. Verification
-
-After build: read the two PDFs to lift verbatim strings for the canonical definition, III.C table rows, six case score tables, V.B indicator lists, and Section I / handbook Executive Summary passages. Then run a quick Playwright pass across all seven routes at desktop + mobile widths to confirm sticky nav, table styling, and fade-ins render correctly.
+Update `mem://index.md` Core rules: swap navy/gold/off-white token values for the Forum Sunset palette (`#F5EBDD` / `#1B3A6B` / `#C84B31` / `#D4A24C` / `#2B2B2B`) and note the "Imperial Folio" editorial direction (cream ground, brass hairlines, Roman numerals on cards, terracotta accents).

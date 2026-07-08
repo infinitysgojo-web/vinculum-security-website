@@ -1,18 +1,40 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 
-export default function NavCard({ to, eyebrow, title, description }: { to: string; eyebrow: string; title: string; description: string }) {
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+
+export default function NavCard({
+  to,
+  eyebrow,
+  title,
+  description,
+  index = 0,
+}: {
+  to: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  index?: number;
+}) {
+  const numeral = ROMAN[index] ?? String(index + 1);
   return (
     <Link
       to={to}
-      className="group block bg-navy-tint border border-border p-6 md:p-7 transition-colors hover:border-accent"
+      className="group relative block bg-background p-8 md:p-10 overflow-hidden transition-colors duration-500 hover:bg-primary"
     >
-      <p className="eyebrow text-primary/70">{eyebrow}</p>
-      <h3 className="mt-2 font-serif text-primary group-hover:text-accent transition-colors">{title}</h3>
-      <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{description}</p>
-      <span className="mt-5 inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-accent" style={{ letterSpacing: "0.18em" }}>
-        Read <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+      <span
+        aria-hidden
+        className="absolute top-5 right-6 font-serif text-3xl md:text-4xl font-semibold text-brass opacity-30 group-hover:opacity-100 transition-opacity duration-500"
+      >
+        {numeral}
       </span>
+      <p className="eyebrow group-hover:text-brass transition-colors">{eyebrow}</p>
+      <h3 className="mt-3 font-serif text-primary group-hover:text-background transition-colors">
+        {title}
+      </h3>
+      <p className="mt-4 text-sm text-foreground/75 group-hover:text-background/80 leading-relaxed transition-colors">
+        {description}
+      </p>
+      <div className="mt-8 h-px w-0 bg-accent group-hover:w-full transition-all duration-700" />
     </Link>
   );
 }

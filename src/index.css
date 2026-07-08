@@ -3,34 +3,35 @@
 @tailwind utilities;
 
 :root {
-  --background: 40 33% 97%;        /* #FAF9F6 warm off-white */
-  --foreground: 220 20% 12%;       /* near black */
-  --card: 0 0% 100%;
-  --card-foreground: 220 20% 12%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 220 20% 12%;
+  --background: 32 62% 91%;         /* #F5EBDD travertine cream */
+  --foreground: 0 0% 17%;           /* #2B2B2B ink */
+  --card: 37 45% 88%;               /* warmer cream card */
+  --card-foreground: 0 0% 17%;
+  --popover: 32 62% 91%;
+  --popover-foreground: 0 0% 17%;
 
-  --primary: 221 46% 20%;          /* #1B2A4A navy */
-  --primary-foreground: 40 33% 97%;
+  --primary: 215 60% 26%;           /* #1B3A6B imperial blue */
+  --primary-foreground: 32 62% 91%;
 
-  --secondary: 220 30% 94%;
-  --secondary-foreground: 221 46% 20%;
+  --secondary: 37 45% 88%;
+  --secondary-foreground: 215 60% 26%;
 
-  --muted: 220 20% 92%;
-  --muted-foreground: 220 12% 40%;
+  --muted: 37 35% 86%;
+  --muted-foreground: 0 0% 32%;
 
-  --accent: 39 45% 48%;            /* #B08D45 gold */
-  --accent-foreground: 40 33% 97%;
+  --accent: 11 61% 49%;             /* #C84B31 terracotta */
+  --accent-foreground: 32 62% 91%;
 
-  --navy-tint: 219 27% 94%;        /* #EAEEF5 */
-  --gold-tint: 39 50% 91%;         /* #F3ECDC */
+  --brass: 38 61% 56%;              /* #D4A24C brass */
+  --navy-tint: 37 45% 88%;          /* #EFE4D0 warm cream card surface */
+  --gold-tint: 37 65% 86%;          /* #F3E3C6 alt row / quote surface */
 
   --destructive: 0 70% 45%;
-  --destructive-foreground: 40 33% 97%;
+  --destructive-foreground: 32 62% 91%;
 
-  --border: 220 15% 85%;
-  --input: 220 15% 85%;
-  --ring: 39 45% 48%;
+  --border: 38 30% 78%;
+  --input: 38 30% 78%;
+  --ring: 11 61% 49%;               /* terracotta focus ring */
 
   --radius: 0.25rem;
 }
@@ -44,14 +45,15 @@
     font-feature-settings: "ss01", "cv02", "cv11";
     -webkit-font-smoothing: antialiased;
   }
+  ::selection { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
   h1, h2, h3, h4, h5, h6, .font-serif {
-    font-family: 'Source Serif 4', 'Source Serif Pro', 'Lora', Georgia, serif;
+    font-family: 'Cormorant Garamond', 'Source Serif 4', 'Lora', Georgia, serif;
     font-weight: 500;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
   }
-  h1 { font-size: clamp(2rem, 5vw, 3.25rem); line-height: 1.1; }
-  h2 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; }
-  h3 { font-size: 1.25rem; line-height: 1.35; }
+  h1 { font-size: clamp(2.25rem, 5.5vw, 3.75rem); line-height: 1.05; font-weight: 400; }
+  h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); line-height: 1.15; font-weight: 500; }
+  h3 { font-size: 1.5rem; line-height: 1.25; font-weight: 500; }
   p  { line-height: 1.7; }
   a  { transition: color 150ms ease; }
   :focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 3px; border-radius: 2px; }
@@ -64,24 +66,37 @@
     letter-spacing: 0.22em;
     font-size: 0.72rem;
     font-weight: 600;
-    color: hsl(var(--primary));
+    color: hsl(var(--accent));
   }
   .gold-rule {
     display: block;
     height: 1px;
-    background: hsl(var(--accent));
+    background: hsl(var(--brass));
     border: 0;
   }
   .gold-rule-short { width: 3rem; }
+  .brass-rule { background: hsl(var(--brass)); }
+  .blue-rule { background: hsl(var(--primary)); }
+  .terracotta-rule { background: hsl(var(--accent)); }
+  .rule-draw { transform-origin: left center; animation: ruleDraw 700ms ease-out forwards; }
+  @keyframes ruleDraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
   .prose-body p { margin-bottom: 1.1em; }
   .link-gold {
     color: hsl(var(--primary));
-    border-bottom: 1px solid hsl(var(--accent) / 0.4);
+    border-bottom: 1px solid hsl(var(--accent) / 0.5);
     transition: color 150ms ease, border-color 150ms ease;
   }
   .link-gold:hover { color: hsl(var(--accent)); border-color: hsl(var(--accent)); }
   .fade-in { opacity: 0; transform: translateY(12px); transition: opacity 700ms ease, transform 700ms ease; }
   .fade-in.is-visible { opacity: 1; transform: none; }
+
+  .wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: hsl(var(--primary));
+  }
 }
 
 ::-webkit-scrollbar { width: 8px; }
@@ -91,4 +106,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .fade-in { opacity: 1; transform: none; transition: none; }
+  .rule-draw { animation: none; transform: none; }
 }
