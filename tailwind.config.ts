@@ -11,7 +11,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ["'Source Serif 4'", "'Source Serif Pro'", "Lora", "Georgia", "serif"],
+        serif: ["'Cormorant Garamond'", "'Source Serif 4'", "Lora", "Georgia", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       colors: {
