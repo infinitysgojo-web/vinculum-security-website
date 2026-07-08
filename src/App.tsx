@@ -1,39 +1,40 @@
-import { Hero } from './components/Hero'
-import { Portfolio } from './components/Portfolio'
-import { Awards } from './components/Awards'
-import { About } from './components/About'
-import { Services } from './components/Services'
-import { Team } from './components/Team'
-import { Contact } from './components/Contact'
-import { Footer } from './components/Footer'
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
+import Home from "./pages/Home";
+import Doctrine from "./pages/Doctrine";
+import Foundations from "./pages/Foundations";
+import Cases from "./pages/Cases";
+import Methodology from "./pages/Methodology";
+import Practice from "./pages/Practice";
+import About from "./pages/About";
+import NotFound from "./pages/NotFound";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-background text-foreground" style={{ overflow: 'visible' }}>
-      <main className="relative" role="main" style={{ overflow: 'visible' }}>
-        <section id="hero" aria-label="Hero section">
-          <Hero />
-        </section>
-        <section id="portfolio" aria-label="Portfolio section">
-          <Portfolio />
-        </section>
-        <section id="awards" aria-label="Awards section">
-          <Awards />
-        </section>
-        <section id="about" aria-label="About section">
-          <About />
-        </section>
-        <section id="services" aria-label="Services section">
-          <Services />
-        </section>
-        <section id="team" aria-label="Team section" style={{ overflow: 'visible', height: 'auto', minHeight: '0', maxHeight: 'none' }}>
-          <Team />
-        </section>
-        <section id="contact" aria-label="Contact section">
-          <Contact />
-        </section>
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
+      <ScrollToTop />
+      <SiteHeader />
+      <main className="flex-1" role="main">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/doctrine" element={<Doctrine />} />
+          <Route path="/foundations" element={<Foundations />} />
+          <Route path="/cases" element={<Cases />} />
+          <Route path="/methodology" element={<Methodology />} />
+          <Route path="/practice" element={<Practice />} />
+          <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
-  )
+  );
 }

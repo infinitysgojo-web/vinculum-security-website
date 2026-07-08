@@ -1,0 +1,73 @@
+import SEO from "@/components/SEO";
+import PageHeader from "@/components/PageHeader";
+import PullQuote from "@/components/PullQuote";
+import GoldRule from "@/components/GoldRule";
+import FadeIn from "@/components/FadeIn";
+
+export default function About() {
+  return (
+    <>
+      <SEO
+        title="About the Author"
+        description="James Wesley Ndua — Human Security Diplomat and Youth, Peace and Security Advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine."
+        path="/about"
+      />
+      <div className="container">
+        <PageHeader eyebrow="Section I" title="About the Author" />
+
+        <FadeIn className="max-w-3xl mb-12">
+          <h2 className="font-serif text-primary text-2xl">James Wesley Ndua</h2>
+          <hr className="gold-rule gold-rule-short mt-3 mb-4" />
+          <p className="text-sm uppercase tracking-widest text-muted-foreground" style={{ letterSpacing: "0.18em" }}>
+            Human Security Diplomat · Youth, Peace and Security Advocate
+          </p>
+          <p className="text-sm uppercase tracking-widest text-muted-foreground mt-1" style={{ letterSpacing: "0.18em" }}>
+            Nairobi, Kenya
+          </p>
+        </FadeIn>
+
+        <FadeIn className="max-w-3xl mb-16">
+          <PullQuote cite="James Wesley Ndua, founding principle">
+            I cannot leave the community or the people and substitute it for a role or a room.
+          </PullQuote>
+        </FadeIn>
+
+        <FadeIn className="max-w-3xl mb-16">
+          <p className="eyebrow">Statement of Origination</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/85">
+            <p>
+              Vinculum Security was conceived and first named by James Wesley Ndua in 2026, emerging from sustained
+              practice and study across human security diplomacy, Ubuntu philosophy, and youth, peace and security
+              advocacy — and from a working conviction about the nature of diplomatic legitimacy itself.
+            </p>
+            <p>
+              The founding principle above is the doctrine's personal root. It holds that legitimacy in diplomatic
+              practice, and security in the lives of the people that practice is meant to serve, are both functions of
+              sustained relationship rather than of title, office, or institutional proximity.
+            </p>
+          </div>
+        </FadeIn>
+
+        <FadeIn className="max-w-3xl pb-8">
+          <p className="eyebrow">Why This Author, Why Now</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/85">
+            <p>
+              A fair question, addressed directly: precedent does not require institutional seniority at origination —
+              human security itself began as a single UNDP report before it carried institutional weight. A young author
+              working directly in youth, peace and security practice, with lived proximity to the communities and
+              generational dynamics the doctrine describes, has a legitimate standing to name a pattern that senior,
+              institutionally distant observers are structurally less likely to notice first.
+            </p>
+            <p>
+              This is not a claim that youth guarantees insight, but that this specific insight is one a younger
+              practitioner is well positioned to make. The doctrine's credibility rests on its citation, testing, and
+              refinement by others going forward, not on this justification alone.
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </>
+  );
+}
