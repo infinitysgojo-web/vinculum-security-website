@@ -17,9 +17,9 @@ export default function SiteHeader() {
   useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 bg-primary text-primary-foreground border-b border-accent/60">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-primary">
       <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="font-serif text-lg tracking-wider uppercase" style={{ letterSpacing: "0.15em" }}>
+        <Link to="/" className="wordmark text-xl md:text-2xl">
           Vinculum Security
         </Link>
 
@@ -29,10 +29,10 @@ export default function SiteHeader() {
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `text-sm tracking-wide transition-colors relative pb-1 border-b-2 ${
+                `text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors relative pb-1 border-b-2 ${
                   isActive
-                    ? "border-accent text-primary-foreground"
-                    : "border-transparent text-primary-foreground/85 hover:text-primary-foreground hover:border-accent/70"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-primary hover:text-accent hover:border-accent/60"
                 }`
               }
             >
@@ -42,7 +42,7 @@ export default function SiteHeader() {
         </nav>
 
         <button
-          className="lg:hidden p-2 -mr-2"
+          className="lg:hidden p-2 -mr-2 text-primary"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -52,15 +52,15 @@ export default function SiteHeader() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-accent/40 bg-primary">
-          <nav className="container flex flex-col py-3" aria-label="Mobile">
+        <div className="lg:hidden border-t border-brass/40 bg-background">
+          <nav className="container flex flex-col py-2" aria-label="Mobile">
             {NAV.map((n) => (
               <NavLink
                 key={n.to}
                 to={n.to}
                 className={({ isActive }) =>
-                  `py-3 text-sm border-b border-primary-foreground/10 ${
-                    isActive ? "text-accent" : "text-primary-foreground/90"
+                  `py-3 text-xs uppercase tracking-[0.18em] font-semibold border-b border-brass/25 ${
+                    isActive ? "text-accent" : "text-primary"
                   }`
                 }
               >
