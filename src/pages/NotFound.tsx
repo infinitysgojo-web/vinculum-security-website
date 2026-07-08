@@ -1,24 +1,20 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import SEO from "@/components/SEO";
+import GoldRule from "@/components/GoldRule";
 
-const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-
+export default function NotFound() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
-        </a>
+    <>
+      <SEO title="Page not found" description="The page you requested could not be found." path="/404" />
+      <div className="container py-32 text-center">
+        <p className="eyebrow">404</p>
+        <h1 className="mt-4 font-serif text-primary">Page not found</h1>
+        <GoldRule className="mt-6 mx-auto" />
+        <p className="mt-6 text-muted-foreground">The page you requested does not exist.</p>
+        <Link to="/" className="mt-8 inline-block link-gold text-sm uppercase tracking-widest" style={{ letterSpacing: "0.18em" }}>
+          Return home
+        </Link>
       </div>
-    </div>
+    </>
   );
-};
-
-export default NotFound;
+}
