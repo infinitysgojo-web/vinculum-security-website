@@ -3,6 +3,9 @@ import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import FadeIn from "@/components/FadeIn";
 import GoldRule from "@/components/GoldRule";
+import DiplomatBadge from "@/components/DiplomatBadge";
+import NumeralDivider from "@/components/NumeralDivider";
+import Cite from "@/components/Cite";
 
 const COMPARISON = [
   ["State Security", "The state", "Security as survival against external military threat", "Westphalian tradition"],

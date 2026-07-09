@@ -1,7 +1,9 @@
 import SEO from "@/components/SEO";
-import PullQuote from "@/components/PullQuote";
 import NavCard from "@/components/NavCard";
 import FadeIn from "@/components/FadeIn";
+import DiplomatBadge from "@/components/DiplomatBadge";
+import Cite from "@/components/Cite";
+import { useParallax } from "@/hooks/useParallax";
 
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
@@ -9,10 +11,12 @@ const CARDS = [
   { to: "/cases", eyebrow: "Section VII", title: "Case Studies", description: "Six documented processes across Africa, Latin America, Europe, and Southeast Asia, each scored across four bond domains." },
   { to: "/methodology", eyebrow: "Section V", title: "Methodology", description: "The diagnostic method and bond-integrity indicators used to assess a case in plain terms." },
   { to: "/practice", eyebrow: "Handbook", title: "Vinculum Diplomacy", description: "The applied practitioner discipline derived from the doctrine, oriented around four practice principles." },
-  { to: "/about", eyebrow: "Section I", title: "About the Author", description: "James Wesley Ndua. Human Security Diplomat, Youth, Peace and Security Advocate. Nairobi." },
+  { to: "/glossary", eyebrow: "Reference", title: "Doctrine Glossary", description: "Canonical terms with source sections and verbatim passages from the doctrine and companion handbook." },
 ];
 
 export default function Home() {
+  const offset = useParallax(0.18);
+
   return (
     <>
       <SEO
@@ -22,16 +26,29 @@ export default function Home() {
       />
 
       {/* Hero */}
-      <section className="container pt-16 md:pt-24 pb-14 border-b-2 border-primary">
+      <section className="relative container pt-16 md:pt-24 pb-14 border-b-2 border-primary overflow-hidden">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-6 top-4 font-serif text-brass/25 text-[7rem] md:text-[11rem] leading-none select-none"
+          style={{ transform: `translateY(${offset}px)` }}
+        >
+          MMXXVI
+        </span>
+
         <FadeIn>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline gap-8">
+          <div className="flex gap-2 flex-wrap mb-6">
+            <DiplomatBadge variant="doctrine-core">Doctrine Core</DiplomatBadge>
+            <DiplomatBadge variant="briefing-ready">Briefing Ready</DiplomatBadge>
+            <DiplomatBadge variant="field-notes">Field-Tested</DiplomatBadge>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline gap-8 relative">
             <div className="space-y-3">
               <span className="eyebrow">Est. MMXXVI · A Doctrine of Relational Security</span>
               <h1 className="wordmark text-6xl md:text-8xl lg:text-9xl leading-[0.9]">
                 Vinculum<br />Security
               </h1>
             </div>
-            <div className="max-w-sm md:text-right">
+            <div className="max-w-sm md:text-right relative z-10">
               <p className="text-lg leading-snug text-foreground/85 font-medium">
                 An original diplomatic doctrine on the bonds that make protection, dignity, and peace possible.
               </p>
@@ -50,9 +67,9 @@ export default function Home() {
             <div className="md:col-span-8">
               <p className="eyebrow mb-6">Canonical Definition</p>
               <blockquote className="font-serif italic text-3xl md:text-5xl leading-[1.1] text-accent">
-                Security is not the absence of threat, but the presence and integrity of the relational bonds,
-                between persons, communities, and generations, that make protection, dignity, and peace possible
-                in the first place.
+                Security is not the absence of threat, but the presence and integrity of the{" "}
+                <Cite term="bond">relational bonds</Cite>, between persons, communities, and generations,
+                that make protection, dignity, and peace possible in the first place.
               </blockquote>
               <p className="mt-6 text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70">
                 — James Wesley Ndua, 2026
@@ -64,7 +81,8 @@ export default function Home() {
               </p>
               <p className="text-foreground/75 leading-relaxed">
                 A signed agreement that leaves bonds unrepaired is unfinished business. The doctrine rests on two
-                independent civilizational traditions, Ubuntu and Confucian Role Ethics, arriving at the same
+                independent civilizational traditions, <Cite term="ubuntu">Ubuntu</Cite> and{" "}
+                <Cite term="confucian-role-ethics">Confucian Role Ethics</Cite>, arriving at the same
                 relationally constituted account of personhood.
               </p>
             </aside>
@@ -72,7 +90,7 @@ export default function Home() {
         </FadeIn>
       </section>
 
-      {/* Navigation Grid: hairline brass dividers via gap-px on brass surface */}
+      {/* Navigation Grid */}
       <section className="container pb-24">
         <FadeIn>
           <div className="flex items-baseline justify-between mb-8">
