@@ -55,9 +55,12 @@ export default function Methodology() {
           </div>
           <div className="prose-body text-foreground/85">
             <p>
-              Vinculum Security is applied through a recurring diagnostic question at each continuum level. The
-              question is asked identically at the interpersonal, communal, intergenerational, and institutional-relational
-              levels, producing a picture of where security is materially present and where it is only nominally reported.
+              Vinculum Security is applied through a recurring{" "}
+              <Cite term="diagnostic-question">diagnostic question</Cite> at each continuum level. The
+              question is asked identically at the <Cite term="interpersonal">interpersonal</Cite>,{" "}
+              <Cite term="communal">communal</Cite>, <Cite term="intergenerational">intergenerational</Cite>,
+              and <Cite term="institutional-relational">institutional-relational</Cite> levels, producing
+              a picture of where security is materially present and where it is only nominally reported.
             </p>
           </div>
         </FadeIn>

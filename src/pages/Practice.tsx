@@ -3,6 +3,8 @@ import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
+import DiplomatBadge from "@/components/DiplomatBadge";
+import NumeralDivider from "@/components/NumeralDivider";
 
 const PRINCIPLES = [
   {
