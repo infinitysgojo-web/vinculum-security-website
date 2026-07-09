@@ -106,15 +106,18 @@ export default function Doctrine() {
           </div>
         </FadeIn>
 
+        <NumeralDivider n="IV" label="The Continuum" />
+
         <FadeIn className="mb-16">
           <p className="eyebrow">III.D — The Vinculum Continuum</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-8 max-w-3xl">
-            Vinculum Security operates across four nested levels, governed by explicit boundary and weighting rules.
+            <Cite term="vinculum-continuum">Vinculum Security operates across four nested levels</Cite>,
+            governed by explicit boundary and weighting rules.
           </p>
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {CONTINUUM.map((c) => (
-              <div key={c.title} className="bg-navy-tint border border-border p-6">
+              <div key={c.title} className="bg-navy-tint border border-border p-6 hover-lift">
                 <p className="font-serif text-3xl text-accent">{c.n}</p>
                 <h3 className="mt-3 font-serif text-primary">{c.title}</h3>
                 <hr className="gold-rule gold-rule-short mt-3 mb-3" />
