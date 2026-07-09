@@ -3,6 +3,8 @@ import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
+import DiplomatBadge from "@/components/DiplomatBadge";
+import Cite from "@/components/Cite";
 
 const INDICATORS = [
   {
@@ -37,6 +39,11 @@ export default function Methodology() {
       />
       <div className="container">
         <PageHeader eyebrow="Section V" title="Operational Framework" />
+
+        <FadeIn className="flex gap-2 flex-wrap mb-10">
+          <DiplomatBadge variant="methodology">Operational Framework</DiplomatBadge>
+          <DiplomatBadge variant="briefing-ready">Diagnostic Tools</DiplomatBadge>
+        </FadeIn>
 
         <FadeIn className="max-w-4xl mb-16">
           <p className="eyebrow">V.A — The Diagnostic Method</p>
