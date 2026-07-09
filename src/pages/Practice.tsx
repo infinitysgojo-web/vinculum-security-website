@@ -92,9 +92,8 @@ export default function Practice() {
           </div>
         </FadeIn>
 
-        </FadeIn>
-
         <NumeralDivider n="IV" label="Practice Principles" />
+
 
         <FadeIn className="mb-16">
           <p className="eyebrow">Part II — The Four Practice Principles</p>
