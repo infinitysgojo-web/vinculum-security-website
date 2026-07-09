@@ -39,6 +39,11 @@ export default function Doctrine() {
       <div className="container">
         <PageHeader eyebrow="Section III" title="The Vinculum Security Doctrine" />
 
+        <FadeIn className="flex gap-2 flex-wrap mb-10">
+          <DiplomatBadge variant="doctrine-core">Doctrine Core</DiplomatBadge>
+          <DiplomatBadge variant="briefing-ready">Canonical Text</DiplomatBadge>
+        </FadeIn>
+
         <FadeIn className="max-w-4xl mb-16">
           <p className="eyebrow">III.A — Canonical Definition</p>
           <div className="mt-5">
@@ -48,21 +53,25 @@ export default function Doctrine() {
           </div>
         </FadeIn>
 
+        <NumeralDivider n="II" label="Ontology" />
+
         <FadeIn className="max-w-4xl mb-20">
           <p className="eyebrow">III.B — The Ontological Claim</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/90">
             <p>
-              First, drawing from Ubuntu and Confucian Role Ethics independently: personhood is constituted, wholly or substantially,
-              relationally rather than individually.
+              First, drawing from <Cite term="ubuntu">Ubuntu</Cite> and{" "}
+              <Cite term="confucian-role-ethics">Confucian Role Ethics</Cite> independently:
+              personhood is constituted, wholly or substantially, relationally rather than individually.
             </p>
             <p>
-              Second, drawing from human security: security is properly assessed with reference to the person, not the state alone.
+              Second, drawing from <Cite term="human-security">human security</Cite>: security is properly
+              assessed with reference to the person, not the state alone.
             </p>
             <p>
-              Third, original to this doctrine: security assessed only at the individual level is incomplete, because it can report a
-              person as secure while the bonds constituting that person's safety and dignity are eroding. The proper unit of security
-              analysis is the bond.
+              Third, original to this doctrine: security assessed only at the individual level is incomplete,
+              because it can report a person as secure while the <Cite term="bond">bonds</Cite> constituting
+              that person's safety and dignity are eroding. The proper unit of security analysis is the bond.
             </p>
           </div>
         </FadeIn>
