@@ -1,6 +1,10 @@
 import SEO from "@/components/SEO";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
+import DiplomatBadge from "@/components/DiplomatBadge";
+
+const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"];
+
 
 const FOUNDATIONS = [
   {
@@ -75,13 +79,24 @@ export default function Foundations() {
           lede="Vinculum Security is grounded in eleven independent traditions. Each entry summarizes the tradition's core move and what the doctrine takes from it."
         />
 
+        <FadeIn className="flex gap-2 flex-wrap mb-8">
+          <DiplomatBadge variant="foundation">Eleven Traditions</DiplomatBadge>
+          <DiplomatBadge variant="field-notes">Comparative Reading</DiplomatBadge>
+        </FadeIn>
+
         <div className="grid gap-6 md:grid-cols-2 pb-8">
           {FOUNDATIONS.map((f, i) => (
             <FadeIn key={f.letter} delay={i * 40}>
-              <article className="bg-card border border-border p-6 md:p-7 h-full">
+              <article className="group relative bg-card border border-border p-6 md:p-7 h-full hover-lift overflow-hidden">
+                <span
+                  aria-hidden
+                  className="absolute top-4 right-5 font-serif text-brass/40 text-3xl group-hover:text-brass transition-colors"
+                >
+                  {ROMAN[i]}
+                </span>
                 <div className="flex items-baseline gap-4">
                   <span className="font-serif text-accent text-lg">{f.letter}</span>
-                  <h2 className="font-serif text-primary text-xl">{f.title}</h2>
+                  <h2 className="font-serif text-primary text-xl pr-10">{f.title}</h2>
                 </div>
                 <hr className="gold-rule gold-rule-short mt-3 mb-4" />
                 <p className="text-[0.95rem] leading-relaxed text-foreground/85">{f.body}</p>

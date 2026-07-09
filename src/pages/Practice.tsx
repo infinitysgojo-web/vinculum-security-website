@@ -3,6 +3,8 @@ import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
+import DiplomatBadge from "@/components/DiplomatBadge";
+import NumeralDivider from "@/components/NumeralDivider";
 
 const PRINCIPLES = [
   {
@@ -41,6 +43,11 @@ export default function Practice() {
           title="Practice: Vinculum Diplomacy"
           lede="The applied diplomatic practice derived from the Vinculum Security doctrine. Where the doctrine states what security is, the handbook states what a diplomat does differently once that claim is held to be true."
         />
+
+        <FadeIn className="flex gap-2 flex-wrap mb-10">
+          <DiplomatBadge variant="handbook">Practitioner Handbook</DiplomatBadge>
+          <DiplomatBadge variant="briefing-ready">Field-Ready</DiplomatBadge>
+        </FadeIn>
 
         <FadeIn className="max-w-4xl mb-16">
           <p className="eyebrow">Statement of Origination</p>
@@ -85,18 +92,22 @@ export default function Practice() {
           </div>
         </FadeIn>
 
+        <NumeralDivider n="IV" label="Practice Principles" />
+
+
         <FadeIn className="mb-16">
           <p className="eyebrow">Part II — The Four Practice Principles</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="grid gap-5 md:grid-cols-2">
             {PRINCIPLES.map((p) => (
-              <article key={p.n} className="bg-navy-tint border border-border p-6">
+              <article key={p.n} className="group relative bg-navy-tint border border-border p-6 hover-lift overflow-hidden">
                 <div className="flex items-baseline gap-3">
                   <span className="font-serif text-accent">§ {p.n}</span>
                   <h3 className="font-serif text-primary">{p.title}</h3>
                 </div>
                 <hr className="gold-rule gold-rule-short mt-3 mb-3" />
                 <p className="text-[0.95rem] leading-relaxed text-foreground/85">{p.line}</p>
+                <div className="mt-4 h-px w-0 bg-accent group-hover:w-full transition-all duration-700" />
               </article>
             ))}
           </div>

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function SiteFooter() {
   return (
     <footer className="bg-background mt-24 border-t border-brass/40">
@@ -8,6 +10,8 @@ export default function SiteFooter() {
           <span>First articulated MMXXVI</span>
           <span className="text-brass">·</span>
           <span className="text-accent">A Doctrine of Relational Security</span>
+          <span className="text-brass">·</span>
+          <Link to="/glossary" className="hover:text-accent transition-colors">Glossary</Link>
         </div>
         <div className="flex items-center gap-2" aria-hidden>
           <span className="w-2 h-2 rounded-full bg-accent" />
@@ -18,3 +22,4 @@ export default function SiteFooter() {
     </footer>
   );
 }
+
