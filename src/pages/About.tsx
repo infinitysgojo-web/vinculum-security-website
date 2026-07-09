@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
+import DiplomatBadge from "@/components/DiplomatBadge";
 
 export default function About() {
   return (
@@ -14,6 +15,11 @@ export default function About() {
       />
       <div className="container">
         <PageHeader eyebrow="Section I" title="About the Author" />
+
+        <FadeIn className="flex gap-2 flex-wrap mb-10">
+          <DiplomatBadge variant="doctrine-core">Originator</DiplomatBadge>
+          <DiplomatBadge variant="field-notes">Nairobi · YPS</DiplomatBadge>
+        </FadeIn>
 
         <FadeIn className="max-w-3xl mb-12">
           <h2 className="font-serif text-primary text-2xl">James Wesley Ndua</h2>
