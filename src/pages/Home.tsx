@@ -3,6 +3,7 @@ import NavCard from "@/components/NavCard";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
+import Logo from "@/components/Logo";
 import { useParallax } from "@/hooks/useParallax";
 
 const CARDS = [
@@ -43,7 +44,11 @@ export default function Home() {
           </div>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-baseline gap-8 relative">
             <div className="space-y-3">
-              <span className="eyebrow">Est. MMXXVI · A Doctrine of Relational Security</span>
+              <div className="flex items-center gap-4 mb-2">
+                <Logo size={56} />
+                <span className="h-10 w-px bg-brass/60" aria-hidden />
+                <span className="eyebrow">Est. MMXXVI</span>
+              </div>
               <h1 className="wordmark text-6xl md:text-8xl lg:text-9xl leading-[0.9]">
                 Vinculum<br />Security
               </h1>

@@ -69,10 +69,10 @@ export default function SectionNav({ items }: { items: SectionItem[] }) {
         )}
       </div>
 
-      {/* Desktop: sticky right rail */}
+      {/* Desktop: floating rail, top-right of viewport on xl+ */}
       <nav
         aria-label="On this page"
-        className="hidden lg:block print:hidden sticky top-24 self-start pl-5 border-l border-brass/50"
+        className="hidden xl:block print:hidden fixed top-28 right-6 2xl:right-10 z-30 pl-5 border-l border-brass/50 max-w-[200px]"
       >
         <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/50 mb-4">
           On this page
