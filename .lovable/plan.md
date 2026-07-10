@@ -1,110 +1,81 @@
-# Plan: Vibrant Diplomat Layer + Glossary + Cases Filters
+## Scope
 
-Adds a UN-diplomat visual layer (badges, section chips, animated numerals), a glossary system with clickable inline citations sourced from the two PDFs, richer microinteractions, and interactive filtering on the Cases page. Keeps the locked Imperial Folio system (Forum Sunset palette, Cormorant + Inter, cream ground, brass hairlines) intact.
-
----
-
-## 1. Diplomat Badges & Section Highlights
-
-New reusable `<Badge>` component with variants:
-- `doctrine-core` — terracotta fill, cream text, brass hairline border
-- `field-notes` — imperial-blue outline, blue text on cream
-- `briefing-ready` — brass fill, ink text
-- `case-study`, `foundation`, `handbook`, `methodology` — muted variants for taxonomy
-
-Placement:
-- **Home** — badge row above the wordmark ("Doctrine Core · Briefing Ready · Field-Tested")
-- **Doctrine / Foundations / Methodology / Practice / Cases / About** — a single badge under each PageHeader eyebrow indicating section character
-- **NavCards** — small corner badge (top-left) replacing plain eyebrow when the card links to a "core" section
-- **Case articles** — badge strip under the title (region · pillar · era)
-
-Shape: micro-caps Inter 10px, `0.22em` tracking, 2px vertical padding, 8px horizontal, subtle `hover:-translate-y-0.5` lift.
-
-## 2. Glossary + Inline Citations
-
-New route `/glossary` with 20–30 canonical terms drawn from the two PDFs (Vinculum, Bond Integrity, Ubuntu, Confucian Role Ethics, Human Security, R2P, Vinculum Continuum, Palava Hut, Gacaca, YPS, etc.). Each entry:
-- Term, short definition, doctrine section reference (e.g. "Doctrine § III.2"), and a verbatim quoted passage.
-- Anchor `id` per term so `/glossary#ubuntu` deep-links.
-
-Inline citation component `<Cite term="ubuntu">Ubuntu</Cite>`:
-- Renders the term with a dotted terracotta underline.
-- On hover/focus opens a Radix Popover (already available via shadcn) showing the definition, source section, and a "Open in glossary" link.
-- Keyboard accessible (`Enter` opens, `Esc` closes, focus trap).
-
-Data source: a single `src/content/glossary.ts` seeded from the PDFs. No backend; static import.
-
-Rollout: wrap key first-mentions on Home, Doctrine, Foundations, Methodology, Practice, and About with `<Cite>` — not every occurrence, only the first per page to keep prose clean.
-
-Add `/glossary` to `SiteHeader` nav and footer.
-
-## 3. Microinteractions
-
-Keep tasteful; no framer-motion dependency added. Uses existing `FadeIn` + CSS.
-
-- **Hover lift**: `.hover-lift` utility (`transition-transform hover:-translate-y-1 hover:shadow-[0_12px_30px_-18px_hsl(var(--primary)/0.35)]`) applied to NavCards and Case articles.
-- **Scroll parallax (subtle)**: a lightweight `useParallax` hook translating a hero decorative numeral (large brass "MMXXVI") at 0.15× scroll speed on Home. Respects `prefers-reduced-motion`.
-- **Animated Roman numeral separators**: new `<NumeralDivider n="III" />` component — brass numeral centered on a full-width brass hairline. On scroll into view: hairline draws L→R (existing `rule-draw`), numeral fades + counts up letter-by-letter (I → II → III via CSS steps). Drop between major sections on Doctrine, Foundations, Practice.
-- **NavCard hover** already flips to imperial blue; add a 2px terracotta corner accent that expands on hover.
-- **Cite underline**: animated dotted underline that thickens on hover.
-- **Focus polish**: keep terracotta focus ring, add `ring-offset-background` for clarity.
-
-All transitions ≤ 400ms; `prefers-reduced-motion` disables parallax, numeral count-up, and rule-draw.
-
-## 4. Cases Page — Interactive Filters + Compare
-
-Restructure `Cases.tsx` around a filter bar and a comparison drawer.
-
-**Data model** (extend the existing `CASES` array):
-```ts
-type Case = {
-  slug, title, summary,
-  region: "Africa" | "Europe" | "Latin America" | "Southeast Asia",
-  pillar: "Interpersonal" | "Communal" | "Intergenerational" | "Institutional",  // dominant pillar
-  threats: ("Ethnic conflict" | "Civil war" | "Genocide" | "Political violence" | "Post-conflict transition")[],
-  era: "1990s" | "2000s" | "2010s",
-  scores: [number, number, number, number],
-};
-```
-
-**Filter bar** (sticky under PageHeader):
-- Three filter groups as toggle-chip clusters: Region, Doctrine Pillar (dominant), Threat Type.
-- "Clear filters" ghost button.
-- Live-updating result count ("Showing 4 of 6 cases").
-- Chip style matches the new Badge system (terracotta when active, cream outline when inactive).
-
-**Compare mode**:
-- Each case card gets a "Compare" checkbox (max 3 selected).
-- Floating "Compare (N)" pill bottom-right; opens a full-width `<Dialog>` with a side-by-side table: rows = 4 bond domains, columns = selected cases, cells = score with a horizontal terracotta bar (`width: score/5 * 100%`) for quick visual read.
-- Dialog also shows a small radar-style summary (pure SVG, 4 axes, no chart lib) per case.
-
-**URL state**: filters and comparison persisted in query string (`?region=Africa&pillar=Communal&compare=liberia,rwanda`) so views are shareable.
-
-## 5. Additional UI/Design Suggestions (for approval, not built unless you say so)
-
-Ranked by impact-to-risk:
-
-1. **Reading progress bar** — 2px terracotta bar at top of long doctrine pages, sitting on the header's blue rule.
-2. **Table of contents rail** — sticky right-side TOC on Doctrine/Foundations at ≥lg widths with active-section highlighting; keeps long reads navigable without hurting the editorial feel.
-3. **Print stylesheet** — clean "briefing-ready" print CSS so any page prints as a formatted policy brief (cream removed, numerals kept, badges become bracketed labels).
-4. **Downloadable one-pager** — a static PDF summary link in the footer ("Download the Doctrine Brief").
-5. **Language toggle placeholder** — EN/FR/SW toggle in the header (visual only for now, real translations later). Matches the UN-diplomat register.
-6. **Case detail routes** — `/cases/:slug` with a longer treatment (context, bond analysis, sources) instead of only cards. Would let citations link to specific cases too.
-7. **Hero micro-video / animated SVG** — a slow 8-second SVG animation of four bond lines weaving through the wordmark. Only if you want more motion; risks feeling less institutional.
-8. **Command-K palette** — `⌘K` opens a search over glossary + pages. Very "modern UN diplomat digital brief" feel; low visual cost.
-9. **Dark "night briefing" mode** — inverted palette (deep navy ground, brass rules, cream ink) toggled from the footer. Preserves the identity while adding polish.
-10. **Ambient audio brief** — link to a spoken excerpt of the doctrine (10–30s) on Home; skippable, muted by default.
-
-Recommend doing 1, 2, 3, and 8 in a follow-up pass — they reinforce the "policy publication" identity without adding visual noise. Hold 5, 7, 9, 10 unless you specifically want them.
+Four discreet, high-craft additions that respect the Imperial Folio system (Forum Sunset palette, Cormorant + Inter, brass hairlines, cream ground). No new dependencies — reuses shadcn `Dialog` + `Command` (already installed) and native APIs.
 
 ---
 
-## Technical Notes
+### 1. Reading Progress Bar — long pages only
 
-- New files: `src/components/Badge.tsx`, `src/components/Cite.tsx`, `src/components/NumeralDivider.tsx`, `src/components/CompareDialog.tsx`, `src/content/glossary.ts`, `src/pages/Glossary.tsx`, `src/hooks/useParallax.ts`, `src/hooks/useFilters.ts`.
-- Edited: `SiteHeader` (+ Glossary link), `SiteFooter` (+ Glossary link), `NavCard` (badge + lift), `Home` (badges + parallax numeral + citations), `Doctrine/Foundations/Methodology/Practice/About` (badges + citations + numeral dividers), `Cases` (filters + compare), `App.tsx` (glossary route), `index.css` (hover-lift, cite underline, numeral animation keyframes).
-- Uses existing shadcn `Dialog`, `Popover`, `Checkbox` — no new deps.
-- Content: glossary entries and citation targets sourced verbatim from the two PDFs already ingested; no invented references. Sections VIII–XI and Handbook Part V remain excluded per memory rules.
-- Accessibility: all new interactive elements keyboard-reachable; badges are `<span>` (decorative) unless linking; citations expose `aria-describedby`; filters are `<button aria-pressed>`; compare dialog uses focus trap and `Esc` close.
-- Verification: `tsgo` typecheck, then Playwright pass at 1280 and 390 across `/`, `/glossary`, `/cases` (with filters applied via URL), and one doctrine page to confirm citation popovers and numeral dividers render.
+A 2px terracotta bar fixed to the very top of the viewport, drawn *underneath* the header's 2px imperial-blue rule so the two read as a single hairline pair (blue baseline, terracotta fill).
 
-Ready to implement on approval. Confirm whether to include any of the 10 additional suggestions in this pass or defer them.
+- New `<ReadingProgress />` component: listens to `scroll` on a target ref, writes `transform: scaleX(n)` on rAF.
+- Renders only when the page opts in (`<ReadingProgress />` mounted in `Doctrine`, `Foundations`, `Methodology`, `Cases`, `Practice`, `Glossary`). Not on `Home` or `About`.
+- Fades in after 200px scrolled so it doesn't flicker on short viewports.
+- `prefers-reduced-motion` → no transition, just snap.
+
+### 2. Sticky Table of Contents — long pages only
+
+A slim right-rail TOC on `lg+` screens; collapses into an inline "In this section" block at the top on mobile. Understated, not a sidebar chrome-block.
+
+- New `<SectionNav />` component: takes `items: { id, label, numeral? }[]`.
+- Desktop (`lg+`): `position: sticky; top: 6rem;` in a narrow right column. Vertical brass hairline on the left edge; each item is Inter 11px uppercase, letter-spacing 0.18em, `text-primary/60` inactive → `text-accent` active with a 1px terracotta tick to the left. Optional small Roman numeral prefix in brass.
+- Mobile: renders as a compact "Contents" disclosure below the PageHeader with the same list, no sticky behavior.
+- Active section: `IntersectionObserver` with `rootMargin: "-40% 0px -55% 0px"` so the active item updates when the section crosses the viewport's upper third.
+- Anchor targets: add `id` + `scroll-mt-24` to each `<section>`/eyebrow block on Doctrine (III.A–D), Foundations (thinkers), Methodology (phases), Cases (each case), Practice, Glossary (letter groups).
+- Layout: wrap page body in `lg:grid lg:grid-cols-[1fr_180px] lg:gap-12`. Only applied on pages that use `<SectionNav />`.
+
+### 3. Print Stylesheet
+
+Add a `@media print` block in `index.css`. Goals: readable folio, preserved citations, no chrome.
+
+- Hide: `SiteHeader`, `SiteFooter`, `ReadingProgress`, `SectionNav`, filter/compare controls on Cases, mobile menu, search inputs.
+- Body: white background, black ink, Cormorant 11pt body / 10pt sidenotes, 1.45 line-height, single column, 2cm margins.
+- Links: keep terracotta underline; append the `href` for external links via `a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; }`.
+- Citations (`<Cite>` popovers): expand inline — after each `.cite-term`, print `[n]` and collect a numbered footnotes list at page end using CSS counters. Approach: `counter-increment` on `.cite-term`, `content: " [" counter(cite) "]"`, plus a print-only `<PrintFootnotes />` block rendered on each long page that lists the glossary entries actually cited on that page (small serif, brass rule above).
+- Page breaks: `h2, h3 { break-after: avoid; }`, `blockquote, table { break-inside: avoid; }`.
+- Roman numeral dividers, brass rules → keep (they print as thin black rules).
+
+### 4. Command Palette — my recommendation
+
+**Recommendation: skip the sitewide ⌘K.** You're right — with the top nav, Glossary search, and Cases filters, a global palette duplicates existing surfaces and adds a "SaaS product" feel that fights the diplomatic-folio tone.
+
+**Instead, do one focused thing:** a **⌘K Glossary Jump** available *only* on the `/glossary` page and inside any `<Cite>` popover ("Search all terms →"). It reuses the existing search, adds keyboard-first navigation, and stays scoped to reference material — which is where fast lookup actually helps a reader.
+
+- On `/glossary`: `⌘K` / `Ctrl+K` opens a shadcn `CommandDialog` filtered to glossary terms only. Enter jumps to the term with the existing highlight animation.
+- No global hotkey listener elsewhere. No page-jump entries. No recent items. No "AI" affordance.
+- Small "⌘K" chip next to the glossary search input as the only discovery hint.
+
+If you'd rather have nothing at all, say so and I'll drop item 4 entirely.
+
+---
+
+### 5. Logo, Favicon, OG Image
+
+One coherent mark in the Imperial Folio language. No stock heraldry, no laurel clip-art.
+
+**Concept — "The Bond":** a hand-drawn monogram of two interlocking serif `V`s (Vinculum) forming a single continuous ligature — reading as a knot / bond / infinity turn. Imperial blue `#1B3A6B` on cream `#F5EBDD`, with a single 1px terracotta hairline underscoring it. Cormorant proportions, slightly weighted strokes with terminal serifs. Feels like a diplomatic seal engraving, not a tech logo.
+
+- Generate one master SVG-style PNG at 1024×1024 (transparent) via `imagegen`, premium quality (typography-sensitive), transparent background.
+- **Favicon**: crop the monogram tight, export 512×512 PNG → `public/favicon.png`. Delete `public/favicon.ico`. Update `<link rel="icon">` in `index.html`.
+- **OG image** (1200×630): centered monogram, brass hairline above and below, wordmark "VINCULUM SECURITY" in Cormorant small-caps, single italic line "A Doctrine of Relational Security" below in terracotta. Saved to `public/og-image.jpg`. Since Lovable serves social previews from the deployment, I'll only wire `og:image` if you provide a published domain later — otherwise the file sits ready and Lovable's hosting will pick it up on publish.
+- **In-app usage**: replace the plain "Vinculum Security" wordmark in `SiteHeader` with the monogram (24px) + wordmark, and place a larger version on the `Home` hero and `About` page. Footer keeps the three-dot signature.
+- Iterate once — if the first generation isn't right I'll refine before shipping.
+
+---
+
+## Files touched
+
+- **New:** `src/components/ReadingProgress.tsx`, `src/components/SectionNav.tsx`, `src/components/PrintFootnotes.tsx`, `src/components/Logo.tsx`
+- **New assets:** `src/assets/vinculum-mark.png` (+ favicon, og-image via `public/`)
+- **Edited:** `index.css` (print block, `.reading-progress`, `.section-nav` styles), `index.html` (favicon link, og:image only if domain provided), `SiteHeader.tsx` (logo), `Home.tsx` (logo hero), `About.tsx` (logo), `Doctrine.tsx` / `Foundations.tsx` / `Methodology.tsx` / `Cases.tsx` / `Practice.tsx` / `Glossary.tsx` (section IDs + `<ReadingProgress />` + `<SectionNav />` wrapper + `<PrintFootnotes />`), `Glossary.tsx` (scoped ⌘K CommandDialog + chip)
+
+## What I'm deliberately NOT doing
+
+- No global ⌘K palette
+- No dark/night mode toggle
+- No animated logo, no gradient logo, no icon set
+- No page-transition animations
+- No new fonts, no new colors
+- No changes to Cases filters, comparison dialog, or existing glossary data
+
+Confirm and I'll build it; say "drop 4" and I'll ship 1–3 + logo only.

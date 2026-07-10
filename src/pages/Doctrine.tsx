@@ -6,6 +6,21 @@ import GoldRule from "@/components/GoldRule";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import Cite from "@/components/Cite";
+import ReadingProgress from "@/components/ReadingProgress";
+import SectionNav from "@/components/SectionNav";
+import PrintFootnotes from "@/components/PrintFootnotes";
+
+const TOC = [
+  { id: "canonical", label: "Canonical Definition", numeral: "I" },
+  { id: "ontology", label: "Ontological Claim", numeral: "II" },
+  { id: "comparison", label: "Comparative Positioning", numeral: "III" },
+  { id: "continuum", label: "The Continuum", numeral: "IV" },
+];
+
+const CITED = [
+  "ubuntu", "confucian-role-ethics", "human-security",
+  "bond", "vinculum-continuum",
+];
 
 const COMPARISON = [
   ["State Security", "The state", "Security as survival against external military threat", "Westphalian tradition"],
@@ -36,6 +51,8 @@ export default function Doctrine() {
         description="Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum."
         path="/doctrine"
       />
+      <ReadingProgress />
+      <SectionNav items={TOC} />
       <div className="container">
         <PageHeader eyebrow="Section III" title="The Vinculum Security Doctrine" />
 
@@ -44,6 +61,7 @@ export default function Doctrine() {
           <DiplomatBadge variant="briefing-ready">Canonical Text</DiplomatBadge>
         </FadeIn>
 
+        <section id="canonical" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-16">
           <p className="eyebrow">III.A — Canonical Definition</p>
           <div className="mt-5">
@@ -52,9 +70,11 @@ export default function Doctrine() {
             </PullQuote>
           </div>
         </FadeIn>
+        </section>
 
         <NumeralDivider n="II" label="Ontology" />
 
+        <section id="ontology" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-20">
           <p className="eyebrow">III.B — The Ontological Claim</p>
           <GoldRule className="mt-4 mb-6" />
@@ -75,7 +95,10 @@ export default function Doctrine() {
             </p>
           </div>
         </FadeIn>
+        </section>
 
+
+        <section id="comparison" className="scroll-mt-24">
         <FadeIn className="mb-20">
           <p className="eyebrow">III.C — Comparative Positioning</p>
           <GoldRule className="mt-4 mb-6" />
@@ -105,9 +128,11 @@ export default function Doctrine() {
             </table>
           </div>
         </FadeIn>
+        </section>
 
         <NumeralDivider n="IV" label="The Continuum" />
 
+        <section id="continuum" className="scroll-mt-24">
         <FadeIn className="mb-16">
           <p className="eyebrow">III.D — The Vinculum Continuum</p>
           <GoldRule className="mt-4 mb-6" />
@@ -126,12 +151,15 @@ export default function Doctrine() {
             ))}
           </div>
         </FadeIn>
+        </section>
 
         <FadeIn className="max-w-3xl mb-8">
           <p className="text-sm italic text-muted-foreground">
             The doctrine states explicit falsifiability criteria (Section IV).
           </p>
         </FadeIn>
+
+        <PrintFootnotes terms={CITED} />
       </div>
     </>
   );

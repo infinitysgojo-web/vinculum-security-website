@@ -3,6 +3,7 @@ import SEO from "@/components/SEO";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
+import ReadingProgress from "@/components/ReadingProgress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 
@@ -183,6 +184,7 @@ export default function Cases() {
         description="Six documented processes — Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya — scored across the four bond domains of the Vinculum Continuum."
         path="/cases"
       />
+      <ReadingProgress />
       <div className="container">
         <PageHeader
           eyebrow="Section VII"
