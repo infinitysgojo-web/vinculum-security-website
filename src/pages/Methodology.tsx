@@ -5,6 +5,10 @@ import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
+import ReadingProgress from "@/components/ReadingProgress";
+import PrintFootnotes from "@/components/PrintFootnotes";
+
+const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational"];
 
 const INDICATORS = [
   {
@@ -37,6 +41,7 @@ export default function Methodology() {
         description="The diagnostic method and bond-integrity indicators used to assess a case, drawn from Section V of the Vinculum Security doctrine."
         path="/methodology"
       />
+      <ReadingProgress />
       <div className="container">
         <PageHeader eyebrow="Section V" title="Operational Framework" />
 

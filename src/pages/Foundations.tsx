@@ -2,6 +2,7 @@ import SEO from "@/components/SEO";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
+import ReadingProgress from "@/components/ReadingProgress";
 
 const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"];
 
@@ -72,6 +73,7 @@ export default function Foundations() {
         description="The eleven traditions Vinculum Security draws from — from Human Security and Ubuntu to Confucian Role Ethics and Women, Peace and Security."
         path="/foundations"
       />
+      <ReadingProgress />
       <div className="container">
         <PageHeader
           eyebrow="Section II"
