@@ -95,9 +95,8 @@ export default function Doctrine() {
             </p>
           </div>
         </FadeIn>
-
-        </FadeIn>
         </section>
+
 
         <section id="comparison" className="scroll-mt-24">
         <FadeIn className="mb-20">
