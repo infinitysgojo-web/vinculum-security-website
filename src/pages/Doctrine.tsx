@@ -6,6 +6,21 @@ import GoldRule from "@/components/GoldRule";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import Cite from "@/components/Cite";
+import ReadingProgress from "@/components/ReadingProgress";
+import SectionNav from "@/components/SectionNav";
+import PrintFootnotes from "@/components/PrintFootnotes";
+
+const TOC = [
+  { id: "canonical", label: "Canonical Definition", numeral: "I" },
+  { id: "ontology", label: "Ontological Claim", numeral: "II" },
+  { id: "comparison", label: "Comparative Positioning", numeral: "III" },
+  { id: "continuum", label: "The Continuum", numeral: "IV" },
+];
+
+const CITED = [
+  "ubuntu", "confucian-role-ethics", "human-security",
+  "bond", "vinculum-continuum",
+];
 
 const COMPARISON = [
   ["State Security", "The state", "Security as survival against external military threat", "Westphalian tradition"],
