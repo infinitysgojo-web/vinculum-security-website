@@ -4,6 +4,7 @@ import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
+import Logo from "@/components/Logo";
 
 export default function About() {
   return (
@@ -21,15 +22,18 @@ export default function About() {
           <DiplomatBadge variant="field-notes">Nairobi · YPS</DiplomatBadge>
         </FadeIn>
 
-        <FadeIn className="max-w-3xl mb-12">
-          <h2 className="font-serif text-primary text-2xl">James Wesley Ndua</h2>
-          <hr className="gold-rule gold-rule-short mt-3 mb-4" />
-          <p className="text-sm uppercase tracking-widest text-muted-foreground" style={{ letterSpacing: "0.18em" }}>
-            Human Security Diplomat · Youth, Peace and Security Advocate
-          </p>
-          <p className="text-sm uppercase tracking-widest text-muted-foreground mt-1" style={{ letterSpacing: "0.18em" }}>
-            Nairobi, Kenya
-          </p>
+        <FadeIn className="max-w-3xl mb-12 flex items-start gap-6">
+          <Logo size={72} className="mt-2 shrink-0" />
+          <div>
+            <h2 className="font-serif text-primary text-2xl">James Wesley Ndua</h2>
+            <hr className="gold-rule gold-rule-short mt-3 mb-4" />
+            <p className="text-sm uppercase tracking-widest text-muted-foreground" style={{ letterSpacing: "0.18em" }}>
+              Human Security Diplomat · Youth, Peace and Security Advocate
+            </p>
+            <p className="text-sm uppercase tracking-widest text-muted-foreground mt-1" style={{ letterSpacing: "0.18em" }}>
+              Nairobi, Kenya
+            </p>
+          </div>
         </FadeIn>
 
         <FadeIn className="max-w-3xl mb-16">
