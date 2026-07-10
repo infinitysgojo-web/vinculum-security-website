@@ -51,6 +51,8 @@ export default function Doctrine() {
         description="Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum."
         path="/doctrine"
       />
+      <ReadingProgress />
+      <SectionNav items={TOC} />
       <div className="container">
         <PageHeader eyebrow="Section III" title="The Vinculum Security Doctrine" />
 
@@ -59,6 +61,7 @@ export default function Doctrine() {
           <DiplomatBadge variant="briefing-ready">Canonical Text</DiplomatBadge>
         </FadeIn>
 
+        <section id="canonical" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-16">
           <p className="eyebrow">III.A — Canonical Definition</p>
           <div className="mt-5">
