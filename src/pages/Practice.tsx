@@ -5,6 +5,7 @@ import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
+import ReadingProgress from "@/components/ReadingProgress";
 
 const PRINCIPLES = [
   {
@@ -37,6 +38,7 @@ export default function Practice() {
         description="The applied diplomatic practice derived from the Vinculum Security doctrine — foundations, the core behavioral shift, and the four practice principles."
         path="/practice"
       />
+      <ReadingProgress />
       <div className="container">
         <PageHeader
           eyebrow="Companion Handbook"

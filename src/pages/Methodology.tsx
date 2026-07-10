@@ -96,6 +96,7 @@ export default function Methodology() {
             ))}
           </div>
         </FadeIn>
+        <PrintFootnotes terms={CITED} />
       </div>
     </>
   );
