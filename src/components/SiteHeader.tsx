@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const NAV = [
   { to: "/doctrine", label: "The Doctrine" },
@@ -18,10 +19,13 @@ export default function SiteHeader() {
   useEffect(() => { setOpen(false); }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-primary">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-primary print:hidden">
       <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="wordmark text-xl md:text-2xl">
-          Vinculum Security
+        <Link to="/" className="flex items-center gap-3 group" aria-label="Vinculum Security — Home">
+          <Logo size={26} />
+          <span className="wordmark text-xl md:text-2xl leading-none group-hover:text-accent transition-colors">
+            Vinculum Security
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-7" aria-label="Primary">

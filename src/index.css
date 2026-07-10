@@ -146,3 +146,78 @@
   .fade-in { opacity: 1; transform: none; transition: none; }
   .rule-draw { animation: none; transform: none; }
 }
+
+/* ---------- Print stylesheet ---------- */
+@media print {
+  :root { --background: 0 0% 100%; --foreground: 0 0% 0%; }
+  html, body { background: #fff !important; color: #000 !important; }
+  header[class*="sticky"],
+  footer,
+  nav[aria-label="Primary"],
+  nav[aria-label="Mobile"],
+  nav[aria-label="On this page"],
+  [aria-label="Open menu"],
+  [aria-label="Close menu"],
+  .print\:hidden,
+  input[type="search"],
+  [role="dialog"] { display: none !important; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+  .container { max-width: none !important; padding: 0 !important; }
+  main, .container > * { break-inside: auto; }
+
+  h1, h2, h3, h4 {
+    color: #000 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  h1 { font-size: 22pt; margin-top: 0; }
+  h2 { font-size: 16pt; margin-top: 18pt; }
+  h3 { font-size: 13pt; margin-top: 12pt; }
+
+  p, li { orphans: 3; widows: 3; }
+  blockquote, table, figure, article { break-inside: avoid; }
+
+  a { color: #000 !important; text-decoration: underline; }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    font-family: 'Inter', sans-serif;
+    color: #444;
+    word-break: break-all;
+  }
+  a[href^="/"]::after { content: ""; }
+
+  /* Inline citations become numbered footnote markers */
+  body { counter-reset: cite; }
+  .cite-term {
+    color: #000 !important;
+    border-bottom: none !important;
+    font-style: normal;
+  }
+  .cite-term::after {
+    counter-increment: cite;
+    content: " [" counter(cite) "]";
+    font-size: 8pt;
+    vertical-align: super;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .eyebrow {
+    color: #000 !important;
+    font-size: 8pt !important;
+    letter-spacing: 0.2em;
+  }
+  .gold-rule, hr { background: #000 !important; border-top-color: #000 !important; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 10pt; }
+  thead tr { background: #eee !important; color: #000 !important; }
+  th, td { border: 1px solid #999 !important; padding: 4pt 6pt !important; }
+
+  @page { margin: 2cm; }
+}
+
