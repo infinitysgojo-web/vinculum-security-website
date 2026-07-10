@@ -40,6 +40,8 @@ export default function Glossary() {
         description="Canonical terms of the Vinculum Security doctrine and the Vinculum Diplomacy handbook, each with source section and verbatim passage."
         path="/glossary"
       />
+      <ReadingProgress />
+      <GlossaryCommand open={cmdOpen} onOpenChange={setCmdOpen} />
       <div className="container">
         <PageHeader
           eyebrow="Reference"
@@ -53,15 +55,28 @@ export default function Glossary() {
             <DiplomatBadge variant="briefing-ready">Briefing Ready</DiplomatBadge>
             <DiplomatBadge variant="field-notes">Field Notes</DiplomatBadge>
           </div>
-          <input
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search terms, sources, definitions…"
-            className="md:w-80 bg-transparent border border-brass/50 px-3 py-2 text-sm font-sans placeholder:text-foreground/40 focus:outline-none focus:border-accent"
-            aria-label="Search glossary"
-          />
+          <div className="flex items-center gap-2 md:w-auto w-full">
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search terms, sources, definitions…"
+              className="flex-1 md:w-80 bg-transparent border border-brass/50 px-3 py-2 text-sm font-sans placeholder:text-foreground/40 focus:outline-none focus:border-accent"
+              aria-label="Search glossary"
+            />
+            <button
+              type="button"
+              onClick={() => setCmdOpen(true)}
+              className="hidden md:inline-flex items-center gap-1 border border-brass/50 px-2 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary/70 hover:border-accent hover:text-accent transition-colors"
+              title="Jump to term (⌘K)"
+              aria-label="Open quick jump"
+            >
+              <kbd className="font-sans">⌘</kbd>
+              <kbd className="font-sans">K</kbd>
+            </button>
+          </div>
         </FadeIn>
+
 
         <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/60 mb-8">
           {results.length} of {GLOSSARY.length} terms
