@@ -70,9 +70,11 @@ export default function Doctrine() {
             </PullQuote>
           </div>
         </FadeIn>
+        </section>
 
         <NumeralDivider n="II" label="Ontology" />
 
+        <section id="ontology" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-20">
           <p className="eyebrow">III.B — The Ontological Claim</p>
           <GoldRule className="mt-4 mb-6" />
@@ -94,6 +96,10 @@ export default function Doctrine() {
           </div>
         </FadeIn>
 
+        </FadeIn>
+        </section>
+
+        <section id="comparison" className="scroll-mt-24">
         <FadeIn className="mb-20">
           <p className="eyebrow">III.C — Comparative Positioning</p>
           <GoldRule className="mt-4 mb-6" />
@@ -123,9 +129,11 @@ export default function Doctrine() {
             </table>
           </div>
         </FadeIn>
+        </section>
 
         <NumeralDivider n="IV" label="The Continuum" />
 
+        <section id="continuum" className="scroll-mt-24">
         <FadeIn className="mb-16">
           <p className="eyebrow">III.D — The Vinculum Continuum</p>
           <GoldRule className="mt-4 mb-6" />
@@ -144,12 +152,15 @@ export default function Doctrine() {
             ))}
           </div>
         </FadeIn>
+        </section>
 
         <FadeIn className="max-w-3xl mb-8">
           <p className="text-sm italic text-muted-foreground">
             The doctrine states explicit falsifiability criteria (Section IV).
           </p>
         </FadeIn>
+
+        <PrintFootnotes terms={CITED} />
       </div>
     </>
   );
