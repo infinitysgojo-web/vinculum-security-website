@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import Home from "./pages/Home";
@@ -12,16 +12,68 @@ import About from "./pages/About";
 import Glossary from "./pages/Glossary";
 import NotFound from "./pages/NotFound";
 
-function ScrollToTop() {
-  const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+const SCROLL_KEY = "vs:scroll";
+
+function readMap(): Record<string, number> {
+  try {
+    return JSON.parse(sessionStorage.getItem(SCROLL_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function ScrollMemory() {
+  const { pathname, hash } = useLocation();
+  const prevPath = useRef<string | null>(null);
+  const rafRef = useRef<number | null>(null);
+
+  // Save on scroll for the current path
+  useEffect(() => {
+    const onScroll = () => {
+      if (rafRef.current != null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        const map = readMap();
+        map[pathname] = window.scrollY;
+        try {
+          sessionStorage.setItem(SCROLL_KEY, JSON.stringify(map));
+        } catch {
+          // ignore quota
+        }
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [pathname]);
+
+  // Restore on path change
+  useEffect(() => {
+    if (prevPath.current === pathname) return;
+    prevPath.current = pathname;
+
+    if (hash) {
+      // Let the target page handle its own hash scrolling
+      return;
+    }
+
+    const map = readMap();
+    const y = map[pathname];
+    // Defer to next frame so route content is mounted
+    requestAnimationFrame(() => {
+      window.scrollTo(0, typeof y === "number" ? y : 0);
+    });
+  }, [pathname, hash]);
+
   return null;
 }
 
 export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <ScrollToTop />
+      <ScrollMemory />
       <SiteHeader />
       <main className="flex-1" role="main">
         <Routes>
