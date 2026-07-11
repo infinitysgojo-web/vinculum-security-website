@@ -4,12 +4,12 @@ import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
-import GlossaryCommand from "@/components/GlossaryCommand";
+
 import { GLOSSARY } from "@/content/glossary";
 
 export default function Glossary() {
   const [q, setQ] = useState("");
-  const [cmdOpen, setCmdOpen] = useState(false);
+  
 
   useEffect(() => {
     if (window.location.hash) {
