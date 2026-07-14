@@ -8,8 +8,8 @@ import { useParallax } from "@/hooks/useParallax";
 
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
-  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Eleven traditions the doctrine draws from, from Ubuntu and Confucian Role Ethics to Human Security and R2P." },
-  { to: "/cases", eyebrow: "Section VII", title: "Case Studies", description: "Six documented processes across Africa, Latin America, Europe, and Southeast Asia, each scored across four bond domains." },
+  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen traditions the doctrine draws from — Ubuntu, Confucian Role Ethics, Human Security, R2P, WPS, and the digital and climate-displacement bonds named in the expanded edition." },
+  { to: "/cases", eyebrow: "Section VII", title: "Case Studies", description: "Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific, each scored across four bond domains." },
   { to: "/methodology", eyebrow: "Section V", title: "Methodology", description: "The diagnostic method and bond-integrity indicators used to assess a case in plain terms." },
   { to: "/practice", eyebrow: "Handbook", title: "Vinculum Diplomacy", description: "The applied practitioner discipline derived from the doctrine, oriented around four practice principles." },
   { to: "/glossary", eyebrow: "Reference", title: "Doctrine Glossary", description: "Canonical terms with source sections and verbatim passages from the doctrine and companion handbook." },

@@ -7,14 +7,15 @@ import ReadingProgress from "@/components/ReadingProgress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 
-type Region = "Africa" | "Europe" | "Latin America" | "Southeast Asia";
+type Region = "Africa" | "Europe" | "Latin America" | "Southeast Asia" | "Pacific";
 type Pillar = "Interpersonal" | "Communal" | "Intergenerational" | "Institutional";
 type Threat =
   | "Ethnic conflict"
   | "Civil war"
   | "Genocide"
   | "Political violence"
-  | "Post-conflict transition";
+  | "Post-conflict transition"
+  | "Climate displacement";
 
 type Case = {
   slug: string;
@@ -23,7 +24,7 @@ type Case = {
   region: Region;
   pillar: Pillar;
   threats: Threat[];
-  era: "1990s" | "2000s" | "2010s";
+  era: "1990s" | "2000s" | "2010s" | "2020s";
   scores: [number, number, number, number];
 };
 
@@ -94,10 +95,32 @@ const CASES: Case[] = [
     era: "2000s",
     scores: [4, 2, 2, 3],
   },
+  {
+    slug: "south-africa",
+    title: "South Africa — The Truth and Reconciliation Commission",
+    summary:
+      "Established under the Promotion of National Unity and Reconciliation Act (1995) and delivering its final report in 1998, the TRC placed public testimony and conditional amnesty at the centre of a national transition from apartheid.",
+    region: "Africa",
+    pillar: "Communal",
+    threats: ["Political violence", "Post-conflict transition"],
+    era: "1990s",
+    scores: [3, 4, 3, 3],
+  },
+  {
+    slug: "tuvalu-kiribati",
+    title: "Tuvalu & Kiribati — Climate Displacement",
+    summary:
+      "The Australia–Tuvalu Falepili Union (concluded 2023, in force 2024) and Kiribati's earlier migration-with-dignity policy attempt to preserve nationhood, statehood, and intergenerational continuity across the potential loss of habitable territory.",
+    region: "Pacific",
+    pillar: "Institutional",
+    threats: ["Climate displacement", "Post-conflict transition"],
+    era: "2020s",
+    scores: [3, 3, 4, 4],
+  },
 ];
 
 const DOMAINS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"];
-const REGIONS: Region[] = ["Africa", "Europe", "Latin America", "Southeast Asia"];
+const REGIONS: Region[] = ["Africa", "Europe", "Latin America", "Southeast Asia", "Pacific"];
 const PILLARS: Pillar[] = ["Interpersonal", "Communal", "Intergenerational", "Institutional"];
 const THREATS: Threat[] = [
   "Ethnic conflict",
@@ -105,6 +128,7 @@ const THREATS: Threat[] = [
   "Genocide",
   "Political violence",
   "Post-conflict transition",
+  "Climate displacement",
 ];
 
 function Chip({
@@ -181,7 +205,7 @@ export default function Cases() {
     <>
       <SEO
         title="Case Studies"
-        description="Six documented processes — Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya — scored across the four bond domains of the Vinculum Continuum."
+        description="Eight documented processes — Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati — scored across the four bond domains of the Vinculum Continuum."
         path="/cases"
       />
       <ReadingProgress />
@@ -189,7 +213,7 @@ export default function Cases() {
         <PageHeader
           eyebrow="Section VII"
           title="Applied Case Engagement"
-          lede="Six documented processes across Europe, Latin America, Southeast Asia, and Africa. Filter by region, doctrine pillar, or threat type, and select up to three to compare side-by-side."
+          lede="Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific. Filter by region, doctrine pillar, or threat type, and select up to three to compare side-by-side."
         />
 
         <FadeIn className="flex gap-2 mb-8 flex-wrap">

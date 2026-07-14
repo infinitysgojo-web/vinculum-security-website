@@ -180,6 +180,94 @@ export const GLOSSARY: GlossaryEntry[] = [
     quote:
       "Are the bonds this person, community, or generation depends upon intact — and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?",
   },
+  {
+    id: "political-realism",
+    term: "Political Realism (The Counterweight)",
+    short: "Retained as counterweight rather than competitor: realism's account of state behaviour is accepted; Vinculum Security adds that the bonds a state depends on are themselves a component of its actual capacity.",
+    source: "Foundations § II.C",
+    quote:
+      "Politics is governed by objective laws rooted in human nature, and national interest is defined in terms of power.",
+  },
+  {
+    id: "menkiti-gyekye",
+    term: "Menkiti–Gyekye Debate",
+    short: "The internal African-philosophy debate between Menkiti's radical communitarian thesis and Gyekye's moderate reading of Ubuntu; the doctrine is built to survive either resolution.",
+    source: "Foundations § II.B",
+    quote:
+      "Menkiti's radical communitarian thesis and Gyekye's moderate reading debate how strongly personhood is constituted by community; Vinculum Security survives either resolution.",
+  },
+  {
+    id: "digital-bonds",
+    term: "Digital & Information-Age Bonds",
+    short: "The recognition that coordinated disinformation, algorithmic sorting, and deliberate rupture of trust between institutions and publics are first-order bond-degrading forces.",
+    source: "Foundations § II.L",
+    quote:
+      "Digital communication and information manipulation now actively erode the same bonds the Vinculum Continuum was built to assess.",
+  },
+  {
+    id: "climate-bonds",
+    term: "Environmental & Climate-Displacement Bonds",
+    short: "The stress placed on intergenerational and institutional bonds when a community's viability as a place is itself under threat.",
+    source: "Foundations § II.M",
+    quote:
+      "Where a community's viability as a place is itself under threat, the intergenerational and institutional-relational bonds that community depends upon are placed under a stress no earlier security framework was designed to name.",
+  },
+  {
+    id: "nomenclature-african",
+    term: "Nomenclature and the African Contribution",
+    short: "The Latin vinculum is chosen so the doctrine can travel through diplomatic institutions in European working languages without being mistranslated or treated as folk wisdom; the intellectual origin remains African.",
+    source: "Doctrine § III.E",
+    quote:
+      "The doctrine is confidently African in origin, now corroborated by an independent Confucian tradition, and does not claim cultural neutrality.",
+  },
+  {
+    id: "boundary-weighting",
+    term: "Boundary Rules and Weighting",
+    short: "Explicit rules for classifying a bond into a continuum level, and for weighting bonds when they conflict.",
+    source: "Doctrine § III.F",
+    quote:
+      "When bonds at different levels conflict, weight is given to the bond whose rupture would most reduce the affected persons' actual capacity for protection and dignity going forward.",
+  },
+  {
+    id: "party-differentiated",
+    term: "Party-Differentiated Application",
+    short: "The layer that ensures children, youth, elders, women, government, civil society, and ex-combatants are addressed distinctly rather than averaged into a single rubric.",
+    source: "Methodology § VI",
+    quote:
+      "A full party-differentiated application table addressing children, youth, elders, women, government, civil society, and ex-combatants distinctly.",
+  },
+  {
+    id: "annan-method",
+    term: "The Annan Method",
+    short: "Kofi Annan's mediation practice — most visibly the 2008 AU Panel in Kenya — which treated named relationships and community standing as first-order diplomatic material.",
+    source: "Practice § 3A",
+    quote:
+      "Where the Annan method modelled this practice through personal authority, Vinculum Diplomacy names its components so that they can be taught, tested, and carried by practitioners who do not have that authority to lend.",
+  },
+  {
+    id: "continuity-provision",
+    term: "Continuity Provision",
+    short: "A clause or mechanism built into an agreement specifically to survive a change in the officeholders who negotiated it.",
+    source: "Handbook, Appendix B",
+    quote:
+      "Continuity Provision: a clause or mechanism built into an agreement specifically to survive a change in the officeholders who negotiated it.",
+  },
+  {
+    id: "south-africa-trc",
+    term: "South Africa TRC",
+    short: "The Truth and Reconciliation Commission established under the Promotion of National Unity and Reconciliation Act (1995), delivering its final report in 1998.",
+    source: "Cases § VII — South Africa",
+    quote:
+      "Public testimony and conditional amnesty placed at the centre of a national transition from apartheid.",
+  },
+  {
+    id: "falepili-union",
+    term: "Falepili Union",
+    short: "The Australia–Tuvalu treaty concluded 2023 and in force 2024, an attempt to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+    source: "Cases § VII — Tuvalu & Kiribati",
+    quote:
+      "The current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+  },
 ];
 
 export const GLOSSARY_MAP: Record<string, GlossaryEntry> = Object.fromEntries(
