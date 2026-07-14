@@ -4,7 +4,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 
-const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI"];
+const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII"];
 
 
 const FOUNDATIONS = [
@@ -15,13 +15,13 @@ const FOUNDATIONS = [
   },
   {
     letter: "B",
-    title: "Ubuntu Philosophy",
-    body: "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu — a person is a person through other persons. Menkiti's radical communitarian thesis and Gyekye's moderate reading debate how strongly this holds. Vinculum Security is built to survive either resolution of that debate.",
+    title: "Ubuntu Philosophy & the Menkiti–Gyekye Debate",
+    body: "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu — a person is a person through other persons. Ifeanyi Menkiti's radical communitarian thesis and Kwame Gyekye's moderate reading debate how strongly this claim holds within African philosophy itself. Vinculum Security is deliberately built to survive either resolution of that debate: even on the moderate reading, the bond remains the proper unit of security analysis.",
   },
   {
     letter: "C",
-    title: "Political Realism",
-    body: "Morgenthau's Politics Among Nations holds that politics is governed by objective laws rooted in human nature and that national interest is defined in terms of power. Vinculum Security does not dispute this; it adds that an accurate accounting of an outcome's durability must include the relational bonds it depends on, since those bonds are themselves a component of a state's actual capacity.",
+    title: "Political Realism: The Counterweight",
+    body: "Morgenthau's Politics Among Nations holds that politics is governed by objective laws rooted in human nature and that national interest is defined in terms of power. Vinculum Security treats realism as counterweight rather than competitor: it does not dispute the realist description of state behaviour, but it adds that an accurate accounting of an outcome's durability must include the relational bonds it depends on, since those bonds are themselves a component of a state's actual capacity.",
   },
   {
     letter: "D",
@@ -63,6 +63,16 @@ const FOUNDATIONS = [
     title: "Women, Peace and Security",
     body: "UNSCR 1325 (2000) was the first resolution to recognize that armed conflict affects women and girls disproportionately and distinctly, and that women's full and meaningful participation is essential to durable peace. Vinculum Security treats WPS as YPS's direct sibling framework, applying the same diagnostic supplement.",
   },
+  {
+    letter: "L",
+    title: "Digital & Information-Age Bonds",
+    body: "Prior editions did not engage directly with how digital communication and information manipulation now actively erode the same bonds the Vinculum Continuum was built to assess. Coordinated disinformation, algorithmic sorting, and the deliberate rupture of trust between institutions and publics are treated here as first-order bond-degrading forces, not as ambient noise around an otherwise intact relationship.",
+  },
+  {
+    letter: "M",
+    title: "Environmental & Climate-Displacement Bonds",
+    body: "Where a community's viability as a place is itself under threat, the intergenerational and institutional-relational bonds that community depends upon are placed under a stress no earlier security framework was designed to name. The Tuvalu–Australia Falepili Union (2023, in force 2024) is treated here as the current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+  },
 ];
 
 export default function Foundations() {
@@ -70,7 +80,7 @@ export default function Foundations() {
     <>
       <SEO
         title="Theoretical Foundations"
-        description="The eleven traditions Vinculum Security draws from — from Human Security and Ubuntu to Confucian Role Ethics and Women, Peace and Security."
+        description="The thirteen traditions Vinculum Security draws from — from Human Security and Ubuntu to Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the expanded edition."
         path="/foundations"
       />
       <ReadingProgress />
@@ -78,11 +88,11 @@ export default function Foundations() {
         <PageHeader
           eyebrow="Section II"
           title="Theoretical Foundations"
-          lede="Vinculum Security is grounded in eleven independent traditions. Each entry summarizes the tradition's core move and what the doctrine takes from it."
+          lede="Vinculum Security is grounded in thirteen independent traditions. Each entry summarizes the tradition's core move and what the doctrine takes from it."
         />
 
         <FadeIn className="flex gap-2 flex-wrap mb-8">
-          <DiplomatBadge variant="foundation">Eleven Traditions</DiplomatBadge>
+          <DiplomatBadge variant="foundation">Thirteen Traditions</DiplomatBadge>
           <DiplomatBadge variant="field-notes">Comparative Reading</DiplomatBadge>
         </FadeIn>
 
