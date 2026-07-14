@@ -8,7 +8,17 @@ import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
 import PrintFootnotes from "@/components/PrintFootnotes";
 
-const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational"];
+const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated"];
+
+const PARTIES = [
+  ["Children", "Protection first; presence never treated as consent.", "Age-appropriate participation only where a mandated child-protection framework is already in force."],
+  ["Youth", "Intergenerational bond; standing, not attendance.", "Delegate placement counted only after the sending community would recognise the delegate on return."],
+  ["Elders", "Continuity of intergenerational transfer.", "Formal role in verifying whether knowledge and standing have actually been passed on."],
+  ["Women", "Direct application of WPS as YPS's sibling framework.", "Meaningful participation tested against outcomes, not headcount; gendered harm named explicitly in the bond map."],
+  ["Government", "Institutional-relational bond with the served population.", "Bond scores never substitute for a factual determination of protection obligation."],
+  ["Civil Society", "Communal standing as the tested credential.", "Standing to speak for a community treated as a claim to be tested, not a credential to be assumed."],
+  ["Ex-Combatants", "Interpersonal and communal bonds under reintegration.", "Reintegration measured by community-recognised standing over time, not by disarmament count alone."],
+];
 
 const INDICATORS = [
   {
@@ -96,6 +106,38 @@ export default function Methodology() {
             ))}
           </div>
         </FadeIn>
+
+        <FadeIn className="mb-16">
+          <p className="eyebrow">VI — Party-Differentiated Application</p>
+          <GoldRule className="mt-4 mb-6" />
+          <p className="text-muted-foreground mb-6 max-w-3xl">
+            The <Cite term="party-differentiated">party-differentiated layer</Cite> ensures the doctrine
+            addresses children, youth, elders, women, government, civil society, and ex-combatants
+            distinctly, so that a single scoring rubric does not flatten their unlike stakes into a
+            common average.
+          </p>
+          <div className="overflow-x-auto border border-border">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary text-primary-foreground text-left">
+                  <th className="px-4 py-3 font-serif font-medium">Party</th>
+                  <th className="px-4 py-3 font-serif font-medium">Bond Focus</th>
+                  <th className="px-4 py-3 font-serif font-medium">Practice Adjustment</th>
+                </tr>
+              </thead>
+              <tbody>
+                {PARTIES.map((row, i) => (
+                  <tr key={row[0]} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
+                    <td className="px-4 py-3 align-top font-medium text-primary">{row[0]}</td>
+                    <td className="px-4 py-3 align-top">{row[1]}</td>
+                    <td className="px-4 py-3 align-top text-foreground/85">{row[2]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FadeIn>
+
         <PrintFootnotes terms={CITED} />
       </div>
     </>

@@ -12,8 +12,9 @@ import PrintFootnotes from "@/components/PrintFootnotes";
 
 
 const CITED = [
-  "ubuntu", "confucian-role-ethics", "human-security",
-  "bond", "vinculum-continuum",
+  "ubuntu", "menkiti-gyekye", "confucian-role-ethics", "human-security",
+  "bond", "vinculum-continuum", "political-realism",
+  "nomenclature-african", "boundary-weighting",
 ];
 
 const COMPARISON = [
@@ -74,13 +75,17 @@ export default function Doctrine() {
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/90">
             <p>
-              First, drawing from <Cite term="ubuntu">Ubuntu</Cite> and{" "}
-              <Cite term="confucian-role-ethics">Confucian Role Ethics</Cite> independently:
-              personhood is constituted, wholly or substantially, relationally rather than individually.
+              First, drawing on two independent civilizational traditions — <Cite term="ubuntu">Ubuntu</Cite>{" "}
+              (and the internal <Cite term="menkiti-gyekye">Menkiti–Gyekye debate</Cite> within African
+              philosophy itself) and <Cite term="confucian-role-ethics">Confucian Role Ethics</Cite> — the
+              doctrine holds that personhood is constituted, wholly or substantially, relationally rather
+              than individually. The convergence of two civilizationally independent traditions on the
+              same conclusion is treated here as evidentiary strength, not coincidence.
             </p>
             <p>
               Second, drawing from <Cite term="human-security">human security</Cite>: security is properly
-              assessed with reference to the person, not the state alone.
+              assessed with reference to the person, not the state alone. <Cite term="political-realism">Political realism</Cite>{" "}
+              is retained as counterweight rather than competitor.
             </p>
             <p>
               Third, original to this doctrine: security assessed only at the individual level is incomplete,
@@ -143,6 +148,60 @@ export default function Doctrine() {
                 <p className="text-sm text-foreground/80 leading-relaxed">{c.body}</p>
               </div>
             ))}
+          </div>
+        </FadeIn>
+        </section>
+
+        <NumeralDivider n="V" label="Nomenclature" />
+
+        <section id="nomenclature" className="scroll-mt-24">
+        <FadeIn className="max-w-4xl mb-20">
+          <p className="eyebrow">III.E — Nomenclature and the African Contribution</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/90">
+            <p>
+              The Latin <em>vinculum</em> — a bond, a tie — is chosen deliberately over any single
+              African-language term, so that the doctrine can travel through diplomatic institutions
+              already conducted in European working languages without being either mistranslated or
+              treated as folk wisdom. The intellectual origin is African and remains so: the ontological
+              claim is <Cite term="ubuntu">Ubuntu</Cite>'s, subsequently corroborated by Confucian role
+              ethics. The doctrine is confidently African in origin and does not claim cultural
+              neutrality.
+            </p>
+          </div>
+        </FadeIn>
+        </section>
+
+        <section id="boundaries" className="scroll-mt-24">
+        <FadeIn className="mb-20">
+          <p className="eyebrow">III.F — Boundary Rules and Weighting</p>
+          <GoldRule className="mt-4 mb-6" />
+          <p className="text-muted-foreground mb-6 max-w-3xl">
+            <Cite term="boundary-weighting">Explicit rules</Cite> govern how a bond is classified into a
+            continuum level, and how bonds are weighted when they conflict.
+          </p>
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="bg-navy-tint border border-border p-6">
+              <p className="font-serif text-accent text-lg">Boundary Rules</p>
+              <hr className="gold-rule gold-rule-short mt-2 mb-3" />
+              <ul className="text-sm text-foreground/85 leading-relaxed space-y-2 list-disc pl-4">
+                <li>Two named individuals, regardless of office → <em>Interpersonal</em>.</li>
+                <li>An individual or institution and a group within one generation → <em>Communal</em>.</li>
+                <li>Distinct generational cohorts → <em>Intergenerational</em>.</li>
+                <li>An institution and the population it is mandated to serve → <em>Institutional-Relational</em>.</li>
+              </ul>
+            </div>
+            <div className="bg-navy-tint border border-border p-6">
+              <p className="font-serif text-accent text-lg">Weighting Principle</p>
+              <hr className="gold-rule gold-rule-short mt-2 mb-3" />
+              <p className="text-sm text-foreground/85 leading-relaxed">
+                When bonds at different levels conflict, weight is given to the bond whose rupture would
+                most reduce the affected persons' actual capacity for protection and dignity going
+                forward — not to the bond most visible to the intervening institution. In practice, this
+                usually elevates communal and intergenerational bonds against interventions that would
+                otherwise privilege institutional convenience.
+              </p>
+            </div>
           </div>
         </FadeIn>
         </section>

@@ -94,6 +94,22 @@ export default function Practice() {
           </div>
         </FadeIn>
 
+        <FadeIn className="max-w-4xl mb-16">
+          <p className="eyebrow">§3A — Relation to the Annan Method</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/85">
+            <p>
+              Vinculum Diplomacy stands in direct lineage with the mediation practice associated with
+              Kofi Annan — most visibly the 2008 AU Panel mediation in Kenya — which treated named
+              relationships, community standing, and continuity of institutions across leadership change
+              as first-order diplomatic material rather than as background conditions. Where the Annan
+              method modelled this practice through personal authority, Vinculum Diplomacy names its
+              components so that they can be taught, tested, and carried by practitioners who do not
+              have that authority to lend.
+            </p>
+          </div>
+        </FadeIn>
+
         <NumeralDivider n="IV" label="Practice Principles" />
 
 
@@ -115,11 +131,46 @@ export default function Practice() {
           </div>
         </FadeIn>
 
+        <FadeIn className="mb-16">
+          <p className="eyebrow">Part IV — Practice Under Constraint</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="grid gap-5 md:grid-cols-2">
+            <article className="bg-navy-tint border border-border p-6">
+              <div className="flex items-baseline gap-3">
+                <span className="font-serif text-accent">IV.B</span>
+                <h3 className="font-serif text-primary">Under Time Constraint</h3>
+              </div>
+              <hr className="gold-rule gold-rule-short mt-3 mb-3" />
+              <p className="text-[0.95rem] leading-relaxed text-foreground/85">
+                When a full pre-negotiation bond map is not possible, the practitioner narrows to one
+                question at each continuum level and records the single most exposed bond per level.
+                The record is preserved so a fuller reading can be completed later; the shortcut is
+                declared, not disguised.
+              </p>
+            </article>
+            <article className="bg-navy-tint border border-border p-6">
+              <div className="flex items-baseline gap-3">
+                <span className="font-serif text-accent">IV.C</span>
+                <h3 className="font-serif text-primary">Under WPS &amp; Child-Protection Boundaries</h3>
+              </div>
+              <hr className="gold-rule gold-rule-short mt-3 mb-3" />
+              <p className="text-[0.95rem] leading-relaxed text-foreground/85">
+                Meaningful participation is tested against outcomes, not headcount; gendered harm is
+                named explicitly in the bond map; and children participate only where an existing
+                mandated child-protection framework is in force. A bond map that would otherwise
+                improve on paper by placing children in a room without those safeguards is treated as
+                a failure of the practice, not a success.
+              </p>
+            </article>
+          </div>
+        </FadeIn>
+
         <FadeIn className="max-w-3xl pb-8">
           <p className="text-sm italic text-muted-foreground">
-            The handbook includes practical tools for negotiators and mediators — a live-room diagnostic method, pre-negotiation
-            bond-mapping templates, in-session and post-agreement guidance, applied case walkthroughs, and a staged personal
-            practice standard.
+            The handbook includes a live-room diagnostic method, pre-negotiation bond-mapping templates,
+            and applied case walkthroughs across the doctrine's eight documented cases, including the
+            introduction of the <em>continuity provision</em> — a clause or mechanism built into an
+            agreement specifically to survive a change in the officeholders who negotiated it.
           </p>
         </FadeIn>
       </div>
