@@ -342,33 +342,93 @@ export default function Cases() {
                     <thead>
                       <tr className="bg-primary text-primary-foreground text-left">
                         <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
-                        <th className="px-3 py-2 font-serif font-medium w-32 text-right">Score</th>
+                        <th className="px-3 py-2 font-serif font-medium w-16 text-right">Score</th>
+                        <th className="px-3 py-2 font-serif font-medium">Rationale</th>
                       </tr>
                     </thead>
                     <tbody>
                       {DOMAINS.map((d, idx) => (
                         <tr key={d} className={idx % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                          <td className="px-3 py-2">{d}</td>
-                          <td className="px-3 py-2 text-right">
-                            <span className="inline-flex items-center gap-2 justify-end">
-                              <span className="w-16 h-1 bg-brass/30 relative overflow-hidden">
-                                <span
-                                  className="absolute inset-y-0 left-0 bg-accent"
-                                  style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
-                                />
-                              </span>
-                              <span className="font-serif text-accent w-4">{c.scores[idx]}</span>
-                            </span>
+                          <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">{d}</td>
+                          <td className="px-3 py-2 align-top text-right">
+                            <span className="font-serif text-accent">{c.scores[idx]}</span>
+                          </td>
+                          <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
+                            {c.rationales[idx]}
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+
+                  {c.slug === "rwanda" && (
+                    <div className="mt-4 border-l-2 border-accent bg-gold-tint/40 p-4">
+                      <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
+                        Adversarial Rescoring — Worked Demonstration
+                      </p>
+                      <p className="mt-2 text-[0.85rem] leading-relaxed text-foreground/85">
+                        The scores above were produced by a deliberate skeptical re-pass:
+                        interpersonal was reduced from a sympathetic 4 to a 3 to reflect variance
+                        between genuine and coerced apology; communal from a straightforwardly
+                        strong reading to a contested 3; intergenerational assigned a 2 for a gap —
+                        the bond between the 1994 generation and those born after — earlier
+                        readings had not scored at all. Offered as a demonstration of method, not
+                        as a substitute for genuine third-party verification.
+                      </p>
+                    </div>
+                  )}
                 </article>
               </FadeIn>
             );
           })}
         </div>
+
+        {/* Cross-Case Pattern Summary */}
+        <FadeIn className="mb-24">
+          <p className="eyebrow">VII.I — Cross-Case Pattern Summary</p>
+          <hr className="gold-rule mt-4 mb-6" />
+          <p className="text-muted-foreground mb-6 max-w-3xl">
+            All thirty-two scores across the eight cases, ordered here with no case privileged as
+            flagship.
+          </p>
+          <div className="overflow-x-auto border border-border">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary text-primary-foreground text-left">
+                  <th className="px-3 py-3 font-serif font-medium">Case</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Interp.</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Communal</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Intergen.</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Instit.</th>
+                  <th className="px-3 py-3 font-serif font-medium">Pattern</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CASES.map((c, i) => (
+                  <tr key={c.slug} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
+                    <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">
+                      {c.title.split(" — ")[0]}
+                    </td>
+                    {c.scores.map((s, j) => (
+                      <td key={j} className="px-2 py-2 align-top text-center font-serif text-accent">
+                        {s}
+                      </td>
+                    ))}
+                    <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
+                      {CROSS_PATTERNS[c.slug]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-5 text-sm italic text-foreground/70 max-w-3xl">
+            The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is
+            the only case scoring uniformly low — making it the doctrine's single most important
+            test case for the falsifiability standard.
+          </p>
+        </FadeIn>
+
 
         {compare.length > 0 && (
           <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-primary text-primary-foreground shadow-lg border border-brass/60 animate-fade-in">
