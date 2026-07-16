@@ -26,7 +26,9 @@ type Case = {
   threats: Threat[];
   era: "1990s" | "2000s" | "2010s" | "2020s";
   scores: [number, number, number, number];
+  rationales: [string, string, string, string];
 };
+
 
 const CASES: Case[] = [
   {
