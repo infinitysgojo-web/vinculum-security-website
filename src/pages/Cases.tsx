@@ -170,7 +170,19 @@ const CASES: Case[] = [
 ];
 
 
+const CROSS_PATTERNS: Record<string, string> = {
+  "northern-ireland": "Strongest institutional bond of all eight; weakest generational bond.",
+  "colombia": "Institutional bond strong, communal protection weak.",
+  "cambodia": "Uniformly weak across all four levels after sixteen years and three convictions.",
+  "liberia": "Communal repair strong, institutional follow-through weak.",
+  "rwanda": "Communal participation high, institutional trust and generational transfer weak.",
+  "kenya": "Elite bond strong, communal and generational weak.",
+  "south-africa": "The doctrine's own Ubuntu foundation tested directly; interpersonal and communal breakthroughs, institutional follow-through weak.",
+  "tuvalu-kiribati": "The doctrine's only prospective case; proactive institutional design ahead of an unresolved intergenerational threat.",
+};
+
 const DOMAINS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"];
+
 const REGIONS: Region[] = ["Africa", "Europe", "Latin America", "Southeast Asia", "Pacific"];
 const PILLARS: Pillar[] = ["Interpersonal", "Communal", "Intergenerational", "Institutional"];
 const THREATS: Threat[] = [
