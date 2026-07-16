@@ -1,78 +1,52 @@
+# Fold the Final Edition additions into the site
 
-# Update site to the Expanded / Fortified edition
+The uploaded PDF is the **Final Edition** of the doctrine. Structurally it is the same as the Expanded Fortified Edition the site already reflects (13 foundations, 8 cases, party-differentiated table, Ubuntu + Confucian ontology). What is genuinely new is concentrated in three places, plus one new methodological concept. This plan folds only those in, preserving the Imperial Folio tone and respecting the standing rule not to add doctrine Sections VIII–XI.
 
-The two uploaded PDFs are newer editions of the source texts. The site currently reflects the earlier version (six cases, one civilizational tradition, no digital/climate foundations, no party-differentiated layer, no Annan-method note). This plan folds the new material into the existing pages without breaking the "Imperial Folio" tone, and respects the standing rule not to add doctrine Sections VIII–XI or handbook Part V / appendices.
+## What's actually new
 
-## What's actually new in the docs
+1. **Section V.E — Scoring Rubric and Descriptive Anchors.** A 1–5 rubric with a stated descriptive anchor for each level (Severed → Nominal → Mixed → Functional and tested → Fully durable and institutionalized).
+2. **Section VII — Full per-case scoring.** Every one of the 8 cases now carries a four-row bond table (Interpersonal / Communal / Intergenerational / Institutional-Relational) with a numeric score 1–5 and a one-line rationale. This is more granular than what the Cases page currently shows.
+3. **Section VII.I — Cross-Case Pattern Summary.** A single consolidated table of all 32 scores across the 8 cases, with a "pattern" column, and the observation that only Cambodia scores uniformly low.
+4. **Adversarial Rescoring** — a new methodological concept demonstrated on the Rwanda case: deliberately rescoring against the doctrine's favorable tendencies. Referenced in V.E and IX as a partial answer to the self-scoring critique.
 
-**Doctrine (Fortified, Expanded):**
-- Two independent civilizational traditions now underwrite the ontological claim: Ubuntu (with the Menkiti–Gyekye debate) *and* Confucian Role Ethics.
-- Two new theoretical foundations: **L. Digital and Information-Age Bonds** and **M. Environmental and Climate-Displacement Bonds**.
-- Section II.B is sharpened as "Ubuntu Philosophy and the Menkiti–Gyekye Debate"; II.C is framed as "Political Realism: The Counterweight".
-- Section III.E "Nomenclature and the African Contribution" and III.F "Boundary Rules and Weighting" are new / sharpened.
-- Section VI "Party-Differentiated Application" (children, youth, elders, women, government, civil society, ex-combatants) is a new layer.
-- Case engagement is now **eight** cases: adds **South Africa TRC** and **Tuvalu / Kiribati climate displacement** to the existing six.
-
-**Handbook:**
-- New §3A "Relation to the Annan Method".
-- Part IV now covers eight cases, and adds **IV.B Practice Under Time Constraint** and **IV.C Practice Under WPS and Child-Protection Boundaries**.
-- Introduces the term **Continuity Provision**.
+Also newly emphasized (small wording tweaks, not new sections):
+- The **child-protection carve-out is absolute** (Section VI paragraph after the party table).
+- The **government non-self-assessment principle** (also Section VI).
 
 ## Page-by-page changes
 
-1. **Foundations (`src/pages/Foundations.tsx`)**
-   - Rename II.B card to "Ubuntu Philosophy and the Menkiti–Gyekye Debate" and add a short line noting the internal African debate.
-   - Reframe II.C as "Political Realism: The Counterweight" (kept as counterweight, not competitor).
-   - Add two new entries: **II.L Digital and Information-Age Bonds** and **II.M Environmental and Climate-Displacement Bonds**, each with the same card style and a brass numeral.
-   - Update any lede that says "eleven foundations" → "thirteen".
+1. **Methodology (`src/pages/Methodology.tsx`)**
+   - Add a new sub-section **V.E Scoring Rubric and Descriptive Anchors** as a compact 5-row table (Score → Descriptive Anchor), placed directly after the existing scoring methodology block.
+   - Add a short lede paragraph explaining the rubric narrows scorer judgment without eliminating it.
+   - Under the existing party-differentiated table, add two short call-out lines: the absolute child-protection carve-out and the government non-self-assessment principle.
 
-2. **Doctrine (`src/pages/Doctrine.tsx`)**
-   - Update ontology paragraph to say the claim rests on **two independent civilizational traditions**.
-   - Comparison table already includes Political Realism — leave rows intact, just verify wording matches "counterweight" framing.
-   - Add **III.E Nomenclature and the African Contribution** section (short, one paragraph, with `NumeralDivider n="V"`).
-   - Add **III.F Boundary Rules and Weighting** as a compact two-column list (boundary rule → weighting rule), pulled from the doctrine's own table.
+2. **Cases (`src/pages/Cases.tsx`)**
+   - For each of the 8 cases, add a compact 4-row bond-score table (Bond → Score 1–5 → Rationale) using the exact numbers from Section VII of the PDF. Style: same alternating cream/gold-tint row treatment used on the Doctrine comparison table.
+   - Add a new closing section **Cross-Case Pattern Summary** rendering the 8×6 consolidated table (Case, Interp., Communal, Intergen., Instit., Pattern) with a single-line takeaway underneath ("only Cambodia scores uniformly low; it is the doctrine's single most important falsifiability test").
+   - Add a small **Adversarial Rescoring** call-out under the Rwanda card, in the same "Practice Under Time Constraint" mini-card style already used on the Practice page, noting the scores shown were produced by a deliberate skeptical re-pass.
+
+3. **Doctrine (`src/pages/Doctrine.tsx`)**
+   - No structural change. Add one sentence to the falsifiability line at the bottom of the page pointing readers to the new Cross-Case Pattern Summary on `/cases` as the concrete falsifiability test-bed.
    - Extend `CITED` with the new glossary IDs so print footnotes stay accurate.
 
-3. **Methodology (`src/pages/Methodology.tsx`)**
-   - Add a new section **VI. Party-Differentiated Application** rendered as a table (Party → Bond focus → Practice adjustment) covering children, youth, elders, women, government, civil society, ex-combatants.
-   - Keep existing diagnostic method + scoring rubric intact.
+4. **Glossary (`src/content/glossary.ts`)**
+   - Add:
+     - `scoring-rubric` — the 1–5 descriptive-anchor rubric.
+     - `adversarial-rescoring` — the deliberate skeptical re-pass method (Rwanda demo).
+     - `cross-case-pattern` — the consolidated 32-score summary.
+     - `government-non-self-assessment` — the safeguard principle from Section VI.
+   - Existing IDs stay untouched.
 
-4. **Cases (`src/pages/Cases.tsx`)**
-   - Expand from six to **eight** cases. Add:
-     - **South Africa — Truth and Reconciliation Commission (1996–1998)**
-     - **Tuvalu & Kiribati — Climate Displacement / Falepili Union (2023–2024)**
-   - Update page eyebrow / lede from "six documented processes" → "eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific".
+5. **Home (`src/pages/Home.tsx`)** and **About (`src/pages/About.tsx`)**
+   - Small copy sweep: where the site currently says "eight cases", tighten to "eight documented processes, all four bond levels scored" so the new scoring depth is signaled from the entry pages. No layout changes.
 
-5. **Practice (`src/pages/Practice.tsx`)** — handbook page
-   - Add **§3A Relation to the Annan Method** as a short block under Part I.
-   - Add **Part IV.B Practice Under Time Constraint** and **Part IV.C Practice Under WPS and Child-Protection Boundaries** as two small companion cards to the existing applied-practice section.
-   - Do not add Part V or appendices (per project memory).
+## Out of scope
 
-6. **Home (`src/pages/Home.tsx`) & About (`src/pages/About.tsx`)**
-   - Swap "six cases" → "eight cases" and "one civilizational tradition" / "Ubuntu" → "two independent civilizational traditions (Ubuntu and Confucian role ethics)" wherever those phrases appear in hero copy or summaries.
-
-7. **Glossary (`src/content/glossary.ts`)**
-   - Add new entries so `<Cite term="…">` can reference them from the updated pages:
-     - `political-realism` — "The Counterweight" framing
-     - `menkiti-gyekye` — the African communitarian/moderate-communitarian debate
-     - `digital-bonds` — Digital & Information-Age Bonds
-     - `climate-bonds` — Environmental & Climate-Displacement Bonds
-     - `party-differentiated` — Party-Differentiated Application
-     - `nomenclature-african` — Nomenclature and the African Contribution
-     - `boundary-weighting` — Boundary Rules and Weighting
-     - `annan-method` — Relation to the Annan Method
-     - `continuity-provision` — from the handbook
-     - `south-africa-trc` — the SA TRC case
-     - `falepili-union` — Tuvalu / Kiribati case anchor
-   - Existing IDs stay untouched so current `Cite` usages keep working.
-
-## Out of scope (per project memory)
-
-- Doctrine Sections VIII, IX, X, XI (safeguards, critiques, adversarial review, research agenda) — not added.
-- Handbook Part V, Part VI drills, Part VII formation code, and all appendices — not added.
-- No new visual features, no command palette, no new components beyond content changes; typography, palette, motifs, and existing components stay exactly as they are.
+- Doctrine Sections VIII (safeguards), IX (critiques), X (adversarial review panels), XI (research agenda) — not added (project rule).
+- Handbook Part V and appendices — not added.
+- No new components, palette changes, motifs, or typography.
 
 ## Verification
 
-- `tsgo` typecheck after the edits.
-- Playwright load of `/foundations`, `/doctrine`, `/methodology`, `/cases`, `/practice` at desktop and mobile viewports; screenshot each to confirm the new sections read cleanly and no glossary `Cite` calls resolve to missing IDs.
+- `tsgo` typecheck.
+- Playwright load of `/methodology` and `/cases` at desktop and mobile widths; screenshot the new scoring rubric, the per-case tables, and the cross-case summary to confirm they render inside the existing grid and read cleanly without horizontal overflow.
