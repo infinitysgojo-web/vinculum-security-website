@@ -8,7 +8,16 @@ import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
 import PrintFootnotes from "@/components/PrintFootnotes";
 
-const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated"];
+const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated", "scoring-rubric", "government-non-self-assessment"];
+
+const RUBRIC: [string, string][] = [
+  ["1", "Severed or actively hostile. The bond is absent, broken, or characterized by active distrust; no functioning channel of relationship exists between the parties."],
+  ["2", "Nominal or superficial. A bond exists in form — a signed provision, a stated commitment, a consultative body — but shows little evidence of substantive trust or durability under stress."],
+  ["3", "Mixed or contested. Credible evidence exists on both sides: genuine relational progress in some respects, alongside documented gaps, disputes, or unresolved grievance in others."],
+  ["4", "Functional and tested. The bond has been tested by at least one significant setback, disagreement, or transition and has held, though some vulnerability or incompleteness remains."],
+  ["5", "Fully durable and institutionalized. The bond has been tested repeatedly over an extended period, including through leadership transitions or major shocks, with strong evidence of continuity independent of any single individual or event."],
+];
+
 
 const PARTIES = [
   ["Children", "Protection first; presence never treated as consent.", "Age-appropriate participation only where a mandated child-protection framework is already in force."],
