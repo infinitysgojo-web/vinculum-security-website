@@ -15,7 +15,9 @@ const CITED = [
   "ubuntu", "menkiti-gyekye", "confucian-role-ethics", "human-security",
   "bond", "vinculum-continuum", "political-realism",
   "nomenclature-african", "boundary-weighting",
+  "scoring-rubric", "cross-case-pattern", "adversarial-rescoring",
 ];
+
 
 const COMPARISON = [
   ["State Security", "The state", "Security as survival against external military threat", "Westphalian tradition"],
@@ -208,9 +210,15 @@ export default function Doctrine() {
 
         <FadeIn className="max-w-3xl mb-8">
           <p className="text-sm italic text-muted-foreground">
-            The doctrine states explicit falsifiability criteria (Section IV).
+            The doctrine states explicit falsifiability criteria (Section IV); the concrete
+            test-bed is the <Cite term="cross-case-pattern">Cross-Case Pattern Summary</Cite> of
+            all thirty-two scores on the <a href="/cases" className="text-accent hover:underline">Cases</a> page,
+            with the <Cite term="scoring-rubric">1–5 descriptive-anchor rubric</Cite> and the
+            Rwanda <Cite term="adversarial-rescoring">adversarial-rescoring</Cite> demonstration
+            supplying the method behind the numbers.
           </p>
         </FadeIn>
+
 
         <PrintFootnotes terms={CITED} />
       </div>

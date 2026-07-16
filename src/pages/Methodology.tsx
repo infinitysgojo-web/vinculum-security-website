@@ -8,7 +8,16 @@ import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
 import PrintFootnotes from "@/components/PrintFootnotes";
 
-const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated"];
+const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated", "scoring-rubric", "government-non-self-assessment"];
+
+const RUBRIC: [string, string][] = [
+  ["1", "Severed or actively hostile. The bond is absent, broken, or characterized by active distrust; no functioning channel of relationship exists between the parties."],
+  ["2", "Nominal or superficial. A bond exists in form — a signed provision, a stated commitment, a consultative body — but shows little evidence of substantive trust or durability under stress."],
+  ["3", "Mixed or contested. Credible evidence exists on both sides: genuine relational progress in some respects, alongside documented gaps, disputes, or unresolved grievance in others."],
+  ["4", "Functional and tested. The bond has been tested by at least one significant setback, disagreement, or transition and has held, though some vulnerability or incompleteness remains."],
+  ["5", "Fully durable and institutionalized. The bond has been tested repeatedly over an extended period, including through leadership transitions or major shocks, with strong evidence of continuity independent of any single individual or event."],
+];
+
 
 const PARTIES = [
   ["Children", "Protection first; presence never treated as consent.", "Age-appropriate participation only where a mandated child-protection framework is already in force."],
@@ -108,6 +117,36 @@ export default function Methodology() {
         </FadeIn>
 
         <FadeIn className="mb-16">
+          <p className="eyebrow">V.E — Scoring Rubric and Descriptive Anchors</p>
+          <GoldRule className="mt-4 mb-6" />
+          <p className="text-muted-foreground mb-6 max-w-3xl">
+            Earlier editions assigned numeric scores without stating, in advance, what distinguishes
+            a 2 from a 3, or a 3 from a 4. The <Cite term="scoring-rubric">descriptive-anchor
+            rubric</Cite> below narrows that judgment without pretending to eliminate it, and gives
+            any future independent rater a stated standard to check a score against rather than only
+            the doctrine's narrative framing of a case.
+          </p>
+          <div className="overflow-x-auto border border-border">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary text-primary-foreground text-left">
+                  <th className="px-4 py-3 font-serif font-medium w-24">Score</th>
+                  <th className="px-4 py-3 font-serif font-medium">Descriptive Anchor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {RUBRIC.map(([score, anchor], i) => (
+                  <tr key={score} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
+                    <td className="px-4 py-3 align-top font-serif text-2xl text-accent">{score}</td>
+                    <td className="px-4 py-3 align-top text-foreground/85">{anchor}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FadeIn>
+
+        <FadeIn className="mb-16">
           <p className="eyebrow">VI — Party-Differentiated Application</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-6 max-w-3xl">
@@ -136,7 +175,32 @@ export default function Methodology() {
               </tbody>
             </table>
           </div>
+
+          <div className="grid gap-4 md:grid-cols-2 mt-6">
+            <div className="border-l-2 border-accent bg-navy-tint/60 p-5">
+              <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
+                Child-Protection Carve-Out
+              </p>
+              <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
+                The communal-standing verification test is <em>never</em> applied to a child's right
+                to be protected or heard — only to adults or institutions claiming to represent a
+                community. The carve-out is absolute.
+              </p>
+            </div>
+            <div className="border-l-2 border-accent bg-navy-tint/60 p-5">
+              <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
+                <Cite term="government-non-self-assessment">Government Non-Self-Assessment</Cite>
+              </p>
+              <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
+                A government's own claim of strong institutional-relational bond-integrity is a
+                hypothesis requiring independent verification — never a self-certifying conclusion.
+                A structural safeguard against the delay-justification risk.
+              </p>
+            </div>
+          </div>
         </FadeIn>
+
+
 
         <PrintFootnotes terms={CITED} />
       </div>

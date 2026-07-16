@@ -26,7 +26,9 @@ type Case = {
   threats: Threat[];
   era: "1990s" | "2000s" | "2010s" | "2020s";
   scores: [number, number, number, number];
+  rationales: [string, string, string, string];
 };
+
 
 const CASES: Case[] = [
   {
@@ -39,6 +41,12 @@ const CASES: Case[] = [
     threats: ["Ethnic conflict", "Political violence", "Post-conflict transition"],
     era: "1990s",
     scores: [4, 3, 2, 5],
+    rationales: [
+      "Sustained trust between principal negotiators and international facilitators enabled a signed agreement after two years of talks.",
+      "Cross-community trust improved substantially, though voting patterns and residential segregation remain documented indicators of incomplete communal repair.",
+      "25th-anniversary research documents intergenerational trauma affecting those born after 1998 — weighted as the least compensable finding per § III.F.",
+      "Power-sharing institutions have survived multiple collapses and a contested Brexit-era environment across more than 25 years — the strongest score in the entire case set.",
+    ],
   },
   {
     slug: "colombia",
@@ -50,6 +58,12 @@ const CASES: Case[] = [
     threats: ["Civil war", "Political violence", "Post-conflict transition"],
     era: "2010s",
     scores: [3, 2, 3, 4],
+    rationales: [
+      "Negotiators sustained a multi-year process to signature despite a rejected initial referendum.",
+      "Continued documented violence against social leaders and signatories indicates the communal bond remains substantially unrepaired.",
+      "Some youth-focused reintegration programming exists, though independent evaluation of depth is limited.",
+      "The JEP and UN verification architecture were explicitly designed to outlast the signing moment and have functioned across government transitions.",
+    ],
   },
   {
     slug: "cambodia",
@@ -61,6 +75,12 @@ const CASES: Case[] = [
     threats: ["Genocide", "Post-conflict transition"],
     era: "2000s",
     scores: [2, 2, 2, 2],
+    rationales: [
+      "The tribunal's scope was deliberately limited to senior leadership, leaving most direct perpetrator–victim relationships outside its process.",
+      "A widespread culture of impunity is documented as persisting, alongside the tribunal's own reconciliation-oriented amnesty for lower-level fighters.",
+      "Documented concern about a lack of educational material and rising historical revisionism among younger Cambodians represents an unaddressed intergenerational bond around memory and transmission.",
+      "Sixteen years, immense cost, and only three convictions — a weak institutional-relational return relative to the scale of the crimes addressed.",
+    ],
   },
   {
     slug: "liberia",
@@ -72,6 +92,12 @@ const CASES: Case[] = [
     threats: ["Civil war", "Post-conflict transition"],
     era: "2000s",
     scores: [3, 4, 3, 2],
+    rationales: [
+      "Palava Hut proceedings are designed around direct interpersonal reconciliation, though systematic outcome data is limited.",
+      "The Palava Hut and supporting relational-justice scholarship represent one of the most purpose-built communal-bond repair mechanisms among these cases.",
+      "Youth-focused peace camps continue this work, though independent of, rather than integrated into, the formal TRC architecture.",
+      "Liberian civil society itself documents persistent underfunding and non-implementation of TRC recommendations.",
+    ],
   },
   {
     slug: "rwanda",
@@ -83,6 +109,12 @@ const CASES: Case[] = [
     threats: ["Genocide", "Post-conflict transition"],
     era: "2000s",
     scores: [3, 3, 2, 2],
+    rationales: [
+      "Public accounts show wide variation between genuine and coerced, or performative, confession and forgiveness.",
+      "High participation, but independent research is genuinely mixed on authentic reconciliation versus compulsory, state-monitored performance.",
+      "No mechanism specifically addressed the bond between the 1994 generation and those born afterward.",
+      "Credible concerns document the process serving state control objectives alongside reconciliation.",
+    ],
   },
   {
     slug: "kenya",
@@ -94,17 +126,29 @@ const CASES: Case[] = [
     threats: ["Ethnic conflict", "Political violence"],
     era: "2000s",
     scores: [4, 2, 2, 3],
+    rationales: [
+      "Sustained trust between the two principal negotiating parties, evidenced by the accord's rapid conclusion under AU mediation.",
+      "Elite settlement did not, on its own, restore inter-ethnic trust — a separate 16-month process was required to reach the Nakuru accord.",
+      "Youth were disproportionately represented among perpetrators and victims, and no dedicated youth transmission mechanism was included.",
+      "NCIC and TJRC created durable institutions under statute, though public trust in findings remained contested for years.",
+    ],
   },
   {
     slug: "south-africa",
     title: "South Africa — The Truth and Reconciliation Commission",
     summary:
-      "Established under the Promotion of National Unity and Reconciliation Act (1995) and delivering its final report in 1998, the TRC placed public testimony and conditional amnesty at the centre of a national transition from apartheid.",
+      "Established under the Promotion of National Unity and Reconciliation Act (1995) and chaired by Archbishop Desmond Tutu, the TRC placed public testimony and conditional amnesty at the centre of a national transition from apartheid.",
     region: "Africa",
     pillar: "Communal",
     threats: ["Political violence", "Post-conflict transition"],
     era: "1990s",
-    scores: [3, 4, 3, 3],
+    scores: [3, 3, 2, 2],
+    rationales: [
+      "Public testimony created real, documented encounters between perpetrators and survivors, though many victims later reported the amnesty process felt inconsistent and insufficiently consultative.",
+      "Widely regarded internationally as a model of restorative justice and explicitly invoked Ubuntu — though structural economic and land inequality between communities remains largely unaddressed three decades later.",
+      "The Commission's mandate did not include a dedicated mechanism for transmitting its findings or its reconciliation ethic to generations born after 1994.",
+      "Reparations recommendations have been extensively documented as unimplemented, and prosecutions have been affected by missing case files and alleged political interference.",
+    ],
   },
   {
     slug: "tuvalu-kiribati",
@@ -115,11 +159,30 @@ const CASES: Case[] = [
     pillar: "Institutional",
     threats: ["Climate displacement", "Post-conflict transition"],
     era: "2020s",
-    scores: [3, 3, 4, 4],
+    scores: [3, 3, 2, 4],
+    rationales: [
+      "Existing labor and family migration pathways, such as the Pacific Access Category, maintain individual-level ties between diaspora and origin communities, though these remain informal relative to the scale of the challenge.",
+      "The documented contrast between Vaitupu's successful, tie-preserving relocation to Kioa and the more coercive Banaban relocation to Rabi shows communal bond outcomes depend heavily on whether relocation is voluntary and relationship-preserving by design.",
+      "Surveys documenting that up to seventy percent of Kiribati and Tuvaluan households would migrate if conditions worsen suggest the human-land bond central to cultural identity is already under significant generational strain.",
+      "The Falepili Union Treaty and Tuvalu's digital preservation of national institutions represent a proactive attempt to secure institutional and sovereign continuity even against the loss of physical territory itself.",
+    ],
   },
 ];
 
+
+const CROSS_PATTERNS: Record<string, string> = {
+  "northern-ireland": "Strongest institutional bond of all eight; weakest generational bond.",
+  "colombia": "Institutional bond strong, communal protection weak.",
+  "cambodia": "Uniformly weak across all four levels after sixteen years and three convictions.",
+  "liberia": "Communal repair strong, institutional follow-through weak.",
+  "rwanda": "Communal participation high, institutional trust and generational transfer weak.",
+  "kenya": "Elite bond strong, communal and generational weak.",
+  "south-africa": "The doctrine's own Ubuntu foundation tested directly; interpersonal and communal breakthroughs, institutional follow-through weak.",
+  "tuvalu-kiribati": "The doctrine's only prospective case; proactive institutional design ahead of an unresolved intergenerational threat.",
+};
+
 const DOMAINS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"];
+
 const REGIONS: Region[] = ["Africa", "Europe", "Latin America", "Southeast Asia", "Pacific"];
 const PILLARS: Pillar[] = ["Interpersonal", "Communal", "Intergenerational", "Institutional"];
 const THREATS: Threat[] = [
@@ -291,33 +354,93 @@ export default function Cases() {
                     <thead>
                       <tr className="bg-primary text-primary-foreground text-left">
                         <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
-                        <th className="px-3 py-2 font-serif font-medium w-32 text-right">Score</th>
+                        <th className="px-3 py-2 font-serif font-medium w-16 text-right">Score</th>
+                        <th className="px-3 py-2 font-serif font-medium">Rationale</th>
                       </tr>
                     </thead>
                     <tbody>
                       {DOMAINS.map((d, idx) => (
                         <tr key={d} className={idx % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                          <td className="px-3 py-2">{d}</td>
-                          <td className="px-3 py-2 text-right">
-                            <span className="inline-flex items-center gap-2 justify-end">
-                              <span className="w-16 h-1 bg-brass/30 relative overflow-hidden">
-                                <span
-                                  className="absolute inset-y-0 left-0 bg-accent"
-                                  style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
-                                />
-                              </span>
-                              <span className="font-serif text-accent w-4">{c.scores[idx]}</span>
-                            </span>
+                          <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">{d}</td>
+                          <td className="px-3 py-2 align-top text-right">
+                            <span className="font-serif text-accent">{c.scores[idx]}</span>
+                          </td>
+                          <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
+                            {c.rationales[idx]}
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+
+                  {c.slug === "rwanda" && (
+                    <div className="mt-4 border-l-2 border-accent bg-gold-tint/40 p-4">
+                      <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
+                        Adversarial Rescoring — Worked Demonstration
+                      </p>
+                      <p className="mt-2 text-[0.85rem] leading-relaxed text-foreground/85">
+                        The scores above were produced by a deliberate skeptical re-pass:
+                        interpersonal was reduced from a sympathetic 4 to a 3 to reflect variance
+                        between genuine and coerced apology; communal from a straightforwardly
+                        strong reading to a contested 3; intergenerational assigned a 2 for a gap —
+                        the bond between the 1994 generation and those born after — earlier
+                        readings had not scored at all. Offered as a demonstration of method, not
+                        as a substitute for genuine third-party verification.
+                      </p>
+                    </div>
+                  )}
                 </article>
               </FadeIn>
             );
           })}
         </div>
+
+        {/* Cross-Case Pattern Summary */}
+        <FadeIn className="mb-24">
+          <p className="eyebrow">VII.I — Cross-Case Pattern Summary</p>
+          <hr className="gold-rule mt-4 mb-6" />
+          <p className="text-muted-foreground mb-6 max-w-3xl">
+            All thirty-two scores across the eight cases, ordered here with no case privileged as
+            flagship.
+          </p>
+          <div className="overflow-x-auto border border-border">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary text-primary-foreground text-left">
+                  <th className="px-3 py-3 font-serif font-medium">Case</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Interp.</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Communal</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Intergen.</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Instit.</th>
+                  <th className="px-3 py-3 font-serif font-medium">Pattern</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CASES.map((c, i) => (
+                  <tr key={c.slug} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
+                    <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">
+                      {c.title.split(" — ")[0]}
+                    </td>
+                    {c.scores.map((s, j) => (
+                      <td key={j} className="px-2 py-2 align-top text-center font-serif text-accent">
+                        {s}
+                      </td>
+                    ))}
+                    <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
+                      {CROSS_PATTERNS[c.slug]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-5 text-sm italic text-foreground/70 max-w-3xl">
+            The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is
+            the only case scoring uniformly low — making it the doctrine's single most important
+            test case for the falsifiability standard.
+          </p>
+        </FadeIn>
+
 
         {compare.length > 0 && (
           <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-primary text-primary-foreground shadow-lg border border-brass/60 animate-fade-in">
