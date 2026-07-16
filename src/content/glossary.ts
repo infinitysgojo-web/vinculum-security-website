@@ -268,7 +268,40 @@ export const GLOSSARY: GlossaryEntry[] = [
     quote:
       "The current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
   },
+  {
+    id: "scoring-rubric",
+    term: "Scoring Rubric",
+    short: "The 1–5 descriptive-anchor rubric that fixes what distinguishes each bond-integrity score, so ratings are not left to the scorer's unstated judgment.",
+    source: "Doctrine § V.E — Scoring Rubric and Descriptive Anchors",
+    quote:
+      "1 severed or actively hostile; 2 nominal or superficial; 3 mixed or contested; 4 functional and tested; 5 fully durable and institutionalized.",
+  },
+  {
+    id: "adversarial-rescoring",
+    term: "Adversarial Rescoring",
+    short: "A deliberate second pass at a case's scores from a skeptical rather than sympathetic posture — demonstrated on Rwanda as a partial answer to the self-scoring critique.",
+    source: "Doctrine § VII.E — Rwanda, Worked Demonstration",
+    quote:
+      "Approaching a case a second time with the specific goal of arguing against the doctrine's own favorable tendencies rather than confirming them.",
+  },
+  {
+    id: "cross-case-pattern",
+    term: "Cross-Case Pattern Summary",
+    short: "The consolidated table of all thirty-two scores across the eight cases, showing that no case scores uniformly high and only Cambodia scores uniformly low.",
+    source: "Doctrine § VII.I — Cross-Case Pattern Summary",
+    quote:
+      "The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is the only case scoring uniformly low.",
+  },
+  {
+    id: "government-non-self-assessment",
+    term: "Government Non-Self-Assessment",
+    short: "Structural safeguard from the party-differentiated layer: a government's own claim of strong institutional-relational bond-integrity is a hypothesis to verify, never a self-certifying conclusion.",
+    source: "Doctrine § VI — Party-Differentiated Application",
+    quote:
+      "A government's own claim of strong institutional-relational bond-integrity should always be treated as a hypothesis requiring independent verification, never as a self-certifying conclusion.",
+  },
 ];
+
 
 export const GLOSSARY_MAP: Record<string, GlossaryEntry> = Object.fromEntries(
   GLOSSARY.map((g) => [g.id, g])
