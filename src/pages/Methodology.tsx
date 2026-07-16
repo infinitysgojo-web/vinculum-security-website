@@ -200,35 +200,7 @@ export default function Methodology() {
           </div>
         </FadeIn>
 
-          <p className="eyebrow">VI — Party-Differentiated Application</p>
-          <GoldRule className="mt-4 mb-6" />
-          <p className="text-muted-foreground mb-6 max-w-3xl">
-            The <Cite term="party-differentiated">party-differentiated layer</Cite> ensures the doctrine
-            addresses children, youth, elders, women, government, civil society, and ex-combatants
-            distinctly, so that a single scoring rubric does not flatten their unlike stakes into a
-            common average.
-          </p>
-          <div className="overflow-x-auto border border-border">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-primary text-primary-foreground text-left">
-                  <th className="px-4 py-3 font-serif font-medium">Party</th>
-                  <th className="px-4 py-3 font-serif font-medium">Bond Focus</th>
-                  <th className="px-4 py-3 font-serif font-medium">Practice Adjustment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PARTIES.map((row, i) => (
-                  <tr key={row[0]} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                    <td className="px-4 py-3 align-top font-medium text-primary">{row[0]}</td>
-                    <td className="px-4 py-3 align-top">{row[1]}</td>
-                    <td className="px-4 py-3 align-top text-foreground/85">{row[2]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </FadeIn>
+
 
         <PrintFootnotes terms={CITED} />
       </div>
