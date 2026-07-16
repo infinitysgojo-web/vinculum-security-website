@@ -15,7 +15,9 @@ const CITED = [
   "ubuntu", "menkiti-gyekye", "confucian-role-ethics", "human-security",
   "bond", "vinculum-continuum", "political-realism",
   "nomenclature-african", "boundary-weighting",
+  "scoring-rubric", "cross-case-pattern", "adversarial-rescoring",
 ];
+
 
 const COMPARISON = [
   ["State Security", "The state", "Security as survival against external military threat", "Westphalian tradition"],
