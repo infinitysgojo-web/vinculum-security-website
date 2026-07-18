@@ -12,15 +12,15 @@ export const GLOSSARY: GlossaryEntry[] = [
     term: "Vinculum Security",
     short:
       "A doctrine holding that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible.",
-    source: "Doctrine § III.A — Canonical Definition",
+    source: "Doctrine § III.A · Canonical Definition",
     quote:
       "Security is not the absence of threat, but the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible in the first place.",
   },
   {
     id: "bond",
     term: "Bond",
-    short: "The proper unit of security analysis in the doctrine — a nameable relationship on which safety and dignity depend.",
-    source: "Doctrine § III.B — Ontological Claim",
+    short: "The proper unit of security analysis in the doctrine, a nameable relationship on which safety and dignity depend.",
+    source: "Doctrine § III.B · Ontological Claim",
     quote:
       "Security assessed only at the individual level is incomplete, because it can report a person as secure while the bonds constituting that person's safety and dignity are eroding. The proper unit of security analysis is the bond.",
   },
@@ -28,7 +28,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "bond-integrity",
     term: "Bond Integrity",
     short: "The persistence and quality of a specific relational bond over time and through stress.",
-    source: "Doctrine § V.B — Bond-Integrity Indicators",
+    source: "Doctrine § V.B · Bond-Integrity Indicators",
     quote:
       "Each continuum level has an illustrative indicator and a diagnostic question, held together across cases so that a comparison is grounded in the same working definitions each time.",
   },
@@ -47,7 +47,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     short: "Trust between two named individuals that would survive a bad-faith moment intact.",
     source: "Doctrine § III.D.I",
     quote:
-      "Bonds between two named individuals, regardless of role — the trust that survives a bad-faith moment intact.",
+      "Bonds between two named individuals, regardless of role, the trust that survives a bad-faith moment intact.",
   },
   {
     id: "communal",
@@ -55,7 +55,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     short: "Standing between an individual or institution and a group within a single generational cohort.",
     source: "Doctrine § III.D.II",
     quote:
-      "Bonds between an individual or institution and a group within a single generational cohort — standing tested by the community itself.",
+      "Bonds between an individual or institution and a group within a single generational cohort, standing tested by the community itself.",
   },
   {
     id: "intergenerational",
@@ -63,7 +63,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     short: "The transfer of knowledge, trust, and standing between youth and elder leadership.",
     source: "Doctrine § III.D.III",
     quote:
-      "Bonds between distinct generational cohorts — the transfer of knowledge, trust, and standing between youth and elder leadership.",
+      "Bonds between distinct generational cohorts, the transfer of knowledge, trust, and standing between youth and elder leadership.",
   },
   {
     id: "institutional-relational",
@@ -77,10 +77,10 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "ubuntu",
     term: "Ubuntu",
     short:
-      "A southern African philosophical tradition holding that a person is a person through other persons — personhood constituted relationally.",
+      "A southern African philosophical tradition holding that a person is a person through other persons, personhood constituted relationally.",
     source: "Foundations § II.B",
     quote:
-      "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu — a person is a person through other persons.",
+      "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu, a person is a person through other persons.",
   },
   {
     id: "confucian-role-ethics",
@@ -104,7 +104,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     short: "The 2005 World Summit reframing of sovereignty as responsibility to protect populations from atrocity.",
     source: "Foundations § II.F",
     quote:
-      "R2P relocates obligation; Vinculum Security relocates the referent object — from the protected population to the bonds that make protection possible.",
+      "R2P relocates obligation; Vinculum Security relocates the referent object, from the protected population to the bonds that make protection possible.",
   },
   {
     id: "yps",
@@ -118,7 +118,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     id: "wps",
     term: "Women, Peace and Security (WPS)",
-    short: "UNSCR 1325 (2000) — the first resolution recognizing conflict's disproportionate impact on women and girls.",
+    short: "UNSCR 1325 (2000), the first resolution recognizing conflict's disproportionate impact on women and girls.",
     source: "Foundations § II.K",
     quote:
       "UNSCR 1325 (2000) was the first resolution to recognize that armed conflict affects women and girls disproportionately and distinctly.",
@@ -134,7 +134,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     id: "securitization",
     term: "Securitization",
-    short: "The Copenhagen School's view that security is a discursive act — something is a security matter when successfully framed as one.",
+    short: "The Copenhagen School's view that security is a discursive act, something is a security matter when successfully framed as one.",
     source: "Foundations § II.D",
     quote:
       "Security as a discursive act, not a fixed condition.",
@@ -151,7 +151,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "palava-hut",
     term: "Palava Hut",
     short: "A revived Liberian community dialogue tradition used alongside the Truth and Reconciliation Commission.",
-    source: "Cases § VII — Liberia",
+    source: "Cases § VII · Liberia",
     quote:
       "A Truth and Reconciliation Commission delivering its 2009 final report alongside disarmament of over 100,000 former combatants and revival of Palava Hut dialogue.",
   },
@@ -159,7 +159,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "gacaca",
     term: "Gacaca Courts",
     short: "Roughly 12,000 Rwandan community tribunals that processed nearly two million genocide-related cases between 2002 and 2012.",
-    source: "Cases § VII — Rwanda",
+    source: "Cases § VII · Rwanda",
     quote:
       "Roughly 12,000 community tribunals processed close to two million genocide-related cases between 2002 and 2012.",
   },
@@ -178,7 +178,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     short: "The recurring question asked identically at each continuum level to reveal where security is materially present or only nominally reported.",
     source: "Methodology § V.A",
     quote:
-      "Are the bonds this person, community, or generation depends upon intact — and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?",
+      "Are the bonds this person, community, or generation depends upon intact, and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?",
   },
   {
     id: "political-realism",
@@ -190,7 +190,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   },
   {
     id: "menkiti-gyekye",
-    term: "Menkiti–Gyekye Debate",
+    term: "Menkiti-Gyekye Debate",
     short: "The internal African-philosophy debate between Menkiti's radical communitarian thesis and Gyekye's moderate reading of Ubuntu; the doctrine is built to survive either resolution.",
     source: "Foundations § II.B",
     quote:
@@ -239,7 +239,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     id: "annan-method",
     term: "The Annan Method",
-    short: "Kofi Annan's mediation practice — most visibly the 2008 AU Panel in Kenya — which treated named relationships and community standing as first-order diplomatic material.",
+    short: "Kofi Annan's mediation practice, most visibly the 2008 AU Panel in Kenya, which treated named relationships and community standing as first-order diplomatic material.",
     source: "Practice § 3A",
     quote:
       "Where the Annan method modelled this practice through personal authority, Vinculum Diplomacy names its components so that they can be taught, tested, and carried by practitioners who do not have that authority to lend.",
@@ -256,31 +256,31 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "south-africa-trc",
     term: "South Africa TRC",
     short: "The Truth and Reconciliation Commission established under the Promotion of National Unity and Reconciliation Act (1995), delivering its final report in 1998.",
-    source: "Cases § VII — South Africa",
+    source: "Cases § VII · South Africa",
     quote:
       "Public testimony and conditional amnesty placed at the centre of a national transition from apartheid.",
   },
   {
     id: "falepili-union",
     term: "Falepili Union",
-    short: "The Australia–Tuvalu treaty concluded 2023 and in force 2024, an attempt to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
-    source: "Cases § VII — Tuvalu & Kiribati",
+    short: "The Australia-Tuvalu treaty concluded 2023 and in force 2024, an attempt to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+    source: "Cases § VII · Tuvalu & Kiribati",
     quote:
       "The current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
   },
   {
     id: "scoring-rubric",
     term: "Scoring Rubric",
-    short: "The 1–5 descriptive-anchor rubric that fixes what distinguishes each bond-integrity score, so ratings are not left to the scorer's unstated judgment.",
-    source: "Doctrine § V.E — Scoring Rubric and Descriptive Anchors",
+    short: "The 1-5 descriptive-anchor rubric that fixes what distinguishes each bond-integrity score, so ratings are not left to the scorer's unstated judgment.",
+    source: "Doctrine § V.E · Scoring Rubric and Descriptive Anchors",
     quote:
       "1 severed or actively hostile; 2 nominal or superficial; 3 mixed or contested; 4 functional and tested; 5 fully durable and institutionalized.",
   },
   {
     id: "adversarial-rescoring",
     term: "Adversarial Rescoring",
-    short: "A deliberate second pass at a case's scores from a skeptical rather than sympathetic posture — demonstrated on Rwanda as a partial answer to the self-scoring critique.",
-    source: "Doctrine § VII.E — Rwanda, Worked Demonstration",
+    short: "A deliberate second pass at a case's scores from a skeptical rather than sympathetic posture, demonstrated on Rwanda as a partial answer to the self-scoring critique.",
+    source: "Doctrine § VII.E · Rwanda, Worked Demonstration",
     quote:
       "Approaching a case a second time with the specific goal of arguing against the doctrine's own favorable tendencies rather than confirming them.",
   },
@@ -288,7 +288,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "cross-case-pattern",
     term: "Cross-Case Pattern Summary",
     short: "The consolidated table of all thirty-two scores across the eight cases, showing that no case scores uniformly high and only Cambodia scores uniformly low.",
-    source: "Doctrine § VII.I — Cross-Case Pattern Summary",
+    source: "Doctrine § VII.I · Cross-Case Pattern Summary",
     quote:
       "The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is the only case scoring uniformly low.",
   },
@@ -296,7 +296,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "government-non-self-assessment",
     term: "Government Non-Self-Assessment",
     short: "Structural safeguard from the party-differentiated layer: a government's own claim of strong institutional-relational bond-integrity is a hypothesis to verify, never a self-certifying conclusion.",
-    source: "Doctrine § VI — Party-Differentiated Application",
+    source: "Doctrine § VI · Party-Differentiated Application",
     quote:
       "A government's own claim of strong institutional-relational bond-integrity should always be treated as a hypothesis requiring independent verification, never as a self-certifying conclusion.",
   },
