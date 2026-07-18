@@ -33,7 +33,7 @@ type Case = {
 const CASES: Case[] = [
   {
     slug: "northern-ireland",
-    title: "Northern Ireland — The Good Friday Agreement",
+    title: "Northern Ireland: The Good Friday Agreement",
     summary:
       "A power-sharing government has held, with interruptions, for over 25 years; dramatic reduction in lethal violence alongside documented intergenerational trauma.",
     region: "Europe",
@@ -44,13 +44,13 @@ const CASES: Case[] = [
     rationales: [
       "Sustained trust between principal negotiators and international facilitators enabled a signed agreement after two years of talks.",
       "Cross-community trust improved substantially, though voting patterns and residential segregation remain documented indicators of incomplete communal repair.",
-      "25th-anniversary research documents intergenerational trauma affecting those born after 1998 — weighted as the least compensable finding per § III.F.",
-      "Power-sharing institutions have survived multiple collapses and a contested Brexit-era environment across more than 25 years — the strongest score in the entire case set.",
+      "25th-anniversary research documents intergenerational trauma affecting those born after 1998, weighted as the least compensable finding per § III.F.",
+      "Power-sharing institutions have survived multiple collapses and a contested Brexit-era environment across more than 25 years: the strongest score in the entire case set.",
     ],
   },
   {
     slug: "colombia",
-    title: "Colombia — The 2016 Final Agreement",
+    title: "Colombia: The 2016 Final Agreement",
     summary:
       "A dedicated ethnic and gender chapter, a Special Jurisdiction for Peace, and UN-monitored verification alongside persistent violence against social leaders.",
     region: "Latin America",
@@ -67,7 +67,7 @@ const CASES: Case[] = [
   },
   {
     slug: "cambodia",
-    title: "Cambodia — The Extraordinary Chambers",
+    title: "Cambodia: The Extraordinary Chambers",
     summary:
       "A hybrid UN-Cambodian tribunal that operated for sixteen years and secured convictions against only three senior Khmer Rouge leaders.",
     region: "Southeast Asia",
@@ -76,15 +76,15 @@ const CASES: Case[] = [
     era: "2000s",
     scores: [2, 2, 2, 2],
     rationales: [
-      "The tribunal's scope was deliberately limited to senior leadership, leaving most direct perpetrator–victim relationships outside its process.",
+      "The tribunal's scope was deliberately limited to senior leadership, leaving most direct perpetrator-victim relationships outside its process.",
       "A widespread culture of impunity is documented as persisting, alongside the tribunal's own reconciliation-oriented amnesty for lower-level fighters.",
       "Documented concern about a lack of educational material and rising historical revisionism among younger Cambodians represents an unaddressed intergenerational bond around memory and transmission.",
-      "Sixteen years, immense cost, and only three convictions — a weak institutional-relational return relative to the scale of the crimes addressed.",
+      "Sixteen years, immense cost, and only three convictions: a weak institutional-relational return relative to the scale of the crimes addressed.",
     ],
   },
   {
     slug: "liberia",
-    title: "Liberia — TRC and the Palava Hut",
+    title: "Liberia: TRC and the Palava Hut",
     summary:
       "A Truth and Reconciliation Commission delivering its 2009 final report alongside disarmament of over 100,000 former combatants and revival of Palava Hut dialogue.",
     region: "Africa",
@@ -101,7 +101,7 @@ const CASES: Case[] = [
   },
   {
     slug: "rwanda",
-    title: "Rwanda — The Gacaca Courts",
+    title: "Rwanda: The Gacaca Courts",
     summary:
       "Roughly 12,000 community tribunals processed close to two million genocide-related cases between 2002 and 2012.",
     region: "Africa",
@@ -118,7 +118,7 @@ const CASES: Case[] = [
   },
   {
     slug: "kenya",
-    title: "Kenya — The 2008 National Accord",
+    title: "Kenya: The 2008 National Accord",
     summary:
       "AU Panel mediation under Kofi Annan produced the National Accord, followed by the NCIC and a 2012 Nakuru County Peace Accord addressing Rift Valley communal trust.",
     region: "Africa",
@@ -128,14 +128,14 @@ const CASES: Case[] = [
     scores: [4, 2, 2, 3],
     rationales: [
       "Sustained trust between the two principal negotiating parties, evidenced by the accord's rapid conclusion under AU mediation.",
-      "Elite settlement did not, on its own, restore inter-ethnic trust — a separate 16-month process was required to reach the Nakuru accord.",
+      "Elite settlement did not, on its own, restore inter-ethnic trust; a separate 16-month process was required to reach the Nakuru accord.",
       "Youth were disproportionately represented among perpetrators and victims, and no dedicated youth transmission mechanism was included.",
       "NCIC and TJRC created durable institutions under statute, though public trust in findings remained contested for years.",
     ],
   },
   {
     slug: "south-africa",
-    title: "South Africa — The Truth and Reconciliation Commission",
+    title: "South Africa: The Truth and Reconciliation Commission",
     summary:
       "Established under the Promotion of National Unity and Reconciliation Act (1995) and chaired by Archbishop Desmond Tutu, the TRC placed public testimony and conditional amnesty at the centre of a national transition from apartheid.",
     region: "Africa",
@@ -145,16 +145,16 @@ const CASES: Case[] = [
     scores: [3, 3, 2, 2],
     rationales: [
       "Public testimony created real, documented encounters between perpetrators and survivors, though many victims later reported the amnesty process felt inconsistent and insufficiently consultative.",
-      "Widely regarded internationally as a model of restorative justice and explicitly invoked Ubuntu — though structural economic and land inequality between communities remains largely unaddressed three decades later.",
+      "Widely regarded internationally as a model of restorative justice and explicitly invoked Ubuntu, though structural economic and land inequality between communities remains largely unaddressed three decades later.",
       "The Commission's mandate did not include a dedicated mechanism for transmitting its findings or its reconciliation ethic to generations born after 1994.",
       "Reparations recommendations have been extensively documented as unimplemented, and prosecutions have been affected by missing case files and alleged political interference.",
     ],
   },
   {
     slug: "tuvalu-kiribati",
-    title: "Tuvalu & Kiribati — Climate Displacement",
+    title: "Tuvalu & Kiribati: Climate Displacement",
     summary:
-      "The Australia–Tuvalu Falepili Union (concluded 2023, in force 2024) and Kiribati's earlier migration-with-dignity policy attempt to preserve nationhood, statehood, and intergenerational continuity across the potential loss of habitable territory.",
+      "The Australia-Tuvalu Falepili Union (concluded 2023, in force 2024) and Kiribati's earlier migration-with-dignity policy attempt to preserve nationhood, statehood, and intergenerational continuity across the potential loss of habitable territory.",
     region: "Pacific",
     pillar: "Institutional",
     threats: ["Climate displacement", "Post-conflict transition"],
@@ -268,7 +268,7 @@ export default function Cases() {
     <>
       <SEO
         title="Case Studies"
-        description="Eight documented processes — Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati — scored across the four bond domains of the Vinculum Continuum."
+        description="Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum."
         path="/cases"
       />
       <ReadingProgress />
@@ -376,14 +376,14 @@ export default function Cases() {
                   {c.slug === "rwanda" && (
                     <div className="mt-4 border-l-2 border-accent bg-gold-tint/40 p-4">
                       <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
-                        Adversarial Rescoring — Worked Demonstration
+                        Adversarial Rescoring · Worked Demonstration
                       </p>
                       <p className="mt-2 text-[0.85rem] leading-relaxed text-foreground/85">
                         The scores above were produced by a deliberate skeptical re-pass:
                         interpersonal was reduced from a sympathetic 4 to a 3 to reflect variance
                         between genuine and coerced apology; communal from a straightforwardly
-                        strong reading to a contested 3; intergenerational assigned a 2 for a gap —
-                        the bond between the 1994 generation and those born after — earlier
+                        strong reading to a contested 3; intergenerational assigned a 2 for a gap (the
+                        bond between the 1994 generation and those born after) that earlier
                         readings had not scored at all. Offered as a demonstration of method, not
                         as a substitute for genuine third-party verification.
                       </p>
@@ -397,7 +397,7 @@ export default function Cases() {
 
         {/* Cross-Case Pattern Summary */}
         <FadeIn className="mb-24">
-          <p className="eyebrow">VII.I — Cross-Case Pattern Summary</p>
+          <p className="eyebrow">VII.I · Cross-Case Pattern Summary</p>
           <hr className="gold-rule mt-4 mb-6" />
           <p className="text-muted-foreground mb-6 max-w-3xl">
             All thirty-two scores across the eight cases, ordered here with no case privileged as
@@ -419,7 +419,7 @@ export default function Cases() {
                 {CASES.map((c, i) => (
                   <tr key={c.slug} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
                     <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">
-                      {c.title.split(" — ")[0]}
+                      {c.title.split(": ")[0]}
                     </td>
                     {c.scores.map((s, j) => (
                       <td key={j} className="px-2 py-2 align-top text-center font-serif text-accent">
@@ -436,7 +436,7 @@ export default function Cases() {
           </div>
           <p className="mt-5 text-sm italic text-foreground/70 max-w-3xl">
             The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is
-            the only case scoring uniformly low — making it the doctrine's single most important
+            the only case scoring uniformly low, making it the doctrine's single most important
             test case for the falsifiability standard.
           </p>
         </FadeIn>
@@ -475,7 +475,7 @@ export default function Cases() {
                     <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
                     {compareCases.map((c) => (
                       <th key={c.slug} className="px-3 py-2 font-serif font-medium">
-                        {c.title.split(" — ")[0]}
+                        {c.title.split(": ")[0]}
                       </th>
                     ))}
                   </tr>
@@ -505,7 +505,7 @@ export default function Cases() {
               </table>
             </div>
             <p className="text-xs text-foreground/60 mt-4">
-              Scores 1–5 per bond domain. Higher values indicate stronger observed bond integrity in
+              Scores 1-5 per bond domain. Higher values indicate stronger observed bond integrity in
               the doctrine's classification methodology.
             </p>
           </DialogContent>

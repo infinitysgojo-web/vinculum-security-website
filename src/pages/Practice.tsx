@@ -35,7 +35,7 @@ export default function Practice() {
     <>
       <SEO
         title="Vinculum Diplomacy"
-        description="The applied diplomatic practice derived from the Vinculum Security doctrine — foundations, the core behavioral shift, and the four practice principles."
+        description="The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles."
         path="/practice"
       />
       <ReadingProgress />
@@ -66,7 +66,7 @@ export default function Practice() {
               that implication explicit and operational.
             </p>
             <p>
-              The working principle above — the personal root of the doctrine itself — is also the founding behavioral
+              The working principle above, the personal root of the doctrine itself, is also the founding behavioral
               commitment of the practice. Vinculum Diplomacy is, in the simplest terms, what it looks like to conduct
               diplomacy as though this sentence were true in every room.
             </p>
@@ -74,7 +74,7 @@ export default function Practice() {
         </FadeIn>
 
         <FadeIn className="max-w-4xl mb-16">
-          <p className="eyebrow">Part I — Foundations of the Practice</p>
+          <p className="eyebrow">Part I · Foundations of the Practice</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
@@ -95,12 +95,12 @@ export default function Practice() {
         </FadeIn>
 
         <FadeIn className="max-w-4xl mb-16">
-          <p className="eyebrow">§3A — Relation to the Annan Method</p>
+          <p className="eyebrow">§3A · Relation to the Annan Method</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
               Vinculum Diplomacy stands in direct lineage with the mediation practice associated with
-              Kofi Annan — most visibly the 2008 AU Panel mediation in Kenya — which treated named
+              Kofi Annan (most visibly the 2008 AU Panel mediation in Kenya), which treated named
               relationships, community standing, and continuity of institutions across leadership change
               as first-order diplomatic material rather than as background conditions. Where the Annan
               method modelled this practice through personal authority, Vinculum Diplomacy names its
@@ -114,7 +114,7 @@ export default function Practice() {
 
 
         <FadeIn className="mb-16">
-          <p className="eyebrow">Part II — The Four Practice Principles</p>
+          <p className="eyebrow">Part II · The Four Practice Principles</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="grid gap-5 md:grid-cols-2">
             {PRINCIPLES.map((p) => (
@@ -132,7 +132,7 @@ export default function Practice() {
         </FadeIn>
 
         <FadeIn className="mb-16">
-          <p className="eyebrow">Part IV — Practice Under Constraint</p>
+          <p className="eyebrow">Part IV · Practice Under Constraint</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="grid gap-5 md:grid-cols-2">
             <article className="bg-navy-tint border border-border p-6">
@@ -169,7 +169,7 @@ export default function Practice() {
           <p className="text-sm italic text-muted-foreground">
             The handbook includes a live-room diagnostic method, pre-negotiation bond-mapping templates,
             and applied case walkthroughs across the doctrine's eight documented cases, including the
-            introduction of the <em>continuity provision</em> — a clause or mechanism built into an
+            introduction of the <em>continuity provision</em>: a clause or mechanism built into an
             agreement specifically to survive a change in the officeholders who negotiated it.
           </p>
         </FadeIn>

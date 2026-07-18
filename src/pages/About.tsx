@@ -11,7 +11,7 @@ export default function About() {
     <>
       <SEO
         title="About the Author"
-        description="James Wesley Ndua — Human Security Diplomat and Youth, Peace and Security Advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine."
+        description="James Wesley Ndua, Human Security Diplomat and Youth, Peace and Security Advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine."
         path="/about"
       />
       <div className="container">
@@ -49,7 +49,7 @@ export default function About() {
             <p>
               Vinculum Security was conceived and first named by James Wesley Ndua in 2026, emerging from sustained
               practice and study across human security diplomacy, Ubuntu philosophy, and youth, peace and security
-              advocacy — and from a working conviction about the nature of diplomatic legitimacy itself.
+              advocacy, and from a working conviction about the nature of diplomatic legitimacy itself.
             </p>
             <p>
               The founding principle above is the doctrine's personal root. It holds that legitimacy in diplomatic
@@ -64,7 +64,7 @@ export default function About() {
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
-              A fair question, addressed directly: precedent does not require institutional seniority at origination —
+              A fair question, addressed directly: precedent does not require institutional seniority at origination.
               human security itself began as a single UNDP report before it carried institutional weight. A young author
               working directly in youth, peace and security practice, with lived proximity to the communities and
               generational dynamics the doctrine describes, has a legitimate standing to name a pattern that senior,

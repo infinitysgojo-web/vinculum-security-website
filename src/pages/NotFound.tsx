@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <>
       <SEO
-        title="Ignotum — Page not found"
+        title="Ignotum: Page not found"
         description="The road you seek is not on the imperial map."
         path="/404"
       />

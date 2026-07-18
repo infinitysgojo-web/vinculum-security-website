@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 
 export default function SEO({ title, description, path }: { title: string; description: string; path: string }) {
-  const full = `${title} — Vinculum Security`;
+  const full = `${title} · Vinculum Security`;
   return (
     <Helmet>
       <title>{full}</title>

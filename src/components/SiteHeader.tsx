@@ -21,7 +21,7 @@ export default function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b-2 border-primary print:hidden">
       <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="flex items-center gap-3 group" aria-label="Vinculum Security — Home">
+        <Link to="/" className="flex items-center gap-3 group" aria-label="Vinculum Security, Home">
           <Logo size={26} />
           <span className="wordmark text-xl md:text-2xl leading-none group-hover:text-accent transition-colors">
             Vinculum Security

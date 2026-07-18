@@ -12,7 +12,7 @@ const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerat
 
 const RUBRIC: [string, string][] = [
   ["1", "Severed or actively hostile. The bond is absent, broken, or characterized by active distrust; no functioning channel of relationship exists between the parties."],
-  ["2", "Nominal or superficial. A bond exists in form — a signed provision, a stated commitment, a consultative body — but shows little evidence of substantive trust or durability under stress."],
+  ["2", "Nominal or superficial. A bond exists in form, such as a signed provision, a stated commitment, or a consultative body, but shows little evidence of substantive trust or durability under stress."],
   ["3", "Mixed or contested. Credible evidence exists on both sides: genuine relational progress in some respects, alongside documented gaps, disputes, or unresolved grievance in others."],
   ["4", "Functional and tested. The bond has been tested by at least one significant setback, disagreement, or transition and has held, though some vulnerability or incompleteness remains."],
   ["5", "Fully durable and institutionalized. The bond has been tested repeatedly over an extended period, including through leadership transitions or major shocks, with strong evidence of continuity independent of any single individual or event."],
@@ -70,11 +70,11 @@ export default function Methodology() {
         </FadeIn>
 
         <FadeIn className="max-w-4xl mb-16">
-          <p className="eyebrow">V.A — The Diagnostic Method</p>
+          <p className="eyebrow">V.A · The Diagnostic Method</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="mb-6">
             <PullQuote>
-              Are the bonds this person, community, or generation depends upon intact — and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?
+              Are the bonds this person, community, or generation depends upon intact, and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?
             </PullQuote>
           </div>
           <div className="prose-body text-foreground/85">
@@ -90,7 +90,7 @@ export default function Methodology() {
         </FadeIn>
 
         <FadeIn className="mb-16">
-          <p className="eyebrow">V.B — Bond-Integrity Indicators</p>
+          <p className="eyebrow">V.B · Bond-Integrity Indicators</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-8 max-w-3xl">
             Each continuum level has an illustrative indicator and a diagnostic question, held together across cases so
@@ -117,7 +117,7 @@ export default function Methodology() {
         </FadeIn>
 
         <FadeIn className="mb-16">
-          <p className="eyebrow">V.E — Scoring Rubric and Descriptive Anchors</p>
+          <p className="eyebrow">V.E · Scoring Rubric and Descriptive Anchors</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-6 max-w-3xl">
             Earlier editions assigned numeric scores without stating, in advance, what distinguishes
@@ -147,7 +147,7 @@ export default function Methodology() {
         </FadeIn>
 
         <FadeIn className="mb-16">
-          <p className="eyebrow">VI — Party-Differentiated Application</p>
+          <p className="eyebrow">VI · Party-Differentiated Application</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-6 max-w-3xl">
             The <Cite term="party-differentiated">party-differentiated layer</Cite> ensures the doctrine
@@ -183,7 +183,7 @@ export default function Methodology() {
               </p>
               <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
                 The communal-standing verification test is <em>never</em> applied to a child's right
-                to be protected or heard — only to adults or institutions claiming to represent a
+                to be protected or heard, and only to adults or institutions claiming to represent a
                 community. The carve-out is absolute.
               </p>
             </div>
@@ -193,7 +193,7 @@ export default function Methodology() {
               </p>
               <p className="mt-2 text-sm text-foreground/85 leading-relaxed">
                 A government's own claim of strong institutional-relational bond-integrity is a
-                hypothesis requiring independent verification — never a self-certifying conclusion.
+                hypothesis requiring independent verification, never a self-certifying conclusion.
                 A structural safeguard against the delay-justification risk.
               </p>
             </div>

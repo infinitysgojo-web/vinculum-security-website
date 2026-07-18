@@ -15,8 +15,8 @@ const FOUNDATIONS = [
   },
   {
     letter: "B",
-    title: "Ubuntu Philosophy & the Menkiti–Gyekye Debate",
-    body: "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu — a person is a person through other persons. Ifeanyi Menkiti's radical communitarian thesis and Kwame Gyekye's moderate reading debate how strongly this claim holds within African philosophy itself. Vinculum Security is deliberately built to survive either resolution of that debate: even on the moderate reading, the bond remains the proper unit of security analysis.",
+    title: "Ubuntu Philosophy & the Menkiti-Gyekye Debate",
+    body: "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu, a person is a person through other persons. Ifeanyi Menkiti's radical communitarian thesis and Kwame Gyekye's moderate reading debate how strongly this claim holds within African philosophy itself. Vinculum Security is deliberately built to survive either resolution of that debate: even on the moderate reading, the bond remains the proper unit of security analysis.",
   },
   {
     letter: "C",
@@ -26,7 +26,7 @@ const FOUNDATIONS = [
   {
     letter: "D",
     title: "Securitization Theory",
-    body: "The Copenhagen School treats security as a discursive act rather than an objective condition. Vinculum Security makes a substantive counter-claim: relational bonds are real, independent of whether any actor has framed them as security matters. The two converge on one caution — against overuse of emergency framing.",
+    body: "The Copenhagen School treats security as a discursive act rather than an objective condition. Vinculum Security makes a substantive counter-claim: relational bonds are real, independent of whether any actor has framed them as security matters. The two converge on one caution, against overuse of emergency framing.",
   },
   {
     letter: "E",
@@ -36,7 +36,7 @@ const FOUNDATIONS = [
   {
     letter: "F",
     title: "Responsibility to Protect",
-    body: "R2P, endorsed at the 2005 World Summit, reframed sovereignty as responsibility. R2P relocates obligation; Vinculum Security relocates the referent object — from the protected population to the bonds that make protection possible. Bond scores never substitute for an R2P-relevant factual determination.",
+    body: "R2P, endorsed at the 2005 World Summit, reframed sovereignty as responsibility. R2P relocates obligation; Vinculum Security relocates the referent object, from the protected population to the bonds that make protection possible. Bond scores never substitute for an R2P-relevant factual determination.",
   },
   {
     letter: "G",
@@ -51,7 +51,7 @@ const FOUNDATIONS = [
   {
     letter: "I",
     title: "Relational & Restorative Justice",
-    body: "Liberia-focused relational justice scholarship argues peacebuilding approaches focused solely on formal institutions give insufficient attention to relational harm. Howard Zehr's restorative justice tradition (Changing Lenses, 1990) reframes crime as a violation of people and relationships rather than only an offense against the state — a second, independent evidentiary anchor.",
+    body: "Liberia-focused relational justice scholarship argues peacebuilding approaches focused solely on formal institutions give insufficient attention to relational harm. Howard Zehr's restorative justice tradition (Changing Lenses, 1990) reframes crime as a violation of people and relationships rather than only an offense against the state, providing a second, independent evidentiary anchor.",
   },
   {
     letter: "J",
@@ -71,7 +71,7 @@ const FOUNDATIONS = [
   {
     letter: "M",
     title: "Environmental & Climate-Displacement Bonds",
-    body: "Where a community's viability as a place is itself under threat, the intergenerational and institutional-relational bonds that community depends upon are placed under a stress no earlier security framework was designed to name. The Tuvalu–Australia Falepili Union (2023, in force 2024) is treated here as the current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+    body: "Where a community's viability as a place is itself under threat, the intergenerational and institutional-relational bonds that community depends upon are placed under a stress no earlier security framework was designed to name. The Tuvalu-Australia Falepili Union (2023, in force 2024) is treated here as the current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function Foundations() {
     <>
       <SEO
         title="Theoretical Foundations"
-        description="The thirteen traditions Vinculum Security draws from — from Human Security and Ubuntu to Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the expanded edition."
+        description="The thirteen traditions Vinculum Security draws from, spanning Human Security and Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition."
         path="/foundations"
       />
       <ReadingProgress />

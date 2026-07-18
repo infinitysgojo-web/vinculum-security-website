@@ -19,7 +19,7 @@ export default function PrintFootnotes({ terms }: { terms: string[] }) {
         {entries.map((e) => (
           <li key={e.id}>
             <span className="font-serif italic">{e.term}.</span> {e.short}{" "}
-            <span className="text-[9pt]">— {e.source}.</span>
+            <span className="text-[9pt]">· {e.source}.</span>
           </li>
         ))}
       </ol>

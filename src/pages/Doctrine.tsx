@@ -34,9 +34,9 @@ const COMPARISON = [
 ];
 
 const CONTINUUM = [
-  { n: "I", title: "Interpersonal", body: "Bonds between two named individuals, regardless of role — the trust that survives a bad-faith moment intact." },
-  { n: "II", title: "Communal", body: "Bonds between an individual or institution and a group within a single generational cohort — standing tested by the community itself." },
-  { n: "III", title: "Intergenerational", body: "Bonds between distinct generational cohorts — the transfer of knowledge, trust, and standing between youth and elder leadership." },
+  { n: "I", title: "Interpersonal", body: "Bonds between two named individuals, regardless of role. The trust that survives a bad-faith moment intact." },
+  { n: "II", title: "Communal", body: "Bonds between an individual or institution and a group within a single generational cohort. Standing is tested by the community itself." },
+  { n: "III", title: "Intergenerational", body: "Bonds between distinct generational cohorts, carrying the transfer of knowledge, trust, and standing between youth and elder leadership." },
   { n: "IV", title: "Institutional-Relational", body: "Bonds between an institution and the population it is mandated to serve, tested across a change in personnel or office." },
 ];
 
@@ -60,7 +60,7 @@ export default function Doctrine() {
 
         <section id="canonical" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-16">
-          <p className="eyebrow">III.A — Canonical Definition</p>
+          <p className="eyebrow">III.A · Canonical Definition</p>
           <div className="mt-5">
             <PullQuote cite="Canonical Definition, 2026">
               Vinculum Security holds that security is not the absence of threat to a state or an individual, but the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible in the first place.
@@ -73,13 +73,13 @@ export default function Doctrine() {
 
         <section id="ontology" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-20">
-          <p className="eyebrow">III.B — The Ontological Claim</p>
+          <p className="eyebrow">III.B · The Ontological Claim</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/90">
             <p>
-              First, drawing on two independent civilizational traditions — <Cite term="ubuntu">Ubuntu</Cite>{" "}
-              (and the internal <Cite term="menkiti-gyekye">Menkiti–Gyekye debate</Cite> within African
-              philosophy itself) and <Cite term="confucian-role-ethics">Confucian Role Ethics</Cite> — the
+              First, drawing on two independent civilizational traditions, <Cite term="ubuntu">Ubuntu</Cite>{" "}
+              (and the internal <Cite term="menkiti-gyekye">Menkiti-Gyekye debate</Cite> within African
+              philosophy itself) and <Cite term="confucian-role-ethics">Confucian Role Ethics</Cite>, the
               doctrine holds that personhood is constituted, wholly or substantially, relationally rather
               than individually. The convergence of two civilizationally independent traditions on the
               same conclusion is treated here as evidentiary strength, not coincidence.
@@ -101,7 +101,7 @@ export default function Doctrine() {
 
         <section id="comparison" className="scroll-mt-24">
         <FadeIn className="mb-20">
-          <p className="eyebrow">III.C — Comparative Positioning</p>
+          <p className="eyebrow">III.C · Comparative Positioning</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-6 max-w-3xl">
             The table below situates Vinculum Security against the eleven frameworks from which it draws or against which it is distinguished.
@@ -135,7 +135,7 @@ export default function Doctrine() {
 
         <section id="continuum" className="scroll-mt-24">
         <FadeIn className="mb-16">
-          <p className="eyebrow">III.D — The Vinculum Continuum</p>
+          <p className="eyebrow">III.D · The Vinculum Continuum</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-8 max-w-3xl">
             <Cite term="vinculum-continuum">Vinculum Security operates across four nested levels</Cite>,
@@ -158,11 +158,11 @@ export default function Doctrine() {
 
         <section id="nomenclature" className="scroll-mt-24">
         <FadeIn className="max-w-4xl mb-20">
-          <p className="eyebrow">III.E — Nomenclature and the African Contribution</p>
+          <p className="eyebrow">III.E · Nomenclature and the African Contribution</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/90">
             <p>
-              The Latin <em>vinculum</em> — a bond, a tie — is chosen deliberately over any single
+              The Latin <em>vinculum</em>, a bond or a tie, is chosen deliberately over any single
               African-language term, so that the doctrine can travel through diplomatic institutions
               already conducted in European working languages without being either mistranslated or
               treated as folk wisdom. The intellectual origin is African and remains so: the ontological
@@ -176,7 +176,7 @@ export default function Doctrine() {
 
         <section id="boundaries" className="scroll-mt-24">
         <FadeIn className="mb-20">
-          <p className="eyebrow">III.F — Boundary Rules and Weighting</p>
+          <p className="eyebrow">III.F · Boundary Rules and Weighting</p>
           <GoldRule className="mt-4 mb-6" />
           <p className="text-muted-foreground mb-6 max-w-3xl">
             <Cite term="boundary-weighting">Explicit rules</Cite> govern how a bond is classified into a
@@ -199,7 +199,7 @@ export default function Doctrine() {
               <p className="text-sm text-foreground/85 leading-relaxed">
                 When bonds at different levels conflict, weight is given to the bond whose rupture would
                 most reduce the affected persons' actual capacity for protection and dignity going
-                forward — not to the bond most visible to the intervening institution. In practice, this
+                forward, not to the bond most visible to the intervening institution. In practice, this
                 usually elevates communal and intergenerational bonds against interventions that would
                 otherwise privilege institutional convenience.
               </p>
@@ -213,7 +213,7 @@ export default function Doctrine() {
             The doctrine states explicit falsifiability criteria (Section IV); the concrete
             test-bed is the <Cite term="cross-case-pattern">Cross-Case Pattern Summary</Cite> of
             all thirty-two scores on the <a href="/cases" className="text-accent hover:underline">Cases</a> page,
-            with the <Cite term="scoring-rubric">1–5 descriptive-anchor rubric</Cite> and the
+            with the <Cite term="scoring-rubric">1-5 descriptive-anchor rubric</Cite> and the
             Rwanda <Cite term="adversarial-rescoring">adversarial-rescoring</Cite> demonstration
             supplying the method behind the numbers.
           </p>

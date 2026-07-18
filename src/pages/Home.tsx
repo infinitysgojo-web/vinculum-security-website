@@ -8,7 +8,7 @@ import { useParallax } from "@/hooks/useParallax";
 
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
-  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen traditions the doctrine draws from — Ubuntu, Confucian Role Ethics, Human Security, R2P, WPS, and the digital and climate-displacement bonds named in the expanded edition." },
+  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen traditions the doctrine draws from: Ubuntu, Confucian Role Ethics, Human Security, R2P, WPS, and the digital and climate-displacement bonds named in the Final Edition." },
   { to: "/cases", eyebrow: "Section VII", title: "Case Studies", description: "Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific, each scored across four bond domains." },
   { to: "/methodology", eyebrow: "Section V", title: "Methodology", description: "The diagnostic method and bond-integrity indicators used to assess a case in plain terms." },
   { to: "/practice", eyebrow: "Handbook", title: "Vinculum Diplomacy", description: "The applied practitioner discipline derived from the doctrine, oriented around four practice principles." },
@@ -77,7 +77,7 @@ export default function Home() {
                 that make protection, dignity, and peace possible in the first place.
               </blockquote>
               <p className="mt-6 text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70">
-                — James Wesley Ndua, 2026
+                James Wesley Ndua, 2026
               </p>
             </div>
             <aside className="md:col-span-4 md:border-l border-brass md:pl-8 py-2">
@@ -104,7 +104,7 @@ export default function Home() {
               <h2 className="mt-2 font-serif text-primary">Read the doctrine</h2>
             </div>
             <p className="hidden md:block text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/60">
-              I — VI
+              I to VI
             </p>
           </div>
         </FadeIn>
