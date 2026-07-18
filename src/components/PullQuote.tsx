@@ -23,7 +23,7 @@ export default function PullQuote({
         <figcaption
           className="mt-5 not-italic font-sans text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70"
         >
-          — {cite}
+          {cite}
         </figcaption>
       )}
     </figure>
