@@ -1,52 +1,49 @@
-# Fold the Final Edition additions into the site
+# Sync site to Final Edition PDFs + em-dash removal
 
-The uploaded PDF is the **Final Edition** of the doctrine. Structurally it is the same as the Expanded Fortified Edition the site already reflects (13 foundations, 8 cases, party-differentiated table, Ubuntu + Confucian ontology). What is genuinely new is concentrated in three places, plus one new methodological concept. This plan folds only those in, preserving the Imperial Folio tone and respecting the standing rule not to add doctrine Sections VIII–XI.
+Both uploaded PDFs are the **Final Edition**: "Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition" and "Vinculum Diplomacy: The Practitioner Handbook, Final Edition." The site was built off the earlier "Expanded Fortified" pass. Structure matches; edition labels and some wording need refreshing, plus a punctuation cleanup pass. Excluded content (doctrine VIII-XI; handbook Part V and appendices) stays excluded.
 
-## What's actually new
+## What changes
 
-1. **Section V.E — Scoring Rubric and Descriptive Anchors.** A 1–5 rubric with a stated descriptive anchor for each level (Severed → Nominal → Mixed → Functional and tested → Fully durable and institutionalized).
-2. **Section VII — Full per-case scoring.** Every one of the 8 cases now carries a four-row bond table (Interpersonal / Communal / Intergenerational / Institutional-Relational) with a numeric score 1–5 and a one-line rationale. This is more granular than what the Cases page currently shows.
-3. **Section VII.I — Cross-Case Pattern Summary.** A single consolidated table of all 32 scores across the 8 cases, with a "pattern" column, and the observation that only Cambodia scores uniformly low.
-4. **Adversarial Rescoring** — a new methodological concept demonstrated on the Rwanda case: deliberately rescoring against the doctrine's favorable tendencies. Referenced in V.E and IX as a partial answer to the self-scoring critique.
+**1. Edition labels site-wide**
+- Update About, Home, Practice intro, glossary source refs, `<SEO>` descriptions, and `index.html` meta to say "Final Edition" instead of "Expanded Fortified Edition."
 
-Also newly emphasized (small wording tweaks, not new sections):
-- The **child-protection carve-out is absolute** (Section VI paragraph after the party table).
-- The **government non-self-assessment principle** (also Section VI).
+**2. Doctrine page**
+- Verify III.A canonical definition, III.B ontological claim, III.C comparative table, III.D continuum, III.E nomenclature, III.F boundary rules and weighting against Final Edition wording. Patch any drift.
+- Confirm the Section IV falsifiability pointer reads correctly.
 
-## Page-by-page changes
+**3. Foundations page**
+- Re-verify all 13 tradition cards (A-M), including Menkiti-Gyekye framing, Realism as Counterweight, Digital and Information-Age Bonds, and Environmental and Climate-Displacement Bonds. Correct any tightened wording.
 
-1. **Methodology (`src/pages/Methodology.tsx`)**
-   - Add a new sub-section **V.E Scoring Rubric and Descriptive Anchors** as a compact 5-row table (Score → Descriptive Anchor), placed directly after the existing scoring methodology block.
-   - Add a short lede paragraph explaining the rubric narrows scorer judgment without eliminating it.
-   - Under the existing party-differentiated table, add two short call-out lines: the absolute child-protection carve-out and the government non-self-assessment principle.
+**4. Methodology page**
+- Cross-check V.A diagnostic method, V.B indicators, V.E scoring rubric anchors (Severed to Durable, 1-5), the child-protection carve-out, and the government non-self-assessment note.
+- Confirm the VI Party-Differentiated Application table rows match the final table.
 
-2. **Cases (`src/pages/Cases.tsx`)**
-   - For each of the 8 cases, add a compact 4-row bond-score table (Bond → Score 1–5 → Rationale) using the exact numbers from Section VII of the PDF. Style: same alternating cream/gold-tint row treatment used on the Doctrine comparison table.
-   - Add a new closing section **Cross-Case Pattern Summary** rendering the 8×6 consolidated table (Case, Interp., Communal, Intergen., Instit., Pattern) with a single-line takeaway underneath ("only Cambodia scores uniformly low; it is the doctrine's single most important falsifiability test").
-   - Add a small **Adversarial Rescoring** call-out under the Rwanda card, in the same "Practice Under Time Constraint" mini-card style already used on the Practice page, noting the scores shown were produced by a deliberate skeptical re-pass.
+**5. Cases page**
+- Reconfirm all 8 cases and the Cross-Case Pattern Summary numbers against Section VII. Patch any score or rationale that shifted. Keep the Cambodia falsifiability call-out and Rwanda adversarial rescoring note if still supported.
 
-3. **Doctrine (`src/pages/Doctrine.tsx`)**
-   - No structural change. Add one sentence to the falsifiability line at the bottom of the page pointing readers to the new Cross-Case Pattern Summary on `/cases` as the concrete falsifiability test-bed.
-   - Extend `CITED` with the new glossary IDs so print footnotes stay accurate.
+**6. Practice page**
+- Refresh intro (Executive Summary and Statement of Origination) with Final Edition wording, keeping the founding pull-quote.
+- Confirm section 3A "Relation to the Annan Method," the four practice principles, and the tools mention. Keep excluding Part V and appendices.
 
-4. **Glossary (`src/content/glossary.ts`)**
-   - Add:
-     - `scoring-rubric` — the 1–5 descriptive-anchor rubric.
-     - `adversarial-rescoring` — the deliberate skeptical re-pass method (Rwanda demo).
-     - `cross-case-pattern` — the consolidated 32-score summary.
-     - `government-non-self-assessment` — the safeguard principle from Section VI.
-   - Existing IDs stay untouched.
+**7. Glossary**
+- Refresh source citations (page numbers, edition label). Verify each definition against the Final Edition; patch drifted entries. Add a term only if a Final-Edition-only concept surfaces during the diff pass.
 
-5. **Home (`src/pages/Home.tsx`)** and **About (`src/pages/About.tsx`)**
-   - Small copy sweep: where the site currently says "eight cases", tighten to "eight documented processes, all four bond levels scored" so the new scoring depth is signaled from the entry pages. No layout changes.
+**8. Em-dash removal (site-wide, punctuation pass)**
+- Every em dash (`—`) and standalone en dash (`–`) used as punctuation in visible copy will be removed and replaced with the correct punctuation for the sentence, chosen per instance:
+  - Parenthetical asides `text — aside — more` become commas: `text, aside, more`.
+  - Clause breaks that introduce or expand an idea become a colon or semicolon depending on the relationship.
+  - Simple pauses become a comma or a period splitting into two sentences.
+  - Lists or ranges (`1-5`, `A-K`) keep their hyphens.
+- Scope: all page copy, components, glossary entries, badges, tooltips, pull-quotes, and SEO/meta strings.
+- Hyphens inside compound words, code identifiers, class names, hex colors, and numeric ranges are untouched.
+- Method: ripgrep the repo for `—` and spaced ` – `, review each hit in context, and rewrite the sentence with the appropriate punctuation instead of a blind substitution.
+
+## Method
+
+Diff each page's copy against the parsed Final Edition text section by section, apply targeted line edits, then run the em/en dash punctuation pass, rewriting each sentence for correct grammar. Preserve the current "Imperial Folio" design, diplomat badges, citations, filters, and scroll memory. This is content and punctuation only.
 
 ## Out of scope
 
-- Doctrine Sections VIII (safeguards), IX (critiques), X (adversarial review panels), XI (research agenda) — not added (project rule).
-- Handbook Part V and appendices — not added.
-- No new components, palette changes, motifs, or typography.
-
-## Verification
-
-- `tsgo` typecheck.
-- Playwright load of `/methodology` and `/cases` at desktop and mobile widths; screenshot the new scoring rubric, the per-case tables, and the cross-case summary to confirm they render inside the existing grid and read cleanly without horizontal overflow.
+- No new pages or sections beyond the current allow-list.
+- Excluded sections remain excluded.
+- No design or interaction changes.
