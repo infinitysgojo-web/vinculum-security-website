@@ -70,12 +70,12 @@ export default function Glossary() {
           {results.length} of {GLOSSARY.length} terms
         </p>
 
-        <div className="grid gap-px bg-brass/40 border border-brass/40 md:grid-cols-2 pb-8">
+        <div className="grid gap-4 md:gap-5 md:grid-cols-2 pb-8">
           {results.map((g) => (
-            <FadeIn key={g.id}>
+            <FadeIn key={g.id} className="h-full">
               <article
                 id={g.id}
-                className="group bg-background p-6 md:p-7 h-full transition-colors hover:bg-navy-tint/60 scroll-mt-24"
+                className="group bg-background border border-brass/40 p-6 md:p-7 h-full transition-colors hover:bg-navy-tint/60 hover:border-brass scroll-mt-24"
               >
                 <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
                   {g.source}
