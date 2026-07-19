@@ -1,49 +1,56 @@
-# Sync site to Final Edition PDFs + em-dash removal
+# Layout Cleanup Pass
 
-Both uploaded PDFs are the **Final Edition**: "Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition" and "Vinculum Diplomacy: The Practitioner Handbook, Final Edition." The site was built off the earlier "Expanded Fortified" pass. Structure matches; edition labels and some wording need refreshing, plus a punctuation cleanup pass. Excluded content (doctrine VIII-XI; handbook Part V and appendices) stays excluded.
+Fix the visible inconsistencies in the screenshots (empty gold bars under grids, awkward wrap around the Cite button on Doctrine, cramped tables on mobile in Cases) and audit the same patterns on every page so the whole site behaves at 360, 768, and 1280 CSS px.
 
-## What changes
+## Root causes identified
 
-**1. Edition labels site-wide**
-- Update About, Home, Practice intro, glossary source refs, `<SEO>` descriptions, and `index.html` meta to say "Final Edition" instead of "Expanded Fortified Edition."
+1. **Empty gold bar under card grids** (Home "Read the doctrine", Glossary, Practice, About): grids use `gap-px bg-brass/40 border-brass/40` to draw hairlines between cells. Two problems:
+   - `FadeIn` wrappers are grid items but don't have `h-full`, so shorter cards don't stretch to the row height, revealing the brass background as a bar.
+   - When the item count is odd for the current column count, the last row leaves empty cells that render as a solid gold rectangle.
 
-**2. Doctrine page**
-- Verify III.A canonical definition, III.B ontological claim, III.C comparative table, III.D continuum, III.E nomenclature, III.F boundary rules and weighting against Final Edition wording. Patch any drift.
-- Confirm the Section IV falsifiability pointer reads correctly.
+2. **Cite button wraps as centered block** (Doctrine III.D intro, some Foundations/Methodology paragraphs): `<Cite>` renders a `<button>`, and buttons default to `text-align: center` + `display: inline-block`. When the cited phrase is long enough to wrap, it centers inside its own inline-block, and the trailing `, governed by...` appears on the next line looking detached.
 
-**3. Foundations page**
-- Re-verify all 13 tradition cards (A-M), including Menkiti-Gyekye framing, Realism as Counterweight, Digital and Information-Age Bonds, and Environmental and Climate-Displacement Bonds. Correct any tightened wording.
+3. **Cramped case tables on narrow screens**: each case card holds a 3-column table (Domain / Score / Rationale). `whitespace-nowrap` on the domain column plus tight padding makes text stack one word per line when the card is narrow (below ~420 px card width, i.e. mobile and the 2-col md layout).
 
-**4. Methodology page**
-- Cross-check V.A diagnostic method, V.B indicators, V.E scoring rubric anchors (Severed to Durable, 1-5), the child-protection carve-out, and the government non-self-assessment note.
-- Confirm the VI Party-Differentiated Application table rows match the final table.
+4. **Doctrine comparative-positioning table overflow** on mobile: table sits in a full-bleed section with no horizontal scroll cue, so it either overflows or squishes into unreadable columns.
 
-**5. Cases page**
-- Reconfirm all 8 cases and the Cross-Case Pattern Summary numbers against Section VII. Patch any score or rationale that shifted. Keep the Cambodia falsifiability call-out and Rwanda adversarial rescoring note if still supported.
+## Changes
 
-**6. Practice page**
-- Refresh intro (Executive Summary and Statement of Origination) with Final Edition wording, keeping the founding pull-quote.
-- Confirm section 3A "Relation to the Annan Method," the four practice principles, and the tools mention. Keep excluding Part V and appendices.
+**`src/index.css`**
+- Add `.cite-term { text-align: left; display: inline; }` (fall back to `inline` so wrapping follows the parent paragraph). Keep the dotted underline.
+- Add a `.hairline-grid` utility that draws inter-cell brass hairlines via `outline` on each child instead of `gap-px + bg-brass`, so odd trailing cells don't render a gold rectangle. Alternative kept in one place so every grid can use it.
 
-**7. Glossary**
-- Refresh source citations (page numbers, edition label). Verify each definition against the Final Edition; patch drifted entries. Add a term only if a Final-Edition-only concept surfaces during the diff pass.
+**`src/components/FadeIn.tsx`**
+- Apply `h-full` when the parent is a grid item. Simplest: always set `h-full` on the wrapper via `className`, so grid children stretch. Confirms cards fill their row.
 
-**8. Em-dash removal (site-wide, punctuation pass)**
-- Every em dash (`—`) and standalone en dash (`–`) used as punctuation in visible copy will be removed and replaced with the correct punctuation for the sentence, chosen per instance:
-  - Parenthetical asides `text — aside — more` become commas: `text, aside, more`.
-  - Clause breaks that introduce or expand an idea become a colon or semicolon depending on the relationship.
-  - Simple pauses become a comma or a period splitting into two sentences.
-  - Lists or ranges (`1-5`, `A-K`) keep their hyphens.
-- Scope: all page copy, components, glossary entries, badges, tooltips, pull-quotes, and SEO/meta strings.
-- Hyphens inside compound words, code identifiers, class names, hex colors, and numeric ranges are untouched.
-- Method: ripgrep the repo for `—` and spaced ` – `, review each hit in context, and rewrite the sentence with the appropriate punctuation instead of a blind substitution.
+**`src/pages/Home.tsx`**
+- Swap the "Read the doctrine" grid to the new hairline pattern and ensure `NavCard` uses `h-full flex flex-col` so all six cards match the tallest.
+- Add a filler cell when the item count is odd for the active breakpoint (only relevant if content grows; keep as a safeguard).
 
-## Method
+**`src/pages/Glossary.tsx`**
+- Same hairline swap. Each article already has `h-full`, but the wrapping FadeIn does not; fix via the FadeIn change. Confirms no gold trailing bar when the term count is odd.
 
-Diff each page's copy against the parsed Final Edition text section by section, apply targeted line edits, then run the em/en dash punctuation pass, rewriting each sentence for correct grammar. Preserve the current "Imperial Folio" design, diplomat badges, citations, filters, and scroll memory. This is content and punctuation only.
+**`src/pages/Practice.tsx`, `src/pages/About.tsx`**
+- Audit the two-column card grids that use the same `gap-px bg-brass/40` idiom and switch them to the new pattern.
+
+**`src/pages/Doctrine.tsx`**
+- III.D intro paragraph: keep the `<Cite>` inline; the CSS fix removes the centered-block wrap. Verify the same paragraph pattern in III.F and V.
+- Comparative positioning table (III.C): wrap in `overflow-x-auto` with a subtle right-edge fade so users on mobile know it scrolls, and lower cell padding on small screens.
+
+**`src/pages/Cases.tsx`**
+- Remove `whitespace-nowrap` from the domain column so "Institutional-Relational" can wrap on two lines instead of forcing a narrow-column stack.
+- Tighten table padding and typography on `< md` (`px-2 py-1.5`, `text-[0.78rem]`).
+- Force the grid to a single column below `lg` so cards get enough width for the embedded table (`grid-cols-1 lg:grid-cols-2`); the current `md:grid-cols-2` is the source of the cramped tablet/desktop-narrow look.
+- Apply the same hairline pattern where relevant, and ensure the Rwanda adversarial-rescoring callout has proper bottom spacing so it doesn't butt against the card border.
+
+**`src/pages/Methodology.tsx`, `src/pages/Foundations.tsx`**
+- Same audit: any `gap-px bg-brass/40` grid gets the FadeIn `h-full` fix; any table gets `overflow-x-auto`.
+
+## Verification
+
+- Drive Playwright at 360, 768, and 1280 CSS px against `/`, `/doctrine`, `/foundations`, `/cases`, `/methodology`, `/practice`, `/about`, `/glossary`. Screenshot the specific regions circled in the uploaded shots (Home cards, Doctrine III.D intro, Cases grid, Practice/Government-Non-Self-Assessment card, Glossary tail) and confirm no gold rectangles, no centered-wrap Cite, and no cramped tables.
 
 ## Out of scope
 
-- No new pages or sections beyond the current allow-list.
-- Excluded sections remain excluded.
-- No design or interaction changes.
+- No content or wording changes.
+- No new features, no palette or typography changes.
