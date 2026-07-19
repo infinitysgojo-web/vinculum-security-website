@@ -64,14 +64,14 @@ export default function About() {
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
-              A fair question, addressed directly: precedent does not require institutional seniority at origination.
-              human security itself began as a single UNDP report before it carried institutional weight. A young author
+              Precedent does not require institutional seniority at origination.
+              Human security itself began as a single UNDP report before it carried institutional weight. A young author
               working directly in youth, peace and security practice, with lived proximity to the communities and
               generational dynamics the doctrine describes, has a legitimate standing to name a pattern that senior,
               institutionally distant observers are structurally less likely to notice first.
             </p>
             <p>
-              This is not a claim that youth guarantees insight, but that this specific insight is one a younger
+              This is not a claim that youth guarantee insight, but that this specific insight is one a younger
               practitioner is well positioned to make. The doctrine's credibility rests on its citation, testing, and
               refinement by others going forward, not on this justification alone.
             </p>
