@@ -321,11 +321,11 @@ export default function Cases() {
           </div>
         </FadeIn>
 
-        <div className="grid gap-6 md:grid-cols-2 pb-32">
+        <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
             const selected = compare.includes(c.slug);
             return (
-              <FadeIn key={c.slug} delay={i * 40}>
+              <FadeIn key={c.slug} delay={i * 40} className="h-full">
                 <article className="bg-card border border-border p-6 md:p-7 h-full flex flex-col hover-lift transition-all">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex gap-1.5 flex-wrap">
