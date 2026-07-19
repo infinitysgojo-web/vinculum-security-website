@@ -19,7 +19,7 @@ export default function NavCard({
   return (
     <Link
       to={to}
-      className="group relative block bg-background p-8 md:p-10 overflow-hidden transition-colors duration-500 hover:bg-primary"
+      className="group relative block h-full bg-background border border-brass/40 p-8 md:p-10 overflow-hidden transition-colors duration-500 hover:bg-primary hover:border-brass"
     >
       <span
         aria-hidden

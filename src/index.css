@@ -108,9 +108,14 @@
   }
 
   .cite-term {
+    display: inline;
+    text-align: inherit;
+    font: inherit;
     color: hsl(var(--primary));
     border-bottom: 1px dotted hsl(var(--accent));
     padding-bottom: 1px;
+    background: transparent;
+    cursor: pointer;
     transition: color 200ms ease, border-color 200ms ease, border-bottom-width 200ms ease;
   }
   .cite-term:hover, .cite-term:focus-visible {

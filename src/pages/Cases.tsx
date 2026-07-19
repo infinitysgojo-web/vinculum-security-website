@@ -321,11 +321,11 @@ export default function Cases() {
           </div>
         </FadeIn>
 
-        <div className="grid gap-6 md:grid-cols-2 pb-32">
+        <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
             const selected = compare.includes(c.slug);
             return (
-              <FadeIn key={c.slug} delay={i * 40}>
+              <FadeIn key={c.slug} delay={i * 40} className="h-full">
                 <article className="bg-card border border-border p-6 md:p-7 h-full flex flex-col hover-lift transition-all">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex gap-1.5 flex-wrap">
@@ -350,28 +350,30 @@ export default function Cases() {
                     {c.summary}
                   </p>
 
-                  <table className="w-full text-sm border border-border mt-auto">
-                    <thead>
-                      <tr className="bg-primary text-primary-foreground text-left">
-                        <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
-                        <th className="px-3 py-2 font-serif font-medium w-16 text-right">Score</th>
-                        <th className="px-3 py-2 font-serif font-medium">Rationale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {DOMAINS.map((d, idx) => (
-                        <tr key={d} className={idx % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                          <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">{d}</td>
-                          <td className="px-3 py-2 align-top text-right">
-                            <span className="font-serif text-accent">{c.scores[idx]}</span>
-                          </td>
-                          <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
-                            {c.rationales[idx]}
-                          </td>
+                  <div className="mt-auto overflow-x-auto -mx-1 px-1">
+                    <table className="w-full text-sm border border-border">
+                      <thead>
+                        <tr className="bg-primary text-primary-foreground text-left">
+                          <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
+                          <th className="px-2 py-2 font-serif font-medium w-12 text-right">Score</th>
+                          <th className="px-3 py-2 font-serif font-medium">Rationale</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {DOMAINS.map((d, idx) => (
+                          <tr key={d} className={idx % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
+                            <td className="px-3 py-2 align-top font-medium text-primary text-[0.85rem]">{d}</td>
+                            <td className="px-2 py-2 align-top text-right">
+                              <span className="font-serif text-accent">{c.scores[idx]}</span>
+                            </td>
+                            <td className="px-3 py-2 align-top text-foreground/80 text-[0.82rem] leading-snug">
+                              {c.rationales[idx]}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
 
                   {c.slug === "rwanda" && (
                     <div className="mt-4 border-l-2 border-accent bg-gold-tint/40 p-4">

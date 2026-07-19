@@ -108,9 +108,9 @@ export default function Home() {
             </p>
           </div>
         </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brass/40 border border-brass/40">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
           {CARDS.map((c, i) => (
-            <FadeIn key={c.to} delay={i * 60}>
+            <FadeIn key={c.to} delay={i * 60} className="h-full">
               <NavCard {...c} index={i} />
             </FadeIn>
           ))}
