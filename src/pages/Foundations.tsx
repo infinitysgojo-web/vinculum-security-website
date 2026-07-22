@@ -11,7 +11,7 @@ const FOUNDATIONS = [
   {
     letter: "A",
     title: "Human Security",
-    body: "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want and freedom from fear. Vinculum Security adopts this foundational move as its own point of departure.",
+    body: "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want, freedom from fear, and freedom to live in dignity. Vinculum Security adopts this foundational move as its own point of departure.",
   },
   {
     letter: "B",
