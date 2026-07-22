@@ -22,7 +22,7 @@ const CITED = [
 const COMPARISON = [
   ["State Security", "The state", "Security as survival against external military threat", "Westphalian tradition"],
   ["Political Realism", "The state, defined by power", "Interest defined as power; universal moral principles do not bind state action", "Morgenthau, 1948"],
-  ["Human Security", "The individual person", "Shifts referent object from state to person; freedom from fear and want", "UNDP 1994; Haq and Sen"],
+  ["Human Security", "The individual person", "Shifts referent object from state to person; freedom from fear, freedom from wan, freedom to live in dignity", "UNDP 1994; Haq and Sen"],
   ["Responsibility to Protect", "Populations at risk of atrocity", "Shifts locus of obligation; sovereignty as responsibility", "ICISS 2001; World Summit 2005"],
   ["Securitization", "Whatever is successfully framed as existential threat", "Security as a discursive act, not a fixed condition", "Buzan, Wæver, de Wilde, 1998"],
   ["Positive Peace", "Social structures and institutions", "Peace as absence of structural violence, not just direct violence", "Galtung, 1969"],
