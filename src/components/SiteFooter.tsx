@@ -5,7 +5,17 @@ export default function SiteFooter() {
     <footer className="bg-background mt-24 border-t border-brass/40">
       <div className="container py-10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[10px] uppercase font-semibold tracking-[0.24em] text-primary">
-          <span>© 2026 James Wesley Ndua</span>
+          <span>
+            Copyright © 2026{" "}
+            <a
+              href="https://jamesndua.kidnexus.or.ke/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-accent transition-colors"
+            >
+              James Wesley Ndua
+            </a>
+          </span>
           <span className="text-brass">·</span>
           <span>First articulated MMXXVI</span>
           <span className="text-brass">·</span>

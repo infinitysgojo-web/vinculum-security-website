@@ -96,7 +96,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     short: "The 1994 UNDP framework that shifted the referent object of security from the state to the individual person.",
     source: "Foundations § II.A",
     quote:
-      "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want and freedom from fear.",
+      "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want, freedom from fear, and freedom to live in dignity.",
   },
   {
     id: "r2p",
