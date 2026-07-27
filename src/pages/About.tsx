@@ -77,7 +77,35 @@ export default function About() {
             </p>
           </div>
         </FadeIn>
+
+        <FadeIn className="max-w-3xl pb-8">
+          <p className="eyebrow">Rights and Licensing</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/85">
+            <p>
+              This work is licensed under a{" "}
+              <a
+                href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+                target="_blank"
+                rel="license noopener noreferrer"
+                className="text-primary underline decoration-brass/60 underline-offset-4 hover:text-accent transition-colors"
+              >
+                Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)
+              </a>
+              . To view a copy of this license, visit{" "}
+              <a
+                href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+                target="_blank"
+                rel="license noopener noreferrer"
+                className="text-primary underline decoration-brass/60 underline-offset-4 hover:text-accent transition-colors break-words"
+              >
+                creativecommons.org/licenses/by-nc-nd/4.0/
+              </a>
+            </p>
+          </div>
+        </FadeIn>
       </div>
+
     </>
   );
 }
