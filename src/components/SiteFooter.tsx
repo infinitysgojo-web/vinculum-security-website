@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import ccBadge from "@/assets/cc-by-nc-nd.svg";
+import ccBadge from "@/assets/cc-by-nc-nd.png.asset.json";
 
 export default function SiteFooter() {
   return (
@@ -41,7 +41,7 @@ export default function SiteFooter() {
             className="shrink-0 opacity-80 hover:opacity-100 transition-opacity"
           >
             <img
-              src={ccBadge}
+              src={ccBadge.url}
               alt="Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License"
               width={152}
               height={38}
