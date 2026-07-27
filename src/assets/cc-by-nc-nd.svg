@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 152 38" width="152" height="38" role="img" aria-label="CC BY-NC-ND 4.0">
+  <rect x="0.5" y="0.5" width="151" height="37" rx="4" fill="#111111"/>
+  <g fill="#ffffff">
+    <circle cx="23" cy="19" r="13"/>
+    <circle cx="55" cy="19" r="13"/>
+    <circle cx="87" cy="19" r="13"/>
+    <circle cx="119" cy="19" r="13"/>
+  </g>
+  <g fill="#111111" font-family="Helvetica, Arial, sans-serif" font-weight="700" text-anchor="middle">
+    <text x="23" y="25" font-size="15" letter-spacing="-1">CC</text>
+    <text x="87" y="26" font-size="18">$</text>
+    <text x="119" y="25" font-size="17">=</text>
+  </g>
+  <g fill="#111111">
+    <circle cx="55" cy="13" r="3.6"/>
+    <path d="M47.6 27c0-4.4 3.3-7.6 7.4-7.6s7.4 3.2 7.4 7.6z"/>
+  </g>
+  <rect x="86" y="7.5" width="2" height="23" fill="#111111" transform="rotate(-30 87 19)"/>
+</svg>
