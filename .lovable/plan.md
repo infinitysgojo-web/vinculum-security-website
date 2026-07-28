@@ -1,29 +1,42 @@
-# License notice and footer update
+# Copyright registration, scholarly links, and badge fix
 
 ## Verified current state
-- No mention of "license", "Creative Commons", or "All Rights Reserved" exists anywhere in `src/` or `index.html`.
-- `src/components/SiteFooter.tsx` currently shows: `Copyright © 2026 James Wesley Ndua` (name linked to the portfolio), then `First articulated MMXXVI`, `A Doctrine of Relational Security`, `Glossary`, plus three brass dots.
+- `src/components/SiteFooter.tsx` imports `src/assets/cc-by-nc-nd.png.asset.json` and renders `ccBadge.url`.
+- That URL (`/__l5e/assets-v1/.../cc-by-nc-nd.png`) returns `200 text/html` (2.7 KB — the SPA index fallback), not the PNG. The CDN asset path is not being served in this preview, which is why the badge is invisible.
+- `src/pages/About.tsx` has a "Rights and Licensing" section with the CC text only, no registration or profile links.
+- No mention of KECOBO, ORCID, Zenodo, Figshare, or OSF anywhere in `src/`.
+- `src/pages/Home.tsx` currently ends with the "Read the doctrine" navigation grid.
 
 ## Changes
 
-1. **Footer copyright line** (`src/components/SiteFooter.tsx`)
-   - After the linked name, add `. All Rights Reserved.`
+1. **Fix the CC badge** (`src/components/SiteFooter.tsx`)
+   - Replace the remote asset pointer with a local, self-contained inline SVG component (`src/components/CCBadge.tsx`) that draws the standard black-and-white CC BY-NC-ND button (CC circle, person, crossed dollar, equals) at 120x42.
+   - No network request, renders identically in preview and production, and scales crisply. Delete the now-unused `cc-by-nc-nd.png.asset.json` pointer.
 
-2. **License block in the footer**
-   - Add a second row beneath the existing footer row, separated by a thin brass hairline.
-   - Contents: the official CC BY-NC-ND 4.0 badge (the black-and-white icon strip: CC, person, crossed-out dollar, equals sign) on the left, and to its right the text:
-     "This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0). To view a copy of this license, visit creativecommons.org/licenses/by-nc-nd/4.0/"
-   - The license name and the URL link out to `https://creativecommons.org/licenses/by-nc-nd/4.0/` with `target="_blank" rel="license noopener noreferrer"`, gold hover treatment matching the rest of the footer.
-   - Small-caps/uppercase micro-type styling consistent with the current footer so it reads as an institutional colophon, not a banner.
+2. **Home page: registration notice**
+   - Add a slim, understated band beneath the navigation grid (above the footer), styled as an institutional colophon rather than a badge/banner: eyebrow "Copyright Registration", brass hairline, then:
+     "Registered with the Kenya Copyright Board (KECOBO). Registration No. RZ100967, approved 27 July 2026."
+   - Same serif/micro-type treatment as the rest of the site; no card, no CTA.
 
-3. **Badge asset**
-   - Ship the badge as a local SVG (`src/assets/cc-by-nc-nd.svg`), recreating the standard Wikimedia CC BY-NC-ND button in black and white so it renders crisply at any size and needs no external request. Imported as an ES6 image with alt text "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License".
+3. **About page: rename and expand the licensing section**
+   - Rename "Rights and Licensing" to **"Rights, Registration and Repositories"**.
+   - Keep the CC BY-NC-ND paragraph; add above it the KECOBO registration line (same wording as Home), and add the CC badge next to it for consistency with the footer.
+   - Below, add the profile/repository links as a neat row of labelled buttons (see item 4).
 
-4. **About page** (`src/pages/About.tsx`)
-   - Add the same license line as a short closing note under the author bio, since that is the natural "rights" location for a doctrine site. Text only there, badge stays in the footer.
+4. **Profile and repository links** (new `src/components/ScholarlyLinks.tsx`, used in both footer and About)
+   - Five links, each an outlined pill with a small inline monochrome SVG mark and a text label, brass border, gold hover:
+     - ORCID — https://orcid.org/0009-0005-9861-8849
+     - Zenodo — https://zenodo.org/communities/vinculumsecurity/records/
+     - Figshare — https://figshare.com/articles/preprint/_b_Vinculum_Security_Vinculum_Diplomacy_b_/33103223
+     - OSF — https://osf.io/user/7ad5x
+     - Portfolio — https://jamesndua.kidnexus.or.ke/
+   - Logos drawn as small inline SVGs (ORCID iD circle, Zenodo, Figshare, OSF, and a simple mark for the portfolio) so nothing depends on external image hosts. All `target="_blank" rel="noopener noreferrer"` with accessible labels.
+   - Footer: placed as a centered wrapping row in the license band, with the KECOBO line appended after the CC text.
+   - About: placed as a left-aligned row at the end of the renamed section, with a `me` rel on the profile links.
 
-5. **Machine-readable metadata**
-   - Add `<link rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" />` in `index.html` head, and add `"license"` to the existing Book JSON-LD block.
+## Technical notes
+- Component takes a `variant` prop (`footer` | `page`) so sizing/alignment differ without duplicating markup.
+- No new dependencies; all marks are hand-authored inline SVG paths using `currentColor`.
 
 ## Verification
-- Build, then check the footer at mobile (375px), tablet (768px) and desktop (1280px) so the badge and license text wrap cleanly without reintroducing brass gaps.
+- Build, then Playwright screenshots of Home, About, and the footer at 375px, 768px, and 1280px to confirm the badge now renders and the link row wraps cleanly.

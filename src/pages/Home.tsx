@@ -115,7 +115,16 @@ export default function Home() {
             </FadeIn>
           ))}
         </div>
+
+        <FadeIn className="mt-16 max-w-3xl">
+          <p className="eyebrow">Copyright Registration</p>
+          <hr className="gold-rule gold-rule-short mt-4 mb-4" />
+          <p className="text-sm leading-relaxed text-foreground/75">
+            Registered with the Kenya Copyright Board (KECOBO). Registration No. RZ100967, approved 27 July 2026.
+          </p>
+        </FadeIn>
       </section>
+
     </>
   );
 }
