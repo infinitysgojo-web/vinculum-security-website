@@ -5,6 +5,9 @@ import GoldRule from "@/components/GoldRule";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Logo from "@/components/Logo";
+import CCBadge from "@/components/CCBadge";
+import ScholarlyLinks from "@/components/ScholarlyLinks";
+
 
 export default function About() {
   return (
@@ -79,31 +82,50 @@ export default function About() {
         </FadeIn>
 
         <FadeIn className="max-w-3xl pb-8">
-          <p className="eyebrow">Rights and Licensing</p>
+          <p className="eyebrow">Rights, Registration and Repositories</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
-              This work is licensed under a{" "}
-              <a
-                href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
-                target="_blank"
-                rel="license noopener noreferrer"
-                className="text-primary underline decoration-brass/60 underline-offset-4 hover:text-accent transition-colors"
-              >
-                Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)
-              </a>
-              . To view a copy of this license, visit{" "}
-              <a
-                href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
-                target="_blank"
-                rel="license noopener noreferrer"
-                className="text-primary underline decoration-brass/60 underline-offset-4 hover:text-accent transition-colors break-words"
-              >
-                creativecommons.org/licenses/by-nc-nd/4.0/
-              </a>
+              Registered with the Kenya Copyright Board (KECOBO). Registration No. RZ100967, approved 27 July 2026.
             </p>
+            <div className="flex flex-col sm:flex-row items-start gap-4 mt-6">
+              <a
+                href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+                target="_blank"
+                rel="license noopener noreferrer"
+                className="shrink-0 opacity-85 hover:opacity-100 transition-opacity block"
+              >
+                <CCBadge width={120} />
+              </a>
+              <p className="m-0">
+                This work is licensed under a{" "}
+                <a
+                  href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+                  target="_blank"
+                  rel="license noopener noreferrer"
+                  className="text-primary underline decoration-brass/60 underline-offset-4 hover:text-accent transition-colors"
+                >
+                  Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)
+                </a>
+                . To view a copy of this license, visit{" "}
+                <a
+                  href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
+                  target="_blank"
+                  rel="license noopener noreferrer"
+                  className="text-primary underline decoration-brass/60 underline-offset-4 hover:text-accent transition-colors break-words"
+                >
+                  creativecommons.org/licenses/by-nc-nd/4.0/
+                </a>
+              </p>
+            </div>
           </div>
+
+          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mt-8 mb-3">
+            Profiles and Repositories
+          </p>
+          <ScholarlyLinks variant="page" />
         </FadeIn>
+
       </div>
 
     </>
