@@ -123,7 +123,9 @@ export default function About() {
           <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mt-8 mb-3">
             Profiles and Repositories
           </p>
-          <ScholarlyLinks variant="page" />
+          <p className="text-sm text-muted-foreground">
+            Links to the author’s profiles and repositories are available in the site footer below.
+          </p>
         </FadeIn>
 
       </div>
