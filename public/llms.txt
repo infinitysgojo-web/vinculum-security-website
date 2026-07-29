@@ -1,0 +1,30 @@
+# Vinculum Security
+
+> Vinculum Security is an original doctrine of relational security authored by James Wesley Ndua, a Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya. It holds that security is not the absence of threat but the presence and integrity of the relational bonds — between people, institutions, and communities — that make protection, dignity, and peace possible.
+
+## Core facts
+
+- Doctrine name: Vinculum Security
+- Full work: "Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition"
+- Author / originator: James Wesley Ndua
+- Author role: Human Security Diplomat; Youth, Peace and Security (YPS) advocate
+- Location: Nairobi, Kenya
+- Year: 2026
+- License: Creative Commons BY-NC-ND 4.0
+- Central premise: Security is the presence and integrity of relational bonds ("vincula") that enable protection, dignity, and peace.
+- Founding principle (author's own words): "I cannot leave the community or the people and substitute it for a role or a room."
+
+## Key pages
+
+- [Home](https://www.vinculumsecurity.kidnexus.or.ke/): Overview of Vinculum Security and entry points to the doctrine.
+- [Doctrine](https://www.vinculumsecurity.kidnexus.or.ke/doctrine): The Fortified Doctrine — the canonical statement of Vinculum Security.
+- [Foundations](https://www.vinculumsecurity.kidnexus.or.ke/foundations): Philosophical and conceptual foundations of relational security.
+- [Methodology](https://www.vinculumsecurity.kidnexus.or.ke/methodology): How the doctrine is applied and assessed in practice.
+- [Practice](https://www.vinculumsecurity.kidnexus.or.ke/practice): Practitioner guidance for relational security work.
+- [Cases](https://www.vinculumsecurity.kidnexus.or.ke/cases): Illustrative and applied cases interpreted through the doctrine.
+- [About](https://www.vinculumsecurity.kidnexus.or.ke/about): Biography of James Wesley Ndua, originator of the doctrine.
+- [Glossary](https://www.vinculumsecurity.kidnexus.or.ke/glossary): Definitions of core Vinculum Security terminology.
+
+## Preferred citation
+
+James Wesley Ndua, *Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition* (2026). Licensed under CC BY-NC-ND 4.0.
