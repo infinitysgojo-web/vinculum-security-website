@@ -1,20 +1,25 @@
-# Add Harvard Dataverse link
+# Add HALOpenScience and OpenAire profile links
 
 ## Verified current state
-- `src/components/ScholarlyLinks.tsx` renders a single wrapping row of five pill links (ORCID, Zenodo, Figshare, OSF, Portfolio) as inline SVG marks + labels.
-- `src/components/SiteFooter.tsx` uses `<ScholarlyLinks variant="footer" />` in the license band.
-- `src/pages/About.tsx` currently only points readers to the footer for profile links; it does not import or render `<ScholarlyLinks>`.
 
-## Changes
+- `src/components/ScholarlyLinks.tsx` already contains six pill links (ORCID, Zenodo, Figshare, OSF, Portfolio, Dataverse) with inline SVG marks, and the pattern for adding another entry is well established.
+- `src/pages/About.tsx` has a "Profiles and Repositories" subsection that only tells readers to look in the footer; it does not list the links directly on the page.
 
-1. **Add a Harvard Dataverse entry in `src/components/ScholarlyLinks.tsx`**
-   - Create a `DataverseMark` inline SVG component (monochrome, `currentColor`, `aria-hidden`, same `w-3.5 h-3.5` icon class as the other marks).
-   - Append `{ label: "Dataverse", href: "https://dataverse.harvard.edu/dataverse/viculumsecurity", Icon: DataverseMark }` to the `LINKS` array.
-   - Keep the existing `me noopener noreferrer` rel, accessible label, and pill styling so the new link matches the others.
+## Proposed changes
 
-2. **Reflect the expanded link set in `src/pages/About.tsx` (optional but consistent)**
-   - The user asked to add the link "as the others have been done". Because the About page currently only references the footer rather than rendering the row, the plan does not change the About page unless the user wants the row duplicated there. If desired, import `ScholarlyLinks` and replace the "available in the site footer below" paragraph with `<ScholarlyLinks variant="page" className="mt-2" />`.
+1. **Extend `src/components/ScholarlyLinks.tsx` with two new entries**
+  - Add a `HalMark` inline SVG component (monochrome, `currentColor`, `aria-hidden`, `w-3.5 h-3.5`, matching the existing mark style).
+  - Add an `OpenAireMark` inline SVG component (same styling rules as above).
+  - Append to the `LINKS` array:
+    - `{ label: "HAL", href: "https://cv.hal.science/james-wesley-ndua", Icon: HalMark }`
+    - `{ label: "OpenAire", href: "https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991", Icon: OpenAireMark }`
+  - Preserve the existing `rel="me noopener noreferrer"`, accessible `aria-label`, and pill styling so the new links match the existing row.
+2. **Improve the About page "Profiles and Repositories" section**
+  - Replace the current sentence that points only to the footer with a more descriptive statement, for example:
+    > "The author’s scholarly profiles and the doctrine’s underlying repositories are accessible through the links below, from ORCID and HALOpenScience to Zenodo, OpenAire, Figshare, OSF, Harvard Dataverse, and the author’s portfolio."
+  - Optionally render the `ScholarlyLinks` component directly beneath that statement so the links are actually on the About page rather than only referenced from the footer. This is the recommended approach because the user asked for the links to be "below" the statement.
 
 ## Verification
-- Build the project and confirm no TypeScript errors.
-- Check the footer and (if updated) About page to verify the Dataverse pill appears, uses the correct URL, and wraps cleanly on mobile.
+
+- Build the project and confirm no TypeScript or lint errors.
+- Check the footer and the About page to verify the HAL and OpenAire pills appear with the correct URLs, use the correct icon styling, and wrap cleanly on the current mobile viewport (360px).
