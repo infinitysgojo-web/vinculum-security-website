@@ -85,6 +85,15 @@ function OpenAireMark() {
   );
 }
 
+function HcommonsMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M3 6c4 0 6 2 9 2s5-2 9-2v13c-4 0-6-2-9-2s-5 2-9 2V6z" />
+      <path d="M12 8v13" />
+    </svg>
+  );
+}
+
 const LINKS = [
   { label: "ORCID", href: "https://orcid.org/0009-0005-9861-8849", Icon: OrcidMark },
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
@@ -101,6 +110,11 @@ const LINKS = [
     label: "OpenAire",
     href: "https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991",
     Icon: OpenAireMark,
+  },
+  {
+    label: "Knowledge Commons",
+    href: "https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest",
+    Icon: HcommonsMark,
   },
 ];
 
