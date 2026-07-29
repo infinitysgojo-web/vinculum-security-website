@@ -66,6 +66,25 @@ function DataverseMark() {
   );
 }
 
+function HalMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M4 6h16v12H4z" />
+      <path d="M8 6v12M16 6v12" />
+      <path d="M4 10h16" />
+    </svg>
+  );
+}
+
+function OpenAireMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <circle cx="11" cy="11" r="6" />
+      <path d="M15 15l5 5" />
+    </svg>
+  );
+}
+
 const LINKS = [
   { label: "ORCID", href: "https://orcid.org/0009-0005-9861-8849", Icon: OrcidMark },
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
@@ -77,6 +96,12 @@ const LINKS = [
   { label: "OSF", href: "https://osf.io/user/7ad5x", Icon: OsfMark },
   { label: "Portfolio", href: "https://jamesndua.kidnexus.or.ke/", Icon: PortfolioMark },
   { label: "Dataverse", href: "https://dataverse.harvard.edu/dataverse/viculumsecurity", Icon: DataverseMark },
+  { label: "HAL", href: "https://cv.hal.science/james-wesley-ndua", Icon: HalMark },
+  {
+    label: "OpenAire",
+    href: "https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991",
+    Icon: OpenAireMark,
+  },
 ];
 
 export default function ScholarlyLinks({
