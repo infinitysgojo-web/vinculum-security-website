@@ -23,21 +23,6 @@ function ZenodoMark() {
   );
 }
 
-function FigshareMark() {
-  return (
-    <svg viewBox="0 0 24 24" className={ICON} fill="currentColor" aria-hidden>
-      <circle cx="6.5" cy="6.5" r="2.6" />
-      <circle cx="6.5" cy="17.5" r="2.6" />
-      <circle cx="17.5" cy="12" r="2.6" />
-      <path
-        d="M8.7 7.7l6.6 3.1M8.7 16.3l6.6-3.1"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        fill="none"
-      />
-    </svg>
-  );
-}
 
 function OsfMark() {
   return (
@@ -97,11 +82,6 @@ function HcommonsMark() {
 const LINKS = [
   { label: "ORCID", href: "https://orcid.org/0009-0005-9861-8849", Icon: OrcidMark },
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
-  {
-    label: "Figshare",
-    href: "https://figshare.com/articles/preprint/_b_Vinculum_Security_Vinculum_Diplomacy_b_/33103223",
-    Icon: FigshareMark,
-  },
   { label: "OSF", href: "https://osf.io/user/7ad5x", Icon: OsfMark },
   { label: "Portfolio", href: "https://jamesndua.kidnexus.or.ke/", Icon: PortfolioMark },
   { label: "Dataverse", href: "https://dataverse.harvard.edu/dataverse/viculumsecurity", Icon: DataverseMark },
