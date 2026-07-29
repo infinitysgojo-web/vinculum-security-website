@@ -6,6 +6,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Logo from "@/components/Logo";
 import CCBadge from "@/components/CCBadge";
+import ScholarlyLinks from "@/components/ScholarlyLinks";
 
 
 
