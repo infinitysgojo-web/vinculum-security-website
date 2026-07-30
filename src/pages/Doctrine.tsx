@@ -1,4 +1,5 @@
 import SEO from "@/components/SEO";
+import { sectionLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import FadeIn from "@/components/FadeIn";
