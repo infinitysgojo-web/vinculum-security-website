@@ -9,6 +9,7 @@ export default function NotFound() {
         title="Ignotum: Page not found"
         description="The road you seek is not on the imperial map."
         path="/404"
+        noIndex
       />
       <div className="container py-24 md:py-32">
         <div className="max-w-2xl mx-auto text-center">
