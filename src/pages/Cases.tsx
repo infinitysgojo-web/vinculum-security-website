@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import SEO from "@/components/SEO";
+import { sectionLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -270,6 +271,16 @@ export default function Cases() {
         title="Case Studies"
         description="Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum."
         path="/cases"
+        keywords="peace process case studies, Northern Ireland, Colombia, Rwanda, Vinculum Continuum scoring, relational security cases"
+        scholarly
+        citationTitle="Vinculum Security: Applied Case Engagement"
+        jsonLd={sectionLd({
+          path: "/cases",
+          headline: "Vinculum Security: Applied Case Engagement",
+          description:
+            "Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum.",
+          section: "Section VII — Cases",
+        })}
       />
       <ReadingProgress />
       <div className="container">
