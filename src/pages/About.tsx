@@ -1,4 +1,5 @@
 import SEO from "@/components/SEO";
+import { SITE_URL, personLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
@@ -17,6 +18,19 @@ export default function About() {
         title="About the Author"
         description="James Wesley Ndua, Human Security Diplomat and Youth, Peace and Security Advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine."
         path="/about"
+        keywords="James Wesley Ndua, human security diplomat, Youth Peace and Security, Nairobi, ORCID 0009-0005-9861-8849"
+        citationTitle="About James Wesley Ndua, originator of Vinculum Security"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          "@id": `${SITE_URL}/about#profilepage`,
+          url: `${SITE_URL}/about`,
+          name: "About James Wesley Ndua",
+          inLanguage: "en",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          mainEntity: personLd,
+          about: personLd,
+        }}
       />
       <div className="container">
         <PageHeader eyebrow="Section I" title="About the Author" />
