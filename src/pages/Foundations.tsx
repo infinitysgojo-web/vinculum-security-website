@@ -1,4 +1,5 @@
 import SEO from "@/components/SEO";
+import { sectionLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -82,6 +83,16 @@ export default function Foundations() {
         title="Theoretical Foundations"
         description="The thirteen traditions Vinculum Security draws from, spanning Human Security and Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition."
         path="/foundations"
+        keywords="theoretical foundations of relational security, Ubuntu, Confucian role ethics, Women Peace and Security, human security traditions"
+        scholarly
+        citationTitle="Vinculum Security: Theoretical Foundations"
+        jsonLd={sectionLd({
+          path: "/foundations",
+          headline: "Theoretical Foundations of Vinculum Security",
+          description:
+            "The thirteen traditions Vinculum Security draws from, spanning Human Security and Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition.",
+          section: "Section II — Foundations",
+        })}
       />
       <ReadingProgress />
       <div className="container">
