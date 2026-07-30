@@ -1,4 +1,5 @@
 import SEO from "@/components/SEO";
+import { sectionLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
@@ -37,6 +38,16 @@ export default function Practice() {
         title="Vinculum Diplomacy"
         description="The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles."
         path="/practice"
+        keywords="Vinculum Diplomacy, relational diplomacy practice, human security practitioner guidance, diplomatic security"
+        scholarly
+        citationTitle="Vinculum Diplomacy: The Companion Handbook"
+        jsonLd={sectionLd({
+          path: "/practice",
+          headline: "Vinculum Diplomacy: The Companion Handbook",
+          description:
+            "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
+          section: "Companion Handbook — Practice",
+        })}
       />
       <ReadingProgress />
       <div className="container">

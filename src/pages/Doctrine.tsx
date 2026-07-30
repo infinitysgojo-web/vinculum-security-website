@@ -1,4 +1,5 @@
 import SEO from "@/components/SEO";
+import { sectionLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import FadeIn from "@/components/FadeIn";
@@ -47,6 +48,16 @@ export default function Doctrine() {
         title="The Doctrine"
         description="Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum."
         path="/doctrine"
+        keywords="Vinculum Security doctrine, relational security, Vinculum Continuum, human security theory, James Wesley Ndua"
+        scholarly
+        citationTitle="The Vinculum Security Doctrine"
+        jsonLd={sectionLd({
+          path: "/doctrine",
+          headline: "The Vinculum Security Doctrine",
+          description:
+            "Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum.",
+          section: "Section III — The Doctrine",
+        })}
       />
       <ReadingProgress />
       

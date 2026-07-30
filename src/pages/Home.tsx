@@ -1,4 +1,17 @@
 import SEO from "@/components/SEO";
+import {
+  AUTHOR_NAME,
+  BOOK_ID,
+  DOI,
+  DOI_URL,
+  LICENSE_URL,
+  ORG_ID,
+  PERSON_ID,
+  PUBLISHED,
+  SITE_URL,
+  WORK_TITLE,
+  personLd,
+} from "@/lib/seo-entities";
 import NavCard from "@/components/NavCard";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -24,6 +37,44 @@ export default function Home() {
         title="A Doctrine of Relational Security"
         description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua."
         path="/"
+        type="website"
+        keywords="Vinculum Security, relational security, human security doctrine, James Wesley Ndua, peace and security, diplomatic security"
+        scholarly
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "@id": `${SITE_URL}/#webpage`,
+          url: `${SITE_URL}/`,
+          name: "Vinculum Security: A Doctrine of Relational Security",
+          inLanguage: "en",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          about: { "@id": BOOK_ID },
+          mainEntity: {
+            "@type": "Book",
+            "@id": BOOK_ID,
+            name: WORK_TITLE,
+            url: `${SITE_URL}/`,
+            author: personLd,
+            publisher: { "@id": ORG_ID },
+            datePublished: PUBLISHED,
+            inLanguage: "en",
+            bookEdition: "Expanded Version, Final Edition",
+            license: LICENSE_URL,
+            copyrightHolder: { "@id": PERSON_ID },
+            copyrightYear: 2026,
+            isAccessibleForFree: true,
+            identifier: {
+              "@type": "PropertyValue",
+              propertyID: "DOI",
+              value: DOI,
+              url: DOI_URL,
+            },
+            description:
+              "An original doctrine holding that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible.",
+          },
+          author: { "@id": PERSON_ID },
+          creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+        }}
       />
 
       {/* Hero */}

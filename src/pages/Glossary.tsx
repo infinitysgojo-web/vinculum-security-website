@@ -1,5 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
 import SEO from "@/components/SEO";
+import {
+  LICENSE_URL,
+  ORG_ID,
+  PERSON_ID,
+  SITE_URL,
+  personLd,
+} from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -39,6 +46,30 @@ export default function Glossary() {
         title="Glossary"
         description="Canonical terms of the Vinculum Security doctrine and the Vinculum Diplomacy handbook, each with source section and verbatim passage."
         path="/glossary"
+        keywords="Vinculum Security glossary, relational security terms, vinculum, bond integrity, definitions"
+        citationTitle="Vinculum Security: Doctrine Glossary"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "DefinedTermSet",
+          "@id": `${SITE_URL}/glossary#termset`,
+          name: "Vinculum Security Doctrine Glossary",
+          url: `${SITE_URL}/glossary`,
+          description:
+            "Canonical terms of the Vinculum Security doctrine and the Vinculum Diplomacy handbook.",
+          inLanguage: "en",
+          license: LICENSE_URL,
+          author: personLd,
+          creator: { "@id": PERSON_ID },
+          publisher: { "@id": ORG_ID },
+          hasDefinedTerm: GLOSSARY.map((entry) => ({
+            "@type": "DefinedTerm",
+            "@id": `${SITE_URL}/glossary#${entry.id}`,
+            name: entry.term,
+            description: entry.short,
+            url: `${SITE_URL}/glossary#${entry.id}`,
+            inDefinedTermSet: `${SITE_URL}/glossary#termset`,
+          })),
+        }}
       />
       <ReadingProgress />
       
