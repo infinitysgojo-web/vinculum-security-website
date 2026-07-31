@@ -25,6 +25,8 @@ type SEOProps = {
   citationTitle?: string;
   /** Keep the page out of the index (error pages only). */
   noIndex?: boolean;
+  /** Route-specific social preview image (absolute or site-relative). */
+  image?: string;
 };
 
 function abs(path: string) {
@@ -43,6 +45,7 @@ export default function SEO({
   scholarly = false,
   citationTitle,
   noIndex = false,
+  image,
 }: SEOProps) {
   const full = `${title} · ${SITE_NAME}`;
   const crumbs: Breadcrumb[] =
@@ -55,7 +58,7 @@ export default function SEO({
         ]);
 
   const canonical = abs(path);
-  const ogImage = abs("/og-image.jpg");
+  const ogImage = abs(image ?? "/og-image.jpg");
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -96,7 +99,7 @@ export default function SEO({
       <meta property="og:image:secure_url" content={ogImage} />
       <meta property="og:image:type" content="image/jpeg" />
       <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="640" />
+      <meta property="og:image:height" content="630" />
       <meta
         property="og:image:alt"
         content="Vinculum Security — a doctrine of relational security by James Wesley Ndua"
