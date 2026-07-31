@@ -1,11 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/doctrine</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/foundations</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/methodology</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/practice</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/cases</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/about</loc><changefreq>yearly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.vinculumsecurity.kidnexus.or.ke/glossary</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og-image.jpg</image:loc>
+      <image:title>Vinculum Security: A Doctrine of Relational Security</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/doctrine</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/doctrine.jpg</image:loc>
+      <image:title>The Vinculum Security Doctrine</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/foundations</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/foundations.jpg</image:loc>
+      <image:title>Theoretical Foundations of Vinculum Security</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/methodology</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/methodology.jpg</image:loc>
+      <image:title>Vinculum Security: Methodology</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/practice</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/practice.jpg</image:loc>
+      <image:title>Vinculum Diplomacy: The Companion Handbook</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/about</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/about.jpg</image:loc>
+      <image:title>James Wesley Ndua, originator of Vinculum Security</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/glossary</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/glossary.jpg</image:loc>
+      <image:title>Vinculum Security Glossary</image:title>
+    </image:image>
+  </url>
 </urlset>

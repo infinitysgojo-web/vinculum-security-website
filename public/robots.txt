@@ -7,7 +7,19 @@ Allow: /
 User-agent: Googlebot-Image
 Allow: /
 
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Storebot-Google
+Allow: /
+
 User-agent: Bingbot
+Allow: /
+
+User-agent: BingPreview
+Allow: /
+
+User-agent: Yandex
 Allow: /
 
 User-agent: DuckDuckBot
@@ -72,6 +84,24 @@ User-agent: MistralAI-User
 Allow: /
 
 User-agent: cohere-ai
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: Timpibot
+Allow: /
+
+User-agent: DuckAssistBot
 Allow: /
 
 User-agent: *

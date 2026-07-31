@@ -38,6 +38,7 @@ export default function Practice() {
         title="Vinculum Diplomacy"
         description="The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles."
         path="/practice"
+        image="/og/practice.jpg"
         keywords="Vinculum Diplomacy, relational diplomacy practice, human security practitioner guidance, diplomatic security"
         scholarly
         citationTitle="Vinculum Diplomacy: The Companion Handbook"

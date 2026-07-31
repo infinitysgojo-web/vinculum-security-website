@@ -1,48 +1,45 @@
-## Full SEO and metadata upgrade (no SSR)
+## What I found
 
-Everything below is metadata, structured data, and crawler hygiene — no architecture change, no prerendering, no SSR.
+- `public/og-image.jpg` exists at **1200×640** (spec is 1200×630) and every page shares it. `index.html` and `src/components/SEO.tsx` both point at it, so previews are identical everywhere.
+- `public/favicon.png` is a **1024×1024, 562 KB** PNG and is the only icon. There is **no `/favicon.ico`**, no 32×32 or 180×180 variant, and no web manifest. Google's search result icon and most browsers probe `/favicon.ico` first — that's the most likely reason a globe placeholder shows next to the result.
+- `public/sitemap.xml` covers all 8 routes in `src/App.tsx` and uses correct canonical URLs. `public/robots.txt` is already comprehensive (web + AI crawlers, sitemap directive). Both need only light additions.
+- `public/llms.txt` still lists Figshare in the "do not treat as primary" sentence even though the link was removed from the site.
 
-### 1. Entity linking — the thing that makes you the primary source
-The site currently declares a Person and an Organization but never connects them to your repository deposits. Adding `sameAs` arrays turns eight scattered profiles into one identity graph with this site at the centre.
+## Plan
 
-- Add `sameAs` to the Person and Organization JSON-LD in `index.html`: ORCID, Zenodo, OSF, Harvard Dataverse, HAL, OpenAIRE, Knowledge Commons Works.
-- Add ORCID as the Person's `identifier` (PropertyValue), and the DOI `10.5281/zenodo.21615991` as the Book's `identifier`.
-- Add `mainEntity` to the WebSite node pointing at the Book, and `author`/`about` cross-links so the four blocks form one connected graph rather than four isolated ones.
+### 1. Icons (fixes the blank/globe icon)
+- Generate a clean square brand mark derived from the existing Vinculum mark and emit:
+  - `public/favicon.ico` (multi-size 16/32/48)
+  - `public/favicon-32.png`, `public/favicon-192.png`, `public/apple-touch-icon.png` (180×180)
+  - keep `public/favicon.png` but compress it
+- Add `public/site.webmanifest` with name, short name, icons, theme colour `#F5EBDD`.
+- Wire all of them into `index.html` (`icon`, `shortcut icon`, `apple-touch-icon`, `manifest`).
+- Point the Organization JSON-LD `logo` at a real square PNG (Google requires a logo it can crawl for the knowledge panel).
 
-### 2. Per-page structured data via the existing `SEO` component
-`SEO.tsx` already accepts a `jsonLd` prop — currently unused on most pages. I'll pass real schema per route:
+### 2. Per-route OpenGraph / Twitter images
+- Generate one 1200×630 JPG per public route (home, doctrine, foundations, methodology, practice, cases, about, glossary), each rendered in the site's existing typography and palette with: page title, "James Wesley Ndua", and a one-line description. Consistent layout across all eight so previews look like a set.
+- Replace the 1200×640 default with a new 1200×630 `og-image.jpg`.
+- Extend `src/components/SEO.tsx` with an `image` prop (defaults to the site image) and update the width/height meta to 630.
+- Pass the matching image from each page in `src/pages/*.tsx`.
+- Note: social crawlers (LinkedIn, Slack, Facebook) don't run JS, so they'll read the static `index.html` image; Google and AI crawlers that execute JS will read the per-route ones. That's the ceiling without SSR, which you asked me not to do.
 
-- **Doctrine, Foundations, Methodology, Practice, Cases** — `ScholarlyArticle` with author (Person + ORCID), `isPartOf` the Book, `license` CC BY-NC-ND 4.0, `datePublished`, `inLanguage`, `publisher`, DOI identifier.
-- **Glossary** — `DefinedTermSet` with a `DefinedTerm` per entry from `src/content/glossary.ts`, so a model lifting a definition carries your attribution.
-- **About** — `ProfilePage` + full `Person` with ORCID and all `sameAs` links.
-- **Home** — `WebPage` bound to the Book as `mainEntity`.
+### 3. Metadata and primary-source hardening
+- Audit every page's title (<60 chars incl. suffix) and description (<160 chars) for length, keyword accuracy, and no duplication.
+- Give each route its own targeted `keywords` set instead of shared generic terms.
+- Add to the `index.html` `@graph`: `Organization.logo` as a proper `ImageObject` with width/height, `WebSite.publisher`/`copyrightYear`, and an explicit `CreativeWork.isBasedOn`-free statement that repositories are `sameAs` mirrors (already partly there, will be completed and validated).
+- Add `Article`/`ScholarlyArticle` `isPartOf` links from each page back to `#book`, so crawlers see one work with eight chapters rather than eight unrelated pages.
+- Add `speakable` and `FAQPage` markup on Home for answer-engine extraction of "what is Vinculum Security" and "who is the author".
+- Update `public/llms.txt`: drop the stale Figshare mention, add a machine-readable citation block (APA + BibTeX) and a "primary source precedence" line.
 
-### 3. Harden the `SEO` component itself
-- Add `og:locale`, `og:image:width` (1200), `og:image:height` (630), `og:image:alt`.
-- Add `article:author`, `article:published_time`, and `twitter:creator` where relevant.
-- Add `<meta name="citation_title">`, `citation_author`, `citation_publication_date`, `citation_doi`, `citation_language` — Google Scholar tags. These matter a lot for a scholarly work and are currently absent entirely.
-- Add `dcterms.*` Dublin Core tags (title, creator, rights, identifier) — read by academic indexers.
+### 4. Sitemap and robots
+- Keep the existing sitemap structure and URLs (they are correct); add `<image:image>` entries pointing at each route's new OG image so Google Images can associate the brand visual with each page.
+- Leave `<lastmod>` out — there is no authoritative per-page timestamp in the project, and a build-time date would be misleading.
+- `robots.txt`: keep every existing block, add `User-agent: Googlebot-News`, `meta-externalagent`, and `Bingbot`-adjacent AI agents that are currently missing, and keep the sitemap directive.
 
-### 4. Page-level metadata audit
-Check every page's title length (<60 chars), description (<160), keyword targeting, single H1, and heading hierarchy. Tighten any that are generic, truncated, or duplicated across routes.
+### 5. Verification
+- Build, then load each route headless and dump the resolved `<head>` to confirm canonical, og:url, og:image, and JSON-LD are self-referencing and correct per route.
+- Validate the JSON-LD graph parses and every `@id` reference resolves.
+- Confirm `/favicon.ico` and every generated image are served at their exact paths.
 
-### 5. Crawler and discovery files
-- **`llms.txt`** — add the ORCID, DOI, preferred-attribution line, KECOBO registration number, and an explicit "this site is the canonical origin; repository deposits are archival mirrors" statement. This file is read directly by several AI crawlers.
-- **`robots.txt`** — already strong; I'll verify only and leave the crawler blocks intact.
-- **`sitemap.xml`** — verify all eight routes match `App.tsx`, no `lastmod` invented.
-- Confirm `googlefb38a3123ab3f382.html` verification file still serves.
-
-### 6. Social preview correctness
-- Verify `og-image.jpg` exists, is 1200×630, and resolves at the absolute canonical URL.
-- Confirm the static `index.html` OG block stays as the fallback for non-JS social crawlers, while `SEO.tsx` supplies per-route tags for Google.
-
-### 7. Verify
-- Build and confirm no errors.
-- Validate every JSON-LD block against schema.org's structural rules.
-- Screenshot-check nothing visual regressed.
-
-### Technical note
-`react-helmet-async` applies per-route tags client-side. Google executes JS and reads them; LinkedIn, Slack, and Facebook do not, which is why the sitewide OG block in `index.html` stays as the fallback. Every JSON-LD change to `index.html` ships in the raw HTML and is visible to all crawlers including AI ones — that's where the entity-linking work lives, so it lands regardless of JS.
-
-### One thing outside the code
-Ranking above Zenodo also needs those repository records pointing back here. In each Zenodo, OSF, Dataverse, HAL, and Knowledge Commons deposit, set the related-identifier or "alternate identifier" field to `https://www.vinculumsecurity.kidnexus.or.ke/`. Ten minutes of edits, and it's the strongest single signal that this site is the origin and they are mirrors.
+### Technical notes
+No architecture change, no SSR, no new dependencies. Image generation runs once and the results are committed as static files under `public/`. After publishing, cached previews on LinkedIn/X/Facebook won't update until you force a refetch in each platform's link-preview debugger.
