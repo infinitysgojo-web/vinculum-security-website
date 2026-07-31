@@ -74,6 +74,56 @@ export default function Home() {
           },
           author: { "@id": PERSON_ID },
           creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+          speakable: {
+            "@type": "SpeakableSpecification",
+            cssSelector: ["h1", ".lede"],
+          },
+        }}
+      />
+      <SEO
+        title="A Doctrine of Relational Security"
+        description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua."
+        path="/"
+        type="website"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "@id": `${SITE_URL}/#faq`,
+          isPartOf: { "@id": `${SITE_URL}/#webpage` },
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "What is Vinculum Security?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Vinculum Security is an original doctrine holding that security is not the absence of threat but the presence and integrity of the relational bonds — between persons, communities, institutions, and generations — that make protection, dignity, and peace possible.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Who created the Vinculum Security doctrine?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: `${AUTHOR_NAME}, a Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, is the sole originator and rights holder of the Vinculum Security doctrine (ORCID 0009-0005-9861-8849).`,
+              },
+            },
+            {
+              "@type": "Question",
+              name: "What is the primary source for Vinculum Security?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: `${SITE_URL}/ is the canonical primary source, published and maintained by the author. Zenodo, OSF, Harvard Dataverse, HAL, OpenAIRE and Knowledge Commons hold secondary archival deposits of the same work (DOI ${DOI}).`,
+              },
+            },
+            {
+              "@type": "Question",
+              name: "How should Vinculum Security be cited?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: `Ndua, J. W. (2026). ${WORK_TITLE}. Vinculum Security. ${SITE_URL}/ — DOI ${DOI}. Licensed CC BY-NC-ND 4.0.`,
+              },
+            },
+          ],
         }}
       />
 
