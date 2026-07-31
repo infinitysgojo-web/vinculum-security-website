@@ -40,7 +40,7 @@ export default function Home() {
         type="website"
         keywords="Vinculum Security, relational security, human security doctrine, James Wesley Ndua, peace and security, diplomatic security"
         scholarly
-        jsonLd={{
+        jsonLd={[{
           "@context": "https://schema.org",
           "@type": "WebPage",
           "@id": `${SITE_URL}/#webpage`,
@@ -78,14 +78,8 @@ export default function Home() {
             "@type": "SpeakableSpecification",
             cssSelector: ["h1", ".lede"],
           },
-        }}
-      />
-      <SEO
-        title="A Doctrine of Relational Security"
-        description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua."
-        path="/"
-        type="website"
-        jsonLd={{
+        },
+        {
           "@context": "https://schema.org",
           "@type": "FAQPage",
           "@id": `${SITE_URL}/#faq`,
@@ -124,7 +118,7 @@ export default function Home() {
               },
             },
           ],
-        }}
+        }]}
       />
 
       {/* Hero */}
