@@ -83,6 +83,7 @@ export default function Foundations() {
         title="Theoretical Foundations"
         description="The thirteen traditions Vinculum Security draws from, spanning Human Security and Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition."
         path="/foundations"
+        image="/og/foundations.jpg"
         keywords="theoretical foundations of relational security, Ubuntu, Confucian role ethics, Women Peace and Security, human security traditions"
         scholarly
         citationTitle="Vinculum Security: Theoretical Foundations"

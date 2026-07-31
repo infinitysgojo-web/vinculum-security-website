@@ -60,6 +60,7 @@ export default function Methodology() {
         title="Methodology"
         description="The diagnostic method and bond-integrity indicators used to assess a case, drawn from Section V of the Vinculum Security doctrine."
         path="/methodology"
+        image="/og/methodology.jpg"
         keywords="bond integrity indicators, relational security assessment, Vinculum Security methodology, diagnostic framework"
         scholarly
         citationTitle="Vinculum Security: Operational Framework and Methodology"

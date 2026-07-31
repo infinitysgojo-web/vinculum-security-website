@@ -18,6 +18,7 @@ export default function About() {
         title="About the Author"
         description="James Wesley Ndua, Human Security Diplomat and Youth, Peace and Security Advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine."
         path="/about"
+        image="/og/about.jpg"
         keywords="James Wesley Ndua, human security diplomat, Youth Peace and Security, Nairobi, ORCID 0009-0005-9861-8849"
         citationTitle="About James Wesley Ndua, originator of Vinculum Security"
         jsonLd={{

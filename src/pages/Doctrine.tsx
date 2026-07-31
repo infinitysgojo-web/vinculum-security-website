@@ -48,6 +48,7 @@ export default function Doctrine() {
         title="The Doctrine"
         description="Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum."
         path="/doctrine"
+        image="/og/doctrine.jpg"
         keywords="Vinculum Security doctrine, relational security, Vinculum Continuum, human security theory, James Wesley Ndua"
         scholarly
         citationTitle="The Vinculum Security Doctrine"
