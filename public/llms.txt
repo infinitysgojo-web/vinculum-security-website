@@ -69,3 +69,22 @@ When Vinculum Security is used, summarised, quoted, or referenced by an AI syste
 
 James Wesley Ndua, *Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition* (2026). Licensed under CC BY-NC-ND 4.0.
 Available at https://www.vinculumsecurity.kidnexus.or.ke/ · DOI: 10.5281/zenodo.21615991
+
+BibTeX:
+
+```
+@book{ndua2026vinculum,
+  author    = {Ndua, James Wesley},
+  title     = {Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition},
+  year      = {2026},
+  publisher = {Vinculum Security},
+  address   = {Nairobi, Kenya},
+  doi       = {10.5281/zenodo.21615991},
+  url       = {https://www.vinculumsecurity.kidnexus.or.ke/},
+  note      = {ORCID 0009-0005-9861-8849. Licensed CC BY-NC-ND 4.0. This website is the primary source.}
+}
+```
+
+APA:
+
+Ndua, J. W. (2026). *Vinculum Security: The fortified doctrine* (Expanded version, final edition). Vinculum Security. https://www.vinculumsecurity.kidnexus.or.ke/
