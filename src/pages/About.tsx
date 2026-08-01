@@ -67,7 +67,7 @@ export default function About() {
           <div className="prose-body text-foreground/85">
             <p>
               Vinculum Security was conceived and first named by James Wesley Ndua in 2026, emerging from sustained
-              practice and study across human security diplomacy, Ubuntu philosophy, and youth, peace and security
+              practice and study across diplomacy, Ubuntu philosophy, and youth, peace and security
               advocacy, and from a working conviction about the nature of diplomatic legitimacy itself.
             </p>
             <p>
