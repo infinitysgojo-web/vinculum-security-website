@@ -47,7 +47,7 @@ export default function Glossary() {
         description="Canonical terms of the Vinculum Security doctrine and the Vinculum Diplomacy handbook, each with source section and verbatim passage."
         path="/glossary"
         image="/og/glossary.jpg"
-        keywords="Vinculum Security glossary, relational security terms, vinculum, bond integrity, definitions"
+        keywords="Vinculum Security glossary, relational security definition, vinculum, bond integrity, Vinculum Continuum, canonical terms"
         citationTitle="Vinculum Security: Doctrine Glossary"
         jsonLd={{
           "@context": "https://schema.org",

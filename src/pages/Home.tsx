@@ -38,7 +38,7 @@ export default function Home() {
         description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua."
         path="/"
         type="website"
-        keywords="Vinculum Security, relational security, human security doctrine, James Wesley Ndua, peace and security, diplomatic security"
+        keywords="Vinculum Security, relational security, a doctrine of relational security, relational security doctrine, bond integrity, Vinculum Continuum, Vinculum Diplomacy, James Wesley Ndua"
         scholarly
         jsonLd={[{
           "@context": "https://schema.org",
