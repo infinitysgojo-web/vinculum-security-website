@@ -272,7 +272,7 @@ export default function Cases() {
         description="Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum."
         path="/cases"
         image="/og/cases.jpg"
-        keywords="peace process case studies, Northern Ireland, Colombia, Rwanda, Vinculum Continuum scoring, relational security cases"
+        keywords="peace process case studies, Northern Ireland, Colombia, Rwanda, Vinculum Continuum scoring, relational security case analysis, bond domains"
         scholarly
         citationTitle="Vinculum Security: Applied Case Engagement"
         jsonLd={sectionLd({

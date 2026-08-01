@@ -5,6 +5,7 @@ import Logo from "@/components/Logo";
 
 const NAV = [
   { to: "/doctrine", label: "The Doctrine" },
+  { to: "/relational-security", label: "Relational Security" },
   { to: "/foundations", label: "Foundations" },
   { to: "/cases", label: "Case Studies" },
   { to: "/methodology", label: "Methodology" },
@@ -23,18 +24,18 @@ export default function SiteHeader() {
       <div className="container flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-3 group" aria-label="Vinculum Security, Home">
           <Logo size={26} />
-          <span className="wordmark text-xl md:text-2xl leading-none group-hover:text-accent transition-colors">
+          <span className="wordmark text-xl md:text-2xl leading-none whitespace-nowrap group-hover:text-accent transition-colors">
             Vinculum Security
           </span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-7" aria-label="Primary">
+        <nav className="hidden xl:flex items-center gap-x-5 2xl:gap-x-7 ml-8" aria-label="Primary">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors relative pb-1 border-b-2 ${
+                `text-[11px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap transition-colors relative pb-1 border-b-2 ${
                   isActive
                     ? "border-accent text-accent"
                     : "border-transparent text-primary hover:text-accent hover:border-accent/60"
@@ -47,7 +48,7 @@ export default function SiteHeader() {
         </nav>
 
         <button
-          className="lg:hidden p-2 -mr-2 text-primary"
+          className="xl:hidden p-2 -mr-2 text-primary"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -57,7 +58,7 @@ export default function SiteHeader() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-brass/40 bg-background">
+        <div className="xl:hidden border-t border-brass/40 bg-background">
           <nav className="container flex flex-col py-2" aria-label="Mobile">
             {NAV.map((n) => (
               <NavLink

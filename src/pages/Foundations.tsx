@@ -81,10 +81,10 @@ export default function Foundations() {
     <>
       <SEO
         title="Theoretical Foundations"
-        description="The thirteen traditions Vinculum Security draws from, spanning Human Security and Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition."
+        description="The thirteen traditions Vinculum Security draws from and is distinguished against, spanning human security, Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition. Sources of the doctrine, not parent categories of it."
         path="/foundations"
         image="/og/foundations.jpg"
-        keywords="theoretical foundations of relational security, Ubuntu, Confucian role ethics, Women Peace and Security, human security traditions"
+        keywords="theoretical foundations of relational security, thirteen traditions, Ubuntu, Confucian role ethics, Women Peace and Security, sources Vinculum Security draws from"
         scholarly
         citationTitle="Vinculum Security: Theoretical Foundations"
         jsonLd={sectionLd({

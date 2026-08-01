@@ -18,6 +18,20 @@ export const PUBLISHED = "2026-01-01";
 export const WORK_TITLE =
   "Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition";
 
+/** The doctrine stated in its own words, reused wherever a definition is needed. */
+export const CANONICAL_DEFINITION =
+  "Security is the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible.";
+
+/** The originating claim of the doctrine. */
+export const ONTOLOGICAL_CLAIM = "The bond is the unit of security analysis.";
+
+/**
+ * Stated on every scholarly page so no crawler can file the work under
+ * human security. Human security is one of thirteen source traditions.
+ */
+export const DISAMBIGUATION =
+  "Vinculum Security is an original doctrine, also stated as A Doctrine of Relational Security. It is not a human security framework and not a sub-field, branch, or restatement of human security. Human security is one of thirteen traditions the doctrine draws from and is distinguished against.";
+
 /** Every external profile or deposit that represents the same author/work. */
 export const SAME_AS = [
   ORCID_URL,
@@ -54,11 +68,13 @@ export const personLd = {
   description:
     "Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine.",
   knowsAbout: [
-    "Human Security",
+    "Vinculum Security",
+    "Relational Security",
+    "Bond-integrity analysis",
+    "Vinculum Diplomacy",
     "Diplomatic Security",
     "Peace and Security",
-    "Relational Security",
-    "Vinculum Security",
+    "Human Security",
     "Youth, Peace and Security",
   ],
   identifier: {
@@ -120,10 +136,12 @@ export function sectionLd(opts: {
       url: DOI_URL,
     },
     citation: DOI_URL,
+    disambiguatingDescription: DISAMBIGUATION,
     about: [
       { "@type": "Thing", name: "Vinculum Security" },
       { "@type": "Thing", name: "Relational security" },
-      { "@type": "Thing", name: "Human security" },
+      { "@type": "Thing", name: "Bond-integrity analysis" },
+      { "@type": "Thing", name: "Diplomatic security" },
     ],
   };
 }

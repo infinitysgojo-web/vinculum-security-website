@@ -4,6 +4,7 @@ import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import Home from "./pages/Home";
 import Doctrine from "./pages/Doctrine";
+import RelationalSecurity from "./pages/RelationalSecurity";
 import Foundations from "./pages/Foundations";
 import Cases from "./pages/Cases";
 import Methodology from "./pages/Methodology";
@@ -79,6 +80,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/doctrine" element={<Doctrine />} />
+          <Route path="/relational-security" element={<RelationalSecurity />} />
           <Route path="/foundations" element={<Foundations />} />
           <Route path="/cases" element={<Cases />} />
           <Route path="/methodology" element={<Methodology />} />
