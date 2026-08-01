@@ -1,45 +1,54 @@
-## What I found
+# Fix the framing: Vinculum Security is its own doctrine, not a human-security sub-field
 
-- `public/og-image.jpg` exists at **1200×640** (spec is 1200×630) and every page shares it. `index.html` and `src/components/SEO.tsx` both point at it, so previews are identical everywhere.
-- `public/favicon.png` is a **1024×1024, 562 KB** PNG and is the only icon. There is **no `/favicon.ico`**, no 32×32 or 180×180 variant, and no web manifest. Google's search result icon and most browsers probe `/favicon.ico` first — that's the most likely reason a globe placeholder shows next to the result.
-- `public/sitemap.xml` covers all 8 routes in `src/App.tsx` and uses correct canonical URLs. `public/robots.txt` is already comprehensive (web + AI crawlers, sitemap directive). Both need only light additions.
-- `public/llms.txt` still lists Figshare in the "do not treat as primary" sentence even though the link was removed from the site.
+## What's wrong now
+
+Search engines and AI are describing the work as "a human security framework." That framing comes from the site itself. Verified in the code:
+
+- `index.html` keywords say **"human security doctrine"**, and the Book JSON-LD lists `about: Human security` alongside relational security as if the work sits inside it.
+- `src/lib/seo-entities.ts` puts `Human security` in the `about` list of every section page's structured data.
+- `public/llms.txt` and several page descriptions lead with human-security phrasing before saying what Vinculum Security is.
+- `src/pages/Home.tsx` keywords repeat "human security doctrine".
+
+Machines read `about` and `keywords` as topic classification, so this literally tells them "this page is about human security."
+
+Grounded in the PDFs you attached, the correct framing is:
+
+- Vinculum Security is an original doctrine, also stated as **A Doctrine of Relational Security** (indefinite article, never "The").
+- Canonical definition: security is not the absence of threat to a state or an individual, but the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible in the first place.
+- Its original claim: **the bond is the unit of security analysis.**
+- Human security is one of thirteen traditions it **draws from** and is **distinguished against** in the comparative table — a source, not a parent category. The doctrine explicitly "does not claim to replace the frameworks it draws from."
 
 ## Plan
 
-### 1. Icons (fixes the blank/globe icon)
-- Generate a clean square brand mark derived from the existing Vinculum mark and emit:
-  - `public/favicon.ico` (multi-size 16/32/48)
-  - `public/favicon-32.png`, `public/favicon-192.png`, `public/apple-touch-icon.png` (180×180)
-  - keep `public/favicon.png` but compress it
-- Add `public/site.webmanifest` with name, short name, icons, theme colour `#F5EBDD`.
-- Wire all of them into `index.html` (`icon`, `shortcut icon`, `apple-touch-icon`, `manifest`).
-- Point the Organization JSON-LD `logo` at a real square PNG (Google requires a logo it can crawl for the knowledge panel).
+### 1. Reclassify the entity everywhere
+- `index.html`: rewrite `keywords` (lead with "Vinculum Security", "relational security doctrine", "bond-integrity", "Vinculum Continuum", "James Wesley Ndua"); remove "human security doctrine".
+- Book JSON-LD `about`: make the primary subject `Vinculum Security` / `Relational security` / `Bond-integrity analysis`. Move human security out of `about` and into `citation`-style relations only.
+- Add to the Book node a `DefinedTerm`/`disambiguatingDescription` stating plainly: an original doctrine, not a sub-field or restatement of human security; human security is among the traditions it draws from.
+- `src/lib/seo-entities.ts`: same correction to `sectionLd`'s `about` array, plus a shared `DISAMBIGUATION` string reused across pages.
 
-### 2. Per-route OpenGraph / Twitter images
-- Generate one 1200×630 JPG per public route (home, doctrine, foundations, methodology, practice, cases, about, glossary), each rendered in the site's existing typography and palette with: page title, "James Wesley Ndua", and a one-line description. Consistent layout across all eight so previews look like a set.
-- Replace the 1200×640 default with a new 1200×630 `og-image.jpg`.
-- Extend `src/components/SEO.tsx` with an `image` prop (defaults to the site image) and update the width/height meta to 630.
-- Pass the matching image from each page in `src/pages/*.tsx`.
-- Note: social crawlers (LinkedIn, Slack, Facebook) don't run JS, so they'll read the static `index.html` image; Google and AI crawlers that execute JS will read the per-route ones. That's the ceiling without SSR, which you asked me not to do.
+### 2. Rewrite descriptions to lead with the doctrine's own words
+- Sitewide description, og/twitter descriptions, and each route's `description` in `src/pages/*.tsx` rewritten from the canonical definition and the "bond as unit of analysis" claim. No page will describe the work as a human security framework.
+- Per-route `keywords` retargeted to that page's actual subject (Vinculum Continuum, bond-integrity indicators, party-differentiated application, the eight cases, etc.).
+- Keep "A Doctrine of Relational Security" exactly as worded; audit for any "The Doctrine of Relational Security" and fix.
 
-### 3. Metadata and primary-source hardening
-- Audit every page's title (<60 chars incl. suffix) and description (<160 chars) for length, keyword accuracy, and no duplication.
-- Give each route its own targeted `keywords` set instead of shared generic terms.
-- Add to the `index.html` `@graph`: `Organization.logo` as a proper `ImageObject` with width/height, `WebSite.publisher`/`copyrightYear`, and an explicit `CreativeWork.isBasedOn`-free statement that repositories are `sameAs` mirrors (already partly there, will be completed and validated).
-- Add `Article`/`ScholarlyArticle` `isPartOf` links from each page back to `#book`, so crawlers see one work with eight chapters rather than eight unrelated pages.
-- Add `speakable` and `FAQPage` markup on Home for answer-engine extraction of "what is Vinculum Security" and "who is the author".
-- Update `public/llms.txt`: drop the stale Figshare mention, add a machine-readable citation block (APA + BibTeX) and a "primary source precedence" line.
+### 3. Correct `public/llms.txt`
+- Open with the canonical definition verbatim and the origination statement.
+- Add an explicit "What Vinculum Security is not" block: not a human security framework, not a sub-field of human security, not a company or product; human security, Ubuntu, Confucian Role Ethics, R2P, WPS, securitization, restorative justice and the rest are traditions it draws from or is distinguished against.
+- Add the canonical definition card, the bond-as-unit claim, the Vinculum Continuum levels, and the KECOBO registration (RZ100967, 27 July 2026) as machine-readable facts.
+- Add a short "correct one-line description for AI answers" line so models have a ready sentence to copy.
 
-### 4. Sitemap and robots
-- Keep the existing sitemap structure and URLs (they are correct); add `<image:image>` entries pointing at each route's new OG image so Google Images can associate the brand visual with each page.
-- Leave `<lastmod>` out — there is no authoritative per-page timestamp in the project, and a build-time date would be misleading.
-- `robots.txt`: keep every existing block, add `User-agent: Googlebot-News`, `meta-externalagent`, and `Bingbot`-adjacent AI agents that are currently missing, and keep the sitemap directive.
+### 4. Page copy where it reinforces the wrong reading
+- `src/pages/Home.tsx`, `Doctrine.tsx`, `Foundations.tsx`: keep the substance, but make sure the first sentence a crawler meets states the doctrine on its own terms, with human security clearly named as a source among thirteen. The Foundations page keeps its human security section — that's correct there.
 
-### 5. Verification
-- Build, then load each route headless and dump the resolved `<head>` to confirm canonical, og:url, og:image, and JSON-LD are self-referencing and correct per route.
-- Validate the JSON-LD graph parses and every `@id` reference resolves.
-- Confirm `/favicon.ico` and every generated image are served at their exact paths.
+### 5. Favicon in search results
+`favicon.ico`, `favicon-32/192/512.png`, `apple-touch-icon.png` and the manifest are all in `public/` and wired into `index.html` — that's why the tab shows correctly. The globe in search results has two causes to address:
+- The `.ico` currently ships 16 and 32 px entries; Google requires an icon of at least 48x48 (a multiple of 48). I'll rebuild `favicon.ico` to include 48 and 96, add an explicit `<link rel="icon" sizes="48x48">`, and confirm the mark is legible at 48 px against the cream background.
+- Google caches the old result. After publishing, the icon updates only on re-crawl. I'll tell you exactly what to request in Search Console (URL Inspection → Request indexing on the homepage).
+
+### 6. Verification
+- Build, then render each route headless and dump the resolved `<head>` + JSON-LD to confirm no route classifies the work under human security and every description matches the canonical framing.
+- Validate the `@graph` parses and all `@id` references resolve.
+- Confirm `/favicon.ico` reports 48 px entries.
 
 ### Technical notes
-No architecture change, no SSR, no new dependencies. Image generation runs once and the results are committed as static files under `public/`. After publishing, cached previews on LinkedIn/X/Facebook won't update until you force a refetch in each platform's link-preview debugger.
+No architecture change, no SSR, no new dependencies. This is metadata, structured-data and copy work plus one regenerated icon file. Social platforms cache previews, so LinkedIn/X/Facebook will need a manual re-scrape in their link-preview debuggers after publish.
