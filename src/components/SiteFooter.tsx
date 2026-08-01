@@ -36,6 +36,27 @@ export default function SiteFooter() {
 
       <div className="border-t border-brass/30">
         <div className="container py-6 flex flex-col gap-5">
+          <nav aria-label="Sections" className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2">
+            {[
+              { to: "/doctrine", label: "The Doctrine" },
+              { to: "/relational-security", label: "Relational Security" },
+              { to: "/foundations", label: "Foundations" },
+              { to: "/cases", label: "Case Studies" },
+              { to: "/methodology", label: "Methodology" },
+              { to: "/practice", label: "Practice" },
+              { to: "/glossary", label: "Glossary" },
+              { to: "/about", label: "About" },
+            ].map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="text-[10px] uppercase font-semibold tracking-[0.2em] text-primary hover:text-accent transition-colors whitespace-nowrap"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
+
           <ScholarlyLinks variant="footer" />
 
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
