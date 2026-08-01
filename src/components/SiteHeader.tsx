@@ -29,7 +29,7 @@ export default function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-x-5 2xl:gap-x-7" aria-label="Primary">
+        <nav className="hidden xl:flex items-center gap-x-5 2xl:gap-x-7 ml-8" aria-label="Primary">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
