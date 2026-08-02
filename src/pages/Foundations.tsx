@@ -12,7 +12,7 @@ const FOUNDATIONS = [
   {
     letter: "A",
     title: "Human Security",
-    body: "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want, freedom from fear, and freedom to live in dignity. Vinculum Security adopts this foundational move as its own point of departure.",
+    body: "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want, freedom from fear, and freedom to live in dignity. Vinculum Security engages this tradition comparatively while advancing its own referent object: the relational bond.",
   },
   {
     letter: "B",
@@ -32,7 +32,7 @@ const FOUNDATIONS = [
   {
     letter: "E",
     title: "Positive Peace",
-    body: "Galtung distinguished negative from positive peace, defined from 1969 onward as the absence of structural violence built into social and institutional arrangements. Vinculum Security is a relational specification of positive peace, diagnosed at the level of specific, nameable relationships rather than systemic distributive arrangements.",
+    body: "Galtung distinguished negative from positive peace, defined from 1969 onward as the absence of structural violence built into social and institutional arrangements. Vinculum Security engages positive peace as a comparative tradition while advancing a distinct doctrine diagnosed through the integrity of specific, nameable relationships.",
   },
   {
     letter: "F",
@@ -81,7 +81,7 @@ export default function Foundations() {
     <>
       <SEO
         title="Theoretical Foundations"
-        description="The thirteen traditions Vinculum Security draws from and is distinguished against, spanning human security, Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition. Sources of the doctrine, not parent categories of it."
+        description="Thirteen independent traditions engaged by Vinculum Security, from Ubuntu and positive peace to role ethics, restorative justice, and intergenerational policy."
         path="/foundations"
         image="/og/foundations.jpg"
         keywords="theoretical foundations of relational security, thirteen traditions, Ubuntu, Confucian role ethics, Women Peace and Security, sources Vinculum Security draws from"
@@ -91,7 +91,7 @@ export default function Foundations() {
           path: "/foundations",
           headline: "Theoretical Foundations of Vinculum Security",
           description:
-            "The thirteen traditions Vinculum Security draws from, spanning Human Security and Ubuntu, Confucian Role Ethics, WPS, and the digital and climate-displacement bonds named in the Final Edition.",
+            "Thirteen independent traditions engaged comparatively by Vinculum Security, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy.",
           section: "Section II — Foundations",
         })}
       />

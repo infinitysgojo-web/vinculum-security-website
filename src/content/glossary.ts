@@ -17,6 +17,15 @@ export const GLOSSARY: GlossaryEntry[] = [
       "Security is not the absence of threat, but the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible in the first place.",
   },
   {
+    id: "relational-security",
+    term: "Relational Security",
+    short:
+      "The doctrinal account of security advanced by Vinculum Security, in which the presence and integrity of relational bonds are the condition of protection, dignity, and peace.",
+    source: "Doctrine § III.A–B · Canonical Definition and Ontological Claim",
+    quote:
+      "The proper unit of security analysis is the bond: not only the individual, not only the institution, but the relationship between them.",
+  },
+  {
     id: "bond",
     term: "Bond",
     short: "The proper unit of security analysis in the doctrine, a nameable relationship on which safety and dignity depend.",

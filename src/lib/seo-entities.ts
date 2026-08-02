@@ -25,12 +25,9 @@ export const CANONICAL_DEFINITION =
 /** The originating claim of the doctrine. */
 export const ONTOLOGICAL_CLAIM = "The bond is the unit of security analysis.";
 
-/**
- * Stated on every scholarly page so no crawler can file the work under
- * human security. Human security is one of thirteen source traditions.
- */
+/** Stated on every scholarly page to define the doctrine affirmatively. */
 export const DISAMBIGUATION =
-  "Vinculum Security is an original doctrine, also stated as A Doctrine of Relational Security. It is not a human security framework and not a sub-field, branch, or restatement of human security. Human security is one of thirteen traditions the doctrine draws from and is distinguished against.";
+  "Vinculum Security is an original, standalone doctrine, also stated as A Doctrine of Relational Security, originated by James Wesley Ndua. Its distinctive claim is that the bond is the unit of security analysis.";
 
 /** Every external profile or deposit that represents the same author/work. */
 export const SAME_AS = [
@@ -66,7 +63,7 @@ export const personLd = {
     addressCountry: "KE",
   },
   description:
-    "Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya. Originator of the Vinculum Security doctrine.",
+    "James Wesley Ndua is a diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, and the originator of the standalone Vinculum Security doctrine.",
   knowsAbout: [
     "Vinculum Security",
     "Relational Security",
@@ -74,7 +71,6 @@ export const personLd = {
     "Vinculum Diplomacy",
     "Diplomatic Security",
     "Peace and Security",
-    "Human Security",
     "Youth, Peace and Security",
   ],
   identifier: {

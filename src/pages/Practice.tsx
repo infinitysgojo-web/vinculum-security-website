@@ -90,9 +90,9 @@ export default function Practice() {
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
-              A security doctrine that redefines the referent object of security carries an implicit demand on practice,
-              whether or not that demand is made explicit. Human security redefined the referent object from the state to
-              the individual; Vinculum Security redefines it a step further, from the individual to the bond. A diplomat
+              A security doctrine that establishes the bond as its referent object carries an implicit demand on practice,
+              whether or not that demand is made explicit. Vinculum Security begins from its own distinct claim that the
+              bond is the unit of security analysis. A diplomat
               who takes the bond seriously as the object of security will necessarily conduct negotiation, mediation, and
               representation differently than one who does not.
             </p>
