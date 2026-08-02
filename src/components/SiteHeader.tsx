@@ -5,7 +5,6 @@ import Logo from "@/components/Logo";
 
 const NAV = [
   { to: "/doctrine", label: "The Doctrine" },
-  { to: "/relational-security", label: "Relational Security" },
   { to: "/foundations", label: "Foundations" },
   { to: "/cases", label: "Case Studies" },
   { to: "/methodology", label: "Methodology" },
