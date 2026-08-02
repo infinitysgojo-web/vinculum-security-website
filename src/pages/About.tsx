@@ -83,8 +83,8 @@ export default function About() {
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
             <p>
-              Precedent does not require institutional seniority at origination.
-              Human security itself began as a single UNDP report before it carried institutional weight. A young author
+              Precedent does not require institutional seniority at origination. New doctrines are judged by the clarity
+              of their claims, the evidence they organize, and the scrutiny they withstand. A young author
               working directly in youth, peace and security practice, with lived proximity to the communities and
               generational dynamics the doctrine describes, has a legitimate standing to name a pattern that senior,
               institutionally distant observers are structurally less likely to notice first.

@@ -97,8 +97,9 @@ export default function Doctrine() {
               same conclusion is treated here as evidentiary strength, not coincidence.
             </p>
             <p>
-              Second, drawing from <Cite term="human-security">human security</Cite>: security is properly
-              assessed with reference to the person, not the state alone. <Cite term="political-realism">Political realism</Cite>{" "}
+              Second, in comparative dialogue with <Cite term="human-security">human security</Cite>, the doctrine
+              recognizes that security must account for persons rather than states alone. Vinculum Security then makes
+              its own distinct move: it identifies the relational bond as the referent object. <Cite term="political-realism">Political realism</Cite>{" "}
               is retained as counterweight rather than competitor.
             </p>
             <p>

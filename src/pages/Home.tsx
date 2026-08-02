@@ -21,7 +21,7 @@ import { useParallax } from "@/hooks/useParallax";
 
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
-  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen traditions the doctrine draws from: Ubuntu, Confucian Role Ethics, Human Security, R2P, WPS, and the digital and climate-displacement bonds named in the Final Edition." },
+  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen independent traditions engaged comparatively, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy." },
   { to: "/cases", eyebrow: "Section VII", title: "Case Studies", description: "Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific, each scored across four bond domains." },
   { to: "/methodology", eyebrow: "Section V", title: "Methodology", description: "The diagnostic method and bond-integrity indicators used to assess a case in plain terms." },
   { to: "/practice", eyebrow: "Handbook", title: "Vinculum Diplomacy", description: "The applied practitioner discipline derived from the doctrine, oriented around four practice principles." },
@@ -98,7 +98,7 @@ export default function Home() {
               name: "Who created the Vinculum Security doctrine?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: `${AUTHOR_NAME}, a Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, is the sole originator and rights holder of the Vinculum Security doctrine (ORCID 0009-0005-9861-8849).`,
+                text: `${AUTHOR_NAME}, a diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, is the sole originator and rights holder of the Vinculum Security doctrine (ORCID 0009-0005-9861-8849).`,
               },
             },
             {
