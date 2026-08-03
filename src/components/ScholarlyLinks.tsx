@@ -79,6 +79,15 @@ function HcommonsMark() {
   );
 }
 
+function CambridgeMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M4 7.5L12 3.5l8 4v9l-8 4-8-4v-9z" />
+      <path d="M8.5 10.5h7M8.5 13.5h7" />
+    </svg>
+  );
+}
+
 const LINKS = [
   { label: "ORCID", href: "https://orcid.org/0009-0005-9861-8849", Icon: OrcidMark },
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
@@ -95,6 +104,11 @@ const LINKS = [
     label: "Knowledge Commons",
     href: "https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest",
     Icon: HcommonsMark,
+  },
+  {
+    label: "Cambridge Open Engage",
+    href: "https://www.cambridge.org/engage/coe/article-details/6a69e74c4770e67d9259a4fc",
+    Icon: CambridgeMark,
   },
 ];
 

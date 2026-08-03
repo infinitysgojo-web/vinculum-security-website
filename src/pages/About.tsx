@@ -7,8 +7,6 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Logo from "@/components/Logo";
 import CCBadge from "@/components/CCBadge";
-import ScholarlyLinks from "@/components/ScholarlyLinks";
-
 
 
 export default function About() {
@@ -139,12 +137,11 @@ export default function About() {
           <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mt-8 mb-3">
             Profiles and Repositories
           </p>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-muted-foreground">
             The author’s scholarly profiles and the doctrine’s underlying repositories are accessible through the links
-            below, from ORCID and HALOpenScience to Zenodo, OpenAire, Figshare, OSF, Harvard Dataverse, and the author’s
-            portfolio.
+            below, from ORCID and HALOpenScience to Zenodo, OpenAire, OSF, Harvard Dataverse, Knowledge Commons,
+            Cambridge Open Engage, and the author’s portfolio.
           </p>
-          <ScholarlyLinks variant="page" />
         </FadeIn>
 
       </div>

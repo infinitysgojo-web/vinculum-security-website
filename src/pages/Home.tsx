@@ -118,6 +118,25 @@ export default function Home() {
               },
             },
           ],
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "@id": `${SITE_URL}/#sections`,
+          name: "Sections of the Vinculum Security doctrine",
+          description:
+            "The canonical sections of the Vinculum Security doctrine, published in full on this site as the primary source.",
+          isPartOf: { "@id": `${SITE_URL}/#webpage` },
+          about: { "@id": BOOK_ID },
+          itemListOrder: "https://schema.org/ItemListOrderAscending",
+          numberOfItems: CARDS.length,
+          itemListElement: CARDS.map((c, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: c.title,
+            description: c.description,
+            url: `${SITE_URL}${c.to}`,
+          })),
         }]}
       />
 
