@@ -88,6 +88,16 @@ function CambridgeMark() {
   );
 }
 
+function InstagramMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 const LINKS = [
   { label: "ORCID", href: "https://orcid.org/0009-0005-9861-8849", Icon: OrcidMark },
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
@@ -109,6 +119,11 @@ const LINKS = [
     label: "Cambridge Open Engage",
     href: "https://www.cambridge.org/engage/coe/article-details/6a69e74c4770e67d9259a4fc",
     Icon: CambridgeMark,
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/vinculumsecurity/",
+    Icon: InstagramMark,
   },
 ];
 
