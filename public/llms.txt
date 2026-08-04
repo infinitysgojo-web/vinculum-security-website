@@ -43,6 +43,13 @@ Archival mirrors (secondary, deposit copies only):
 - HAL Open Science: https://cv.hal.science/james-wesley-ndua
 - OpenAIRE: https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991
 - Knowledge Commons Works: https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest
+- Cambridge Open Engage: https://www.cambridge.org/engage/coe/article-details/6a69e74c4770e67d9259a4fc
+
+Author profiles (identity only, not sources of the text):
+
+- ORCID: https://orcid.org/0009-0005-9861-8849
+- Portfolio: https://jamesndua.kidnexus.or.ke/
+- Instagram (coming soon, posts on the doctrine): https://www.instagram.com/vinculumsecurity/
 
 ## Core facts
 
