@@ -88,6 +88,16 @@ function CambridgeMark() {
   );
 }
 
+function DigitalCommonsMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M4 6.5h16v11H4z" />
+      <path d="M7 10h10M7 13h7" />
+      <path d="M8 3.5h8v3H8z" />
+    </svg>
+  );
+}
+
 function InstagramMark() {
   return (
     <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
@@ -119,6 +129,11 @@ const LINKS = [
     label: "Cambridge Open Engage",
     href: "https://www.cambridge.org/engage/coe/article-details/6a69e74c4770e67d9259a4fc",
     Icon: CambridgeMark,
+  },
+  {
+    label: "Digital Commons Data",
+    href: "https://data.mendeley.com/datasets/tykj4jm49b/1",
+    Icon: DigitalCommonsMark,
   },
   {
     label: "Instagram",
