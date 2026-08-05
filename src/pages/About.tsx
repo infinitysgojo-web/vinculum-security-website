@@ -140,8 +140,8 @@ export default function About() {
           <p className="text-sm text-muted-foreground">
             The author’s scholarly profiles and the doctrine’s underlying repositories are accessible through the links
             below, from ORCID and HALOpenScience to Zenodo, OpenAire, OSF, Harvard Dataverse, Knowledge Commons,
-            Cambridge Open Engage, and the author’s portfolio, alongside Instagram, coming soon, for posts on the
-            doctrine.
+            Cambridge Open Engage, Digital Commons Data, and the author’s portfolio, alongside Instagram, coming soon,
+            for posts on the doctrine.
           </p>
         </FadeIn>
 

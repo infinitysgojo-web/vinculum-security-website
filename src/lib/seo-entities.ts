@@ -39,6 +39,7 @@ export const SAME_AS = [
   "https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991",
   "https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest",
   "https://www.cambridge.org/engage/coe/article-details/6a69e74c4770e67d9259a4fc",
+  "https://data.mendeley.com/datasets/tykj4jm49b/1",
   "https://www.instagram.com/vinculumsecurity/",
   "https://jamesndua.kidnexus.or.ke/",
 ];
