@@ -88,12 +88,12 @@ function CambridgeMark() {
   );
 }
 
-function DigitalCommonsMark() {
+function SsrnMark() {
   return (
     <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-      <path d="M4 6.5h16v11H4z" />
-      <path d="M7 10h10M7 13h7" />
-      <path d="M8 3.5h8v3H8z" />
+      <path d="M6 3.5h9l3.5 3.5v13.5H6z" />
+      <path d="M14.5 3.5V7H18" />
+      <path d="M9 11.5h6M9 14.5h4" />
     </svg>
   );
 }
@@ -131,9 +131,9 @@ const LINKS = [
     Icon: CambridgeMark,
   },
   {
-    label: "Digital Commons Data",
-    href: "https://data.mendeley.com/datasets/tykj4jm49b/1",
-    Icon: DigitalCommonsMark,
+    label: "SSRN",
+    href: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7189099",
+    Icon: SsrnMark,
   },
   {
     label: "Instagram",
