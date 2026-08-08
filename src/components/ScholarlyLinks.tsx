@@ -98,6 +98,16 @@ function SsrnMark() {
   );
 }
 
+function ResearchgateMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M7 4.5h6.5c2.4 0 4 1.5 4 3.8 0 2.5-1.9 3.9-4.4 3.9H10v6.8H7z" />
+      <path d="M10 10.4h2.9c1 0 1.7-.7 1.7-1.9s-.7-1.8-1.7-1.8H10z" />
+      <path d="M15.8 15.2l3.2 5.8h-2.4l-2.9-5.3" />
+    </svg>
+  );
+}
+
 function InstagramMark() {
   return (
     <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
@@ -134,6 +144,11 @@ const LINKS = [
     label: "SSRN",
     href: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7189099",
     Icon: SsrnMark,
+  },
+  {
+    label: "ResearchGate",
+    href: "https://www.researchgate.net/publication/411776051_Vinculum_Security_The_Fortified_Doctrine_Expanded_Version",
+    Icon: ResearchgateMark,
   },
   {
     label: "Instagram",
