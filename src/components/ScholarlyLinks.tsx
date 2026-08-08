@@ -146,6 +146,11 @@ const LINKS = [
     Icon: SsrnMark,
   },
   {
+    label: "ResearchGate",
+    href: "https://www.researchgate.net/publication/411776051_Vinculum_Security_The_Fortified_Doctrine_Expanded_Version",
+    Icon: ResearchgateMark,
+  },
+  {
     label: "Instagram",
     href: "https://www.instagram.com/vinculumsecurity/",
     Icon: InstagramMark,
