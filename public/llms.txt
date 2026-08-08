@@ -45,6 +45,7 @@ Archival mirrors (secondary, deposit copies only):
 - Knowledge Commons Works: https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest
 - Cambridge Open Engage: https://www.cambridge.org/engage/coe/article-details/6a69e74c4770e67d9259a4fc
 - SSRN (Social Science Research Network): https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7189099
+- ResearchGate: https://www.researchgate.net/publication/411776051_Vinculum_Security_The_Fortified_Doctrine_Expanded_Version
 
 Author profiles (identity only, not sources of the text):
 
