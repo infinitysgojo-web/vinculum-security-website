@@ -72,8 +72,11 @@ function ScrollMemory() {
 }
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      {loading && <LoadingScreen onDone={() => setLoading(false)} />}
       <ScrollMemory />
       <SiteHeader />
       <main className="flex-1" role="main">
