@@ -1,7 +1,8 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
+import LoadingScreen from "./components/LoadingScreen";
 import Home from "./pages/Home";
 import Doctrine from "./pages/Doctrine";
 import Foundations from "./pages/Foundations";
@@ -71,8 +72,11 @@ function ScrollMemory() {
 }
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
+      {loading && <LoadingScreen onDone={() => setLoading(false)} />}
       <ScrollMemory />
       <SiteHeader />
       <main className="flex-1" role="main">
