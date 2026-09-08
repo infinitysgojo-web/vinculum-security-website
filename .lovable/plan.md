@@ -1,43 +1,66 @@
-# Plan: Add "Both works" readiness statement across the site
+# Plan: Add the readiness statement, split across the site without repetition
 
-## What the user wants
-
-Add the following statement wherever it is relevant on the site, with its meaning and useful aspects visible:
+## The statement
 
 > "Both works are fully developed, copyrighted, and tested against major historical and ongoing case studies (including peace processes in Rwanda, Colombia, and South Africa), and is operational and ready for use in academic circles, the mainstream policy and public discourse where it can be applied."
 
-"Both works" refers to the doctrine (Vinculum Security) and the companion handbook (Vinculum Diplomacy). The statement should be adapted per location so each part lands where it is most useful, not pasted verbatim everywhere.
+"Both works" = the doctrine (Vinculum Security) and the companion handbook (Vinculum Diplomacy).
 
-## Where it goes
+The statement carries four distinct claims. Rather than repeat the whole sentence in several places, each claim goes where it already belongs, so the site reads as one coherent argument instead of a slogan repeated:
 
-### 1. Home page (`src/pages/Home.tsx`) — new "Status and Readiness" block
+1. **Fully developed and copyrighted** — the works are complete and registered.
+2. **Tested against major historical and ongoing case studies** — Rwanda, Colombia, South Africa.
+3. **Operational** — usable, not theoretical.
+4. **Ready for academic, policy, and public discourse** — the audiences it serves.
 
-Add a new `FadeIn` section directly after the existing "Copyright Registration" block at the bottom of the page. This is the natural place because it already discusses copyright status. The statement here will read as a closing summary of the doctrine's operational readiness:
+## Where each part goes (one place each, no overlap)
 
-- Eyebrow: "Status and Readiness"
-- GoldRule divider (matching the site's existing pattern)
-- Body text combining the key claims: both works (doctrine + handbook) are fully developed, copyrighted (KECOBO RZ100967), tested against the eight documented case studies including Rwanda, Colombia, and South Africa, and operational and ready for use in academic circles, policy, and public discourse.
+### 1. Home page (`src/pages/Home.tsx`) — the full, complete statement
 
-### 2. About page (`src/pages/About.tsx`) — new section after "Why This Author, Why Now"
+The existing bottom block is "Copyright Registration". Widen it into a single **"Status of the Works"** block that states the whole thing once, in full and in the site's voice: both the doctrine and the companion handbook are complete, registered with KECOBO (RZ100967, 27 July 2026), tested against the documented case studies, and operational and ready for academic, policy, and public use.
 
-Add a new `FadeIn` block titled "Operational Status" between the "Why This Author, Why Now" and "Rights, Registration and Repositories" sections. This placement makes sense because the About page establishes the author's standing, and this statement establishes the works' standing. The text here will emphasize the "tested against case studies" and "ready for use in academic circles, policy, and public discourse" aspects.
+This is the only place the complete statement appears. The existing copyright line folds into it rather than sitting separately, so nothing is said twice.
 
-### 3. Cases page (`src/pages/Cases.tsx`) — closing statement
+### 2. Cases page (`src/pages/Cases.tsx`) — only the "tested against" claim
 
-Add a short closing `FadeIn` block after the Cross-Case Pattern Summary. Since the Cases page already presents Rwanda, Colombia, and South Africa as scored case studies, a brief statement here confirms that these cases (and others on the page) are the test-bed the doctrine and handbook have been tested against, and that the works are operational and ready for application. This keeps the mention grounded rather than abstract.
+Add one short closing line beneath the Cross-Case Pattern Summary noting that these eight processes, Rwanda, Colombia, and South Africa among them, are the historical and ongoing test-bed against which both the doctrine and the handbook have been tested. No mention of copyright or readiness here — that belongs on Home.
 
-## SEO and AI-source updates
+### 3. Practice page (`src/pages/Practice.tsx`) — only the "operational" claim
 
-### 4. `public/llms.txt` — add a "Status and readiness" section
+One sentence added to the existing closing note: the handbook is operational, not provisional, and is intended for direct use in the field alongside the doctrine. Nothing about case studies or copyright.
 
-Add a new section under "Core facts" stating that both works (the doctrine and the companion handbook) are fully developed, copyrighted, tested against the eight documented case studies including Rwanda, Colombia, and South Africa, and operational and ready for use in academic circles, mainstream policy, and public discourse. This ensures AI systems cite the operational status accurately.
+### 4. About page (`src/pages/About.tsx`) — only the "ready for use" audiences
 
-### 5. Structured data — `index.html` Book node
+The "Rights, Registration and Repositories" section already carries the KECOBO line. Extend it with one sentence on the audiences: both works are ready for use in academic circles, mainstream policy, and public discourse. No case-study or "operational" repetition.
 
-Add a `creativeWorkStatus` field to the Book JSON-LD node in `index.html` with value "Published" (schema.org's recognized value), and extend the existing `description` to note the work is operational and tested against documented case studies. This is a small, standards-aligned addition that helps search engines understand the work's status without any risk.
+## SEO, metadata, and AI-answer surfaces
 
-## What stays the same
+The same meaning is carried into the places search engines and AI systems read, stated once per surface in the appropriate register:
 
-- No new pages, no new routes, no footer changes.
-- No changes to the favicon, branding, or existing scholarly links.
-- The statement is adapted per location — not pasted identically everywhere — so each part is visible and useful where it appears.
+### 5. `public/llms.txt` — a "Status and readiness" section
+
+Add a compact section after "Core facts": both works fully developed and copyrighted (KECOBO RZ100967); tested against eight documented processes including Rwanda, Colombia, and South Africa; operational and ready for academic, policy, and public discourse use. This is what AI systems will quote when asked whether the doctrine is usable.
+
+### 6. `index.html` — structured data
+
+- Add `creativeWorkStatus: "Published"` to the Book node (schema.org's recognised value for a complete work).
+- Extend the Book node's `description` with the tested-and-operational fact so the graph carries it.
+- Add the same readiness sentence to the WebSite node's `description`.
+
+### 7. Page descriptions and keywords
+
+- **Home** (`src/pages/Home.tsx` SEO block, and the matching static tags in `index.html`): extend the description to note the doctrine is tested against documented peace processes and ready for academic and policy use. Add keywords covering the operational framing.
+- **Cases** (`src/pages/Cases.tsx` SEO block): extend the description to say the cases are the doctrine's test-bed.
+- **Practice** (`src/pages/Practice.tsx` SEO block): note the handbook is operational and field-ready.
+
+### 8. A new FAQ entry on the home page
+
+The home page already carries an `FAQPage` block. Add one question — "Is Vinculum Security ready for practical use?" — answered with the full readiness statement. This is the entry Google and AI assistants surface directly for that kind of question, and it gives the statement one authoritative machine-readable home.
+
+## What stays unchanged
+
+No new pages or routes, no footer changes, no favicon or branding work, no changes to the scholarly links.
+
+## Note on going live
+
+These changes appear in the preview immediately; the search and social metadata reaches the live address on the next publish.
