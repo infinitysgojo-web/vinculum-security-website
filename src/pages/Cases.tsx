@@ -269,10 +269,10 @@ export default function Cases() {
     <>
       <SEO
         title="Case Studies"
-        description="Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum."
+        description="Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum. These major historical and ongoing case studies are the test-bed against which the doctrine and its companion handbook have been tested."
         path="/cases"
         image="/og/cases.jpg"
-        keywords="peace process case studies, Northern Ireland, Colombia, Rwanda, Vinculum Continuum scoring, relational security case analysis, bond domains"
+        keywords="peace process case studies, Northern Ireland, Colombia, Rwanda, South Africa, Vinculum Continuum scoring, relational security case analysis, bond domains, case-tested doctrine, doctrine test-bed"
         scholarly
         citationTitle="Vinculum Security: Applied Case Engagement"
         jsonLd={sectionLd({
@@ -453,6 +453,11 @@ export default function Cases() {
             the only case scoring uniformly low, making it the doctrine's single most important
             test case for the falsifiability standard.
           </p>
+          <p className="mt-4 text-sm text-foreground/75 max-w-3xl">
+            These eight processes, among them Rwanda, Colombia, and South Africa, are the major historical and ongoing
+            case studies against which both the doctrine and its companion handbook have been tested.
+          </p>
+
         </FadeIn>
 
 

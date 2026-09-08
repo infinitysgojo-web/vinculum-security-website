@@ -36,10 +36,10 @@ export default function Practice() {
     <>
       <SEO
         title="Vinculum Diplomacy"
-        description="The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles."
+        description="The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles. An operational, field-ready companion handbook, complete and intended for direct use by practitioners."
         path="/practice"
         image="/og/practice.jpg"
-        keywords="Vinculum Diplomacy, relational security practice, bond-centred diplomacy, practitioner guidance, diplomatic security"
+        keywords="Vinculum Diplomacy, relational security practice, bond-centred diplomacy, practitioner guidance, diplomatic security, operational diplomacy handbook, field-ready peacebuilding method"
         scholarly
         citationTitle="Vinculum Diplomacy: The Companion Handbook"
         jsonLd={sectionLd({
@@ -184,7 +184,12 @@ export default function Practice() {
             introduction of the <em>continuity provision</em>: a clause or mechanism built into an
             agreement specifically to survive a change in the officeholders who negotiated it.
           </p>
+          <p className="mt-4 text-sm text-foreground/75">
+            The handbook is operational rather than provisional. It is complete and intended for direct use in the
+            room, alongside the doctrine, by practitioners working now.
+          </p>
         </FadeIn>
+
       </div>
     </>
   );

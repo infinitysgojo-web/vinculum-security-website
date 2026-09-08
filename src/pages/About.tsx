@@ -102,6 +102,11 @@ export default function About() {
             <p>
               Registered with the Kenya Copyright Board (KECOBO). Registration No. RZ100967, approved 27 July 2026.
             </p>
+            <p>
+              Both works are ready for use in academic circles, in mainstream policy, and in the wider public
+              discourse where they can be applied.
+            </p>
+
             <div className="flex flex-col sm:flex-row items-start gap-4 mt-6">
               <a
                 href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
