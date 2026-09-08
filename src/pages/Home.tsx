@@ -35,10 +35,10 @@ export default function Home() {
     <>
       <SEO
         title="A Doctrine of Relational Security"
-        description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua."
+        description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua, tested against peace processes in Rwanda, Colombia, and South Africa, and ready for academic and policy use."
         path="/"
         type="website"
-        keywords="Vinculum Security, relational security, a doctrine of relational security, relational security doctrine, bond integrity, Vinculum Continuum, Vinculum Diplomacy, James Wesley Ndua"
+        keywords="Vinculum Security, relational security, a doctrine of relational security, relational security doctrine, bond integrity, Vinculum Continuum, Vinculum Diplomacy, James Wesley Ndua, operational security doctrine, case-tested peace doctrine, Rwanda Colombia South Africa peace processes"
         scholarly
         jsonLd={[{
           "@context": "https://schema.org",
@@ -115,6 +115,14 @@ export default function Home() {
               acceptedAnswer: {
                 "@type": "Answer",
                 text: `Ndua, J. W. (2026). ${WORK_TITLE}. Vinculum Security. ${SITE_URL}/ — DOI ${DOI}. Licensed CC BY-NC-ND 4.0.`,
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Is Vinculum Security ready for practical use?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Both works, the doctrine and its companion handbook Vinculum Diplomacy, are fully developed and copyrighted (Kenya Copyright Board, Registration No. RZ100967, 27 July 2026), and have been tested against major historical and ongoing case studies, including the peace processes in Rwanda, Colombia, and South Africa. Both are operational and ready for use in academic circles, in mainstream policy, and in the public discourse where they can be applied.",
               },
             },
           ],
