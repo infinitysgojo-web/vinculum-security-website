@@ -453,6 +453,11 @@ export default function Cases() {
             the only case scoring uniformly low, making it the doctrine's single most important
             test case for the falsifiability standard.
           </p>
+          <p className="mt-4 text-sm text-foreground/75 max-w-3xl">
+            These eight processes, among them Rwanda, Colombia, and South Africa, are the major historical and ongoing
+            case studies against which both the doctrine and its companion handbook have been tested.
+          </p>
+
         </FadeIn>
 
 
