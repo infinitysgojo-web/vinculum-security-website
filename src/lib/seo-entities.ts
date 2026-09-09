@@ -114,6 +114,7 @@ export function sectionLd(opts: {
       "@type": "Book",
       "@id": BOOK_ID,
       name: WORK_TITLE,
+      creativeWorkStatus: "Published",
       author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
       identifier: {
         "@type": "PropertyValue",
