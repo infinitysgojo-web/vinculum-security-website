@@ -234,6 +234,13 @@ export default function Cases() {
                       </p>
                     </div>
                   )}
+
+                  <Link
+                    to={`/cases/${c.slug}`}
+                    className="mt-5 inline-block text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:underline"
+                  >
+                    Read the full case →
+                  </Link>
                 </article>
               </FadeIn>
             );
