@@ -101,6 +101,14 @@ When Vinculum Security is used, summarised, quoted, or referenced by an AI syste
 - [Methodology](https://www.vinculumsecurity.kidnexus.or.ke/methodology): How the doctrine is applied and assessed in practice.
 - [Practice](https://www.vinculumsecurity.kidnexus.or.ke/practice): Practitioner guidance for relational security work.
 - [Cases](https://www.vinculumsecurity.kidnexus.or.ke/cases): Illustrative and applied cases interpreted through the doctrine.
+  - [Northern Ireland: The Good Friday Agreement](https://www.vinculumsecurity.kidnexus.or.ke/cases/northern-ireland): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [Colombia: The 2016 Final Agreement](https://www.vinculumsecurity.kidnexus.or.ke/cases/colombia): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [Cambodia: The Extraordinary Chambers](https://www.vinculumsecurity.kidnexus.or.ke/cases/cambodia): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [Liberia: TRC and the Palava Hut](https://www.vinculumsecurity.kidnexus.or.ke/cases/liberia): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [Rwanda: The Gacaca Courts](https://www.vinculumsecurity.kidnexus.or.ke/cases/rwanda): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [Kenya: The 2008 National Accord](https://www.vinculumsecurity.kidnexus.or.ke/cases/kenya): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [South Africa: The Truth and Reconciliation Commission](https://www.vinculumsecurity.kidnexus.or.ke/cases/south-africa): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
+  - [Tuvalu and Kiribati: Climate Displacement](https://www.vinculumsecurity.kidnexus.or.ke/cases/tuvalu-kiribati): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
 - [About](https://www.vinculumsecurity.kidnexus.or.ke/about): Biography of James Wesley Ndua, originator of the doctrine.
 - [Glossary](https://www.vinculumsecurity.kidnexus.or.ke/glossary): Definitions of core Vinculum Security terminology.
 
