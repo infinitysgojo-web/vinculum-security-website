@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Doctrine from "./pages/Doctrine";
 import Foundations from "./pages/Foundations";
 import Cases from "./pages/Cases";
+import CaseDetail from "./pages/CaseDetail";
 import Methodology from "./pages/Methodology";
 import Practice from "./pages/Practice";
 import About from "./pages/About";
@@ -85,6 +86,7 @@ export default function App() {
           <Route path="/doctrine" element={<Doctrine />} />
           <Route path="/foundations" element={<Foundations />} />
           <Route path="/cases" element={<Cases />} />
+          <Route path="/cases/:slug" element={<CaseDetail />} />
           <Route path="/methodology" element={<Methodology />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/about" element={<About />} />

@@ -73,4 +73,76 @@
       <image:title>Vinculum Security Glossary</image:title>
     </image:image>
   </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/northern-ireland</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/colombia</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/cambodia</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/liberia</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/rwanda</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/kenya</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/south-africa</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/tuvalu-kiribati</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og/cases.jpg</image:loc>
+      <image:title>Vinculum Security: Applied Cases</image:title>
+    </image:image>
+  </url>
 </urlset>
