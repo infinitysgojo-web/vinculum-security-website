@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import SEO from "@/components/SEO";
-import { sectionLd } from "@/lib/seo-entities";
+import { sectionLd, SITE_URL } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -102,13 +102,29 @@ export default function Cases() {
         keywords="peace process case studies, Northern Ireland, Colombia, Rwanda, South Africa, Vinculum Continuum scoring, relational security case analysis, bond domains, case-tested doctrine, doctrine test-bed"
         scholarly
         citationTitle="Vinculum Security: Applied Case Engagement"
-        jsonLd={sectionLd({
-          path: "/cases",
-          headline: "Vinculum Security: Applied Case Engagement",
-          description:
-            "Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum.",
-          section: "Section VII — Cases",
-        })}
+        jsonLd={[
+          sectionLd({
+            path: "/cases",
+            headline: "Vinculum Security: Applied Case Engagement",
+            description:
+              "Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum.",
+            section: "Section VII — Cases",
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Vinculum Security case studies",
+            itemListOrder: "https://schema.org/ItemListOrderAscending",
+            numberOfItems: CASES.length,
+            itemListElement: CASES.map((c, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: c.title,
+              description: c.summary,
+              url: `${SITE_URL}/cases/${c.slug}`,
+            })),
+          },
+        ]}
       />
       <ReadingProgress />
       <div className="container">
