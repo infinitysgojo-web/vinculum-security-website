@@ -183,7 +183,11 @@ export default function Cases() {
                       Compare
                     </label>
                   </div>
-                  <h2 className="font-serif text-primary text-xl leading-tight">{c.title}</h2>
+                  <h2 className="font-serif text-primary text-xl leading-tight">
+                    <Link to={`/cases/${c.slug}`} className="hover:text-accent transition-colors">
+                      {c.title}
+                    </Link>
+                  </h2>
                   <hr className="gold-rule gold-rule-short mt-3 mb-4" />
                   <p className="text-[0.95rem] leading-relaxed text-foreground/85 mb-6">
                     {c.summary}
@@ -260,7 +264,9 @@ export default function Cases() {
                 {CASES.map((c, i) => (
                   <tr key={c.slug} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
                     <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">
-                      {c.title.split(": ")[0]}
+                      <Link to={`/cases/${c.slug}`} className="hover:text-accent hover:underline">
+                        {c.shortTitle}
+                      </Link>
                     </td>
                     {c.scores.map((s, j) => (
                       <td key={j} className="px-2 py-2 align-top text-center font-serif text-accent">
@@ -268,7 +274,7 @@ export default function Cases() {
                       </td>
                     ))}
                     <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
-                      {CROSS_PATTERNS[c.slug]}
+                      {c.pattern}
                     </td>
                   </tr>
                 ))}
