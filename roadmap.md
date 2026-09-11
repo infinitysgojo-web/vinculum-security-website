@@ -1,5 +1,5 @@
 # Roadmap
 
-- [ ] Audit index.html, llms.txt, seo-entities.ts, and all page SEO blocks for leftover traces of the removed readiness wording; make the true statement (fully developed, copyrighted, case-tested, operational, ready for academic/policy/public use) consistently visible
-- [ ] Cases page: add a clear "open the full case study" affordance on each case card
+- [x] Audit and strengthen the readiness statement across index.html, llms.txt, seo-entities.ts, and page SEO blocks
+- [x] Cases page: prominent "Open the full case study" cue on every card plus an intro hint line
 - [x] News/Dispatches section — cancelled by user
