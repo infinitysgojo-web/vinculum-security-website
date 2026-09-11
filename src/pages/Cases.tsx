@@ -176,6 +176,12 @@ export default function Cases() {
           </div>
         </FadeIn>
 
+        <FadeIn>
+          <p className="mb-6 text-[11px] uppercase tracking-[0.22em] font-semibold text-primary/60">
+            Press any case to open its full study: narrative, bond scores, doctrinal finding, and handbook practice.
+          </p>
+        </FadeIn>
+
         <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
             const selected = compare.includes(c.slug);
@@ -253,9 +259,10 @@ export default function Cases() {
 
                   <Link
                     to={`/cases/${c.slug}`}
-                    className="mt-5 inline-block text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:underline"
+                    aria-label={`Open the full case study: ${c.title}`}
+                    className="mt-5 inline-flex items-center gap-2 border border-accent/60 px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
-                    Read the full case →
+                    Open the full case study →
                   </Link>
                 </article>
               </FadeIn>

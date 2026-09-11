@@ -35,7 +35,7 @@ export default function Home() {
     <>
       <SEO
         title="A Doctrine of Relational Security"
-        description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua, tested against peace processes in Rwanda, Colombia, and South Africa, and ready for academic and policy use."
+        description="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. An original doctrine by James Wesley Ndua: fully developed and copyrighted, tested against peace processes in Rwanda, Colombia, and South Africa, and operational and ready for academic, policy, and public use."
         path="/"
         type="website"
         keywords="Vinculum Security, relational security, a doctrine of relational security, relational security doctrine, bond integrity, Vinculum Continuum, Vinculum Diplomacy, James Wesley Ndua, operational security doctrine, case-tested peace doctrine, Rwanda Colombia South Africa peace processes"
@@ -63,6 +63,7 @@ export default function Home() {
             copyrightHolder: { "@id": PERSON_ID },
             copyrightYear: 2026,
             isAccessibleForFree: true,
+            creativeWorkStatus: "Published",
             identifier: {
               "@type": "PropertyValue",
               propertyID: "DOI",
@@ -70,7 +71,7 @@ export default function Home() {
               url: DOI_URL,
             },
             description:
-              "An original doctrine holding that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible.",
+              "An original doctrine holding that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. The doctrine and its companion handbook are fully developed and copyrighted, tested against major historical and ongoing case studies including the peace processes in Rwanda, Colombia, and South Africa, and operational and ready for use in academic circles, mainstream policy, and public discourse.",
           },
           author: { "@id": PERSON_ID },
           creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
