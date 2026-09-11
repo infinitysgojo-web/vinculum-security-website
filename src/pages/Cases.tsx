@@ -176,6 +176,12 @@ export default function Cases() {
           </div>
         </FadeIn>
 
+        <FadeIn>
+          <p className="mb-6 text-[11px] uppercase tracking-[0.22em] font-semibold text-primary/60">
+            Press any case to open its full study: narrative, bond scores, doctrinal finding, and handbook practice.
+          </p>
+        </FadeIn>
+
         <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
             const selected = compare.includes(c.slug);
