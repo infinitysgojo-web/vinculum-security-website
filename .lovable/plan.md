@@ -1,82 +1,49 @@
-# Dispatches: a diplomatic news section with a hidden publisher desk
+# Your own Supabase + UN Data Commons backend
 
-A new public section, **Dispatches**, at `/dispatches`, where you publish news and analysis on world events read through the Vinculum Security and Vinculum Diplomacy lens. Behind it, a private publisher desk that is not linked anywhere on the site.
+Two parts: move the backend to your own Supabase project, then build the UN System Data Commons connection inside it. Backend only for now, no frontend work.
 
-## What readers see
+## Part 1: Move to your own Supabase
 
-**Dispatches index (`/dispatches`)**
-- Same page header style as the rest of the site (eyebrow, serif title, gold rule, lede).
-- Latest dispatch as a lead feature: large image, title, subtitle, date, reading time.
-- Grid of remaining dispatches as cards in the existing card and hover-lift style.
-- Topic filter row (regions and themes such as Peace Processes, Youth Peace and Security, Climate Security) and a tag list.
-- "Dispatches" added to the header and mobile navigation.
+The current backend is empty, so nothing needs copying.
 
-**Single dispatch (`/dispatches/your-title`)**
-- Diplomatic masthead: "Dispatch No. 0007", date, dateline (city), reading time, topic badge.
-- Title, subtitle, full-width cover image with caption and credit.
-- Body typography in the site's serif reading style, with drop-cap opening, pull quotes, headings, lists, links and images.
-- Reading progress bar (reusing the existing component).
-- Share row: copy link, X, LinkedIn, WhatsApp.
-- "Download as Policy Brief" button (see below).
-- "About the Publisher" block with your portrait mark, a short high-value paragraph drawn from the About page, editable from the desk.
-- Three related dispatches by shared topic or tag.
-- Previous and next navigation.
+Switching the project from the built-in backend to your own Supabase project is done from the editor, not by me: open the Plus (+) menu, remove the built-in backend, then choose "Connect Supabase" and pick the project at `yquxgvsifdklbgbtqjrh`. After that every table, function, and file I create lands in your Supabase project and nowhere else.
 
-**Policy Brief download**
-- One click produces a PDF styled like a high-level brief: navy masthead with the Vinculum mark and "Vinculum Security · Dispatch", brief number and date, title and subtitle, a "Key Points" box (you write these in the desk; optional), the body text in two clean columns of serif type, and a footer with byline, citation line, licence and site address.
-- Generated in the browser from the article content, so nothing on the site can crash if it fails; a failure only shows a polite message.
+I will pause here until that switch is done, because anything I build before it would be created in the wrong place.
 
-**RSS feed** at `/dispatches/feed.xml`, so readers and aggregators can subscribe.
+The publishable key you pasted is safe to keep in the project (it is the public one). Please do not paste the direct connection string or the service key in chat; once the project is connected through the editor I already have the access I need.
 
-## The publisher desk (private)
+## Part 2: UN System Data Commons
 
-- Reached only at `/desk` (not linked or listed anywhere, excluded from the sitemap and robots).
-- Sign in with email and password. A 4-digit PIN then quickly re-unlocks the desk on the same device after the first sign-in; the PIN alone can never open the desk.
-- Only your account can enter. Anyone else who finds the address sees a plain sign-in and gets nowhere.
+I checked the service directly. Two things are true:
 
-**Desk tools**
-- Dashboard: counts of published and draft dispatches, the latest pieces, quick "New Dispatch".
-- Editor with: title, slug (auto from title, editable), cover image upload with caption and credit, subtitle, dateline, topic, tags, Key Points for the brief, rich text body (headings, bold, italic, quotes, lists, links, inline images, no em dashes inserted automatically), and a search preview snippet.
-- Autosave of drafts every few seconds, with a "last saved" indicator.
-- Live preview toggle that renders the piece exactly as readers will see it.
-- Status: Draft, Scheduled (publish at a date and time), Published, Archived.
-- Article list with search, filter by status and topic, duplicate, archive, delete with confirmation.
-- Media library of uploaded images.
-- Publisher profile page: edit the "About the Publisher" paragraph and the desk PIN, change password.
-- Sign out.
+- The MCP server address you gave is an assistant tool. It helps me explore the data while building, but a website cannot call it. It is added once in your workspace connector settings, under "New MCP server".
+- The data itself is available over a plain public web API on the same host, no key required. I confirmed live responses from it. That is what your site will use.
 
-## Search engines and AI
+Following your choice, the server fetches and stores the data, so pages load fast and stay up even if the UN service is briefly down.
 
-- Every dispatch gets its own title, description, canonical address, social preview (its cover image), NewsArticle structured data with author, publisher, dates and keywords, and Article breadcrumbs.
-- The index page gets CollectionPage structured data.
-- Sitemap is generated dynamically from published dispatches so new pieces are indexed without code changes.
-- `llms.txt` gains a Dispatches section pointing at the index and the feed.
-- Draft, scheduled and archived pieces are never visible publicly or to crawlers.
+### What gets built
 
-## Content and voice rules kept
+1. **Storage tables** in your Supabase project:
+   - `un_entities` — countries and regions (code, name, type)
+   - `un_indicators` — the statistical measures (code, title, description, unit, topic)
+   - `un_observations` — one row per entity, indicator, year, value, with the source named
+   - `un_sync_runs` — a log of each refresh: when, what, how many rows, any error
+2. **A fetch-and-store function** that pulls a requested set of indicators and countries from the UN service, normalises them, and saves them, updating rather than duplicating existing rows.
+3. **A scheduled refresh** that runs the fetch on a regular timer so the stored copy stays current without anyone pressing anything.
+4. **A read endpoint** so the site can later ask for a country, an indicator, or a time series in one simple call.
+5. **Public read, locked writes.** Anyone can read the stored statistics; only the scheduled job and you can write.
 
-- No em dashes anywhere in templates or generated text.
-- Vinculum Security is referred to as a doctrine, also stated as A Doctrine of Relational Security.
-- Existing colour palette, serif and sans pairing, gold rules, badges and fade-in motion are reused; no new visual language.
+### Starting data
 
-## Technical details
+You said to choose, so the first load covers the countries already featured in your case studies (Rwanda, Colombia, South Africa, Northern Ireland via the United Kingdom, Kenya, Liberia, Cambodia, Tuvalu, Kiribati) plus global totals, across a themed set of indicators that fit the doctrine: population, conflict and security, governance and institutions, development and poverty, health, education, and climate exposure. The set is stored as data, so adding countries or indicators later is a row, not a rebuild.
 
-- Lovable Cloud is enabled for the database, sign-in and image storage.
-- Tables: `dispatches` (title, slug, subtitle, dateline, cover image and caption, body as rich text JSON plus rendered HTML, key points, topic, tags, status, published_at, reading time, SEO fields), `topics`, `publisher_profile` (bio paragraph, hashed PIN), `user_roles` with a `publisher` role checked through a security-definer function. Public reads are limited to `status = published and published_at <= now()`; all writes require the publisher role. Grants and row-level security on every table.
-- Storage bucket `dispatch-media` (public read, publisher-only write).
-- Your account is created with the email you gave; the password is set through the Cloud sign-in form, not stored in code. The PIN is hashed and only accepted when a valid session already exists on the device.
-- Rich text editor: TipTap. Rendered HTML is sanitised with DOMPurify before display.
-- PDF: `@react-pdf/renderer` builds the brief client-side from the stored content; wrapped in an error boundary.
-- New routes: `/dispatches`, `/dispatches/:slug`, `/desk`, `/desk/new`, `/desk/edit/:id`, `/desk/media`, `/desk/profile`. `/desk*` is guarded by the role check.
-- Sitemap and RSS are served by two small edge functions reading published dispatches; `public/sitemap.xml` keeps the static pages and references the dynamic one.
-- Data fetching with the existing TanStack Query setup; toasts with sonner.
+### Verification before I call it done
 
-## Order of work
+I will run a real refresh, show you the row counts per indicator, and read a few values back out, so you can see actual UN numbers sitting in your own database.
 
-1. Enable Cloud, create tables, roles, storage, your account.
-2. Desk sign-in, PIN unlock, route guard.
-3. Editor, autosave, media upload, article list, profile.
-4. Public index and single dispatch pages, navigation link, share row, related pieces.
-5. SEO, structured data, dynamic sitemap, RSS, llms.txt.
-6. Policy Brief PDF.
-7. Full check that nothing existing changed and that every page still renders.
+## Technical notes
+
+- REST base confirmed as `https://unsd-datacommons.gcp.un-icc.cloud/core/api/v2` (`/node` and `/observation` both respond, unauthenticated).
+- Edge function `un-data-sync` performs the pull in batches, with retry and backoff; `un-data-query` serves reads. Scheduling via `pg_cron` plus `pg_net`.
+- Every table gets explicit grants, RLS enabled, public `SELECT` policy, writes restricted to the service role.
+- Unique keys on `(entity_code, indicator_code, period)` so repeat runs update in place.
