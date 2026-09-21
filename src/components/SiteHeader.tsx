@@ -11,6 +11,7 @@ const NAV = [
   { to: "/practice", label: "Practice" },
   { to: "/glossary", label: "Glossary" },
   { to: "/about", label: "About" },
+  { to: "/dispatches", label: "Dispatches" },
 ];
 
 export default function SiteHeader() {

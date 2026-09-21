@@ -92,6 +92,7 @@ export default function App() {
           <Route path="/practice" element={<Practice />} />
           <Route path="/about" element={<About />} />
           <Route path="/glossary" element={<Glossary />} />
+          <Route path="/dispatches" element={<Dispatches />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
