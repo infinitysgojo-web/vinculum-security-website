@@ -18,6 +18,30 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import Logo from "@/components/Logo";
 import { useParallax } from "@/hooks/useParallax";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+
+interface MediumArticle {
+  id: string;
+  title: string;
+  link: string;
+  pub_date: string;
+  cover_image: string | null;
+  excerpt: string | null;
+}
+
+function formatDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return iso;
+  }
+}
 
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
