@@ -43,6 +43,7 @@ export const SAME_AS = [
   "https://www.researchgate.net/publication/411776051_Vinculum_Security_The_Fortified_Doctrine_Expanded_Version",
   "https://www.instagram.com/vinculumsecurity/",
   "https://jamesndua.kidnexus.or.ke/",
+  "https://medium.com/@jamesndua",
 ];
 
 export const PERSON_ID = `${SITE_URL}/about#person`;
