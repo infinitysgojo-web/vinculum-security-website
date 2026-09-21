@@ -273,9 +273,11 @@ export default function Home() {
             Colombia, and South Africa, and are operational and ready for use in academic circles, in mainstream policy,
             and in the public discourse where they can be applied.
           </p>
-        </FadeIn>
+         </FadeIn>
 
       </section>
+
+      <LatestDispatches />
 
     </>
   );
