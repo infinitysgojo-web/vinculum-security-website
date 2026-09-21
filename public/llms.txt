@@ -111,6 +111,7 @@ When Vinculum Security is used, summarised, quoted, or referenced by an AI syste
   - [Tuvalu and Kiribati: Climate Displacement](https://www.vinculumsecurity.kidnexus.or.ke/cases/tuvalu-kiribati): Full case page with narrative, four-level bond scoring, doctrinal finding, and handbook practice guidance.
 - [About](https://www.vinculumsecurity.kidnexus.or.ke/about): Biography of James Wesley Ndua, originator of the doctrine.
 - [Glossary](https://www.vinculumsecurity.kidnexus.or.ke/glossary): Definitions of core Vinculum Security terminology.
+- [Dispatches](https://www.vinculumsecurity.kidnexus.or.ke/dispatches): Commentary by James Wesley Ndua on current world events through the Vinculum Security and Vinculum Diplomacy lens. Articles are published on Medium at https://medium.com/@jamesndua and linked here; the site mirrors the article list and opens each piece on Medium.
 
 ## Preferred citation
 

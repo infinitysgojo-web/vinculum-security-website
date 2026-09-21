@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      medium_articles: {
+        Row: {
+          author: string | null
+          categories: string[] | null
+          cover_image: string | null
+          excerpt: string | null
+          fetched_at: string
+          id: string
+          link: string
+          pub_date: string
+          title: string
+        }
+        Insert: {
+          author?: string | null
+          categories?: string[] | null
+          cover_image?: string | null
+          excerpt?: string | null
+          fetched_at?: string
+          id: string
+          link: string
+          pub_date: string
+          title: string
+        }
+        Update: {
+          author?: string | null
+          categories?: string[] | null
+          cover_image?: string | null
+          excerpt?: string | null
+          fetched_at?: string
+          id?: string
+          link?: string
+          pub_date?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      medium_sync_runs: {
+        Row: {
+          article_count: number
+          id: string
+          run_at: string
+          status: string
+        }
+        Insert: {
+          article_count?: number
+          id?: string
+          run_at?: string
+          status: string
+        }
+        Update: {
+          article_count?: number
+          id?: string
+          run_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

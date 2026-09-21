@@ -36,25 +36,69 @@ function firstImage(html: string): string | null {
   return match ? match[1] : null
 }
 
-/** Parse the Medium RSS XML into article records. */
+/** Extract the text content of the first element matching `tag` within `xml`. */
+function extractTag(xml: string, tag: string): string {
+  // Match <tag>...</tag> or <tag attr="...">...</tag>, including namespaced tags
+  const re = new RegExp(`<${tag}(?:\\s[^>]*)?>[\\s\\S]*?</${tag}>`, 'i')
+  const m = xml.match(re)
+  if (!m) return ''
+  return m[0]
+    .replace(new RegExp(`</?${tag}(?:\\s[^>]*)?>`, 'gi'), '')
+    .trim()
+}
+
+/** Extract CDATA or plain text content from a tag's raw inner content. */
+function unwrapCdata(raw: string): string {
+  const m = raw.match(/^<!\[CDATA\[([\s\S]*)\]\]>$/)
+  return m ? m[1] : raw
+}
+
+/** Parse the Medium RSS XML into article records using regex. */
 function parseFeed(xml: string): Article[] {
-  const doc = new DOMParser().parseFromString(xml, 'text/xml')
-  const items = Array.from(doc.querySelectorAll('item'))
-  return items.map((item) => {
-    const guid = item.querySelector('guid')?.textContent?.trim() ?? ''
+  const articles: Article[] = []
+  // Split on <item> boundaries
+  const itemBlocks = xml.split(/<item\b/).slice(1) // first block is channel metadata
+
+  for (const block of itemBlocks) {
+    const itemXml = block.split(/<\/item>/)[0]
+
+    const guidRaw = extractTag(itemXml, 'guid')
+    const guid = unwrapCdata(guidRaw)
     const id = guid.replace(/^https?:\/\/medium\.com\/p\//, '') || guid
-    const title = item.querySelector('title')?.textContent?.trim() ?? ''
-    const link = item.querySelector('link')?.textContent?.trim() ?? ''
-    const pubDate = item.querySelector('pubDate')?.textContent?.trim() ?? ''
-    const author = item.querySelector('dc\\:creator, creator')?.textContent?.trim() ?? ''
-    const categories = Array.from(item.querySelectorAll('category'))
-      .map((c) => c.textContent?.trim() ?? '')
+
+    const titleRaw = extractTag(itemXml, 'title')
+    const title = unwrapCdata(titleRaw)
+
+    // link can be CDATA or plain
+    const linkRaw = extractTag(itemXml, 'link')
+    const link = unwrapCdata(linkRaw)
+
+    const pubDateRaw = extractTag(itemXml, 'pubDate')
+    const pubDate = unwrapCdata(pubDateRaw)
+
+    // dc:creator — extractTag with namespaced tag
+    const creatorRaw = extractTag(itemXml, 'dc:creator')
+    const author = unwrapCdata(creatorRaw)
+
+    // categories — multiple
+    const categoryMatches = [...itemXml.matchAll(/<category\b[^>]*>([\s\S]*?)<\/category>/gi)]
+    const categories = categoryMatches
+      .map((m) => unwrapCdata(m[1].trim()))
       .filter(Boolean)
-    const contentEncoded = item.querySelector('content\\:encoded, content')?.textContent?.trim() ?? ''
-    const coverImage = firstImage(contentEncoded)
-    const excerpt = htmlToExcerpt(contentEncoded)
-    return { id, title, link, pub_date: pubDate, author, categories, cover_image: coverImage, excerpt }
-  })
+
+    // content:encoded
+    const contentRaw = extractTag(itemXml, 'content:encoded')
+    const content = unwrapCdata(contentRaw)
+
+    const coverImage = firstImage(content)
+    const excerpt = htmlToExcerpt(content)
+
+    if (id && title && link) {
+      articles.push({ id, title, link, pub_date: pubDate, author, categories, cover_image: coverImage, excerpt })
+    }
+  }
+
+  return articles
 }
 
 Deno.serve(async (req: Request) => {

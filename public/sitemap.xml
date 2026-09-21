@@ -145,4 +145,9 @@
       <image:title>Vinculum Security: Applied Cases</image:title>
     </image:image>
   </url>
+  <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/dispatches</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
