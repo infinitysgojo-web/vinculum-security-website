@@ -12,6 +12,7 @@ import Methodology from "./pages/Methodology";
 import Practice from "./pages/Practice";
 import About from "./pages/About";
 import Glossary from "./pages/Glossary";
+import Dispatches from "./pages/Dispatches";
 import NotFound from "./pages/NotFound";
 
 const SCROLL_KEY = "vs:scroll";
