@@ -2,7 +2,7 @@ import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 const MEDIUM_FEED_URL = 'https://medium.com/feed/@jamesndua'
-const SYNC_TTL_MS = 60 * 60 * 1000 // 1 hour
+const SYNC_TTL_MS = 10 * 60 * 1000 // 10 minutes
 
 interface Article {
   id: string
@@ -177,7 +177,7 @@ Deno.serve(async (req: Request) => {
     }
 
     return new Response(JSON.stringify({ articles: rows ?? [] }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=600' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' },
     })
   } catch (err) {
     return new Response(JSON.stringify({ error: String(err) }), {
