@@ -63,12 +63,30 @@ export default function AdversarialChamber() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[18rem_1fr] border border-border bg-background">
-        <nav aria-label="Review panels" className="border-b lg:border-b-0 lg:border-r border-border bg-navy-tint/60">
-          <ol className="flex lg:flex-col overflow-x-auto lg:overflow-visible">
+        {/* Mobile: compact panel menu */}
+        <div className="lg:hidden border-b border-border bg-navy-tint/60 p-4">
+          <label htmlFor="panel-menu" className="eyebrow block mb-2">Review panel</label>
+          <select
+            id="panel-menu"
+            value={panel.n}
+            onChange={(ev) => choose(Number(ev.target.value))}
+            className="w-full border border-border bg-background px-3 py-2.5 text-sm text-foreground font-medium"
+          >
+            {visiblePanels.map((p) => (
+              <option key={p.n} value={p.n}>
+                Panel {p.n} — {p.title}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Desktop: sidebar list */}
+        <nav aria-label="Review panels" className="hidden lg:block border-r border-border bg-navy-tint/60">
+          <ol>
             {visiblePanels.map((p) => {
               const active = p.n === panel.n;
               return (
-                <li key={p.n} className="shrink-0">
+                <li key={p.n}>
                   <button
                     type="button"
                     onClick={() => choose(p.n)}
@@ -78,7 +96,7 @@ export default function AdversarialChamber() {
                     }`}
                   >
                     <span className="font-serif text-accent text-lg w-6">{p.n}</span>
-                    <span className={`text-sm whitespace-nowrap lg:whitespace-normal ${active ? "text-primary font-medium" : "text-foreground/75"}`}>
+                    <span className={`text-sm ${active ? "text-primary font-medium" : "text-foreground/75"}`}>
                       {p.title}
                     </span>
                   </button>
@@ -88,7 +106,7 @@ export default function AdversarialChamber() {
           </ol>
         </nav>
 
-        <div className="p-5 md:p-8">
+        <div className="p-4 sm:p-5 md:p-8">
           <p className="eyebrow">Panel {panel.n} · {panel.lens}</p>
           <h3 className="mt-2 font-serif text-primary text-2xl md:text-3xl">{panel.title}</h3>
           <hr className="gold-rule gold-rule-short mt-4 mb-6" />
