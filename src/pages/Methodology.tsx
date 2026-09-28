@@ -210,6 +210,9 @@ export default function Methodology() {
                 A structural safeguard against the delay-justification risk.
               </p>
             </div>
+          </div>
+        </FadeIn>
+
         <FadeIn className="mb-16">
           <p className="eyebrow">VII · Audit Methodology</p>
           <GoldRule className="mt-4 mb-6" />
@@ -240,13 +243,10 @@ export default function Methodology() {
             </div>
           </div>
         </FadeIn>
+
         <FadeIn className="mb-20">
           <AuditBench />
         </FadeIn>
-          </div>
-        </FadeIn>
-
-
 
         <PrintFootnotes terms={CITED} />
       </div>
