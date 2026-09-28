@@ -44,13 +44,17 @@ export default function Practice() {
         keywords="Vinculum Diplomacy, relational security practice, bond-centred diplomacy, practitioner guidance, diplomatic security, operational diplomacy handbook, field-ready peacebuilding method"
         scholarly
         citationTitle="Vinculum Diplomacy: The Companion Handbook"
-        jsonLd={sectionLd({
-          path: "/practice",
-          headline: "Vinculum Diplomacy: The Companion Handbook",
-          description:
-            "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
-          section: "Companion Handbook — Practice",
-        })}
+        jsonLd={[
+          sectionLd({
+            path: "/practice",
+            headline: "Vinculum Diplomacy: The Companion Handbook",
+            description:
+              "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
+            section: "Companion Handbook — Practice",
+          }),
+          benchLd,
+          lexiconLd,
+        ]}
       />
       <ReadingProgress />
       <div className="container">
