@@ -152,7 +152,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
         ))}
       </ol>
 
-      <footer className="dossier-colophon">
+      <div className="dossier-colophon">
         <p>
           Drawn from <em>Vinculum Security: The Fortified Doctrine</em>, Expanded Version, Final
           Edition, Section {c.ref}, and <em>Vinculum Diplomacy: The Practitioner Handbook</em>, Final
@@ -162,7 +162,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
           © {new Date().getFullYear()} {AUTHOR_NAME}. Registered with the Kenya Copyright Board,
           Registration No. RZ100967. Released under CC BY-NC-SA 4.0. Canonical record: {url}
         </p>
-      </footer>
+      </div>
     </article>
   );
 }
