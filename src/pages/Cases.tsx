@@ -299,7 +299,7 @@ export default function Cases() {
               onClick={() => setOpen(true)}
               className="px-5 py-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
             >
-              Compare ({compare.length})
+              Open the mirror ({compare.length})
             </button>
             <button
               onClick={() => setCompare([])}
