@@ -17,6 +17,7 @@ const COORDS: Record<string, [number, number]> = {
 const W = 1000;
 const H = 320;
 const LABEL: Record<string, [number, number, "start" | "middle" | "end"]> = {
+  "northern-ireland": [0, 34, "middle"],
   rwanda: [-14, 30, "end"],
   kenya: [14, -14, "start"],
   "tuvalu-kiribati": [0, -22, "end"],
@@ -67,7 +68,7 @@ export default function RelationalAtlas() {
       </div>
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-6">
-        <div className="border border-brass/40 bg-navy-tint/40 p-3">
+        <div className="border border-brass/40 bg-navy-tint/40 p-3 flex items-center">
           <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Map of documented cases">
             {[...Array(13)].map((_, i) => (
               <line key={`v${i}`} x1={(i * W) / 12} x2={(i * W) / 12} y1={0} y2={H} className="stroke-brass" strokeOpacity={0.25} strokeWidth={0.6} />
