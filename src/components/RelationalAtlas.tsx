@@ -15,10 +15,15 @@ const COORDS: Record<string, [number, number]> = {
 };
 
 const W = 1000;
-const H = 400;
+const H = 320;
+const LABEL: Record<string, [number, number, "start" | "middle" | "end"]> = {
+  rwanda: [-14, 30, "end"],
+  kenya: [14, -14, "start"],
+  "tuvalu-kiribati": [0, -22, "end"],
+};
 const project = ([lon, lat]: [number, number]) => [
   ((lon + 180) / 360) * W,
-  ((70 - lat) / 120) * H,
+  ((62 - lat) / 100) * H,
 ];
 
 type Lens = "all" | 0 | 1 | 2 | 3;
@@ -70,8 +75,8 @@ export default function RelationalAtlas() {
             {[...Array(7)].map((_, i) => (
               <line key={`h${i}`} x1={0} x2={W} y1={(i * H) / 6} y2={(i * H) / 6} className="stroke-brass" strokeOpacity={0.25} strokeWidth={0.6} />
             ))}
-            <line x1={0} x2={W} y1={(70 / 120) * H} y2={(70 / 120) * H} className="stroke-accent" strokeOpacity={0.4} strokeDasharray="4 6" />
-            <text x={8} y={(70 / 120) * H - 6} className="fill-primary" fillOpacity={0.5} fontSize={11} letterSpacing={2}>EQUATOR</text>
+            <line x1={0} x2={W} y1={(62 / 100) * H} y2={(62 / 100) * H} className="stroke-accent" strokeOpacity={0.4} strokeDasharray="4 6" />
+            <text x={8} y={(62 / 100) * H - 6} className="fill-primary" fillOpacity={0.5} fontSize={11} letterSpacing={2}>EQUATOR</text>
             {CASES.map((c) => {
               const coord = COORDS[c.slug];
               if (!coord) return null;
@@ -90,7 +95,7 @@ export default function RelationalAtlas() {
                 >
                   <circle cx={x} cy={y} r={on ? 22 : 16} className="fill-brass" fillOpacity={0.15} />
                   <circle cx={x} cy={y} r={7 + v * 1.6} className="fill-accent stroke-primary" fillOpacity={0.15 + (v / 5) * 0.8} strokeWidth={on ? 2 : 0.8} />
-                  <text x={x} y={y - 18 - v} textAnchor="middle" className="fill-primary font-serif" fontSize={14} fontWeight={on ? 700 : 500}>
+                  <text x={x + (LABEL[c.slug]?.[0] ?? 0)} y={LABEL[c.slug] ? y + LABEL[c.slug][1] : y - 18 - v} textAnchor={LABEL[c.slug]?.[2] ?? "middle"} className="fill-primary font-serif" fontSize={14} fontWeight={on ? 700 : 500}>
                     {c.shortTitle}
                   </text>
                 </g>
