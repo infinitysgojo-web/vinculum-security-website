@@ -4,3 +4,5 @@
 - [x] Cases page: prominent "Open the full case study" cue on every card plus an intro hint line
 - [x] News/Dispatches section — cancelled by user (full publisher dashboard)
 - [x] Dispatches: live Medium feed mirrored on the site (backend tables, edge function, /dispatches page, nav link, Home strip, SEO/sitemap/llms.txt updates)
+
+- [x] Equal Earth world map atlas on Case Studies, country outlines on case pages, Cases page decluttered, assessment bench moved after Part I on Practice
