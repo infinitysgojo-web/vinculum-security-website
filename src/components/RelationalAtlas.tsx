@@ -6,6 +6,17 @@ import { LAND_PATH, SPHERE_PATH, MAP_W, MAP_H, COUNTRY_WORLD, PIN_XY } from "@/c
 const PAD = 26;
 const MAX_K = 9;
 
+// Keeps labels clear of the map edge and of neighbouring markers.
+const LABEL_ANCHOR: Record<string, "start" | "middle" | "end"> = {
+  "tuvalu-kiribati": "end",
+  kenya: "start",
+};
+const LABEL_DX: Record<string, number> = {
+  "tuvalu-kiribati": -12,
+  kenya: 12,
+  rwanda: -10,
+};
+
 function zoomFor(slug: string | null) {
   if (!slug || !COUNTRY_WORLD[slug]) return { k: 1, x: 0, y: 0 };
   const [bx, by, bw, bh] = COUNTRY_WORLD[slug].bbox;
