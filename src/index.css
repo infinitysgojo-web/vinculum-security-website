@@ -168,9 +168,10 @@
   .print\:hidden,
   input[type="search"],
   [role="dialog"],
-  #silktide-wrapper,
-  [id*="silktide"],
-  [class*="silktide"] { display: none !important; }
+  #stcm-wrapper,
+  #stcm-icon,
+  [id^="stcm-"],
+  [class^="stcm-"] { display: none !important; }
 
   body {
     font-family: 'Cormorant Garamond', Georgia, serif !important;
