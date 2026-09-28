@@ -334,7 +334,8 @@
   }
   .dossier-body { margin: 0 0 3.5mm; text-align: justify; hyphens: auto; }
 
-  .dossier-facts { font-size: 9pt; margin-top: 3mm; }
+  .dossier-facts { font-size: 9pt; margin-top: 3mm; break-inside: auto; }
+  .dossier-facts tr { break-inside: avoid; }
   .dossier-facts th {
     width: 42mm;
     text-align: left;
@@ -393,7 +394,7 @@
     color: #333;
   }
 
-  .dossier-findings { margin: 0; padding-left: 7mm; }
+  .dossier-findings { margin: 0; padding-left: 8mm; list-style: decimal outside; }
   .dossier-findings li { margin-bottom: 3.5mm; text-align: justify; }
   .dossier-pattern {
     margin-top: 5mm;
@@ -412,7 +413,7 @@
     font-weight: 600;
   }
 
-  .dossier-sources { margin: 0; padding-left: 7mm; font-size: 9pt; }
+  .dossier-sources { margin: 0; padding-left: 8mm; font-size: 9pt; list-style: decimal outside; }
   .dossier-sources li { margin-bottom: 2mm; }
 
   .dossier-colophon {
