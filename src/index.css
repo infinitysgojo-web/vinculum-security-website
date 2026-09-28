@@ -167,7 +167,10 @@
   [aria-label="Close menu"],
   .print\:hidden,
   input[type="search"],
-  [role="dialog"] { display: none !important; }
+  [role="dialog"],
+  #silktide-wrapper,
+  [id*="silktide"],
+  [class*="silktide"] { display: none !important; }
 
   body {
     font-family: 'Cormorant Garamond', Georgia, serif !important;
