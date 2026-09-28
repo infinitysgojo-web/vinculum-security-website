@@ -8,6 +8,7 @@ import PullQuote from "@/components/PullQuote";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import NumeralDivider from "@/components/NumeralDivider";
+import CountryOutline from "@/components/CountryOutline";
 import { CASES, DOMAINS, getCase } from "@/content/cases";
 
 export default function CaseDetail() {
@@ -116,6 +117,9 @@ export default function CaseDetail() {
 
           <FadeIn className="lg:sticky lg:top-24">
             <aside className="border border-brass/40 bg-navy-tint/40 p-6">
+              <div className="flex justify-center mb-4">
+                <CountryOutline slug={c.slug} size={150} label={c.shortTitle} />
+              </div>
               <p className="eyebrow">The record</p>
               <GoldRule className="mt-3 mb-4" />
               <dl className="space-y-4">

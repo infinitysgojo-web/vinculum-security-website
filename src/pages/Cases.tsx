@@ -178,7 +178,6 @@ export default function Cases() {
                     <div className="flex gap-1.5 flex-wrap">
                       <DiplomatBadge variant="foundation">{c.region}</DiplomatBadge>
                       <DiplomatBadge variant="methodology">{c.pillar}</DiplomatBadge>
-                      <DiplomatBadge variant="handbook">{c.era}</DiplomatBadge>
                     </div>
                     <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary cursor-pointer shrink-0">
                       <input
@@ -201,47 +200,23 @@ export default function Cases() {
                     {c.summary}
                   </p>
 
-                  <div className="mt-auto overflow-x-auto -mx-1 px-1">
-                    <table className="w-full text-sm border border-border">
-                      <thead>
-                        <tr className="bg-primary text-primary-foreground text-left">
-                          <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
-                          <th className="px-2 py-2 font-serif font-medium w-12 text-right">Score</th>
-                          <th className="px-3 py-2 font-serif font-medium">Rationale</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {DOMAINS.map((d, idx) => (
-                          <tr key={d} className={idx % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                            <td className="px-3 py-2 align-top font-medium text-primary text-[0.85rem]">{d}</td>
-                            <td className="px-2 py-2 align-top text-right">
-                              <span className="font-serif text-accent">{c.scores[idx]}</span>
-                            </td>
-                            <td className="px-3 py-2 align-top text-foreground/80 text-[0.82rem] leading-snug">
-                              {c.rationales[idx]}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <div className="mt-auto grid grid-cols-4 gap-2">
+                    {DOMAINS.map((d, idx) => (
+                      <div key={d}>
+                        <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight h-6">
+                          {d}
+                        </p>
+                        <div className="h-1.5 bg-brass/30 mt-1">
+                          <div
+                            className="h-full bg-accent"
+                            style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
+                          />
+                        </div>
+                        <p className="font-serif text-accent text-sm mt-0.5">{c.scores[idx]} / 5</p>
+                      </div>
+                    ))}
                   </div>
 
-                  {c.slug === "rwanda" && (
-                    <div className="mt-4 border-l-2 border-accent bg-gold-tint/40 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
-                        Adversarial Rescoring · Worked Demonstration
-                      </p>
-                      <p className="mt-2 text-[0.85rem] leading-relaxed text-foreground/85">
-                        The scores above were produced by a deliberate skeptical re-pass:
-                        interpersonal was reduced from a sympathetic 4 to a 3 to reflect variance
-                        between genuine and coerced apology; communal from a straightforwardly
-                        strong reading to a contested 3; intergenerational assigned a 2 for a gap (the
-                        bond between the 1994 generation and those born after) that earlier
-                        readings had not scored at all. Offered as a demonstration of method, not
-                        as a substitute for genuine third-party verification.
-                      </p>
-                    </div>
-                  )}
 
                   <Link
                     to={`/cases/${c.slug}`}
