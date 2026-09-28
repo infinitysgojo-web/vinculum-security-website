@@ -107,9 +107,9 @@ export default function RelationalAtlas() {
                       strokeWidth={1.4 / k}
                     />
                     <text
-                      x={p[0]}
+                      x={p[0] + (LABEL_DX[c.slug] ?? 0) / k}
                       y={p[1] - r * 2.9}
-                      textAnchor="middle"
+                      textAnchor={LABEL_ANCHOR[c.slug] ?? "middle"}
                       className="fill-primary font-serif pointer-events-none"
                       fontSize={(on ? 13 : 15) / k}
                       fontWeight={on ? 700 : 500}
