@@ -7,6 +7,7 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import RelationalAtlas from "@/components/RelationalAtlas";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import DiagnosticMirror from "@/components/DiagnosticMirror";
 import { X } from "lucide-react";
 
 import { Link } from "react-router-dom";
@@ -311,53 +312,16 @@ export default function Cases() {
         )}
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-4xl bg-background border-brass/50">
-            <DialogHeader>
-              <p className="eyebrow">Side-by-side comparison</p>
-              <DialogTitle className="font-serif text-primary text-3xl mt-1">
-                Bond Integrity Compared
+          <DialogContent className="max-w-5xl w-[calc(100vw-1.5rem)] max-h-[90vh] overflow-y-auto bg-background border-brass/50 p-5 md:p-8">
+            <DialogHeader className="text-left">
+              <p className="eyebrow">Cross-theater diagnostic mirror</p>
+              <DialogTitle className="font-serif text-primary text-2xl md:text-3xl mt-1">
+                Two theaters, one rubric
               </DialogTitle>
             </DialogHeader>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm border border-border mt-4">
-                <thead>
-                  <tr className="bg-primary text-primary-foreground text-left">
-                    <th className="px-3 py-2 font-serif font-medium">Bond Domain</th>
-                    {compareCases.map((c) => (
-                      <th key={c.slug} className="px-3 py-2 font-serif font-medium">
-                        {c.title.split(": ")[0]}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {DOMAINS.map((d, idx) => (
-                    <tr key={d} className={idx % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                      <td className="px-3 py-2 font-serif italic text-primary">{d}</td>
-                      {compareCases.map((c) => (
-                        <td key={c.slug} className="px-3 py-2">
-                          <div className="flex items-center gap-2">
-                            <span className="flex-1 h-1.5 bg-brass/30 relative overflow-hidden">
-                              <span
-                                className="absolute inset-y-0 left-0 bg-accent"
-                                style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
-                              />
-                            </span>
-                            <span className="font-serif text-accent w-4 text-right">
-                              {c.scores[idx]}
-                            </span>
-                          </div>
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mt-4">
+              <DiagnosticMirror cases={compareCases} onSelectPairing={setCompare} />
             </div>
-            <p className="text-xs text-foreground/60 mt-4">
-              Scores 1-5 per bond domain. Higher values indicate stronger observed bond integrity in
-              the doctrine's classification methodology.
-            </p>
           </DialogContent>
         </Dialog>
       </div>
