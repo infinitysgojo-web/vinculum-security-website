@@ -53,13 +53,16 @@ export default function Doctrine() {
         keywords="Vinculum Security doctrine, a doctrine of relational security, relational security doctrine, Vinculum Continuum, bond integrity, James Wesley Ndua"
         scholarly
         citationTitle="The Vinculum Security Doctrine"
-        jsonLd={sectionLd({
-          path: "/doctrine",
-          headline: "The Vinculum Security Doctrine",
-          description:
-            "Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum.",
-          section: "Section III — The Doctrine",
-        })}
+        jsonLd={[
+          sectionLd({
+            path: "/doctrine",
+            headline: "The Vinculum Security Doctrine",
+            description:
+              "Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum.",
+            section: "Section III — The Doctrine",
+          }),
+          adversarialLd,
+        ]}
       />
       <ReadingProgress />
       
