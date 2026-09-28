@@ -173,7 +173,9 @@
     line-height: 1.5;
   }
   .container { max-width: none !important; padding: 0 !important; }
+  .executive-dossier-header { margin: 0 0 24pt !important; }
   main, .container > * { break-inside: auto; }
+  .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
 
   h1, h2, h3, h4 {
     color: #000 !important;
@@ -186,6 +188,8 @@
 
   p, li { orphans: 3; widows: 3; }
   blockquote, table, figure, article { break-inside: avoid; }
+  nav[aria-label="Case navigation"], nav[aria-label="Breadcrumb"] { display: none !important; }
+  .lg\:sticky { position: static !important; }
 
   a { color: #000 !important; text-decoration: underline; }
   a[href^="http"]::after {

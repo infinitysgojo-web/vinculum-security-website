@@ -1,22 +1,37 @@
 import { useEffect, useState, useMemo } from "react";
 import SEO from "@/components/SEO";
 import {
+  AUTHOR_NAME,
   LICENSE_URL,
   ORG_ID,
   PERSON_ID,
   SITE_URL,
+  WORK_TITLE,
   personLd,
 } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
-import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
+import { Copy, Check } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
-import { GLOSSARY } from "@/content/glossary";
+import { GLOSSARY, GlossaryCategory, GlossaryEntry } from "@/content/glossary";
+
+const CATEGORY_LABELS: Record<GlossaryCategory | "all", string> = {
+  all: "All Terms",
+  core: "Doctrine Core",
+  continuum: "The Continuum",
+  lineage: "Foundations & Lineage",
+  method: "Methodology",
+  field: "Practice & Cases",
+};
 
 export default function Glossary() {
   const [q, setQ] = useState("");
-  
+  const [activeCategory, setActiveCategory] = useState<GlossaryCategory | "all">("all");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (window.location.hash) {
@@ -30,15 +45,34 @@ export default function Glossary() {
   }, []);
 
   const results = useMemo(() => {
+    let filtered = GLOSSARY;
+    
+    if (activeCategory !== "all") {
+      filtered = filtered.filter(g => g.category === activeCategory);
+    }
+
     const query = q.trim().toLowerCase();
-    if (!query) return GLOSSARY;
-    return GLOSSARY.filter(
+    if (!query) return filtered;
+    
+    return filtered.filter(
       (g) =>
         g.term.toLowerCase().includes(query) ||
         g.short.toLowerCase().includes(query) ||
         g.source.toLowerCase().includes(query)
     );
-  }, [q]);
+  }, [q, activeCategory]);
+
+  const copyCitation = (entry: GlossaryEntry) => {
+    const citation = `${AUTHOR_NAME} (2026). "${entry.term}." ${WORK_TITLE}. ${entry.source}. ${SITE_URL}/glossary#${entry.id}`;
+    navigator.clipboard.writeText(citation).then(() => {
+      setCopiedId(entry.id);
+      toast({
+        title: "Citation Copied",
+        description: "Canonical citation for this term is ready to paste.",
+      });
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  };
 
   return (
     <>
@@ -68,6 +102,8 @@ export default function Glossary() {
             name: entry.term,
             description: entry.short,
             url: `${SITE_URL}/glossary#${entry.id}`,
+            isPartOf: { "@id": `${SITE_URL}/glossary#termset` },
+            subjectOf: { "@type": "ScholarlyArticle", name: entry.source },
             inDefinedTermSet: `${SITE_URL}/glossary#termset`,
           })),
         }}
@@ -78,46 +114,77 @@ export default function Glossary() {
         <PageHeader
           eyebrow="Reference"
           title="Doctrine Glossary"
-          lede="Canonical terms of Vinculum Security and Vinculum Diplomacy, each linked to its source section and verbatim passage."
+          lede="Canonical terms of Vinculum Security and Vinculum Diplomacy, organized by thematic lineage."
         />
 
-        <FadeIn className="mb-10 flex flex-col md:flex-row md:items-center gap-4 justify-between">
-          <div className="flex gap-2 flex-wrap">
-            <DiplomatBadge variant="doctrine-core">Doctrine Core</DiplomatBadge>
-            <DiplomatBadge variant="briefing-ready">Briefing Ready</DiplomatBadge>
-            <DiplomatBadge variant="field-notes">Field Notes</DiplomatBadge>
+        <FadeIn className="mb-10 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+            <div className="flex gap-2 flex-wrap">
+              {(Object.keys(CATEGORY_LABELS) as Array<GlossaryCategory | "all">).map((cat) => (
+                <Button
+                  key={cat}
+                  type="button"
+                  variant={activeCategory === cat ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setActiveCategory(cat)}
+                  className="rounded-none text-[10px] uppercase tracking-[0.2em]"
+                >
+                  {CATEGORY_LABELS[cat]}
+                </Button>
+              ))}
+            </div>
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Search terms, sources, definitions…"
+              className="md:w-80 w-full bg-transparent border border-brass/50 px-3 py-2 text-sm font-sans placeholder:text-foreground/40 focus:outline-none focus:border-accent"
+              aria-label="Search glossary"
+            />
           </div>
-          <input
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search terms, sources, definitions…"
-            className="md:w-80 w-full bg-transparent border border-brass/50 px-3 py-2 text-sm font-sans placeholder:text-foreground/40 focus:outline-none focus:border-accent"
-            aria-label="Search glossary"
-          />
+          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/60">
+            {results.length} of {GLOSSARY.length} terms{activeCategory !== "all" ? ` in ${CATEGORY_LABELS[activeCategory]}` : ""}
+          </p>
         </FadeIn>
 
-
-        <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/60 mb-8">
-          {results.length} of {GLOSSARY.length} terms
-        </p>
-
-        <div className="grid gap-4 md:gap-5 md:grid-cols-2 pb-8">
+        <div className="grid gap-4 md:gap-5 md:grid-cols-2 pb-16">
           {results.map((g) => (
             <FadeIn key={g.id} className="h-full">
               <article
                 id={g.id}
-                className="group bg-background border border-brass/40 p-6 md:p-7 h-full transition-colors hover:bg-navy-tint/60 hover:border-brass scroll-mt-24"
+                className="group relative bg-background border border-brass/40 p-6 md:p-7 h-full transition-colors hover:bg-navy-tint/60 hover:border-brass scroll-mt-24"
               >
-                <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
-                  {g.source}
-                </p>
-                <h2 className="mt-2 font-serif text-primary text-2xl leading-tight">{g.term}</h2>
+                <div className="flex justify-between items-start gap-4">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
+                      {g.source}
+                    </p>
+                    <h2 className="mt-2 font-serif text-primary text-2xl leading-tight">{g.term}</h2>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => copyCitation(g)}
+                    className="shrink-0 text-foreground/50"
+                    title="Export Canonical Citation"
+                    aria-label={`Copy canonical citation for ${g.term}`}
+                  >
+                    {copiedId === g.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  </Button>
+                </div>
+                
                 <hr className="gold-rule gold-rule-short mt-3 mb-4" />
                 <p className="text-[0.95rem] leading-relaxed text-foreground/85">{g.short}</p>
                 <blockquote className="mt-4 pl-4 border-l-2 border-brass text-sm italic font-serif text-primary/80 leading-relaxed">
                   {g.quote}
                 </blockquote>
+                
+                <div className="mt-4 pt-4 border-t border-brass/10 flex items-center justify-between">
+                  <span className="text-[9px] uppercase tracking-widest text-foreground/30 font-bold">
+                    Theme: {CATEGORY_LABELS[g.category]}
+                  </span>
+                </div>
               </article>
             </FadeIn>
           ))}
