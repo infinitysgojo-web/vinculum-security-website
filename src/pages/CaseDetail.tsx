@@ -1,6 +1,6 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import SEO from "@/components/SEO";
-import { sectionLd, SITE_URL, personLd, AUTHOR_NAME, PUBLISHED, LICENSE_URL } from "@/lib/seo-entities";
+import { sectionLd, SITE_URL, personLd, AUTHOR_NAME, PUBLISHED, LICENSE_URL, casePlaceLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import GoldRule from "@/components/GoldRule";
@@ -45,6 +45,8 @@ export default function CaseDetail() {
       url: `${SITE_URL}/cases`,
     },
     citation: c.sources.map((s) => ({ "@type": "CreativeWork", name: s })),
+    contentLocation: casePlaceLd(c.slug),
+    spatialCoverage: casePlaceLd(c.slug),
   };
 
   const datasetLd = {
