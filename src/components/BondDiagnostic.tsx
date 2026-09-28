@@ -184,7 +184,7 @@ export default function BondDiagnostic() {
   return (
     <section id="bench" className="scroll-mt-24">
       <FadeIn>
-        <p className="eyebrow">Part V · Assessment Bench</p>
+        <p className="eyebrow">§3B · Assessment Bench</p>
         <hr className="gold-rule mt-4 mb-6" />
         <p className="max-w-3xl text-foreground/85 mb-2">
           A working surface for the diagnostic method. Score each of the four continuum levels against the
