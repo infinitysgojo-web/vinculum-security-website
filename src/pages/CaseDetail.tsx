@@ -8,6 +8,7 @@ import PullQuote from "@/components/PullQuote";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import NumeralDivider from "@/components/NumeralDivider";
+import CountryOutline from "@/components/CountryOutline";
 import { CASES, DOMAINS, getCase } from "@/content/cases";
 
 export default function CaseDetail() {
@@ -116,6 +117,9 @@ export default function CaseDetail() {
 
           <FadeIn className="lg:sticky lg:top-24">
             <aside className="border border-brass/40 bg-navy-tint/40 p-6">
+              <div className="flex justify-center mb-4">
+                <CountryOutline slug={c.slug} size={150} label={c.shortTitle} />
+              </div>
               <p className="eyebrow">The record</p>
               <GoldRule className="mt-3 mb-4" />
               <dl className="space-y-4">
@@ -173,6 +177,21 @@ export default function CaseDetail() {
           <p className="mt-4 text-xs text-foreground/60">
             Scores run 1 to 5 per bond domain. Higher values indicate stronger observed bond integrity.
           </p>
+          {c.slug === "rwanda" && (
+            <div className="mt-6 border-l-2 border-accent bg-gold-tint/40 p-5">
+              <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">
+                Adversarial Rescoring · Worked Demonstration
+              </p>
+              <p className="mt-2 text-[0.88rem] leading-relaxed text-foreground/85">
+                The scores above were produced by a deliberate skeptical re-pass: interpersonal was
+                reduced from a sympathetic 4 to a 3 to reflect variance between genuine and coerced
+                apology; communal from a straightforwardly strong reading to a contested 3;
+                intergenerational assigned a 2 for a gap, the bond between the 1994 generation and
+                those born after, that earlier readings had not scored at all. Offered as a
+                demonstration of method, not as a substitute for genuine third-party verification.
+              </p>
+            </div>
+          )}
         </FadeIn>
 
         <FadeIn className="my-16">

@@ -123,6 +123,10 @@ export default function Practice() {
           </div>
         </FadeIn>
 
+        <div className="mb-16">
+          <BondDiagnostic />
+        </div>
+
         <NumeralDivider n="IV" label="Practice Principles" />
 
 
@@ -190,10 +194,6 @@ export default function Practice() {
             room, alongside the doctrine, by practitioners working now.
           </p>
         </FadeIn>
-
-        <div className="pb-8">
-          <BondDiagnostic />
-        </div>
 
       </div>
     </>
