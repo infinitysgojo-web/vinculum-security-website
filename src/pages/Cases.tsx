@@ -200,21 +200,24 @@ export default function Cases() {
                     {c.summary}
                   </p>
 
-                  <div className="mt-auto grid grid-cols-2 sm:grid-cols-[1.1fr_0.8fr_1.5fr_2fr] gap-x-3 gap-y-3 sm:gap-y-2 border-t border-border/70 pt-4">
+                  <div className="mt-auto grid grid-cols-1 sm:grid-cols-[1.1fr_0.8fr_1.5fr_2fr] gap-y-3 sm:gap-y-2 sm:gap-x-3 border-t border-border/70 pt-4">
                     {DOMAINS.map((d, idx) => (
-                      <div key={d} className="flex items-center gap-3 sm:block">
-                        <div className="sm:block">
+                      <div key={d}>
+                        <div className="flex items-baseline justify-between gap-4 sm:block">
                           <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight whitespace-nowrap">
                             {d}
                           </p>
-                          <div className="h-1.5 bg-brass/30 mt-1 w-full sm:w-auto">
-                            <div
-                              className="h-full bg-accent"
-                              style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
-                            />
-                          </div>
+                          <p className="font-serif text-accent text-sm sm:hidden">
+                            {c.scores[idx]} / 5
+                          </p>
                         </div>
-                        <p className="font-serif text-accent text-sm sm:mt-0.5 shrink-0">
+                        <div className="h-1.5 bg-brass/30 mt-1">
+                          <div
+                            className="h-full bg-accent"
+                            style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
+                          />
+                        </div>
+                        <p className="font-serif text-accent text-sm hidden sm:block sm:mt-0.5">
                           {c.scores[idx]} / 5
                         </p>
                       </div>
