@@ -213,39 +213,8 @@ export default function Methodology() {
           </div>
         </FadeIn>
 
-        <FadeIn className="mb-16">
-          <p className="eyebrow">VII · Audit Methodology</p>
-          <GoldRule className="mt-4 mb-6" />
-          <div className="grid gap-6 md:grid-cols-3 mb-10">
-            <div className="bg-background border border-border p-5">
-              <h4 className="font-serif text-primary mb-3">Independent Verification</h4>
-              <p className="text-sm text-foreground/85 leading-relaxed">
-                Any score attributed to an institution by that institution itself is treated as a 
-                hypothesis requiring external confirmation. The audit protocol demands a named, 
-                independent rater for all level 4 and 5 scores.
-              </p>
-            </div>
-            <div className="bg-background border border-border p-5">
-              <h4 className="font-serif text-primary mb-3">Adversarial Rescoring</h4>
-              <p className="text-sm text-foreground/85 leading-relaxed">
-                A deliberate second pass at a case from a skeptical posture. The goal is to argue 
-                against the doctrine’s own favorable tendencies, identifying where "bond theater" 
-                may be masquerading as bond integrity.
-              </p>
-            </div>
-            <div className="bg-background border border-border p-5">
-              <h4 className="font-serif text-primary mb-3">Standing Verification</h4>
-              <p className="text-sm text-foreground/85 leading-relaxed">
-                Standing to speak for a community is treated as a claim to be tested. The audit 
-                verifies that a delegate is recognized by the sending community, not merely by the 
-                convening institution or the funding cycle.
-              </p>
-            </div>
-          </div>
-        </FadeIn>
-
         <FadeIn className="mb-20">
-          <AuditBench />
+          <AuditBench parties={PARTIES} />
         </FadeIn>
 
         <PrintFootnotes terms={CITED} />

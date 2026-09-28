@@ -10,6 +10,6 @@
 - [x] Scripted Lexicon on the Practice page (next)
 - [x] Comparative Genealogy ("Traditions in dialogue") on the Foundations page, mobile dropdown selector
 - [x] Cross-Theater Diagnostic Mirror: compare selection now opens a dossier with dual radar, four diagnostic inquiries, and curated pairings
-- [ ] Methodology: Stakeholder Safeguard & Field Audit Bench
-- [ ] Case studies: one-click Executive Dossier print/PDF layout
-- [ ] Glossary: thematic lineage filter and canonical citation copy
+- [x] Methodology: Stakeholder Safeguard & Field Audit Bench
+- [x] Case studies: one-click Executive Dossier print/PDF layout
+- [x] Glossary: thematic lineage filter and canonical citation copy

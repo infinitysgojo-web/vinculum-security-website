@@ -14,6 +14,7 @@ import FadeIn from "@/components/FadeIn";
 import ReadingProgress from "@/components/ReadingProgress";
 import { Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 import { GLOSSARY, GlossaryCategory, GlossaryEntry } from "@/content/glossary";
 
@@ -118,17 +119,16 @@ export default function Glossary() {
           <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
             <div className="flex gap-2 flex-wrap">
               {(Object.keys(CATEGORY_LABELS) as Array<GlossaryCategory | "all">).map((cat) => (
-                <button
+                <Button
                   key={cat}
+                  type="button"
+                  variant={activeCategory === cat ? "default" : "outline"}
+                  size="sm"
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-semibold border transition-all ${
-                    activeCategory === cat 
-                      ? "bg-accent border-accent text-primary" 
-                      : "border-brass/30 text-foreground/60 hover:border-brass/60 hover:text-primary"
-                  }`}
+                  className="rounded-none text-[10px] uppercase tracking-[0.2em]"
                 >
                   {CATEGORY_LABELS[cat]}
-                </button>
+                </Button>
               ))}
             </div>
             <input
@@ -141,7 +141,7 @@ export default function Glossary() {
             />
           </div>
           <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/60">
-            {results.length} of {GLOSSARY.length} terms ${activeCategory !== "all" ? `in ${CATEGORY_LABELS[activeCategory]}` : ""}
+            {results.length} of {GLOSSARY.length} terms{activeCategory !== "all" ? ` in ${CATEGORY_LABELS[activeCategory]}` : ""}
           </p>
         </FadeIn>
 
@@ -159,14 +159,17 @@ export default function Glossary() {
                     </p>
                     <h2 className="mt-2 font-serif text-primary text-2xl leading-tight">{g.term}</h2>
                   </div>
-                  <button
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
                     onClick={() => copyCitation(g)}
-                    className="p-2 text-foreground/40 hover:text-accent transition-colors shrink-0"
+                    className="shrink-0 text-foreground/50"
                     title="Export Canonical Citation"
-                    aria-label="Export Canonical Citation"
+                    aria-label={`Copy canonical citation for ${g.term}`}
                   >
                     {copiedId === g.id ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
+                  </Button>
                 </div>
                 
                 <hr className="gold-rule gold-rule-short mt-3 mb-4" />

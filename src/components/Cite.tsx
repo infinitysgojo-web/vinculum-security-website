@@ -5,6 +5,7 @@ import { GLOSSARY_MAP } from "@/content/glossary";
 import { AUTHOR_NAME, SITE_URL, WORK_TITLE } from "@/lib/seo-entities";
 import { Copy, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 export default function Cite({ term, children }: { term: string; children?: ReactNode }) {
   const [copied, setCopied] = useState(false);
@@ -44,13 +45,17 @@ export default function Cite({ term, children }: { term: string; children?: Reac
             </p>
             <p className="mt-2 font-serif text-primary text-lg leading-tight">{entry.term}</p>
           </div>
-          <button
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={copyCitation}
-            className="p-1.5 text-foreground/40 hover:text-accent transition-colors shrink-0 border border-brass/20 rounded-sm"
+            className="size-8 shrink-0 border border-brass/20 text-foreground/50"
             title="Export Citation"
+            aria-label={`Copy canonical citation for ${entry.term}`}
           >
             {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-          </button>
+          </Button>
         </div>
         
         <hr className="gold-rule gold-rule-short my-3" />
