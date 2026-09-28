@@ -63,7 +63,7 @@ export default function Glossary() {
   }, [q, activeCategory]);
 
   const copyCitation = (entry: GlossaryEntry) => {
-    const citation = `${AUTHOR_NAME} (2026). "${entry.term}." ${WORK_TITLE}. ${SITE_URL}/glossary#${entry.id}`;
+    const citation = `${AUTHOR_NAME} (2026). "${entry.term}." ${WORK_TITLE}. ${entry.source}. ${SITE_URL}/glossary#${entry.id}`;
     navigator.clipboard.writeText(citation).then(() => {
       setCopiedId(entry.id);
       toast({
@@ -102,6 +102,8 @@ export default function Glossary() {
             name: entry.term,
             description: entry.short,
             url: `${SITE_URL}/glossary#${entry.id}`,
+            isPartOf: { "@id": `${SITE_URL}/glossary#termset` },
+            subjectOf: { "@type": "ScholarlyArticle", name: entry.source },
             inDefinedTermSet: `${SITE_URL}/glossary#termset`,
           })),
         }}

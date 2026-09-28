@@ -15,7 +15,7 @@ export default function Cite({ term, children }: { term: string; children?: Reac
   if (!entry) return <>{children ?? term}</>;
 
   const copyCitation = () => {
-    const citation = `${AUTHOR_NAME} (2026). "${entry.term}." ${WORK_TITLE}. ${SITE_URL}/glossary#${entry.id}`;
+    const citation = `${AUTHOR_NAME} (2026). "${entry.term}." ${WORK_TITLE}. ${entry.source}. ${SITE_URL}/glossary#${entry.id}`;
     navigator.clipboard.writeText(citation).then(() => {
       setCopied(true);
       toast({

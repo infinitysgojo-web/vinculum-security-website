@@ -4,7 +4,7 @@ import GoldRule from "./GoldRule";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
-type Party = readonly [string, string, string];
+type Party = readonly string[];
 const CHECKS = ["Relevant evidence reviewed", "Affected party heard directly", "Independent verification recorded"];
 
 export default function AuditBench({ parties }: { parties: readonly Party[] }) {
