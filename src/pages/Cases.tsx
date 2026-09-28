@@ -204,7 +204,7 @@ export default function Cases() {
                     {DOMAINS.map((d, idx) => (
                       <div key={d} className="flex items-center gap-3 sm:block">
                         <div className="sm:block">
-                          <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight">
+                          <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight sm:h-6">
                             {d}
                           </p>
                           <div className="h-1.5 bg-brass/30 mt-1 w-full sm:w-auto">
