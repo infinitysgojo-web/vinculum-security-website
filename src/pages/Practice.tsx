@@ -8,6 +8,7 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
 import BondDiagnostic from "@/components/BondDiagnostic";
+import FieldLexicon from "@/components/FieldLexicon";
 
 const PRINCIPLES = [
   {
@@ -147,6 +148,15 @@ export default function Practice() {
             ))}
           </div>
         </FadeIn>
+
+        <section id="lexicon" className="scroll-mt-24 mb-16">
+          <FadeIn>
+            <p className="eyebrow">§9A · The Field Lexicon</p>
+            <h2 className="mt-3 font-serif text-primary">Words for the room</h2>
+            <GoldRule className="mt-4 mb-6" />
+            <FieldLexicon />
+          </FadeIn>
+        </section>
 
         <FadeIn className="mb-16">
           <p className="eyebrow">Part IV · Practice Under Constraint</p>
