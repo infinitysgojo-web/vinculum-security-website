@@ -8,6 +8,7 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
 import PrintFootnotes from "@/components/PrintFootnotes";
+import AuditBench from "@/components/AuditBench";
 
 const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated", "scoring-rubric", "government-non-self-assessment"];
 
@@ -209,6 +210,9 @@ export default function Methodology() {
                 A structural safeguard against the delay-justification risk.
               </p>
             </div>
+        <FadeIn className="mb-20">
+          <AuditBench />
+        </FadeIn>
           </div>
         </FadeIn>
 
