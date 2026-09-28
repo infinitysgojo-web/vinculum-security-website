@@ -5,6 +5,7 @@ import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
+import RelationalAtlas from "@/components/RelationalAtlas";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 
@@ -138,6 +139,10 @@ export default function Cases() {
           <DiplomatBadge variant="case-study">Case Study Atlas</DiplomatBadge>
           <DiplomatBadge variant="briefing-ready">Briefing Ready</DiplomatBadge>
           <DiplomatBadge variant="field-notes">Field-Tested</DiplomatBadge>
+        </FadeIn>
+
+        <FadeIn>
+          <RelationalAtlas />
         </FadeIn>
 
         <FadeIn>
