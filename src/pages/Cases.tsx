@@ -14,14 +14,6 @@ import { CASES, DOMAINS, type CaseStudy as Case, type Region, type Pillar, type 
 
 const REGIONS: Region[] = ["Africa", "Europe", "Latin America", "Southeast Asia", "Pacific"];
 const PILLARS: Pillar[] = ["Interpersonal", "Communal", "Intergenerational", "Institutional"];
-const THREATS: Threat[] = [
-  "Ethnic conflict",
-  "Civil war",
-  "Genocide",
-  "Political violence",
-  "Post-conflict transition",
-  "Climate displacement",
-];
 
 function Chip({
   active,
@@ -132,7 +124,7 @@ export default function Cases() {
         <PageHeader
           eyebrow="Section VII"
           title="Applied Case Engagement"
-          lede="Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific. Filter by region, doctrine pillar, or threat type, and select up to three to compare side-by-side."
+          lede="Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific. Open any case for the full study, or select up to three to compare side by side."
         />
 
         <FadeIn className="flex gap-2 mb-8 flex-wrap">
@@ -159,12 +151,6 @@ export default function Cases() {
               active={pillars}
               onToggle={(v) => toggle(pillars, v, setPillars)}
             />
-            <FilterGroup
-              label="Threat Type"
-              items={THREATS}
-              active={threats}
-              onToggle={(v) => toggle(threats, v, setThreats)}
-            />
             <div className="flex items-center justify-between pt-3 border-t border-brass/30">
               <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70">
                 Showing {filtered.length} of {CASES.length} cases
@@ -181,11 +167,6 @@ export default function Cases() {
           </div>
         </FadeIn>
 
-        <FadeIn>
-          <p className="mb-6 text-[11px] uppercase tracking-[0.22em] font-semibold text-primary/60">
-            Press any case to open its full study: narrative, bond scores, doctrinal finding, and handbook practice.
-          </p>
-        </FadeIn>
 
         <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
