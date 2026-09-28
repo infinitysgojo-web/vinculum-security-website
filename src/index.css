@@ -231,8 +231,9 @@
   @page { margin: 20mm 18mm 22mm; size: A4; }
 
   /* ===== Executive dossier: a document, not a printed web page ===== */
-  body:has(.dossier) > #root > *:not(:has(.dossier)) { display: none !important; }
   body:has(.dossier) .container { display: none !important; }
+  body:has(.dossier) [class*="fixed"] { display: none !important; }
+
 
   .dossier {
     display: block !important;
