@@ -246,21 +246,8 @@
   .dossier * { break-inside: avoid-page; }
   .dossier p, .dossier li { orphans: 4; widows: 4; break-inside: auto; }
 
-  .dossier-runner {
-    position: fixed;
-    bottom: -14mm;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Inter', sans-serif;
-    font-size: 7pt;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #333;
-    border-top: 0.5pt solid #999;
-    padding-top: 2mm;
-  }
+  .dossier-runner { display: none !important; }
+
 
   .dossier-masthead {
     display: flex;
