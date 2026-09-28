@@ -1,316 +1,312 @@
+export type GlossaryCategory = "core" | "continuum" | "lineage" | "method" | "field";
+
 export type GlossaryEntry = {
   id: string;
   term: string;
   short: string;
   source: string;
   quote: string;
+  category: GlossaryCategory;
 };
 
 export const GLOSSARY: GlossaryEntry[] = [
   {
     id: "vinculum-security",
     term: "Vinculum Security",
-    short:
-      "A doctrine holding that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible.",
+    short: "A doctrine holding that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible.",
     source: "Doctrine § III.A · Canonical Definition",
-    quote:
-      "Security is not the absence of threat, but the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible in the first place.",
+    quote: "Security is not the absence of threat, but the presence and integrity of the relational bonds, between persons, communities, and generations, that make protection, dignity, and peace possible in the first place.",
+    category: "core",
   },
   {
     id: "relational-security",
     term: "Relational Security",
-    short:
-      "The doctrinal account of security advanced by Vinculum Security, in which the presence and integrity of relational bonds are the condition of protection, dignity, and peace.",
+    short: "The doctrinal account of security advanced by Vinculum Security, in which the presence and integrity of relational bonds are the condition of protection, dignity, and peace.",
     source: "Doctrine § III.A–B · Canonical Definition and Ontological Claim",
-    quote:
-      "The proper unit of security analysis is the bond: not only the individual, not only the institution, but the relationship between them.",
+    quote: "The proper unit of security analysis is the bond: not only the individual, not only the institution, but the relationship between them.",
+    category: "core",
   },
   {
     id: "bond",
     term: "Bond",
     short: "The proper unit of security analysis in the doctrine, a nameable relationship on which safety and dignity depend.",
     source: "Doctrine § III.B · Ontological Claim",
-    quote:
-      "Security assessed only at the individual level is incomplete, because it can report a person as secure while the bonds constituting that person's safety and dignity are eroding. The proper unit of security analysis is the bond.",
+    quote: "Security assessed only at the individual level is incomplete, because it can report a person as secure while the bonds constituting that person's safety and dignity are eroding. The proper unit of security analysis is the bond.",
+    category: "core",
   },
   {
     id: "bond-integrity",
     term: "Bond Integrity",
     short: "The persistence and quality of a specific relational bond over time and through stress.",
     source: "Doctrine § V.B · Bond-Integrity Indicators",
-    quote:
-      "Each continuum level has an illustrative indicator and a diagnostic question, held together across cases so that a comparison is grounded in the same working definitions each time.",
+    quote: "Each continuum level has an illustrative indicator and a diagnostic question, held together across cases so that a comparison is grounded in the same working definitions each time.",
+    category: "core",
   },
   {
     id: "vinculum-continuum",
     term: "Vinculum Continuum",
-    short:
-      "The four nested levels at which the doctrine operates: interpersonal, communal, intergenerational, and institutional-relational.",
+    short: "The four nested levels at which the doctrine operates: interpersonal, communal, intergenerational, and institutional-relational.",
     source: "Doctrine § III.D",
-    quote:
-      "Vinculum Security operates across four nested levels, governed by explicit boundary and weighting rules.",
+    quote: "Vinculum Security operates across four nested levels, governed by explicit boundary and weighting rules.",
+    category: "core",
   },
   {
     id: "interpersonal",
     term: "Interpersonal Bond",
     short: "Trust between two named individuals that would survive a bad-faith moment intact.",
     source: "Doctrine § III.D.I",
-    quote:
-      "Bonds between two named individuals, regardless of role, the trust that survives a bad-faith moment intact.",
+    quote: "Bonds between two named individuals, regardless of role, the trust that survives a bad-faith moment intact.",
+    category: "continuum",
   },
   {
     id: "communal",
     term: "Communal Bond",
     short: "Standing between an individual or institution and a group within a single generational cohort.",
     source: "Doctrine § III.D.II",
-    quote:
-      "Bonds between an individual or institution and a group within a single generational cohort, standing tested by the community itself.",
+    quote: "Bonds between an individual or institution and a group within a single generational cohort, standing tested by the community itself.",
+    category: "continuum",
   },
   {
     id: "intergenerational",
     term: "Intergenerational Bond",
     short: "The transfer of knowledge, trust, and standing between youth and elder leadership.",
     source: "Doctrine § III.D.III",
-    quote:
-      "Bonds between distinct generational cohorts, the transfer of knowledge, trust, and standing between youth and elder leadership.",
+    quote: "Bonds between distinct generational cohorts, the transfer of knowledge, trust, and standing between youth and elder leadership.",
+    category: "continuum",
   },
   {
     id: "institutional-relational",
     term: "Institutional-Relational Bond",
     short: "The bond between an institution and the population it serves, tested across a change in personnel.",
     source: "Doctrine § III.D.IV",
-    quote:
-      "Bonds between an institution and the population it is mandated to serve, tested across a change in personnel or office.",
+    quote: "Bonds between an institution and the population it is mandated to serve, tested across a change in personnel or office.",
+    category: "continuum",
   },
   {
     id: "ubuntu",
     term: "Ubuntu",
-    short:
-      "A southern African philosophical tradition holding that a person is a person through other persons, personhood constituted relationally.",
+    short: "A southern African philosophical tradition holding that a person is a person through other persons, personhood constituted relationally.",
     source: "Foundations § II.B",
-    quote:
-      "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu, a person is a person through other persons.",
+    quote: "Ubuntu holds that personhood is constituted relationally: umuntu ngumuntu ngabantu, a person is a person through other persons.",
+    category: "lineage",
   },
   {
     id: "confucian-role-ethics",
     term: "Confucian Role Ethics",
     short: "The view that a person is relationally constituted by the roles they live, not a prior autonomous individual.",
     source: "Foundations § II.J",
-    quote:
-      "A person is not a discrete, autonomous individual but is relationally constituted by the roles they live.",
+    quote: "A person is not a discrete, autonomous individual but is relationally constituted by the roles they live.",
+    category: "lineage",
   },
   {
     id: "human-security",
     term: "Human Security",
     short: "The 1994 UNDP framework that shifted the referent object of security from the state to the individual person.",
     source: "Foundations § II.A",
-    quote:
-      "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want, freedom from fear, and freedom to live in dignity.",
+    quote: "The 1994 UNDP Human Development Report redefined the referent object of security, shifting focus from the state to the individual, organized around freedom from want, freedom from fear, and freedom to live in dignity.",
+    category: "lineage",
   },
   {
     id: "r2p",
     term: "Responsibility to Protect (R2P)",
     short: "The 2005 World Summit reframing of sovereignty as responsibility to protect populations from atrocity.",
     source: "Foundations § II.F",
-    quote:
-      "R2P relocates obligation; Vinculum Security relocates the referent object, from the protected population to the bonds that make protection possible.",
+    quote: "R2P relocates obligation; Vinculum Security relocates the referent object, from the protected population to the bonds that make protection possible.",
+    category: "lineage",
   },
   {
     id: "yps",
     term: "Youth, Peace and Security (YPS)",
-    short:
-      "UN Security Council architecture (Resolution 2250, 2015) with five pillars: participation, protection, prevention, partnerships, and disengagement and reintegration.",
+    short: "UN Security Council architecture (Resolution 2250, 2015) with five pillars: participation, protection, prevention, partnerships, and disengagement and reintegration.",
     source: "Foundations § II.G",
-    quote:
-      "UNSCR 2250 (2015) established five pillars: participation, protection, prevention, partnerships, and disengagement and reintegration.",
+    quote: "UNSCR 2250 (2015) established five pillars: participation, protection, prevention, partnerships, and disengagement and reintegration.",
+    category: "lineage",
   },
   {
     id: "wps",
     term: "Women, Peace and Security (WPS)",
     short: "UNSCR 1325 (2000), the first resolution recognizing conflict's disproportionate impact on women and girls.",
     source: "Foundations § II.K",
-    quote:
-      "UNSCR 1325 (2000) was the first resolution to recognize that armed conflict affects women and girls disproportionately and distinctly.",
+    quote: "UNSCR 1325 (2000) was the first resolution to recognize that armed conflict affects women and girls disproportionately and distinctly.",
+    category: "lineage",
   },
   {
     id: "positive-peace",
     term: "Positive Peace",
     short: "Galtung's conception of peace as the absence of structural violence, not merely direct violence.",
     source: "Foundations § II.E",
-    quote:
-      "Peace as absence of structural violence, not just direct violence.",
+    quote: "Peace as absence of structural violence, not just direct violence.",
+    category: "lineage",
   },
   {
     id: "securitization",
     term: "Securitization",
     short: "The Copenhagen School's view that security is a discursive act, something is a security matter when successfully framed as one.",
     source: "Foundations § II.D",
-    quote:
-      "Security as a discursive act, not a fixed condition.",
+    quote: "Security as a discursive act, not a fixed condition.",
+    category: "lineage",
   },
   {
     id: "restorative-justice",
     term: "Restorative Justice",
     short: "Zehr's reframing of harm as a violation of people and relationships rather than only an offense against the state.",
     source: "Foundations § II.I",
-    quote:
-      "Justice as repair of relationship, not only punishment of the state's law.",
+    quote: "Justice as repair of relationship, not only punishment of the state's law.",
+    category: "lineage",
   },
   {
     id: "palava-hut",
     term: "Palava Hut",
     short: "A revived Liberian community dialogue tradition used alongside the Truth and Reconciliation Commission.",
     source: "Cases § VII · Liberia",
-    quote:
-      "A Truth and Reconciliation Commission delivering its 2009 final report alongside disarmament of over 100,000 former combatants and revival of Palava Hut dialogue.",
+    quote: "A Truth and Reconciliation Commission delivering its 2009 final report alongside disarmament of over 100,000 former combatants and revival of Palava Hut dialogue.",
+    category: "field",
   },
   {
     id: "gacaca",
     term: "Gacaca Courts",
     short: "Roughly 12,000 Rwandan community tribunals that processed nearly two million genocide-related cases between 2002 and 2012.",
     source: "Cases § VII · Rwanda",
-    quote:
-      "Roughly 12,000 community tribunals processed close to two million genocide-related cases between 2002 and 2012.",
+    quote: "Roughly 12,000 community tribunals processed close to two million genocide-related cases between 2002 and 2012.",
+    category: "field",
   },
   {
     id: "agenda-2063",
     term: "Agenda 2063",
-    short:
-      "The African Union's continental framework naming intergenerational dialogue (Aspiration 4) and people-driven development (Aspiration 6).",
+    short: "The African Union's continental framework naming intergenerational dialogue (Aspiration 4) and people-driven development (Aspiration 6).",
     source: "Foundations § II.H",
-    quote:
-      "The African Union's Agenda 2063 names intergenerational dialogue under its fourth aspiration and commits under its sixth to people-driven development anchored in the potential of women and youth.",
+    quote: "The African Union's Agenda 2063 names intergenerational dialogue under its fourth aspiration and commits under its sixth to people-driven development anchored in the potential of women and youth.",
+    category: "lineage",
   },
   {
     id: "diagnostic-question",
     term: "Diagnostic Question",
     short: "The recurring question asked identically at each continuum level to reveal where security is materially present or only nominally reported.",
     source: "Methodology § V.A",
-    quote:
-      "Are the bonds this person, community, or generation depends upon intact, and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?",
+    quote: "Are the bonds this person, community, or generation depends upon intact, and if an intervention protected the individual or institution while ignoring those bonds, has it delivered security at all?",
+    category: "method",
   },
   {
     id: "political-realism",
     term: "Political Realism (The Counterweight)",
     short: "Retained as counterweight rather than competitor: realism's account of state behaviour is accepted; Vinculum Security adds that the bonds a state depends on are themselves a component of its actual capacity.",
     source: "Foundations § II.C",
-    quote:
-      "Politics is governed by objective laws rooted in human nature, and national interest is defined in terms of power.",
+    quote: "Politics is governed by objective laws rooted in human nature, and national interest is defined in terms of power.",
+    category: "lineage",
   },
   {
     id: "menkiti-gyekye",
     term: "Menkiti-Gyekye Debate",
     short: "The internal African-philosophy debate between Menkiti's radical communitarian thesis and Gyekye's moderate reading of Ubuntu; the doctrine is built to survive either resolution.",
     source: "Foundations § II.B",
-    quote:
-      "Menkiti's radical communitarian thesis and Gyekye's moderate reading debate how strongly personhood is constituted by community; Vinculum Security survives either resolution.",
+    quote: "Menkiti's radical communitarian thesis and Gyekye's moderate reading debate how strongly personhood is constituted by community; Vinculum Security survives either resolution.",
+    category: "lineage",
   },
   {
     id: "digital-bonds",
     term: "Digital & Information-Age Bonds",
     short: "The recognition that coordinated disinformation, algorithmic sorting, and deliberate rupture of trust between institutions and publics are first-order bond-degrading forces.",
     source: "Foundations § II.L",
-    quote:
-      "Digital communication and information manipulation now actively erode the same bonds the Vinculum Continuum was built to assess.",
+    quote: "Digital communication and information manipulation now actively erode the same bonds the Vinculum Continuum was built to assess.",
+    category: "core",
   },
   {
     id: "climate-bonds",
     term: "Environmental & Climate-Displacement Bonds",
     short: "The stress placed on intergenerational and institutional bonds when a community's viability as a place is itself under threat.",
     source: "Foundations § II.M",
-    quote:
-      "Where a community's viability as a place is itself under threat, the intergenerational and institutional-relational bonds that community depends upon are placed under a stress no earlier security framework was designed to name.",
+    quote: "Where a community's viability as a place is itself under threat, the intergenerational and institutional-relational bonds that community depends upon are placed under a stress no earlier security framework was designed to name.",
+    category: "core",
   },
   {
     id: "nomenclature-african",
     term: "Nomenclature and the African Contribution",
     short: "The Latin vinculum is chosen so the doctrine can travel through diplomatic institutions in European working languages without being mistranslated or treated as folk wisdom; the intellectual origin remains African.",
     source: "Doctrine § III.E",
-    quote:
-      "The doctrine is confidently African in origin, now corroborated by an independent Confucian tradition, and does not claim cultural neutrality.",
+    quote: "The doctrine is confidently African in origin, now corroborated by an independent Confucian tradition, and does not claim cultural neutrality.",
+    category: "lineage",
   },
   {
     id: "boundary-weighting",
     term: "Boundary Rules and Weighting",
     short: "Explicit rules for classifying a bond into a continuum level, and for weighting bonds when they conflict.",
     source: "Doctrine § III.F",
-    quote:
-      "When bonds at different levels conflict, weight is given to the bond whose rupture would most reduce the affected persons' actual capacity for protection and dignity going forward.",
+    quote: "When bonds at different levels conflict, weight is given to the bond whose rupture would most reduce the affected persons' actual capacity for protection and dignity going forward.",
+    category: "method",
   },
   {
     id: "party-differentiated",
     term: "Party-Differentiated Application",
     short: "The layer that ensures children, youth, elders, women, government, civil society, and ex-combatants are addressed distinctly rather than averaged into a single rubric.",
     source: "Methodology § VI",
-    quote:
-      "A full party-differentiated application table addressing children, youth, elders, women, government, civil society, and ex-combatants distinctly.",
+    quote: "A full party-differentiated application table addressing children, youth, elders, women, government, civil society, and ex-combatants distinctly.",
+    category: "method",
   },
   {
     id: "annan-method",
     term: "The Annan Method",
     short: "Kofi Annan's mediation practice, most visibly the 2008 AU Panel in Kenya, which treated named relationships and community standing as first-order diplomatic material.",
     source: "Practice § 3A",
-    quote:
-      "Where the Annan method modelled this practice through personal authority, Vinculum Diplomacy names its components so that they can be taught, tested, and carried by practitioners who do not have that authority to lend.",
+    quote: "Where the Annan method modelled this practice through personal authority, Vinculum Diplomacy names its components so that they can be taught, tested, and carried by practitioners who do not have that authority to lend.",
+    category: "field",
   },
   {
     id: "continuity-provision",
     term: "Continuity Provision",
     short: "A clause or mechanism built into an agreement specifically to survive a change in the officeholders who negotiated it.",
     source: "Handbook, Appendix B",
-    quote:
-      "Continuity Provision: a clause or mechanism built into an agreement specifically to survive a change in the officeholders who negotiated it.",
+    quote: "Continuity Provision: a clause or mechanism built into an agreement specifically to survive a change in the officeholders who negotiated it.",
+    category: "field",
   },
   {
     id: "south-africa-trc",
     term: "South Africa TRC",
     short: "The Truth and Reconciliation Commission established under the Promotion of National Unity and Reconciliation Act (1995), delivering its final report in 1998.",
     source: "Cases § VII · South Africa",
-    quote:
-      "Public testimony and conditional amnesty placed at the centre of a national transition from apartheid.",
+    quote: "Public testimony and conditional amnesty placed at the centre of a national transition from apartheid.",
+    category: "field",
   },
   {
     id: "falepili-union",
     term: "Falepili Union",
     short: "The Australia-Tuvalu treaty concluded 2023 and in force 2024, an attempt to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
     source: "Cases § VII · Tuvalu & Kiribati",
-    quote:
-      "The current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+    quote: "The current diplomatic edge case: an agreement that attempts to preserve nationhood and continuity of relationship across the potential loss of habitable territory.",
+    category: "field",
   },
   {
     id: "scoring-rubric",
     term: "Scoring Rubric",
     short: "The 1-5 descriptive-anchor rubric that fixes what distinguishes each bond-integrity score, so ratings are not left to the scorer's unstated judgment.",
     source: "Doctrine § V.E · Scoring Rubric and Descriptive Anchors",
-    quote:
-      "1 severed or actively hostile; 2 nominal or superficial; 3 mixed or contested; 4 functional and tested; 5 fully durable and institutionalized.",
+    quote: "1 severed or actively hostile; 2 nominal or superficial; 3 mixed or contested; 4 functional and tested; 5 fully durable and institutionalized.",
+    category: "method",
   },
   {
     id: "adversarial-rescoring",
     term: "Adversarial Rescoring",
     short: "A deliberate second pass at a case's scores from a skeptical rather than sympathetic posture, demonstrated on Rwanda as a partial answer to the self-scoring critique.",
     source: "Doctrine § VII.E · Rwanda, Worked Demonstration",
-    quote:
-      "Approaching a case a second time with the specific goal of arguing against the doctrine's own favorable tendencies rather than confirming them.",
+    quote: "Approaching a case a second time with the specific goal of arguing against the doctrine's own favorable tendencies rather than confirming them.",
+    category: "method",
   },
   {
     id: "cross-case-pattern",
     term: "Cross-Case Pattern Summary",
     short: "The consolidated table of all thirty-two scores across the eight cases, showing that no case scores uniformly high and only Cambodia scores uniformly low.",
     source: "Doctrine § VII.I · Cross-Case Pattern Summary",
-    quote:
-      "The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is the only case scoring uniformly low.",
+    quote: "The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is the only case scoring uniformly low.",
+    category: "method",
   },
   {
     id: "government-non-self-assessment",
     term: "Government Non-Self-Assessment",
     short: "Structural safeguard from the party-differentiated layer: a government's own claim of strong institutional-relational bond-integrity is a hypothesis to verify, never a self-certifying conclusion.",
     source: "Doctrine § VI · Party-Differentiated Application",
-    quote:
-      "A government's own claim of strong institutional-relational bond-integrity should always be treated as a hypothesis requiring independent verification, never as a self-certifying conclusion.",
+    quote: "A government's own claim of strong institutional-relational bond-integrity should always be treated as a hypothesis requiring independent verification, never as a self-certifying conclusion.",
+    category: "method",
   },
 ];
-
 
 export const GLOSSARY_MAP: Record<string, GlossaryEntry> = Object.fromEntries(
   GLOSSARY.map((g) => [g.id, g])
