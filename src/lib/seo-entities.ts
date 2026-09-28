@@ -157,3 +157,34 @@ export const CITATION = {
   language: "en",
   license: LICENSE_URL,
 };
+/**
+ * Geographic anchoring for the eight documented case studies. Used to give
+ * search engines and AI crawlers an explicit place for each case page.
+ */
+export const CASE_PLACES: Record<
+  string,
+  { name: string; iso: string[]; lat?: number; lon?: number }
+> = {
+  "northern-ireland": { name: "Northern Ireland, United Kingdom", iso: ["GB"], lat: 54.6, lon: -6.5 },
+  colombia: { name: "Colombia", iso: ["CO"], lat: 4.6, lon: -74 },
+  cambodia: { name: "Cambodia", iso: ["KH"], lat: 12.5, lon: 104.9 },
+  liberia: { name: "Liberia", iso: ["LR"], lat: 6.4, lon: -10.8 },
+  rwanda: { name: "Rwanda", iso: ["RW"], lat: -1.9, lon: 29.9 },
+  kenya: { name: "Kenya", iso: ["KE"], lat: 0.5, lon: 37.9 },
+  "south-africa": { name: "South Africa", iso: ["ZA"], lat: -29, lon: 25 },
+  "tuvalu-kiribati": { name: "Tuvalu and Kiribati", iso: ["TV", "KI"], lat: -4, lon: 176 },
+};
+
+/** Schema.org Place nodes for a case study slug. */
+export function casePlaceLd(slug: string) {
+  const p = CASE_PLACES[slug];
+  if (!p) return [];
+  return p.iso.map((code, i) => ({
+    "@type": "Place" as const,
+    name: p.iso.length > 1 ? `${p.name} (${code})` : p.name,
+    address: { "@type": "PostalAddress", addressCountry: code },
+    ...(i === 0 && p.lat !== undefined
+      ? { geo: { "@type": "GeoCoordinates", latitude: p.lat, longitude: p.lon } }
+      : {}),
+  }));
+}
