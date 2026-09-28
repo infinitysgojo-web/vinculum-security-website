@@ -119,14 +119,14 @@ export default function AdversarialChamber() {
                     type="button"
                     onClick={() => setOpenQ(open ? null : i)}
                     aria-expanded={open}
-                    className="w-full text-left p-4 md:p-5 flex gap-4 items-start hover:bg-gold-tint/40 transition-colors"
+                    className="w-full text-left p-4 md:p-5 flex gap-3 md:gap-4 items-start hover:bg-gold-tint/40 transition-colors"
                   >
-                    <span className="font-serif text-accent text-xl leading-none mt-0.5">Q</span>
-                    <span className="flex-1 font-serif text-lg text-foreground leading-snug">{e.q}</span>
-                    <span className="text-brass text-xl leading-none" aria-hidden>{open ? "−" : "+"}</span>
+                    <span className="font-serif text-accent text-lg md:text-xl leading-none mt-0.5">Q</span>
+                    <span className="flex-1 font-serif text-base md:text-lg text-foreground leading-snug">{e.q}</span>
+                    <span className="text-brass text-xl leading-none shrink-0" aria-hidden>{open ? "−" : "+"}</span>
                   </button>
                   {open && (
-                    <div className="px-4 md:px-5 pb-5 pl-12 md:pl-14">
+                    <div className="px-4 md:px-5 pb-5">
                       <p className="text-foreground/85 leading-relaxed border-l-2 border-brass pl-4">{e.a}</p>
                       <div className="mt-4 flex flex-wrap gap-2 items-center">
                         <span className={`px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] font-semibold border ${VERDICT_STYLE[e.verdict]}`}>
