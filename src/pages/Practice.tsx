@@ -7,6 +7,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
+import BondDiagnostic from "@/components/BondDiagnostic";
 
 const PRINCIPLES = [
   {
@@ -177,7 +178,7 @@ export default function Practice() {
           </div>
         </FadeIn>
 
-        <FadeIn className="max-w-3xl pb-8">
+        <FadeIn className="max-w-3xl mb-20">
           <p className="text-sm italic text-muted-foreground">
             The handbook includes a live-room diagnostic method, pre-negotiation bond-mapping templates,
             and applied case walkthroughs across the doctrine's eight documented cases, including the
@@ -189,6 +190,10 @@ export default function Practice() {
             room, alongside the doctrine, by practitioners working now.
           </p>
         </FadeIn>
+
+        <div className="pb-8">
+          <BondDiagnostic />
+        </div>
 
       </div>
     </>
