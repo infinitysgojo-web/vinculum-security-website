@@ -13,6 +13,7 @@ import {
   personLd,
 } from "@/lib/seo-entities";
 import NavCard from "@/components/NavCard";
+import ReadingPathways from "@/components/ReadingPathways";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
@@ -356,6 +357,8 @@ export default function Home() {
          </FadeIn>
 
       </section>
+
+      <ReadingPathways />
 
       <LatestDispatches />
 
