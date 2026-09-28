@@ -9,3 +9,4 @@
 - [x] Adversarial Review chamber (Section X) on the Doctrine page
 - [x] Scripted Lexicon on the Practice page (next)
 - [x] Comparative Genealogy ("Traditions in dialogue") on the Foundations page, mobile dropdown selector
+- [x] Cross-Theater Diagnostic Mirror: compare selection now opens a dossier with dual radar, four diagnostic inquiries, and curated pairings
