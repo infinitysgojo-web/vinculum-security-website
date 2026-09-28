@@ -107,13 +107,14 @@ function Radar({ cases }: { cases: CaseStudy[] }) {
         })
       )}
       {DOMAINS.map((d, i) => {
-        const [x, y] = point(i, 6.15);
+        const side = i === 1 || i === 3;
+        const [x, y] = point(i, side ? 5 : 6.15);
         return (
           <text
             key={d}
             x={x}
-            y={y}
-            textAnchor={i === 1 ? "start" : i === 3 ? "end" : "middle"}
+            y={side ? y - 12 : y}
+            textAnchor="middle"
             dominantBaseline="middle"
             className="fill-primary"
             style={{ fontSize: 8.5, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600 }}
