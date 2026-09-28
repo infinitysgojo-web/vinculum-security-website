@@ -1,5 +1,6 @@
 import SEO from "@/components/SEO";
-import { sectionLd } from "@/lib/seo-entities";
+import { sectionLd, SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
+import { PANELS, VERDICT_LABEL } from "@/content/adversarial";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import FadeIn from "@/components/FadeIn";
