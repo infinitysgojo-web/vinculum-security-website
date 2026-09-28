@@ -4,6 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
+import ComparativeGenealogy from "@/components/ComparativeGenealogy";
 
 const ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII"];
 
@@ -106,6 +107,10 @@ export default function Foundations() {
         <FadeIn className="flex gap-2 flex-wrap mb-8">
           <DiplomatBadge variant="foundation">Thirteen Traditions</DiplomatBadge>
           <DiplomatBadge variant="field-notes">Comparative Reading</DiplomatBadge>
+        </FadeIn>
+
+        <FadeIn>
+          <ComparativeGenealogy />
         </FadeIn>
 
         <div className="grid gap-6 md:grid-cols-2 pb-8">
