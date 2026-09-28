@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { sectionLd } from "@/lib/seo-entities";
+import { sectionLd, SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
@@ -33,6 +33,74 @@ const PRINCIPLES = [
   },
 ];
 
+/** The §3B Assessment Bench, described as a free, client-side working tool. */
+const benchLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": `${SITE_URL}/practice#bench`,
+  name: "Vinculum Relational Bond Diagnostic Bench",
+  url: `${SITE_URL}/practice#bench`,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any modern web browser",
+  browserRequirements:
+    "Requires JavaScript. Runs entirely in the browser; nothing entered is stored or transmitted.",
+  description:
+    "An interactive diagnostic bench that scores the four Vinculum bonds, interpersonal, communal, intergenerational, and institutional-relational, on a one to five scale, places the result on the Vinculum Continuum (Fractured, Degraded, Contested, Stabilised, Reconstituted), names the most exposed bond with its practice direction, and matches the profile to the nearest documented case study.",
+  author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+  isPartOf: { "@id": `${SITE_URL}/practice` },
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  featureList: [
+    "Four-bond scoring on the Vinculum Continuum",
+    "Boundary rules: children are a protected party and are never scored",
+    "Boundary rule: a government never assesses its own institutional-relational bond",
+    "Radar profile of bond integrity",
+    "Nearest documented case match",
+    "Copyable assessment summary for a briefing note",
+  ],
+};
+
+/** The §9A Field Lexicon, described as practitioner guidance. */
+const lexiconLd = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "@id": `${SITE_URL}/practice#lexicon`,
+  name: "Vinculum Diplomacy §9A: words for the room",
+  url: `${SITE_URL}/practice#lexicon`,
+  description:
+    "The handbook's scripted in-session language for each of the four bonds, with what each line tests, guidance for practice under time constraint, and the six failure modes of relational practice with their warning signs and recovery steps.",
+  author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+  isPartOf: { "@id": `${SITE_URL}/practice` },
+  inLanguage: "en",
+  step: [
+    {
+      "@type": "HowToStep",
+      name: "Test the interpersonal bond",
+      text: "Open with a named-counterpart question that tests whether trust would survive a bad-faith moment, rather than assuming trust follows from position or protocol.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Verify communal standing",
+      text: "Treat a counterpart's standing to speak for a community as a claim to be tested with the community itself, not a credential to be assumed from the chair they occupy.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Bind intergenerational input",
+      text: "Ask what happens to youth input after the session closes; presence without standing that outlives the funding cycle or the political moment is tokenism.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Test institutional continuity",
+      text: "Ask what survives a change of personnel or office, so the outcome does not depend on the tenure or goodwill of any single official.",
+    },
+    {
+      "@type": "HowToStep",
+      name: "Watch the failure modes",
+      text: "Check the practice against the six named failure modes: bond theater, the relativism trap, relational overreach, diagnosis without follow-through, delay-justification, and dissident-delegitimization.",
+    },
+  ],
+};
+
 export default function Practice() {
   return (
     <>
@@ -44,13 +112,17 @@ export default function Practice() {
         keywords="Vinculum Diplomacy, relational security practice, bond-centred diplomacy, practitioner guidance, diplomatic security, operational diplomacy handbook, field-ready peacebuilding method"
         scholarly
         citationTitle="Vinculum Diplomacy: The Companion Handbook"
-        jsonLd={sectionLd({
-          path: "/practice",
-          headline: "Vinculum Diplomacy: The Companion Handbook",
-          description:
-            "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
-          section: "Companion Handbook — Practice",
-        })}
+        jsonLd={[
+          sectionLd({
+            path: "/practice",
+            headline: "Vinculum Diplomacy: The Companion Handbook",
+            description:
+              "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
+            section: "Companion Handbook — Practice",
+          }),
+          benchLd,
+          lexiconLd,
+        ]}
       />
       <ReadingProgress />
       <div className="container">
