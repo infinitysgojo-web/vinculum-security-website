@@ -149,5 +149,9 @@
     <loc>https://www.vinculumsecurity.kidnexus.or.ke/dispatches</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og-image.jpg</image:loc>
+      <image:title>Diplomatic Dispatches by James Wesley Ndua</image:title>
+    </image:image>
   </url>
 </urlset>
