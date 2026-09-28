@@ -1,0 +1,136 @@
+import { useMemo, useState } from "react";
+import { PANELS, VERDICT_LABEL, type Verdict } from "@/content/adversarial";
+
+const VERDICT_STYLE: Record<Verdict, string> = {
+  answered: "border-primary/40 text-primary",
+  conceded: "border-brass text-foreground/80 bg-gold-tint",
+  open: "border-accent/60 text-accent",
+};
+
+type Filter = "all" | Verdict;
+
+export default function AdversarialChamber() {
+  const [panelN, setPanelN] = useState(1);
+  const [filter, setFilter] = useState<Filter>("all");
+  const [openQ, setOpenQ] = useState<number | null>(0);
+
+  const all = PANELS.flatMap((p) => p.exchanges);
+  const counts = useMemo(
+    () => ({
+      all: all.length,
+      answered: all.filter((e) => e.verdict === "answered").length,
+      conceded: all.filter((e) => e.verdict === "conceded").length,
+      open: all.filter((e) => e.verdict === "open").length,
+    }),
+    [all],
+  );
+
+  const visiblePanels = PANELS.filter(
+    (p) => filter === "all" || p.exchanges.some((e) => e.verdict === filter),
+  );
+  const panel = visiblePanels.find((p) => p.n === panelN) ?? visiblePanels[0];
+  const exchanges = panel.exchanges.filter((e) => filter === "all" || e.verdict === filter);
+
+  const choose = (n: number) => {
+    setPanelN(n);
+    setOpenQ(0);
+  };
+
+  return (
+    <div>
+      <p className="text-muted-foreground max-w-3xl mb-6">
+        The doctrine names its own critics before they arrive. Twelve panels, from realist diplomats to
+        bad-faith actors, put {counts.all} questions to it. Each answer is marked honestly: answered,
+        partly conceded, or held open for independent work.
+      </p>
+
+      <div className="flex flex-wrap gap-2 mb-6" role="group" aria-label="Filter by verdict">
+        {(["all", "answered", "conceded", "open"] as Filter[]).map((f) => (
+          <button
+            key={f}
+            type="button"
+            onClick={() => { setFilter(f); setOpenQ(0); }}
+            aria-pressed={filter === f}
+            className={`px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] font-semibold border transition-colors ${
+              filter === f
+                ? "bg-primary text-primary-foreground border-primary"
+                : "border-border text-foreground/70 hover:border-brass"
+            }`}
+          >
+            {f === "all" ? "Every question" : VERDICT_LABEL[f]} · {counts[f]}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[18rem_1fr] border border-border bg-background">
+        <nav aria-label="Review panels" className="border-b lg:border-b-0 lg:border-r border-border bg-navy-tint/60">
+          <ol className="flex lg:flex-col overflow-x-auto lg:overflow-visible">
+            {visiblePanels.map((p) => {
+              const active = p.n === panel.n;
+              return (
+                <li key={p.n} className="shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => choose(p.n)}
+                    aria-current={active}
+                    className={`w-full text-left px-4 py-3 flex gap-3 items-baseline border-l-2 transition-colors ${
+                      active ? "border-accent bg-background" : "border-transparent hover:bg-background/60"
+                    }`}
+                  >
+                    <span className="font-serif text-accent text-lg w-6">{p.n}</span>
+                    <span className={`text-sm whitespace-nowrap lg:whitespace-normal ${active ? "text-primary font-medium" : "text-foreground/75"}`}>
+                      {p.title}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+
+        <div className="p-5 md:p-8">
+          <p className="eyebrow">Panel {panel.n} · {panel.lens}</p>
+          <h3 className="mt-2 font-serif text-primary text-2xl md:text-3xl">{panel.title}</h3>
+          <hr className="gold-rule gold-rule-short mt-4 mb-6" />
+          <ul className="space-y-4">
+            {exchanges.map((e, i) => {
+              const open = openQ === i;
+              return (
+                <li key={e.q} className="border border-border">
+                  <button
+                    type="button"
+                    onClick={() => setOpenQ(open ? null : i)}
+                    aria-expanded={open}
+                    className="w-full text-left p-4 md:p-5 flex gap-4 items-start hover:bg-gold-tint/40 transition-colors"
+                  >
+                    <span className="font-serif text-accent text-xl leading-none mt-0.5">Q</span>
+                    <span className="flex-1 font-serif text-lg text-foreground leading-snug">{e.q}</span>
+                    <span className="text-brass text-xl leading-none" aria-hidden>{open ? "−" : "+"}</span>
+                  </button>
+                  {open && (
+                    <div className="px-4 md:px-5 pb-5 pl-12 md:pl-14">
+                      <p className="text-foreground/85 leading-relaxed border-l-2 border-brass pl-4">{e.a}</p>
+                      <div className="mt-4 flex flex-wrap gap-2 items-center">
+                        <span className={`px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] font-semibold border ${VERDICT_STYLE[e.verdict]}`}>
+                          {VERDICT_LABEL[e.verdict]}
+                        </span>
+                        {e.ref && (
+                          <span className="text-[11px] text-muted-foreground tracking-wide">Doctrine {e.ref}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+
+      <p className="mt-6 text-sm italic text-muted-foreground max-w-3xl">
+        What remains open is not hidden. Each held question maps to an item on the doctrine's Research
+        and Practice Agenda (Section XI), beginning with independent blind scoring by outside raters.
+      </p>
+    </div>
+  );
+}

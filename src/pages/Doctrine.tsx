@@ -8,6 +8,7 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
+import AdversarialChamber from "@/components/AdversarialChamber";
 
 import PrintFootnotes from "@/components/PrintFootnotes";
 
@@ -218,6 +219,17 @@ export default function Doctrine() {
               </p>
             </div>
           </div>
+        </FadeIn>
+        </section>
+
+        <NumeralDivider n="VI" label="The Adversarial Review" />
+
+        <section id="adversarial-review" className="scroll-mt-24">
+        <FadeIn className="mb-20">
+          <p className="eyebrow">Section X · The Adversarial Review</p>
+          <h2 className="mt-3 font-serif text-primary">Tested by its critics</h2>
+          <GoldRule className="mt-4 mb-6" />
+          <AdversarialChamber />
         </FadeIn>
         </section>
 
