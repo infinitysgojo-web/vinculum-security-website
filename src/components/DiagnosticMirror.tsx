@@ -113,7 +113,7 @@ function Radar({ cases }: { cases: CaseStudy[] }) {
             key={d}
             x={x}
             y={y}
-            textAnchor={i === 1 ? "end" : i === 3 ? "start" : "middle"}
+            textAnchor={i === 1 ? "start" : i === 3 ? "end" : "middle"}
             dominantBaseline="middle"
             className="fill-primary"
             style={{ fontSize: 8.5, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600 }}
