@@ -42,6 +42,40 @@ const CONTINUUM = [
   { n: "IV", title: "Institutional-Relational", body: "Bonds between an institution and the population it is mandated to serve, tested across a change in personnel or office." },
 ];
 
+/**
+ * Section X, The Adversarial Review, expressed as structured data so search
+ * engines and AI answer engines can read each challenge and its answer.
+ */
+const adversarialLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": `${SITE_URL}/doctrine#adversarial-review`,
+  name: "Vinculum Security, Section X: The Adversarial Review",
+  description:
+    "Twelve adversarial panels put thirty challenges to the Vinculum Security doctrine, covering realist power critiques, fidelity to Ubuntu and Confucian role ethics, falsifiability, measurement, international law and sovereignty, bad-faith actors, and child protection and gender boundaries. Each challenge carries the doctrine's answer and its status: answered, partly conceded, or held open.",
+  url: `${SITE_URL}/doctrine#adversarial-review`,
+  numberOfItems: PANELS.reduce((n, p) => n + p.exchanges.length, 0),
+  itemListOrder: "https://schema.org/ItemListOrderAscending",
+  itemListElement: PANELS.flatMap((p) =>
+    p.exchanges.map((e) => ({
+      "@type": "Question",
+      name: e.q,
+      answerCount: 1,
+      about: { "@type": "Thing", name: `${p.title} (${p.lens})` },
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `${e.a} Status: ${VERDICT_LABEL[e.verdict]}.${e.ref ? ` Doctrine ${e.ref}.` : ""}`,
+        url: `${SITE_URL}/doctrine#adversarial-review`,
+        author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+      },
+    }))
+  ).map((q, i) => ({
+    "@type": "ListItem",
+    position: i + 1,
+    item: q,
+  })),
+};
+
 export default function Doctrine() {
   return (
     <>
