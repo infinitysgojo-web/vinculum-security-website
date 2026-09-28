@@ -200,19 +200,23 @@ export default function Cases() {
                     {c.summary}
                   </p>
 
-                  <div className="mt-auto grid grid-cols-4 gap-2">
+                  <div className="mt-auto grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-3 sm:gap-y-2 border-t border-border/70 pt-4">
                     {DOMAINS.map((d, idx) => (
-                      <div key={d}>
-                        <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight h-6">
-                          {d}
-                        </p>
-                        <div className="h-1.5 bg-brass/30 mt-1">
-                          <div
-                            className="h-full bg-accent"
-                            style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
-                          />
+                      <div key={d} className="flex items-center gap-3 sm:block">
+                        <div className="sm:block">
+                          <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight">
+                            {d}
+                          </p>
+                          <div className="h-1.5 bg-brass/30 mt-1 w-full sm:w-auto">
+                            <div
+                              className="h-full bg-accent"
+                              style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
+                            />
+                          </div>
                         </div>
-                        <p className="font-serif text-accent text-sm mt-0.5">{c.scores[idx]} / 5</p>
+                        <p className="font-serif text-accent text-sm sm:mt-0.5 shrink-0">
+                          {c.scores[idx]} / 5
+                        </p>
                       </div>
                     ))}
                   </div>
