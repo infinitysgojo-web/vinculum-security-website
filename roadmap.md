@@ -7,4 +7,4 @@
 
 - [x] Equal Earth world map atlas on Case Studies, country outlines on case pages, Cases page decluttered, assessment bench moved after Part I on Practice
 - [x] Adversarial Review chamber (Section X) on the Doctrine page
-- [ ] Scripted Lexicon on the Practice page (next)
+- [x] Scripted Lexicon on the Practice page (next)
