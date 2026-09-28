@@ -12,6 +12,8 @@ import CountryOutline from "@/components/CountryOutline";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import { CASES, DOMAINS, getCase } from "@/content/cases";
+import CaseDossier from "@/components/CaseDossier";
+
 
 export default function CaseDetail() {
   const { slug } = useParams();
