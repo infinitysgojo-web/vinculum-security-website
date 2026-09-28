@@ -161,3 +161,39 @@ export const COUNTRY_SILHOUETTE: Record<string, { d: string; w: number; h: numbe
     "h": 160
   }
 };
+
+/** Pin positions in Equal Earth map coordinates. */
+export const PIN_XY: Record<string, [number, number]> = {
+  "northern-ireland": [
+    485.7,
+    56.4
+  ],
+  "colombia": [
+    294.8,
+    226.2
+  ],
+  "cambodia": [
+    788.1,
+    196.8
+  ],
+  "liberia": [
+    470.1,
+    219.4
+  ],
+  "rwanda": [
+    583,
+    250.5
+  ],
+  "kenya": [
+    605.3,
+    241.5
+  ],
+  "south-africa": [
+    565.2,
+    349.4
+  ],
+  "tuvalu-kiribati": [
+    988.3,
+    258.3
+  ]
+};
