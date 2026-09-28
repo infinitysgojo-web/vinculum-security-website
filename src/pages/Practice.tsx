@@ -1,5 +1,5 @@
 import SEO from "@/components/SEO";
-import { sectionLd } from "@/lib/seo-entities";
+import { sectionLd, SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
