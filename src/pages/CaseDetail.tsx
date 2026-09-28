@@ -12,6 +12,8 @@ import CountryOutline from "@/components/CountryOutline";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
 import { CASES, DOMAINS, getCase } from "@/content/cases";
+import CaseDossier from "@/components/CaseDossier";
+
 
 export default function CaseDetail() {
   const { slug } = useParams();
@@ -98,20 +100,8 @@ export default function CaseDetail() {
         jsonLd={[caseLd, datasetLd]}
       />
       <ReadingProgress />
-      <header className="executive-dossier-header hidden print:block">
-        <div className="flex items-end justify-between gap-8 border-b border-foreground pb-5">
-          <div>
-            <p className="font-serif text-2xl">Vinculum Security</p>
-            <p className="mt-1 text-[8pt] uppercase tracking-[0.2em]">Executive Dossier · Applied Case Engagement</p>
-          </div>
-          <p className="text-right text-[8pt] uppercase tracking-[0.15em]">Section {c.ref}</p>
-        </div>
-        <dl className="mt-5 grid grid-cols-3 gap-5 text-[9pt]">
-          <div><dt className="font-semibold uppercase">Prepared by</dt><dd>{AUTHOR_NAME}</dd></div>
-          <div><dt className="font-semibold uppercase">Canonical record</dt><dd>{SITE_URL}{path}</dd></div>
-          <div><dt className="font-semibold uppercase">Prepared</dt><dd>{new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</dd></div>
-        </dl>
-      </header>
+      <CaseDossier c={c} />
+
       <div className="container">
         <nav aria-label="Breadcrumb" className="pt-10 flex items-center justify-between gap-4">
           <Link
