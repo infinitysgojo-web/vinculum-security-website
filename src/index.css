@@ -175,6 +175,7 @@
   .container { max-width: none !important; padding: 0 !important; }
   .executive-dossier-header { margin: 0 0 24pt !important; }
   main, .container > * { break-inside: auto; }
+  .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
 
   h1, h2, h3, h4 {
     color: #000 !important;
