@@ -50,8 +50,8 @@ const MUTED = "#5F6470";
 
 const s = StyleSheet.create({
   page: {
-    paddingTop: 56,
-    paddingBottom: 64,
+    paddingTop: 92,
+    paddingBottom: 66,
     paddingHorizontal: 58,
     fontFamily: "Cormorant",
     fontSize: 10.5,
@@ -190,7 +190,7 @@ const s = StyleSheet.create({
   footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.2, color: MUTED },
 
   // Opening block
-  docTitle: { fontSize: 22, color: NAVY, marginBottom: 6 },
+  docTitle: { fontSize: 22, color: NAVY, marginBottom: 8, lineHeight: 1.25 },
   docSub: {
     fontFamily: "InterDoc",
     fontSize: 6.8,
@@ -325,6 +325,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
       <Text style={s.footerText}>Unrestricted · Public Record · KECOBO No. RZ100967</Text>
       <Text
         style={s.footerText}
+        fixed
         render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`}
       />
     </View>
