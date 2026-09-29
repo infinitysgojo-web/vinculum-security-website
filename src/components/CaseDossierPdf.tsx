@@ -178,7 +178,7 @@ const s = StyleSheet.create({
   },
   footer: {
     position: "absolute",
-    bottom: 30,
+    top: 782,
     left: 58,
     right: 58,
     flexDirection: "row",
