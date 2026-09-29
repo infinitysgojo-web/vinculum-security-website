@@ -151,6 +151,7 @@ export default function Practice() {
           }),
           benchLd,
           lexiconLd,
+          composerLd,
         ]}
       />
       <ReadingProgress />
