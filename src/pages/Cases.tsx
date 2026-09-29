@@ -6,6 +6,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import RelationalAtlas from "@/components/RelationalAtlas";
+import PatternMatcher from "@/components/PatternMatcher";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import DiagnosticMirror from "@/components/DiagnosticMirror";
 import { X } from "lucide-react";
@@ -136,6 +137,10 @@ export default function Cases() {
 
         <FadeIn>
           <RelationalAtlas />
+        </FadeIn>
+
+        <FadeIn>
+          <PatternMatcher />
         </FadeIn>
 
         <FadeIn>
