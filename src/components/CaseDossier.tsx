@@ -1,5 +1,6 @@
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import { DOMAINS, type CaseStudy } from "@/content/cases";
+import mark from "@/assets/vinculum-mark.png";
 
 /**
  * Print-only executive dossier. Never rendered on screen: the whole block is
@@ -17,13 +18,53 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
 
   return (
     <article className="dossier" aria-hidden="true">
-      {/* Running footer, repeated on every printed page */}
-      <div className="dossier-runner">
-        <span>Vinculum Security · Executive Dossier · {c.shortTitle}</span>
-        <span>{docRef}</span>
-      </div>
+      {/* ================= FRONT COVER ================= */}
+      <section className="dossier-cover">
+        <div className="dossier-cover-top">
+          <img className="dossier-emblem" src={mark} alt="" />
+          <p className="dossier-cover-wordmark">Vinculum Security</p>
+          <p className="dossier-cover-motto">Pro Omni Humanitate</p>
+          <p className="dossier-cover-rule-label">A Doctrine of Relational Security</p>
+        </div>
 
-      {/* ---------- Masthead ---------- */}
+        <div className="dossier-cover-mid">
+          <p className="dossier-cover-series">Executive Dossier · Applied Case Engagement</p>
+          <h1 className="dossier-cover-title">{c.title}</h1>
+          <p className="dossier-cover-sub">
+            {c.region} · {c.era}
+          </p>
+          <p className="dossier-cover-pillar">Primary pillar: {c.pillar}</p>
+        </div>
+
+        <div className="dossier-cover-foot">
+          <div>
+            <span>Document reference</span>
+            <strong>{docRef}</strong>
+          </div>
+          <div>
+            <span>Doctrine section</span>
+            <strong>{c.ref}</strong>
+          </div>
+          <div>
+            <span>Prepared by</span>
+            <strong>{AUTHOR_NAME}</strong>
+          </div>
+          <div>
+            <span>Date of issue</span>
+            <strong>{issued}</strong>
+          </div>
+          <div>
+            <span>Registration</span>
+            <strong>KECOBO No. RZ100967</strong>
+          </div>
+          <div>
+            <span>Classification</span>
+            <strong>Unrestricted · Public Record</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Inner masthead ---------- */}
       <header className="dossier-masthead">
         <div className="dossier-crest">
           <p className="dossier-wordmark">Vinculum Security</p>
@@ -31,7 +72,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
         </div>
         <div className="dossier-classification">
           <p>Executive Dossier</p>
-          <p>Applied Case Engagement</p>
+          <p>{docRef}</p>
           <p>Unrestricted · Public Record</p>
         </div>
       </header>
@@ -40,6 +81,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
       <p className="dossier-subtitle">
         Section {c.ref} · {c.region} · {c.era} · Primary pillar: {c.pillar}
       </p>
+
 
       <table className="dossier-meta">
         <tbody>
@@ -152,17 +194,38 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
         ))}
       </ol>
 
-      <div className="dossier-colophon">
-        <p>
-          Drawn from <em>Vinculum Security: The Fortified Doctrine</em>, Expanded Version, Final
-          Edition, Section {c.ref}, and <em>Vinculum Diplomacy: The Practitioner Handbook</em>, Final
-          Edition, Section 12. Both by {AUTHOR_NAME}.
-        </p>
-        <p>
-          © {new Date().getFullYear()} {AUTHOR_NAME}. Registered with the Kenya Copyright Board,
-          Registration No. RZ100967. Released under CC BY-NC-SA 4.0. Canonical record: {url}
-        </p>
-      </div>
+      {/* ================= BACK COVER ================= */}
+      <section className="dossier-back">
+        <div className="dossier-back-top">
+          <img className="dossier-emblem dossier-emblem-sm" src={mark} alt="" />
+          <p className="dossier-cover-wordmark">Vinculum Security</p>
+          <p className="dossier-cover-motto">Pro Omni Humanitate</p>
+        </div>
+
+        <div className="dossier-back-mid">
+          <p className="dossier-back-lead">
+            This dossier is drawn from <em>Vinculum Security: The Fortified Doctrine</em>, Expanded
+            Version, Final Edition, Section {c.ref}, and{" "}
+            <em>Vinculum Diplomacy: The Practitioner Handbook</em>, Final Edition, Section 12. Both
+            works are by {AUTHOR_NAME}.
+          </p>
+        </div>
+
+        <div className="dossier-colophon">
+          <p>
+            © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
+          </p>
+          <p>
+            Registered with the Kenya Copyright Board, Registration No. RZ100967. Released under
+            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
+            4.0).
+          </p>
+          <p>
+            Document reference {docRef} · Issued {issued} · Unrestricted public record.
+          </p>
+          <p>Canonical record: {url}</p>
+        </div>
+      </section>
     </article>
   );
 }
