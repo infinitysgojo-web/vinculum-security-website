@@ -109,7 +109,15 @@ export default function CaseDetail() {
           >
             ← All case studies
           </Link>
-          <DossierDownload c={c} />
+          <div className="flex items-center gap-3 print:hidden">
+            <Link
+              to={`/practice?case=${c.slug}#composer`}
+              className="px-3 py-2 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary hover:border-accent hover:text-accent transition-colors"
+            >
+              Draft chancellery memo
+            </Link>
+            <DossierDownload c={c} />
+          </div>
         </nav>
 
         <PageHeader eyebrow={`Section ${c.ref} · Applied Case Engagement`} title={c.title} lede={c.summary} />

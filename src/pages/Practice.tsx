@@ -9,6 +9,7 @@ import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
 import BondDiagnostic from "@/components/BondDiagnostic";
 import FieldLexicon from "@/components/FieldLexicon";
+import CableComposer from "@/components/CableComposer";
 
 const PRINCIPLES = [
   {
@@ -101,6 +102,34 @@ const lexiconLd = {
   ],
 };
 
+/** The §12B Operational Briefing Desk, a deterministic memorandum compiler. */
+const composerLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": `${SITE_URL}/practice#composer`,
+  name: "Vinculum Operational Briefing Desk",
+  url: `${SITE_URL}/practice#composer`,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Any modern web browser",
+  browserRequirements:
+    "Requires JavaScript. Runs entirely in the browser; nothing entered is stored or transmitted.",
+  description:
+    "A deterministic chancellery memorandum compiler. The practitioner selects a documented case, the receiving office, the instrument (situation report, action memorandum, or interlocutor brief), and the strained bond; the desk assembles a formatted diplomatic memorandum from the published case record, the §9A scripted inquiries, the §12 practice protocols, and the §15 failure modes. No model or prediction is involved.",
+  author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+  isPartOf: { "@id": `${SITE_URL}/practice` },
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  featureList: [
+    "Eight documented cases as sources of record",
+    "Four receiving offices: national security council, special envoy, humanitarian director, parliamentary oversight",
+    "Three instruments: situation report, action memorandum, interlocutor brief",
+    "Relational vulnerability ledger with Vinculum Continuum banding",
+    "Scripted §9A inquiry for the strained bond",
+    "§12 safeguards and §15 failure-mode warning",
+    "Copy to clipboard and plain-text export",
+  ],
+};
+
 export default function Practice() {
   return (
     <>
@@ -122,6 +151,7 @@ export default function Practice() {
           }),
           benchLd,
           lexiconLd,
+          composerLd,
         ]}
       />
       <ReadingProgress />
@@ -227,6 +257,15 @@ export default function Practice() {
             <h2 className="mt-3 font-serif text-primary">Words for the room</h2>
             <GoldRule className="mt-4 mb-6" />
             <FieldLexicon />
+          </FadeIn>
+        </section>
+
+        <section id="composer" className="scroll-mt-24 mb-16">
+          <FadeIn>
+            <p className="eyebrow">§12B · The Operational Briefing Desk</p>
+            <h2 className="mt-3 font-serif text-primary">Compose a chancellery memorandum</h2>
+            <GoldRule className="mt-4 mb-6" />
+            <CableComposer />
           </FadeIn>
         </section>
 
