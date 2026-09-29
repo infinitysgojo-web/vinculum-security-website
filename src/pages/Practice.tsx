@@ -9,6 +9,7 @@ import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
 import BondDiagnostic from "@/components/BondDiagnostic";
 import FieldLexicon from "@/components/FieldLexicon";
+import CableComposer from "@/components/CableComposer";
 
 const PRINCIPLES = [
   {
@@ -227,6 +228,15 @@ export default function Practice() {
             <h2 className="mt-3 font-serif text-primary">Words for the room</h2>
             <GoldRule className="mt-4 mb-6" />
             <FieldLexicon />
+          </FadeIn>
+        </section>
+
+        <section id="composer" className="scroll-mt-24 mb-16">
+          <FadeIn>
+            <p className="eyebrow">§12B · The Operational Briefing Desk</p>
+            <h2 className="mt-3 font-serif text-primary">Compose a chancellery memorandum</h2>
+            <GoldRule className="mt-4 mb-6" />
+            <CableComposer />
           </FadeIn>
         </section>
 
