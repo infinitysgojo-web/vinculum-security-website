@@ -281,8 +281,24 @@ const s = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  backLead: { fontSize: 11, textAlign: "center", color: INK, lineHeight: 1.7 },
-  colophon: { fontSize: 8.2, textAlign: "center", color: MUTED, lineHeight: 1.7 },
+  backLead: {
+    fontSize: 11,
+    textAlign: "center",
+    color: INK,
+    lineHeight: 1.7,
+    width: "88%",
+    marginHorizontal: "6%",
+  },
+  colophon: {
+    fontSize: 8.2,
+    textAlign: "center",
+    color: MUTED,
+    lineHeight: 1.7,
+    width: "100%",
+    borderTopWidth: 0.5,
+    borderTopColor: RULE,
+    paddingTop: 12,
+  },
 });
 
 function Rows({ rows }: { rows: { label: string; value: string }[] }) {
