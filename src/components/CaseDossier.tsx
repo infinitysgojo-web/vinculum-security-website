@@ -194,17 +194,38 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
         ))}
       </ol>
 
-      <div className="dossier-colophon">
-        <p>
-          Drawn from <em>Vinculum Security: The Fortified Doctrine</em>, Expanded Version, Final
-          Edition, Section {c.ref}, and <em>Vinculum Diplomacy: The Practitioner Handbook</em>, Final
-          Edition, Section 12. Both by {AUTHOR_NAME}.
-        </p>
-        <p>
-          © {new Date().getFullYear()} {AUTHOR_NAME}. Registered with the Kenya Copyright Board,
-          Registration No. RZ100967. Released under CC BY-NC-SA 4.0. Canonical record: {url}
-        </p>
-      </div>
+      {/* ================= BACK COVER ================= */}
+      <section className="dossier-back">
+        <div className="dossier-back-top">
+          <img className="dossier-emblem dossier-emblem-sm" src={mark} alt="" />
+          <p className="dossier-cover-wordmark">Vinculum Security</p>
+          <p className="dossier-cover-motto">Pro Omni Humanitate</p>
+        </div>
+
+        <div className="dossier-back-mid">
+          <p className="dossier-back-lead">
+            This dossier is drawn from <em>Vinculum Security: The Fortified Doctrine</em>, Expanded
+            Version, Final Edition, Section {c.ref}, and{" "}
+            <em>Vinculum Diplomacy: The Practitioner Handbook</em>, Final Edition, Section 12. Both
+            works are by {AUTHOR_NAME}.
+          </p>
+        </div>
+
+        <div className="dossier-colophon">
+          <p>
+            © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
+          </p>
+          <p>
+            Registered with the Kenya Copyright Board, Registration No. RZ100967. Released under
+            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
+            4.0).
+          </p>
+          <p>
+            Document reference {docRef} · Issued {issued} · Unrestricted public record.
+          </p>
+          <p>Canonical record: {url}</p>
+        </div>
+      </section>
     </article>
   );
 }
