@@ -9,10 +9,9 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import NumeralDivider from "@/components/NumeralDivider";
 import CountryOutline from "@/components/CountryOutline";
-import { Button } from "@/components/ui/button";
-import { Printer } from "lucide-react";
 import { CASES, DOMAINS, getCase } from "@/content/cases";
 import CaseDossier from "@/components/CaseDossier";
+import DossierDownload from "@/components/DossierDownload";
 
 
 export default function CaseDetail() {
@@ -110,9 +109,7 @@ export default function CaseDetail() {
           >
             ← All case studies
           </Link>
-          <Button type="button" variant="outline" size="sm" onClick={() => window.print()} className="print:hidden">
-            <Printer aria-hidden="true" /> Print executive dossier
-          </Button>
+          <DossierDownload c={c} />
         </nav>
 
         <PageHeader eyebrow={`Section ${c.ref} · Applied Case Engagement`} title={c.title} lede={c.summary} />
