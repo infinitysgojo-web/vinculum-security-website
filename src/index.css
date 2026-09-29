@@ -554,6 +554,16 @@
     color: #333;
   }
   .dossier-colophon p { margin: 0 0 1.5mm; }
+  .dossier-back .dossier-colophon {
+    margin-top: 0;
+    padding-top: 5mm;
+    font-size: 7.4pt;
+    line-height: 1.7;
+    color: #222;
+    max-width: 130mm;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 
