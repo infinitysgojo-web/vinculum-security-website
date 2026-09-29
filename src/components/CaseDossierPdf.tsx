@@ -433,9 +433,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
           ]}
         />
 
-        <Text style={s.h2} break>
-          II. The Four-Bond Continuum Matrix
-        </Text>
+        <Text style={s.h2}>II. The Four-Bond Continuum Matrix</Text>
         <View style={s.table}>
           <View style={[s.row, { borderBottomWidth: 0.8, borderBottomColor: NAVY }]}>
             <Text style={[s.th, { width: "24%" }]}>Bond domain</Text>
