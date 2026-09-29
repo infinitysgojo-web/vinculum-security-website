@@ -18,13 +18,53 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
 
   return (
     <article className="dossier" aria-hidden="true">
-      {/* Running footer, repeated on every printed page */}
-      <div className="dossier-runner">
-        <span>Vinculum Security · Executive Dossier · {c.shortTitle}</span>
-        <span>{docRef}</span>
-      </div>
+      {/* ================= FRONT COVER ================= */}
+      <section className="dossier-cover">
+        <div className="dossier-cover-top">
+          <img className="dossier-emblem" src={mark} alt="" />
+          <p className="dossier-cover-wordmark">Vinculum Security</p>
+          <p className="dossier-cover-motto">Pro Omni Humanitate</p>
+          <p className="dossier-cover-rule-label">A Doctrine of Relational Security</p>
+        </div>
 
-      {/* ---------- Masthead ---------- */}
+        <div className="dossier-cover-mid">
+          <p className="dossier-cover-series">Executive Dossier · Applied Case Engagement</p>
+          <h1 className="dossier-cover-title">{c.title}</h1>
+          <p className="dossier-cover-sub">
+            {c.region} · {c.era}
+          </p>
+          <p className="dossier-cover-pillar">Primary pillar: {c.pillar}</p>
+        </div>
+
+        <div className="dossier-cover-foot">
+          <div>
+            <span>Document reference</span>
+            <strong>{docRef}</strong>
+          </div>
+          <div>
+            <span>Doctrine section</span>
+            <strong>{c.ref}</strong>
+          </div>
+          <div>
+            <span>Prepared by</span>
+            <strong>{AUTHOR_NAME}</strong>
+          </div>
+          <div>
+            <span>Date of issue</span>
+            <strong>{issued}</strong>
+          </div>
+          <div>
+            <span>Registration</span>
+            <strong>KECOBO No. RZ100967</strong>
+          </div>
+          <div>
+            <span>Classification</span>
+            <strong>Unrestricted · Public Record</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* ---------- Inner masthead ---------- */}
       <header className="dossier-masthead">
         <div className="dossier-crest">
           <p className="dossier-wordmark">Vinculum Security</p>
@@ -32,7 +72,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
         </div>
         <div className="dossier-classification">
           <p>Executive Dossier</p>
-          <p>Applied Case Engagement</p>
+          <p>{docRef}</p>
           <p>Unrestricted · Public Record</p>
         </div>
       </header>
@@ -41,6 +81,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
       <p className="dossier-subtitle">
         Section {c.ref} · {c.region} · {c.era} · Primary pillar: {c.pillar}
       </p>
+
 
       <table className="dossier-meta">
         <tbody>
