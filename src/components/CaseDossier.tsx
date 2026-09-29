@@ -1,5 +1,6 @@
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import { DOMAINS, type CaseStudy } from "@/content/cases";
+import mark from "@/assets/vinculum-mark.png";
 
 /**
  * Print-only executive dossier. Never rendered on screen: the whole block is
