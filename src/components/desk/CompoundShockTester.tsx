@@ -107,7 +107,7 @@ export default function CompoundShockTester() {
       total >= 70 ? "Rupture likely" : total >= 45 ? "Severe strain" : total >= 22 ? "Elevated strain" : "Absorbable";
     const perBond = [0, 1, 2, 3].map((i) => {
       const s = active.filter((x) => x.bond === i).reduce((a, x) => a + x.sev, 0);
-      return Math.max(1, Math.round(5 - Math.min(4, s / 14)));
+      return Math.max(1, Math.round(5 - Math.min(4, s / 9)));
     }) as [number, number, number, number];
     const seq = [...active].sort((a, b2) => b2.sev - a.sev);
     return { strain: total, band: b, bondScores: perBond, sequence: seq };
