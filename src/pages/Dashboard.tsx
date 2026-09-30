@@ -235,6 +235,9 @@ export default function Dashboard() {
             {desk === "sentinel" && <SentinelMatrix />}
             {desk === "readiness" && <ReadinessDesk />}
             {desk === "counterpart" && <CounterpartPrompter />}
+            {desk === "succession" && <SuccessionSimulator />}
+            {desk === "tracks" && <TrackSequencer />}
+
           </Suspense>
         </div>
       </div>
