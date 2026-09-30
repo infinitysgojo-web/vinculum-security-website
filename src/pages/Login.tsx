@@ -36,7 +36,7 @@ export default function Login() {
 
   return (
     <>
-      <SEO title="Practitioner Portal" description="Private access to the Vinculum working desks." path="/login" noindex />
+      <SEO title="Practitioner Portal" description="Private access to the Vinculum working desks." path="/login" noIndex />
       <div className="container py-20 flex justify-center">
         <div className="w-full max-w-md border border-brass/40 bg-navy-tint/40 p-7 md:p-9">
           <div className="flex items-center gap-3">
