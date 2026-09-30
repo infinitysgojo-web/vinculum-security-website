@@ -76,6 +76,14 @@ const MATRIX = [
   ["Sanction by consensus of the parties", "Automatic suspension of benefits on a finding of breach", "Rwanda: community-level obligation did not wait for the offender's consent."],
 ] as const;
 
+type Own = { id: string; label: string; clause: string; note: string };
+
+/** Scaffolds a continuity clause from a plain requirement, deterministically. */
+function scaffold(requirement: string, partyName: string, verifier: string) {
+  const r = requirement.trim().replace(/\.$/, "");
+  return `The Parties undertake that ${r.charAt(0).toLowerCase() + r.slice(1)}. This undertaking attaches to the offices held by the signatories and not to their persons, shall bind every successor officeholder without further act, shall be reported upon at intervals not exceeding twelve months, and shall be verified by ${verifier}, which no Party to this instrument may appoint, fund, house or remove. Where ${partyName} cannot identify a decision altered in compliance with this Article across two successive reporting periods, the failure shall be recorded as non-compliance.`;
+}
+
 export default function ClauseArchitect() {
   const [ag, setAg] = useState(0);
   const [picked, setPicked] = useState<number[]>([0, 3]);
@@ -83,9 +91,23 @@ export default function ClauseArchitect() {
   const [parties, setParties] = useState("");
   const [office, setOffice] = useState("");
   const [rig, setRig] = useState(0);
+  // Custom mode: the practitioner's own agreement type and own drafted requirements.
+  const [ownType, setOwnType] = useState("");
+  const [own, setOwn] = useState<Own[]>([]);
+  const [oLabel, setOLabel] = useState("");
+  const [oText, setOText] = useState("");
+  const addOwn = () => {
+    const l = oLabel.trim();
+    if (!l) return;
+    setOwn((p) => [...p, { id: `o${Date.now()}`, label: l, clause: oText.trim(), note: "Own requirement, drafted on the same continuity rule: the office is bound, not the officeholder." }]);
+    setOLabel("");
+    setOText("");
+  };
+  const dropOwn = (id: string) => setOwn((p) => p.filter((x) => x.id !== id));
 
   const toggle = (i: number) =>
     setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort((a, b) => a - b)));
+
 
   const text = useMemo(() => {
     const a = AGREEMENTS[ag];
@@ -96,7 +118,7 @@ export default function ClauseArchitect() {
     L.push("Compiled under Vinculum Diplomacy: The Practitioner Handbook, Section 12");
     L.push("");
     L.push(`INSTRUMENT: ${title.trim() || a.label}`);
-    L.push(`AGREEMENT TYPE: ${a.label}`);
+    L.push(`AGREEMENT TYPE: ${ownType.trim() || a.label}${ownType.trim() ? " (own classification)" : ""}`);
     L.push(`PARTIES: ${partyName}`);
     L.push(`VERIFYING BODY: ${verifier}`);
     L.push(`ENFORCEMENT POSTURE: ${RIGOUR[rig].label}`);
@@ -104,31 +126,41 @@ export default function ClauseArchitect() {
     L.push("");
     L.push("PART C · CONTINUITY OF COMMITMENT");
     L.push("");
-    picked.forEach((i, n) => {
+    let n = 0;
+    picked.forEach((i) => {
       const f = FRAGILITIES[i];
       const body = f.clause
         .replace("this instrument", `this instrument between ${partyName}`)
         .replace(/the Independent Verifier/g, verifier);
-      L.push(`Article C.${n + 1} (${f.label})`);
+      n += 1;
+      L.push(`Article C.${n} (${f.label})`);
       L.push(`  ${body}`);
       L.push(`  Commentary: ${f.note}`);
       L.push("");
     });
-    L.push(`Article C.${picked.length + 1} (Independent verification)`);
+    own.forEach((o) => {
+      n += 1;
+      L.push(`Article C.${n} (${o.label})`);
+      L.push(`  ${o.clause || scaffold(o.label, partyName, verifier)}`);
+      L.push(`  Commentary: ${o.note}`);
+      L.push("");
+    });
+    L.push(`Article C.${n + 1} (Independent verification)`);
     L.push(`  ${verifier}, appointed jointly by ${partyName} and not removable by any single Party, shall verify the Articles of this Part. No Party's account of its own compliance shall be treated as self-certifying.`);
     L.push("");
-    L.push(`Article C.${picked.length + 2} (Consequence of non-compliance)`);
+    L.push(`Article C.${n + 2} (Consequence of non-compliance)`);
     L.push(`  ${RIGOUR[rig].article.replace(/the Independent Verifier/g, verifier)}`);
     L.push(`  Commentary: ${RIGOUR[rig].note}`);
     L.push("");
-    L.push(`Article C.${picked.length + 3} (Survival)`);
+    L.push(`Article C.${n + 3} (Survival)`);
     L.push("  This Part shall survive any change in the officeholders who negotiated, signed or conceded it, and may be amended only by the procedure that adopted it.");
     L.push("");
     L.push(`PRECEDENT OF RECORD: ${a.precedent}.`);
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig]);
+  }, [ag, picked, title, parties, office, rig, own, ownType]);
+
 
   return (
     <section className={panel}>
@@ -176,7 +208,43 @@ export default function ClauseArchitect() {
               ))}
             </div>
           </div>
+
+          <div className="border border-brass/40 bg-background p-4">
+            <span className={label}>Your own agreement type (optional)</span>
+            <input className={field} value={ownType} onChange={(e) => setOwnType(e.target.value)} placeholder="e.g. Inter-county water and pasture compact" />
+            <span className={`${label} mt-5`}>Your own clause requirement</span>
+            <p className="text-xs text-muted-foreground mb-3">
+              Name what the clause must achieve. Leave the drafting box empty and the requirement is
+              written up on the same continuity rule: the office is bound, not the officeholder.
+            </p>
+            <input
+              className={`${field} mb-2`}
+              value={oLabel}
+              onChange={(e) => setOLabel(e.target.value)}
+              placeholder="e.g. Grazing access is reviewed with both councils every dry season"
+            />
+            <textarea
+              className={`${field} min-h-24`}
+              value={oText}
+              onChange={(e) => setOText(e.target.value)}
+              placeholder="Optional: paste or type your own operative wording instead."
+            />
+            <button type="button" onClick={addOwn} disabled={!oLabel.trim()} className="mt-2 min-h-11 border border-brass/50 px-4 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">
+              Add article
+            </button>
+            {own.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {own.map((o) => (
+                  <li key={o.id} className="flex items-start gap-3 text-sm border-t border-border pt-2">
+                    <span className="flex-1 text-foreground/85">{o.label}</span>
+                    <button type="button" onClick={() => dropOwn(o.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
         <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
       </div>
           <div className="mt-10">

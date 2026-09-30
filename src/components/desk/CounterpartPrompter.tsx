@@ -58,16 +58,42 @@ export default function CounterpartPrompter() {
   const [bond, setBond] = useState(0);
   const [phase, setPhase] = useState(0);
 
+  // Custom mode: define a counterpart the ten archetypes do not cover,
+  // and override any scripted question with your own wording.
+  const [customOn, setCustomOn] = useState(false);
+  const [cLabel, setCLabel] = useState("");
+  const [cCaution, setCCaution] = useState("");
+  const [cPivot, setCPivot] = useState("");
+  const [cQ, setCQ] = useState<[string, string, string, string]>(["", "", "", ""]);
+  const setQ = (i: number, v: string) =>
+    setCQ((p) => p.map((x, j) => (j === i ? v : x)) as [string, string, string, string]);
+
+  const active = useMemo(() => {
+    const base = COUNTERPARTS[cp];
+    if (!customOn) return { label: base.label, caution: base.caution, pivot: base.pivot, custom: false };
+    return {
+      label: cLabel.trim() || "Counterpart defined by the drafting officer",
+      caution: cCaution.trim() || base.caution,
+      pivot: cPivot.trim() || base.pivot,
+      custom: true,
+    };
+  }, [cp, customOn, cLabel, cCaution, cPivot]);
+
+  const questions = useMemo(
+    () => SCRIPT[bond].map((q, i) => (customOn && cQ[i].trim() ? cQ[i].trim() : q)) as [string, string, string, string],
+    [bond, customOn, cQ]
+  );
+
   const text = useMemo(() => {
-    const c = COUNTERPARTS[cp];
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${c.label}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${c.caution}`, `TACTICAL PIVOT: ${c.pivot}`, ""];
-    PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${SCRIPT[bond][i]}"`, ""));
+    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
+    PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${questions[i]}"`, ""));
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
     L.push("", "Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [cp, bond]);
+  }, [active, bond, questions]);
+
 
   return (
     <section className={panel}>
@@ -87,7 +113,33 @@ export default function CounterpartPrompter() {
               </select>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground italic">{COUNTERPARTS[cp].caution}</p>
+          <p className="text-xs text-muted-foreground italic">{active.caution}</p>
+
+          <div className="border border-brass/40 bg-background p-4">
+            <div className="flex items-center justify-between gap-3">
+              <span className={`${label} mb-0`}>Own counterpart and own wording</span>
+              <button type="button" aria-pressed={customOn} onClick={() => setCustomOn(!customOn)}
+                className={`min-h-9 px-3 border text-[10px] uppercase tracking-[0.18em] font-semibold ${customOn ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
+                {customOn ? "On" : "Off"}
+              </button>
+            </div>
+            {customOn && (
+              <div className="mt-4 space-y-3">
+                <p className="text-xs text-muted-foreground">
+                  Anything you leave blank falls back to the selected archetype above.
+                </p>
+                <input className={`${field} text-base sm:text-sm min-h-11`} value={cLabel} onChange={(e) => setCLabel(e.target.value)} placeholder="Counterpart, for example: diaspora elders' council" />
+                <input className={`${field} text-base sm:text-sm min-h-11`} value={cCaution} onChange={(e) => setCCaution(e.target.value)} placeholder="Standing caution to carry into the room" />
+                <input className={`${field} text-base sm:text-sm min-h-11`} value={cPivot} onChange={(e) => setCPivot(e.target.value)} placeholder="Pivot if they deflect or attack" />
+                <div className="grid gap-2">
+                  {PHASES.map((p, i) => (
+                    <input key={p} className={`${field} text-base sm:text-sm min-h-11`} value={cQ[i]} onChange={(e) => setQ(i, e.target.value)} placeholder={`${p} question, your own wording`} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           <div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1 mb-4">
               {PHASES.map((p, i) => (
@@ -98,11 +150,11 @@ export default function CounterpartPrompter() {
               ))}
             </div>
             <blockquote className="border-l-2 border-accent bg-background p-4 sm:p-5 font-serif text-lg sm:text-xl md:text-2xl text-primary leading-snug break-words">
-              "{SCRIPT[bond][phase]}"
+              "{questions[phase]}"
             </blockquote>
             <div className="border border-brass/40 bg-background p-4 mt-3">
               <p className={label}>If they deflect or attack</p>
-              <p className="text-sm text-foreground/85 break-words">{COUNTERPARTS[cp].pivot}</p>
+              <p className="text-sm text-foreground/85 break-words">{active.pivot}</p>
             </div>
             <div className="flex justify-between items-center gap-3 mt-3">
               <button type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</button>
@@ -111,6 +163,7 @@ export default function CounterpartPrompter() {
             </div>
           </div>
         </div>
+
         <DeskOutput text={text} fileName="Vinculum-Counterpart-Script" />
       </div>
     </section>

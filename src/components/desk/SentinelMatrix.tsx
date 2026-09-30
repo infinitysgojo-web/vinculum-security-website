@@ -49,22 +49,51 @@ function band(pct: number) {
   return { name: "Stable", advice: "Maintain quarterly review; no immediate intervention indicated." };
 }
 
+type Custom = { id: string; bond: number; text: string; w: number };
+
 export default function SentinelMatrix() {
   const [theater, setTheater] = useState("");
   const [trend, setTrend] = useState(1);
   const [on, setOn] = useState<number[]>([]);
   const toggle = (i: number) => setOn((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
 
+  // Custom field mode: indicators the practitioner defines for their own theater.
+  const [custom, setCustom] = useState<Custom[]>([]);
+  const [cOn, setCOn] = useState<string[]>([]);
+  const [cText, setCText] = useState("");
+  const [cBond, setCBond] = useState(0);
+  const [cW, setCW] = useState(2);
+  const addCustom = () => {
+    const t = cText.trim();
+    if (!t) return;
+    const id = `c${Date.now()}`;
+    setCustom((p) => [...p, { id, bond: cBond, text: t, w: cW }]);
+    setCOn((p) => [...p, id]);
+    setCText("");
+  };
+  const dropCustom = (id: string) => {
+    setCustom((p) => p.filter((x) => x.id !== id));
+    setCOn((p) => p.filter((x) => x !== id));
+  };
+  const toggleCustom = (id: string) => setCOn((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
   const r = useMemo(() => {
+    const totalMax = MAX + custom.reduce((s, c) => s + c.w, 0);
     const byBond = DOMAINS.map((_, b) => {
-      const all = SIGNS.filter((s) => s.bond === b);
-      const max = all.reduce((s, x) => s + x.w, 0);
-      const hit = SIGNS.reduce((s, x, i) => s + (x.bond === b && on.includes(i) ? x.w : 0), 0);
-      return Math.round((hit / max) * 100);
+      const max =
+        SIGNS.reduce((s, x) => s + (x.bond === b ? x.w : 0), 0) +
+        custom.reduce((s, c) => s + (c.bond === b ? c.w : 0), 0);
+      const hit =
+        SIGNS.reduce((s, x, i) => s + (x.bond === b && on.includes(i) ? x.w : 0), 0) +
+        custom.reduce((s, c) => s + (c.bond === b && cOn.includes(c.id) ? c.w : 0), 0);
+      return max ? Math.round((hit / max) * 100) : 0;
     });
-    const score = SIGNS.reduce((s, x, i) => s + (on.includes(i) ? x.w : 0), 0);
-    const raw = (score / MAX) * 100;
+    const score =
+      SIGNS.reduce((s, x, i) => s + (on.includes(i) ? x.w : 0), 0) +
+      custom.reduce((s, c) => s + (cOn.includes(c.id) ? c.w : 0), 0);
+    const raw = (score / totalMax) * 100;
     const pct = Math.min(100, Math.round(raw * TREND[trend].mult));
+
     const traps: { name: string; reading: string; counter: string }[] = [];
     if (byBond[1] >= 50 && byBond[2] >= 50 && byBond[0] < 50)
       traps.push({
@@ -102,7 +131,7 @@ export default function SentinelMatrix() {
         ? `Compound exposure: ${traps.map((t) => t.name).join(" together with ")}. Traps in combination fail faster than the sum of their parts; sequence the counter-measures rather than running them in parallel.`
         : "";
     return { byBond, pct, b: band(pct), traps, compound };
-  }, [on, trend]);
+  }, [on, trend, custom, cOn]);
 
   const text = useMemo(() => {
     const L = [
@@ -113,14 +142,17 @@ export default function SentinelMatrix() {
       `DATE: ${todayStamp()}`,
       `OBSERVATION TREND: ${TREND[trend].label}`,
       `RELATIONAL RUPTURE INDEX: ${r.pct}% (${r.b.name.toUpperCase()})`,
-      `SIGNS RECORDED: ${on.length} of ${SIGNS.length}`,
+      `SIGNS RECORDED: ${on.length + cOn.length} of ${SIGNS.length + custom.length}`,
+      `CUSTOM INDICATORS DEFINED: ${custom.length}`,
       "",
     ];
     L.push("BOND STRAIN");
     DOMAINS.forEach((d, i) => L.push(`  ${d}: ${r.byBond[i]}%`));
     L.push("", "SIGNS OBSERVED");
-    if (!on.length) L.push("  None recorded.");
+    if (!on.length && !cOn.length) L.push("  None recorded.");
     [...on].sort((a, b) => a - b).forEach((i) => L.push(`  - [${DOMAINS[SIGNS[i].bond]}] ${SIGNS[i].text}`));
+    custom.filter((c) => cOn.includes(c.id)).forEach((c) => L.push(`  - [${DOMAINS[c.bond]}] ${c.text} (own indicator, weight ${c.w})`));
+
     L.push("", "LATENT TRAPS");
     if (!r.traps.length) L.push("  No trap pattern indicated.");
     r.traps.forEach((t) => {
@@ -131,7 +163,7 @@ export default function SentinelMatrix() {
     if (r.compound) L.push("", r.compound);
     L.push("", `RUPTURE VELOCITY: ${TREND[trend].note}`, `RECOMMENDED POSTURE: ${r.b.advice}`, "", "Rule-based reading, not a prediction. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [r, on, trend, theater]);
+  }, [r, on, trend, theater, custom, cOn]);
 
   return (
     <section className={panel}>
@@ -163,15 +195,54 @@ export default function SentinelMatrix() {
                     <span className="text-foreground/85">{s.text}</span>
                   </label>
                 ))}
+                {custom.filter((c) => c.bond === b).map((c) => (
+                  <div key={c.id} className="flex gap-3 items-start text-sm">
+                    <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={cOn.includes(c.id)} onChange={() => toggleCustom(c.id)} />
+                    <span className="text-foreground/85 flex-1">
+                      {c.text}
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-accent ml-2">own · w{c.w}</span>
+                    </span>
+                    <button type="button" onClick={() => dropCustom(c.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
+
+          <div className="border border-brass/40 bg-background p-4">
+            <span className={label}>Add your own warning indicator</span>
+            <p className="text-xs text-muted-foreground mb-3">
+              For a theater the standard tripwires do not cover. Your indicator is weighted alongside them
+              in the same arithmetic, and it stays in this browser.
+            </p>
+            <input
+              className={`${field} text-base sm:text-sm min-h-11 mb-2`}
+              value={cText}
+              onChange={(e) => setCText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } }}
+              placeholder="e.g. The county peace committee has not met for two quarters."
+            />
+            <div className="grid gap-2 sm:grid-cols-3">
+              <select className={`${field} text-base sm:text-sm min-h-11`} value={cBond} onChange={(e) => setCBond(Number(e.target.value))} aria-label="Bond for the custom indicator">
+                {DOMAINS.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+              <select className={`${field} text-base sm:text-sm min-h-11`} value={cW} onChange={(e) => setCW(Number(e.target.value))} aria-label="Severity weight">
+                <option value={1}>Weight 1, minor</option>
+                <option value={2}>Weight 2, material</option>
+                <option value={3}>Weight 3, severe</option>
+              </select>
+              <button type="button" onClick={addCustom} disabled={!cText.trim()} className="min-h-11 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">
+                Add indicator
+              </button>
+            </div>
+          </div>
         </div>
         <div className="space-y-4">
           <div className="border border-border bg-background p-4">
             <p className={label}>Relational rupture index</p>
             <p className="font-serif text-4xl text-primary">{r.pct}% <span className="text-lg text-accent">{r.b.name}</span></p>
-            <p className="text-xs text-muted-foreground mt-2">{on.length} of {SIGNS.length} tripwires recorded. {TREND[trend].note}</p>
+            <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
+
           </div>
           {r.traps.length > 0 && (
             <div className="border border-brass/40 bg-background p-4 space-y-3">
