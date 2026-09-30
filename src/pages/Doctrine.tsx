@@ -10,6 +10,8 @@ import NumeralDivider from "@/components/NumeralDivider";
 import Cite from "@/components/Cite";
 import CiteWork from "@/components/CiteWork";
 import ReadingProgress from "@/components/ReadingProgress";
+import WallChart from "@/components/WallChart";
+
 
 import PrintFootnotes from "@/components/PrintFootnotes";
 
@@ -258,8 +260,12 @@ export default function Doctrine() {
               </p>
             </div>
           </div>
+          <div className="mt-10">
+            <WallChart />
+          </div>
         </FadeIn>
         </section>
+
 
         <NumeralDivider n="VI" label="The Adversarial Review" />
 
