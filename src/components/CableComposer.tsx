@@ -171,14 +171,20 @@ export default function CableComposer() {
     ).join("\n");
     const f = FAILURE[bi];
     const s = SCRIPTS[bi];
+    const th = theater.trim();
 
     return `CLASSIFICATION: UNRESTRICTED / WORKING DRAFT
 ${cab.tag}
+PRECEDENCE: ${PRECEDENCE[prec]}
+HANDLING CAVEAT: ${CAVEATS[cav].line}
 REFERENCE: ${ref}
 DATE: ${stamp(today)}
 ORIGINATING DESK: Vinculum Security, Applied Case Engagement, Section ${c.ref}
+DRAFTING OFFICER: ${drafter.trim() || "Not stated"}
 RECIPIENT: ${r.office}
-SUBJECT: ${c.shortTitle}. Relational assessment of the ${DOMAINS[bi].toLowerCase()} bond, with required safeguards.
+DISTRIBUTION: ${r.label}; originating desk file copy${cav === 0 ? "; implementation registry" : ""}
+${th ? `ACTIVE THEATER: ${th}\n` : ""}SUBJECT: ${c.shortTitle}. Relational assessment of the ${DOMAINS[bi].toLowerCase()} bond, with required safeguards${th ? `, read against ${th}` : ""}.
+
 
 PURPOSE
 ${cab.purpose}
