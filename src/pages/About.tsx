@@ -11,6 +11,7 @@ import CCBadge from "@/components/CCBadge";
 
 
 export default function About() {
+  const [copied, setCopied] = useState(false);
   return (
     <>
       <SEO
