@@ -218,11 +218,19 @@ ${c.sources.map((x) => `   · ${x}`).join("\n")}
    · Vinculum Diplomacy: The Practitioner Handbook, Final Edition, Sections 9A, 12 and 15, by ${AUTHOR_NAME}.
    · Canonical record: ${SITE_URL}/cases/${c.slug}
 
+${annex ? `
+ANNEX A · COMPARATIVE PRECEDENT
+Cases of record carrying the same most-exposed bond (${DOMAINS[bi]}):
+${CASES.filter((x) => x.slug !== c.slug && x.scores.indexOf(Math.min(...x.scores)) === bi)
+  .map((x) => `   · ${x.shortTitle}, Section ${x.ref}. ${x.takeaway}`)
+  .join("\n") || "   · No other case of record carries this bond as its most exposed."}
+` : ""}
 Compiled from the published record. No part of this memorandum is machine-generated
 or predictive; every statement above is drawn verbatim from the case file and handbook.
 Kenya Copyright Board Registration No. RZ100967.
 END OF ${cab.tag}`;
-  }, [c, r, cab, bi, today]);
+  }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex]);
+
 
   const copy = async () => {
     try {
