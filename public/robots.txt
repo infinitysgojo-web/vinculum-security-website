@@ -106,6 +106,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /login
+Disallow: /dashboard
 
 # Sitemap (path is resolved against the deployed host)
 Sitemap: https://www.vinculumsecurity.kidnexus.or.ke/sitemap.xml
