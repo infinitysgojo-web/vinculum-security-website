@@ -239,10 +239,10 @@ export default function SentinelMatrix() {
         </div>
         <div className="space-y-4">
           <div className="border border-border bg-background p-4">
-
             <p className={label}>Relational rupture index</p>
             <p className="font-serif text-4xl text-primary">{r.pct}% <span className="text-lg text-accent">{r.b.name}</span></p>
-            <p className="text-xs text-muted-foreground mt-2">{on.length} of {SIGNS.length} tripwires recorded. {TREND[trend].note}</p>
+            <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
+
           </div>
           {r.traps.length > 0 && (
             <div className="border border-brass/40 bg-background p-4 space-y-3">
