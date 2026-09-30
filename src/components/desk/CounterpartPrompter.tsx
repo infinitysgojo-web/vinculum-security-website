@@ -58,35 +58,36 @@ export default function CounterpartPrompter() {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div>
+            <div className="min-w-0">
               <label className={label} htmlFor="cp-c">Counterpart</label>
-              <select id="cp-c" className={field} value={cp} onChange={(e) => setCp(Number(e.target.value))}>
+              <select id="cp-c" className={`${field} text-base sm:text-sm min-h-11`} value={cp} onChange={(e) => setCp(Number(e.target.value))}>
                 {COUNTERPARTS.map((c, i) => <option key={c.id} value={i}>{c.label}</option>)}
               </select>
             </div>
-            <div>
+            <div className="min-w-0">
               <label className={label} htmlFor="cp-b">Focus bond</label>
-              <select id="cp-b" className={field} value={bond} onChange={(e) => setBond(Number(e.target.value))}>
+              <select id="cp-b" className={`${field} text-base sm:text-sm min-h-11`} value={bond} onChange={(e) => setBond(Number(e.target.value))}>
                 {DOMAINS.map((d, i) => <option key={d} value={i}>{d}</option>)}
               </select>
             </div>
           </div>
           <p className="text-xs text-muted-foreground italic">{COUNTERPARTS[cp].caution}</p>
           <div>
-            <div className="flex gap-1 mb-4">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1 mb-4">
               {PHASES.map((p, i) => (
                 <button key={p} type="button" aria-pressed={phase === i} onClick={() => setPhase(i)}
-                  className={`flex-1 px-2 py-2 border text-[10px] font-semibold uppercase tracking-[0.18em] ${phase === i ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
+                  className={`w-full min-h-11 px-2 py-2 border text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.18em] leading-tight ${phase === i ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
                   {p}
                 </button>
               ))}
             </div>
-            <blockquote className="border-l-2 border-accent bg-background p-5 font-serif text-xl md:text-2xl text-primary leading-snug">
+            <blockquote className="border-l-2 border-accent bg-background p-4 sm:p-5 font-serif text-lg sm:text-xl md:text-2xl text-primary leading-snug break-words">
               "{SCRIPT[bond][phase]}"
             </blockquote>
-            <div className="flex justify-between mt-3">
-              <button type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</button>
-              <button type="button" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</button>
+            <div className="flex justify-between items-center gap-3 mt-3">
+              <button type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</button>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{phase + 1} / 4</span>
+              <button type="button" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</button>
             </div>
           </div>
         </div>
