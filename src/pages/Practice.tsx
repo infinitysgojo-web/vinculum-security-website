@@ -7,9 +7,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
-import BondDiagnostic from "@/components/BondDiagnostic";
 import FieldLexicon from "@/components/FieldLexicon";
-import CableComposer from "@/components/CableComposer";
 
 const PRINCIPLES = [
   {
@@ -149,9 +147,7 @@ export default function Practice() {
               "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
             section: "Companion Handbook — Practice",
           }),
-          benchLd,
           lexiconLd,
-          composerLd,
         ]}
       />
       <ReadingProgress />
@@ -226,9 +222,6 @@ export default function Practice() {
           </div>
         </FadeIn>
 
-        <div className="mb-16">
-          <BondDiagnostic />
-        </div>
 
         <NumeralDivider n="IV" label="Practice Principles" />
 
@@ -260,14 +253,6 @@ export default function Practice() {
           </FadeIn>
         </section>
 
-        <section id="composer" className="scroll-mt-24 mb-16">
-          <FadeIn>
-            <p className="eyebrow">§12B · The Operational Briefing Desk</p>
-            <h2 className="mt-3 font-serif text-primary">Compose a chancellery memorandum</h2>
-            <GoldRule className="mt-4 mb-6" />
-            <CableComposer />
-          </FadeIn>
-        </section>
 
         <FadeIn className="mb-16">
           <p className="eyebrow">Part IV · Practice Under Constraint</p>

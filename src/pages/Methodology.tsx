@@ -8,7 +8,6 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
 import PrintFootnotes from "@/components/PrintFootnotes";
-import AuditBench from "@/components/AuditBench";
 
 const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated", "scoring-rubric", "government-non-self-assessment"];
 
@@ -213,9 +212,6 @@ export default function Methodology() {
           </div>
         </FadeIn>
 
-        <FadeIn className="mb-20">
-          <AuditBench parties={PARTIES} />
-        </FadeIn>
 
         <PrintFootnotes terms={CITED} />
       </div>
