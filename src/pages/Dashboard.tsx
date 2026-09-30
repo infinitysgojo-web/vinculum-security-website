@@ -8,6 +8,7 @@ import GoldRule from "@/components/GoldRule";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import { BinderContext, type BinderEntry } from "@/components/desk/DeskOutput";
+import MissionVault, { EMPTY_PROFILE, type MissionProfile } from "@/components/desk/MissionVault";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
@@ -25,6 +26,9 @@ const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartProm
 const SuccessionSimulator = lazy(() => import("@/components/desk/SuccessionSimulator"));
 const MissionBinder = lazy(() => import("@/components/desk/MissionBinder"));
 const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
+const ClauseRedliner = lazy(() => import("@/components/desk/ClauseRedliner"));
+const MultiPartySequencer = lazy(() => import("@/components/desk/MultiPartySequencer"));
+const CompoundShockTester = lazy(() => import("@/components/desk/CompoundShockTester"));
 
 
 const IDLE_MS = 20 * 60 * 1000;
