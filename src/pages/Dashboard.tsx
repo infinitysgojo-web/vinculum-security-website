@@ -201,22 +201,23 @@ export default function Dashboard() {
         </div>
 
         <div className="pb-24">
-          {desk === "briefing" && <CableComposer />}
-          {desk === "diagnostics" && (
-            <div className="space-y-12">
-              <BondDiagnostic />
-              <PatternMatcher />
-            </div>
-          )}
-          {desk === "audit" && <AuditBench parties={PARTIES} />}
-          {desk === "mirror" && <MirrorDesk />}
-          {desk === "legal" && <LitigationWorkbench />}
-          {desk === "adversarial" && <AdversarialChamber />}
-          {desk === "clauses" && <ClauseArchitect />}
-          {desk === "sentinel" && <SentinelMatrix />}
-          {desk === "readiness" && <ReadinessDesk />}
-          {desk === "counterpart" && <CounterpartPrompter />}
-
+          <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
+            {desk === "briefing" && <CableComposer />}
+            {desk === "diagnostics" && (
+              <div className="space-y-12">
+                <BondDiagnostic />
+                <PatternMatcher />
+              </div>
+            )}
+            {desk === "audit" && <AuditBench parties={PARTIES} />}
+            {desk === "mirror" && <MirrorDesk />}
+            {desk === "legal" && <LitigationWorkbench />}
+            {desk === "adversarial" && <AdversarialChamber />}
+            {desk === "clauses" && <ClauseArchitect />}
+            {desk === "sentinel" && <SentinelMatrix />}
+            {desk === "readiness" && <ReadinessDesk />}
+            {desk === "counterpart" && <CounterpartPrompter />}
+          </Suspense>
         </div>
       </div>
     </>
