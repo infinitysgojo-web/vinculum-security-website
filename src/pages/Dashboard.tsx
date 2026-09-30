@@ -8,6 +8,7 @@ import GoldRule from "@/components/GoldRule";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import { BinderContext, type BinderEntry } from "@/components/desk/DeskOutput";
+import MissionVault, { EMPTY_PROFILE, type MissionProfile } from "@/components/desk/MissionVault";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
@@ -25,41 +26,120 @@ const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartProm
 const SuccessionSimulator = lazy(() => import("@/components/desk/SuccessionSimulator"));
 const MissionBinder = lazy(() => import("@/components/desk/MissionBinder"));
 const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
+const ClauseRedliner = lazy(() => import("@/components/desk/ClauseRedliner"));
+const MultiPartySequencer = lazy(() => import("@/components/desk/MultiPartySequencer"));
+const CompoundShockTester = lazy(() => import("@/components/desk/CompoundShockTester"));
 
 
 const IDLE_MS = 20 * 60 * 1000;
 
+const DIVISIONS = [
+  { id: "assess", label: "I. Assessment and early warning" },
+  { id: "engage", label: "II. Diplomatic engagement" },
+  { id: "legal", label: "III. Legal architecture" },
+  { id: "govern", label: "IV. Mission governance" },
+] as const;
+
 const DESKS = [
   {
-    id: "briefing",
-    label: "Briefing Desk",
-    eyebrow: "§12B · Chancellery",
-    title: "Compose a chancellery memorandum",
-    note: "Assemble a formal memorandum from the documented case record, the §9A scripts, and the §12 protocols.",
-  },
-  {
     id: "diagnostics",
+    division: "assess",
     label: "Diagnostics",
     eyebrow: "§3B · Assessment",
     title: "Bond diagnostic and pattern matching",
     note: "Score the four bonds for a live theatre, then match the profile against the eight documented cases.",
   },
   {
-    id: "audit",
-    label: "Field Audit",
-    eyebrow: "VI.A · Safeguard",
-    title: "Stakeholder field audit",
-    note: "Review one affected party at a time before an assessment is treated as ready for use.",
+    id: "sentinel",
+    division: "assess",
+    label: "Sentinel Matrix",
+    eyebrow: "§15 · Early Warning",
+    title: "Early-warning sentinel matrix",
+    note: "Record observed warning signs across the four bonds and read the rupture index and latent traps.",
+  },
+  {
+    id: "compound",
+    division: "assess",
+    label: "Compound Shock",
+    eyebrow: "§12C · Rupture Model",
+    title: "Compound shock and rupture stress test",
+    note: "Apply several shocks at once, read the amplified strain, and see which provision breaks first.",
   },
   {
     id: "mirror",
+    division: "assess",
     label: "Comparative Mirror",
     eyebrow: "VII · Cross-Theatre",
     title: "The cross-theatre diagnostic mirror",
     note: "Select two or three documented theatres and read them against one rubric.",
   },
   {
+    id: "briefing",
+    division: "engage",
+    label: "Briefing Desk",
+    eyebrow: "§12B · Chancellery",
+    title: "Compose a chancellery memorandum",
+    note: "Assemble a formal memorandum from the documented case record, the §9A scripts, and the §12 protocols.",
+  },
+  {
+    id: "counterpart",
+    division: "engage",
+    label: "Counterpart Prompter",
+    eyebrow: "§9A · Meeting",
+    title: "Counterpart protocol prompter",
+    note: "Walk a meeting phase by phase with the scripted question for each counterpart and bond.",
+  },
+  {
+    id: "multiparty",
+    division: "engage",
+    label: "De-confliction Bench",
+    eyebrow: "§9A · Multi-Party",
+    title: "Multi-party sequencing and de-confliction",
+    note: "Seat up to four parties at one table, synchronise the four phases, and read the friction between them.",
+  },
+  {
+    id: "tracks",
+    division: "engage",
+    label: "Track Sequencing",
+    eyebrow: "§9B · Sequencing",
+    title: "Track I and Track II sequencing",
+    note: "Keep the principals' track and the communal track in step, and see the gap before it becomes an elite pact.",
+  },
+  {
+    id: "audit",
+    division: "engage",
+    label: "Field Audit",
+    eyebrow: "VI.A · Safeguard",
+    title: "Stakeholder field audit",
+    note: "Review one affected party at a time before an assessment is treated as ready for use.",
+  },
+  {
+    id: "clauses",
+    division: "legal",
+    label: "Clause Architect",
+    eyebrow: "§12 · Drafting",
+    title: "Continuity provision architect",
+    note: "Draft treaty clauses that bind offices, not officeholders, and survive a change of leadership.",
+  },
+  {
+    id: "redliner",
+    division: "legal",
+    label: "Clause Redliner",
+    eyebrow: "§12 · Review",
+    title: "Clause redliner and anti-theatrics audit",
+    note: "Paste a draft provision and read it against the doctrine's seven recorded failure modes, with substitute wording.",
+  },
+  {
+    id: "succession",
+    division: "legal",
+    label: "Succession Simulator",
+    eyebrow: "§12C · Stress Test",
+    title: "Treaty stress and succession simulator",
+    note: "Test a drafted instrument against leadership change, funding loss and capture, and read which clause breaks first.",
+  },
+  {
     id: "legal",
+    division: "legal",
     label: "Legal Desk",
     eyebrow: "§14 · Litigation",
     title: "Litigation preparation",
@@ -67,59 +147,27 @@ const DESKS = [
   },
   {
     id: "adversarial",
+    division: "legal",
     label: "Adversarial Chamber",
     eyebrow: "Section X · Review",
     title: "Tested by its critics",
     note: "Rehearse the standing objections and the answers of record before facing them in a room.",
   },
   {
-    id: "clauses",
-    label: "Clause Architect",
-    eyebrow: "§12 · Drafting",
-    title: "Continuity provision architect",
-    note: "Draft treaty clauses that bind offices, not officeholders, and survive a change of leadership.",
-  },
-  {
-    id: "sentinel",
-    label: "Sentinel Matrix",
-    eyebrow: "§15 · Early Warning",
-    title: "Early-warning sentinel matrix",
-    note: "Record observed warning signs across the four bonds and read the rupture index and latent traps.",
-  },
-  {
     id: "readiness",
+    division: "govern",
     label: "Mission Readiness",
     eyebrow: "VI.A · Clearance",
     title: "Mission readiness clearance",
     note: "Clear a mission against the doctrine's protection and verification gates before deployment.",
   },
   {
-    id: "counterpart",
-    label: "Counterpart Prompter",
-    eyebrow: "§9A · Meeting",
-    title: "Counterpart protocol prompter",
-    note: "Walk a meeting phase by phase with the scripted question for each counterpart and bond.",
-  },
-  {
-    id: "succession",
-    label: "Succession Simulator",
-    eyebrow: "§12C · Stress Test",
-    title: "Treaty stress and succession simulator",
-    note: "Test a drafted instrument against leadership change, funding loss and capture, and read which clause breaks first.",
-  },
-  {
-    id: "tracks",
-    label: "Track Sequencing",
-    eyebrow: "§9B · Sequencing",
-    title: "Track I and Track II sequencing",
-    note: "Keep the principals' track and the communal track in step, and see the gap before it becomes an elite pact.",
-  },
-  {
     id: "binder",
+    division: "govern",
     label: "Mission Binder",
     eyebrow: "Consolidation · Master Dossier",
     title: "Consolidated mission binder",
-    note: "Compile the documents you added from any desk into one numbered master briefing. Held in memory only; it clears on sign-out or refresh.",
+    note: "Compile the documents you added from any desk into one numbered master briefing. Save it to a mission archive to keep it past this session.",
   },
 ] as const;
 
@@ -128,9 +176,11 @@ const DESKS = [
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
-  const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("briefing");
+  const [division, setDivision] = useState<(typeof DIVISIONS)[number]["id"]>("assess");
+  const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("diagnostics");
   const navigate = useNavigate();
   const [binder, setBinder] = useState<BinderEntry[]>([]);
+  const [profile, setProfile] = useState<MissionProfile>(EMPTY_PROFILE);
   const addToBinder = useCallback((e: BinderEntry) => {
     setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
   }, []);
@@ -215,8 +265,35 @@ export default function Dashboard() {
       </div>
 
       <div className="container py-8">
-        <div className="flex flex-wrap gap-2 mb-8">
-          {DESKS.map((d) => (
+        <div className="mb-8">
+          <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} />
+        </div>
+
+        <div className="mb-6 flex flex-wrap gap-x-6 gap-y-3 border-b border-brass/40 pb-3">
+          {DIVISIONS.map((dv) => {
+            const on = division === dv.id;
+            return (
+              <button
+                key={dv.id}
+                type="button"
+                aria-pressed={on}
+                onClick={() => {
+                  setDivision(dv.id);
+                  const first = DESKS.find((d) => d.division === dv.id);
+                  if (first) setDesk(first.id);
+                }}
+                className={`pb-2 -mb-3 border-b-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors ${
+                  on ? "border-accent text-accent" : "border-transparent text-primary/60 hover:text-accent"
+                }`}
+              >
+                {dv.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-10">
+          {DESKS.filter((d) => d.division === division).map((d) => (
             <button
               key={d.id}
               type="button"
@@ -239,6 +316,12 @@ export default function Dashboard() {
           <h1 className="mt-3 font-serif text-primary text-2xl md:text-3xl">{active.title}</h1>
           <GoldRule className="mt-4 mb-4" />
           <p className="text-sm text-muted-foreground">{active.note}</p>
+          {profile.theatre.trim() && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Active mission: <span className="text-primary">{profile.theatre}</span>
+              {profile.classification ? ` · ${profile.classification}` : ""}
+            </p>
+          )}
         </div>
 
         <BinderContext.Provider value={{ add: addToBinder }}>
@@ -256,6 +339,9 @@ export default function Dashboard() {
             {desk === "legal" && <LitigationWorkbench />}
             {desk === "adversarial" && <AdversarialChamber />}
             {desk === "clauses" && <ClauseArchitect />}
+            {desk === "redliner" && <ClauseRedliner />}
+            {desk === "multiparty" && <MultiPartySequencer />}
+            {desk === "compound" && <CompoundShockTester />}
             {desk === "sentinel" && <SentinelMatrix />}
             {desk === "readiness" && <ReadinessDesk />}
             {desk === "counterpart" && <CounterpartPrompter />}
@@ -264,6 +350,7 @@ export default function Dashboard() {
             {desk === "binder" && (
               <MissionBinder entries={binder} onRemove={(id) => setBinder((p) => p.filter((x) => x.id !== id))} onMove={moveEntry} />
             )}
+
 
           </Suspense>
         </div>
