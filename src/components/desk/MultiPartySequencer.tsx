@@ -262,7 +262,7 @@ export default function MultiPartySequencer() {
             <ul className="space-y-3">
               {frictions.map((f, i) => (
                 <li key={i} className="text-xs leading-relaxed">
-                  <span className="text-terracotta font-semibold uppercase tracking-[0.16em] text-[10px] block mb-1">
+                  <span className="text-accent font-semibold uppercase tracking-[0.16em] text-[10px] block mb-1">
                     {ACTORS.find((x) => x.id === f.a)!.label} / {ACTORS.find((x) => x.id === f.b)!.label}
                   </span>
                   <span className="text-muted-foreground">{f.text}</span>

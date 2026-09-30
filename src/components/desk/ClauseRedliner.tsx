@@ -176,7 +176,7 @@ export default function ClauseRedliner() {
                   <span className="text-muted-foreground">{r.name}</span>
                   <span
                     className={`text-[10px] uppercase tracking-[0.18em] font-semibold ${
-                      !body.trim() ? "text-muted-foreground/60" : hit ? "text-terracotta" : "text-primary/60"
+                      !body.trim() ? "text-muted-foreground/60" : hit ? "text-accent" : "text-primary/60"
                     }`}
                   >
                     {!body.trim() ? "Idle" : hit ? "Raised" : "Clear"}
