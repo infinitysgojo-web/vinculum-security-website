@@ -114,8 +114,17 @@ const FAILURE: Record<number, { name: string; sign: string; recover: string }> =
   },
 };
 
+const PRECEDENCE = ["IMMEDIATE", "PRIORITY", "ROUTINE"] as const;
+
+const CAVEATS = [
+  { id: "open", label: "No caveat", line: "NONE. Releasable within the receiving office." },
+  { id: "verifier", label: "Releasable to verifiers only", line: "RELEASABLE TO INDEPENDENT VERIFIERS ONLY. Not for party circulation." },
+  { id: "eyes", label: "Addressee eyes only", line: "ADDRESSEE EYES ONLY. Onward transmission requires the originating desk's consent." },
+] as const;
+
 const BAND = (n: number) =>
   n <= 1 ? "Fractured" : n === 2 ? "Degraded" : n === 3 ? "Contested" : n === 4 ? "Stabilised" : "Reconstituted";
+
 
 function stamp(d: Date) {
   return d
