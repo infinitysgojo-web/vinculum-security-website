@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SEO from "@/components/SEO";
 import { SITE_URL, personLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
