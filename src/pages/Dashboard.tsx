@@ -150,7 +150,10 @@ export default function Dashboard() {
             </div>
           )}
           {desk === "audit" && <AuditBench parties={PARTIES} />}
+          {desk === "mirror" && <MirrorDesk />}
           {desk === "legal" && <LitigationWorkbench />}
+          {desk === "adversarial" && <AdversarialChamber />}
+
         </div>
       </div>
     </>
