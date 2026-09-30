@@ -159,3 +159,53 @@ export default function Dashboard() {
     </>
   );
 }
+
+function MirrorDesk() {
+  const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
+
+  const toggle = (slug: string) =>
+    setPicked((prev) =>
+      prev.includes(slug)
+        ? prev.filter((s) => s !== slug)
+        : prev.length >= 3
+          ? prev
+          : [...prev, slug]
+    );
+
+  const selected = picked
+    .map((s) => CASES.find((c) => c.slug === s))
+    .filter(Boolean) as typeof CASES;
+
+  return (
+    <div className="space-y-8">
+      <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6">
+        <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">
+          Select two or three theatres
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          {CASES.map((c) => {
+            const on = picked.includes(c.slug);
+            return (
+              <button
+                key={c.slug}
+                type="button"
+                aria-pressed={on}
+                onClick={() => toggle(c.slug)}
+                disabled={!on && picked.length >= 3}
+                className={`px-3 py-1.5 border text-[10px] font-semibold uppercase tracking-[0.2em] transition-all disabled:opacity-40 ${
+                  on
+                    ? "bg-accent text-accent-foreground border-accent"
+                    : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
+                }`}
+              >
+                {c.shortTitle}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} />
+    </div>
+  );
+}
+
