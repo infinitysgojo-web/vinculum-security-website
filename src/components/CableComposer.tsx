@@ -302,9 +302,58 @@ END OF ${cab.tag}`;
         chancellery briefing from the published record alone. Nothing is predicted, stored, or sent.
       </p>
 
+      <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6 mb-4 flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <span className={lab}>Source of the assessment</span>
+          <p className="text-sm text-foreground/85 mt-1">
+            {ownOn ? "Your own live theater, scored by you." : "A case of record from the published archive."}
+          </p>
+        </div>
+        <button type="button" aria-pressed={ownOn} onClick={() => setOwnOn(!ownOn)}
+          className={`min-h-11 px-4 border text-[10px] uppercase tracking-[0.18em] font-semibold ${ownOn ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
+          {ownOn ? "Using my own theater" : "Use my own theater"}
+        </button>
+      </div>
+
+      {ownOn && (
+        <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6 mb-4 grid gap-4 md:grid-cols-2">
+          <label className="block">
+            <span className={lab}>Theater name</span>
+            <input className={`${field} mt-2`} value={oName} onChange={(e) => setOName(e.target.value)} placeholder="e.g. Eastern corridor transition commission" />
+          </label>
+          <label className="block">
+            <span className={lab}>Your file reference</span>
+            <input className={`${field} mt-2`} value={oRef} onChange={(e) => setORef(e.target.value)} placeholder="e.g. FILE 2026/014" />
+          </label>
+          <label className="block md:col-span-2">
+            <span className={lab}>Problem statement</span>
+            <textarea className={`${field} mt-2 min-h-24`} value={oSummary} onChange={(e) => setOSummary(e.target.value)} placeholder="What is actually at stake in this theater." />
+          </label>
+          <label className="block md:col-span-2">
+            <span className={lab}>Receiving office, your wording (optional)</span>
+            <input className={`${field} mt-2`} value={oOffice} onChange={(e) => setOOffice(e.target.value)} placeholder="Overrides the office named by the selection above" />
+          </label>
+          <label className="block md:col-span-2">
+            <span className={lab}>Directive to that office (optional)</span>
+            <textarea className={`${field} mt-2 min-h-20`} value={oDirective} onChange={(e) => setODirective(e.target.value)} placeholder="Overrides the standard directive" />
+          </label>
+          <div className="md:col-span-2 space-y-3">
+            <span className={lab}>Bond scoring and rationale</span>
+            {DOMAINS.map((d, i) => (
+              <div key={d} className="grid gap-2 sm:grid-cols-[13rem_1fr] items-start">
+                <select className={field} value={oScores[i]} onChange={(e) => setScore(i, Number(e.target.value))} aria-label={`${d} score`}>
+                  {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{d}: {n} of 5, {BAND(n)}</option>)}
+                </select>
+                <input className={field} value={oRat[i]} onChange={(e) => setRat(i, e.target.value)} placeholder={`Why the ${d.toLowerCase()} bond scores as it does`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6 grid gap-4 md:grid-cols-2">
         <label className="block">
-          <span className={lab}>Case of record</span>
+          <span className={lab}>{ownOn ? "Comparison case of record" : "Case of record"}</span>
           <select className={`${field} mt-2`} value={ci} onChange={(e) => setCi(Number(e.target.value))}>
             {CASES.map((x, i) => (
               <option key={x.slug} value={i}>
@@ -313,6 +362,7 @@ END OF ${cab.tag}`;
             ))}
           </select>
         </label>
+
 
         <label className="block">
           <span className={lab}>Receiving office</span>
