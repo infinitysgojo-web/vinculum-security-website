@@ -1,23 +1,28 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import SEO from "@/components/SEO";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
-import BondDiagnostic from "@/components/BondDiagnostic";
-import CableComposer from "@/components/CableComposer";
-import PatternMatcher from "@/components/PatternMatcher";
-import AuditBench from "@/components/AuditBench";
-import LitigationWorkbench from "@/components/LitigationWorkbench";
-import DiagnosticMirror from "@/components/DiagnosticMirror";
-import AdversarialChamber from "@/components/AdversarialChamber";
-import ClauseArchitect from "@/components/desk/ClauseArchitect";
-import SentinelMatrix from "@/components/desk/SentinelMatrix";
-import ReadinessDesk from "@/components/desk/ReadinessDesk";
-import CounterpartPrompter from "@/components/desk/CounterpartPrompter";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
+
+// Proprietary desks are split into separate chunks that are only fetched
+// once a valid session exists, so they never ship with the public site.
+const BondDiagnostic = lazy(() => import("@/components/BondDiagnostic"));
+const CableComposer = lazy(() => import("@/components/CableComposer"));
+const PatternMatcher = lazy(() => import("@/components/PatternMatcher"));
+const AuditBench = lazy(() => import("@/components/AuditBench"));
+const LitigationWorkbench = lazy(() => import("@/components/LitigationWorkbench"));
+const DiagnosticMirror = lazy(() => import("@/components/DiagnosticMirror"));
+const AdversarialChamber = lazy(() => import("@/components/AdversarialChamber"));
+const ClauseArchitect = lazy(() => import("@/components/desk/ClauseArchitect"));
+const SentinelMatrix = lazy(() => import("@/components/desk/SentinelMatrix"));
+const ReadinessDesk = lazy(() => import("@/components/desk/ReadinessDesk"));
+const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartPrompter"));
+
+const IDLE_MS = 20 * 60 * 1000;
 
 const DESKS = [
   {
