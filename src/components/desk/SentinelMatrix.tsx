@@ -49,22 +49,51 @@ function band(pct: number) {
   return { name: "Stable", advice: "Maintain quarterly review; no immediate intervention indicated." };
 }
 
+type Custom = { id: string; bond: number; text: string; w: number };
+
 export default function SentinelMatrix() {
   const [theater, setTheater] = useState("");
   const [trend, setTrend] = useState(1);
   const [on, setOn] = useState<number[]>([]);
   const toggle = (i: number) => setOn((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
 
+  // Custom field mode: indicators the practitioner defines for their own theater.
+  const [custom, setCustom] = useState<Custom[]>([]);
+  const [cOn, setCOn] = useState<string[]>([]);
+  const [cText, setCText] = useState("");
+  const [cBond, setCBond] = useState(0);
+  const [cW, setCW] = useState(2);
+  const addCustom = () => {
+    const t = cText.trim();
+    if (!t) return;
+    const id = `c${Date.now()}`;
+    setCustom((p) => [...p, { id, bond: cBond, text: t, w: cW }]);
+    setCOn((p) => [...p, id]);
+    setCText("");
+  };
+  const dropCustom = (id: string) => {
+    setCustom((p) => p.filter((x) => x.id !== id));
+    setCOn((p) => p.filter((x) => x !== id));
+  };
+  const toggleCustom = (id: string) => setCOn((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
   const r = useMemo(() => {
+    const totalMax = MAX + custom.reduce((s, c) => s + c.w, 0);
     const byBond = DOMAINS.map((_, b) => {
-      const all = SIGNS.filter((s) => s.bond === b);
-      const max = all.reduce((s, x) => s + x.w, 0);
-      const hit = SIGNS.reduce((s, x, i) => s + (x.bond === b && on.includes(i) ? x.w : 0), 0);
-      return Math.round((hit / max) * 100);
+      const max =
+        SIGNS.reduce((s, x) => s + (x.bond === b ? x.w : 0), 0) +
+        custom.reduce((s, c) => s + (c.bond === b ? c.w : 0), 0);
+      const hit =
+        SIGNS.reduce((s, x, i) => s + (x.bond === b && on.includes(i) ? x.w : 0), 0) +
+        custom.reduce((s, c) => s + (c.bond === b && cOn.includes(c.id) ? c.w : 0), 0);
+      return max ? Math.round((hit / max) * 100) : 0;
     });
-    const score = SIGNS.reduce((s, x, i) => s + (on.includes(i) ? x.w : 0), 0);
-    const raw = (score / MAX) * 100;
+    const score =
+      SIGNS.reduce((s, x, i) => s + (on.includes(i) ? x.w : 0), 0) +
+      custom.reduce((s, c) => s + (cOn.includes(c.id) ? c.w : 0), 0);
+    const raw = (score / totalMax) * 100;
     const pct = Math.min(100, Math.round(raw * TREND[trend].mult));
+
     const traps: { name: string; reading: string; counter: string }[] = [];
     if (byBond[1] >= 50 && byBond[2] >= 50 && byBond[0] < 50)
       traps.push({
