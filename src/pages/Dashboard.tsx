@@ -12,6 +12,10 @@ import AuditBench from "@/components/AuditBench";
 import LitigationWorkbench from "@/components/LitigationWorkbench";
 import DiagnosticMirror from "@/components/DiagnosticMirror";
 import AdversarialChamber from "@/components/AdversarialChamber";
+import ClauseArchitect from "@/components/desk/ClauseArchitect";
+import SentinelMatrix from "@/components/desk/SentinelMatrix";
+import ReadinessDesk from "@/components/desk/ReadinessDesk";
+import CounterpartPrompter from "@/components/desk/CounterpartPrompter";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 
@@ -57,6 +61,34 @@ const DESKS = [
     eyebrow: "Section X · Review",
     title: "Tested by its critics",
     note: "Rehearse the standing objections and the answers of record before facing them in a room.",
+  },
+  {
+    id: "clauses",
+    label: "Clause Architect",
+    eyebrow: "§12 · Drafting",
+    title: "Continuity provision architect",
+    note: "Draft treaty clauses that bind offices, not officeholders, and survive a change of leadership.",
+  },
+  {
+    id: "sentinel",
+    label: "Sentinel Matrix",
+    eyebrow: "§15 · Early Warning",
+    title: "Early-warning sentinel matrix",
+    note: "Record observed warning signs across the four bonds and read the rupture index and latent traps.",
+  },
+  {
+    id: "readiness",
+    label: "Mission Readiness",
+    eyebrow: "VI.A · Clearance",
+    title: "Mission readiness clearance",
+    note: "Clear a mission against the doctrine's protection and verification gates before deployment.",
+  },
+  {
+    id: "counterpart",
+    label: "Counterpart Prompter",
+    eyebrow: "§9A · Meeting",
+    title: "Counterpart protocol prompter",
+    note: "Walk a meeting phase by phase with the scripted question for each counterpart and bond.",
   },
 ] as const;
 
@@ -153,6 +185,10 @@ export default function Dashboard() {
           {desk === "mirror" && <MirrorDesk />}
           {desk === "legal" && <LitigationWorkbench />}
           {desk === "adversarial" && <AdversarialChamber />}
+          {desk === "clauses" && <ClauseArchitect />}
+          {desk === "sentinel" && <SentinelMatrix />}
+          {desk === "readiness" && <ReadinessDesk />}
+          {desk === "counterpart" && <CounterpartPrompter />}
 
         </div>
       </div>
