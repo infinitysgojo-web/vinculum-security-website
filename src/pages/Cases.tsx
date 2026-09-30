@@ -6,12 +6,10 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import RelationalAtlas from "@/components/RelationalAtlas";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import DiagnosticMirror from "@/components/DiagnosticMirror";
-import { X } from "lucide-react";
 
 import { Link } from "react-router-dom";
-import { CASES, DOMAINS, type CaseStudy as Case, type Region, type Pillar, type Threat } from "@/content/cases";
+import { CASES, DOMAINS, type Region, type Pillar, type Threat } from "@/content/cases";
+
 
 const REGIONS: Region[] = ["Africa", "Europe", "Latin America", "Southeast Asia", "Pacific"];
 const PILLARS: Pillar[] = ["Interpersonal", "Communal", "Intergenerational", "Institutional"];
@@ -45,8 +43,6 @@ export default function Cases() {
   const [regions, setRegions] = useState<Set<Region>>(new Set());
   const [pillars, setPillars] = useState<Set<Pillar>>(new Set());
   const [threats, setThreats] = useState<Set<Threat>>(new Set());
-  const [compare, setCompare] = useState<string[]>([]);
-  const [open, setOpen] = useState(false);
 
   const toggle = <T,>(s: Set<T>, v: T, set: (s: Set<T>) => void) => {
     const next = new Set(s);
@@ -65,16 +61,6 @@ export default function Cases() {
     [regions, pillars, threats]
   );
 
-  const toggleCompare = (slug: string) => {
-    setCompare((prev) =>
-      prev.includes(slug)
-        ? prev.filter((s) => s !== slug)
-        : prev.length >= 3
-          ? prev
-          : [...prev, slug]
-    );
-  };
-
   const clearAll = () => {
     setRegions(new Set());
     setPillars(new Set());
@@ -82,9 +68,7 @@ export default function Cases() {
   };
 
   const anyActive = regions.size + pillars.size + threats.size > 0;
-  const compareCases = compare
-    .map((s) => CASES.find((c) => c.slug === s))
-    .filter(Boolean) as Case[];
+
 
   return (
     <>
@@ -125,7 +109,7 @@ export default function Cases() {
         <PageHeader
           eyebrow="Section VII"
           title="Applied Case Engagement"
-          lede="Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific. Open any case for the full study, or select up to three to compare side by side."
+          lede="Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific. Open any case for the full study."
         />
 
         <FadeIn className="flex gap-2 mb-8 flex-wrap">
@@ -172,7 +156,6 @@ export default function Cases() {
 
         <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
-            const selected = compare.includes(c.slug);
             return (
               <FadeIn key={c.slug} delay={i * 40} className="h-full">
                 <article className="bg-card border border-border p-6 md:p-7 h-full flex flex-col hover-lift transition-all">
@@ -181,17 +164,8 @@ export default function Cases() {
                       <DiplomatBadge variant="foundation">{c.region}</DiplomatBadge>
                       <DiplomatBadge variant="methodology">{c.pillar}</DiplomatBadge>
                     </div>
-                    <label className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary cursor-pointer shrink-0">
-                      <input
-                        type="checkbox"
-                        checked={selected}
-                        onChange={() => toggleCompare(c.slug)}
-                        disabled={!selected && compare.length >= 3}
-                        className="accent-accent"
-                      />
-                      Compare
-                    </label>
                   </div>
+
                   <h2 className="font-serif text-primary text-xl leading-tight">
                     <Link to={`/cases/${c.slug}`} className="hover:text-accent transition-colors">
                       {c.title}
@@ -294,37 +268,6 @@ export default function Cases() {
         </FadeIn>
 
 
-        {compare.length > 0 && (
-          <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2 bg-primary text-primary-foreground shadow-lg border border-brass/60 animate-fade-in">
-            <button
-              onClick={() => setOpen(true)}
-              className="px-5 py-3 text-[11px] uppercase tracking-[0.22em] font-semibold"
-            >
-              Open the mirror ({compare.length})
-            </button>
-            <button
-              onClick={() => setCompare([])}
-              className="pr-4 pl-1 py-3 text-primary-foreground/70 hover:text-accent"
-              aria-label="Clear comparison"
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
-
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-5xl w-[calc(100vw-1.5rem)] max-h-[90vh] overflow-y-auto bg-background border-brass/50 p-5 md:p-8">
-            <DialogHeader className="text-left">
-              <p className="eyebrow">Cross-theater diagnostic mirror</p>
-              <DialogTitle className="font-serif text-primary text-2xl md:text-3xl mt-1">
-                Two theaters, one rubric
-              </DialogTitle>
-            </DialogHeader>
-            <div className="mt-4">
-              <DiagnosticMirror cases={compareCases} onSelectPairing={setCompare} />
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
     </>
   );

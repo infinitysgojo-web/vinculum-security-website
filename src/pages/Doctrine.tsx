@@ -9,7 +9,6 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
-import AdversarialChamber from "@/components/AdversarialChamber";
 
 import PrintFootnotes from "@/components/PrintFootnotes";
 
@@ -267,8 +266,16 @@ export default function Doctrine() {
           <p className="eyebrow">Section X · The Adversarial Review</p>
           <h2 className="mt-3 font-serif text-primary">Tested by its critics</h2>
           <GoldRule className="mt-4 mb-6" />
-          <AdversarialChamber />
+          <p className="text-foreground/85 leading-relaxed max-w-3xl">
+            The doctrine has been put before {PANELS.length} standing lines of objection, from the
+            realist and the securitisation critic to the practitioner who asks what any of this
+            changes in a room. Each objection is recorded with the answer given, the ground
+            conceded, and the point still open. The full record of these exchanges is held in the
+            practitioner working desks rather than on the public page, so the argument here stays
+            with the doctrine itself.
+          </p>
         </FadeIn>
+
         </section>
 
         <FadeIn className="max-w-3xl mb-8">

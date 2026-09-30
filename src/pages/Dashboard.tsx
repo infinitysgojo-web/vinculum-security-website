@@ -10,6 +10,9 @@ import CableComposer from "@/components/CableComposer";
 import PatternMatcher from "@/components/PatternMatcher";
 import AuditBench from "@/components/AuditBench";
 import LitigationWorkbench from "@/components/LitigationWorkbench";
+import DiagnosticMirror from "@/components/DiagnosticMirror";
+import AdversarialChamber from "@/components/AdversarialChamber";
+import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 
 const DESKS = [
@@ -35,13 +38,28 @@ const DESKS = [
     note: "Review one affected party at a time before an assessment is treated as ready for use.",
   },
   {
+    id: "mirror",
+    label: "Comparative Mirror",
+    eyebrow: "VII · Cross-Theatre",
+    title: "The cross-theatre diagnostic mirror",
+    note: "Select two or three documented theatres and read them against one rubric.",
+  },
+  {
     id: "legal",
     label: "Legal Desk",
     eyebrow: "§14 · Litigation",
     title: "Litigation preparation",
     note: "Compile a preparation checklist for a new matter from the doctrine's evidentiary and continuity rules.",
   },
+  {
+    id: "adversarial",
+    label: "Adversarial Chamber",
+    eyebrow: "Section X · Review",
+    title: "Tested by its critics",
+    note: "Rehearse the standing objections and the answers of record before facing them in a room.",
+  },
 ] as const;
+
 
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
@@ -132,9 +150,62 @@ export default function Dashboard() {
             </div>
           )}
           {desk === "audit" && <AuditBench parties={PARTIES} />}
+          {desk === "mirror" && <MirrorDesk />}
           {desk === "legal" && <LitigationWorkbench />}
+          {desk === "adversarial" && <AdversarialChamber />}
+
         </div>
       </div>
     </>
   );
 }
+
+function MirrorDesk() {
+  const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
+
+  const toggle = (slug: string) =>
+    setPicked((prev) =>
+      prev.includes(slug)
+        ? prev.filter((s) => s !== slug)
+        : prev.length >= 3
+          ? prev
+          : [...prev, slug]
+    );
+
+  const selected = picked
+    .map((s) => CASES.find((c) => c.slug === s))
+    .filter(Boolean) as typeof CASES;
+
+  return (
+    <div className="space-y-8">
+      <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6">
+        <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">
+          Select two or three theatres
+        </p>
+        <div className="flex gap-2 flex-wrap">
+          {CASES.map((c) => {
+            const on = picked.includes(c.slug);
+            return (
+              <button
+                key={c.slug}
+                type="button"
+                aria-pressed={on}
+                onClick={() => toggle(c.slug)}
+                disabled={!on && picked.length >= 3}
+                className={`px-3 py-1.5 border text-[10px] font-semibold uppercase tracking-[0.2em] transition-all disabled:opacity-40 ${
+                  on
+                    ? "bg-accent text-accent-foreground border-accent"
+                    : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
+                }`}
+              >
+                {c.shortTitle}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} />
+    </div>
+  );
+}
+
