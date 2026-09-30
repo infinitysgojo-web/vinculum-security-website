@@ -298,8 +298,38 @@ END OF ${cab.tag}`;
           </select>
         </label>
 
-        <div>
+        <label className="block">
+          <span className={lab}>Active theater (optional)</span>
+          <input className={`${field} mt-2`} value={theater} onChange={(e) => setTheater(e.target.value)} placeholder="e.g. Northern Rift corridor, Q3 review" />
+        </label>
+
+        <label className="block">
+          <span className={lab}>Drafting officer (optional)</span>
+          <input className={`${field} mt-2`} value={drafter} onChange={(e) => setDrafter(e.target.value)} placeholder="Name and desk" />
+        </label>
+
+        <label className="block">
+          <span className={lab}>Precedence</span>
+          <select className={`${field} mt-2`} value={prec} onChange={(e) => setPrec(Number(e.target.value))}>
+            {PRECEDENCE.map((p, i) => <option key={p} value={i}>{p}</option>)}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className={lab}>Handling caveat</span>
+          <select className={`${field} mt-2`} value={cav} onChange={(e) => setCav(Number(e.target.value))}>
+            {CAVEATS.map((x, i) => <option key={x.id} value={i}>{x.label}</option>)}
+          </select>
+        </label>
+
+        <label className="flex items-start gap-3 md:col-span-2 text-sm cursor-pointer">
+          <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={annex} onChange={(e) => setAnnex(e.target.checked)} />
+          <span className="text-foreground/85">Append Annex A, comparative precedent from cases sharing the same most exposed bond.</span>
+        </label>
+
+        <div className="md:col-span-2">
           <span className={lab}>Point of strain</span>
+
           <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
