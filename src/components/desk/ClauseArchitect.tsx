@@ -118,7 +118,7 @@ export default function ClauseArchitect() {
     L.push("Compiled under Vinculum Diplomacy: The Practitioner Handbook, Section 12");
     L.push("");
     L.push(`INSTRUMENT: ${title.trim() || a.label}`);
-    L.push(`AGREEMENT TYPE: ${a.label}`);
+    L.push(`AGREEMENT TYPE: ${ownType.trim() || a.label}${ownType.trim() ? " (own classification)" : ""}`);
     L.push(`PARTIES: ${partyName}`);
     L.push(`VERIFYING BODY: ${verifier}`);
     L.push(`ENFORCEMENT POSTURE: ${RIGOUR[rig].label}`);
@@ -126,31 +126,41 @@ export default function ClauseArchitect() {
     L.push("");
     L.push("PART C · CONTINUITY OF COMMITMENT");
     L.push("");
-    picked.forEach((i, n) => {
+    let n = 0;
+    picked.forEach((i) => {
       const f = FRAGILITIES[i];
       const body = f.clause
         .replace("this instrument", `this instrument between ${partyName}`)
         .replace(/the Independent Verifier/g, verifier);
-      L.push(`Article C.${n + 1} (${f.label})`);
+      n += 1;
+      L.push(`Article C.${n} (${f.label})`);
       L.push(`  ${body}`);
       L.push(`  Commentary: ${f.note}`);
       L.push("");
     });
-    L.push(`Article C.${picked.length + 1} (Independent verification)`);
+    own.forEach((o) => {
+      n += 1;
+      L.push(`Article C.${n} (${o.label})`);
+      L.push(`  ${o.clause || scaffold(o.label, partyName, verifier)}`);
+      L.push(`  Commentary: ${o.note}`);
+      L.push("");
+    });
+    L.push(`Article C.${n + 1} (Independent verification)`);
     L.push(`  ${verifier}, appointed jointly by ${partyName} and not removable by any single Party, shall verify the Articles of this Part. No Party's account of its own compliance shall be treated as self-certifying.`);
     L.push("");
-    L.push(`Article C.${picked.length + 2} (Consequence of non-compliance)`);
+    L.push(`Article C.${n + 2} (Consequence of non-compliance)`);
     L.push(`  ${RIGOUR[rig].article.replace(/the Independent Verifier/g, verifier)}`);
     L.push(`  Commentary: ${RIGOUR[rig].note}`);
     L.push("");
-    L.push(`Article C.${picked.length + 3} (Survival)`);
+    L.push(`Article C.${n + 3} (Survival)`);
     L.push("  This Part shall survive any change in the officeholders who negotiated, signed or conceded it, and may be amended only by the procedure that adopted it.");
     L.push("");
     L.push(`PRECEDENT OF RECORD: ${a.precedent}.`);
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig]);
+  }, [ag, picked, title, parties, office, rig, own, ownType]);
+
 
   return (
     <section className={panel}>
