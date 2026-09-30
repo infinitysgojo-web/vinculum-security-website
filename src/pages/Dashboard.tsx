@@ -265,8 +265,35 @@ export default function Dashboard() {
       </div>
 
       <div className="container py-8">
-        <div className="flex flex-wrap gap-2 mb-8">
-          {DESKS.map((d) => (
+        <div className="mb-8">
+          <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} />
+        </div>
+
+        <div className="mb-6 flex flex-wrap gap-x-6 gap-y-3 border-b border-brass/40 pb-3">
+          {DIVISIONS.map((dv) => {
+            const on = division === dv.id;
+            return (
+              <button
+                key={dv.id}
+                type="button"
+                aria-pressed={on}
+                onClick={() => {
+                  setDivision(dv.id);
+                  const first = DESKS.find((d) => d.division === dv.id);
+                  if (first) setDesk(first.id);
+                }}
+                className={`pb-2 -mb-3 border-b-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors ${
+                  on ? "border-accent text-accent" : "border-transparent text-primary/60 hover:text-accent"
+                }`}
+              >
+                {dv.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-10">
+          {DESKS.filter((d) => d.division === division).map((d) => (
             <button
               key={d.id}
               type="button"
@@ -289,6 +316,12 @@ export default function Dashboard() {
           <h1 className="mt-3 font-serif text-primary text-2xl md:text-3xl">{active.title}</h1>
           <GoldRule className="mt-4 mb-4" />
           <p className="text-sm text-muted-foreground">{active.note}</p>
+          {profile.theatre.trim() && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Active mission: <span className="text-primary">{profile.theatre}</span>
+              {profile.classification ? ` · ${profile.classification}` : ""}
+            </p>
+          )}
         </div>
 
         <BinderContext.Provider value={{ add: addToBinder }}>
@@ -306,6 +339,9 @@ export default function Dashboard() {
             {desk === "legal" && <LitigationWorkbench />}
             {desk === "adversarial" && <AdversarialChamber />}
             {desk === "clauses" && <ClauseArchitect />}
+            {desk === "redliner" && <ClauseRedliner />}
+            {desk === "multiparty" && <MultiPartySequencer />}
+            {desk === "compound" && <CompoundShockTester />}
             {desk === "sentinel" && <SentinelMatrix />}
             {desk === "readiness" && <ReadinessDesk />}
             {desk === "counterpart" && <CounterpartPrompter />}
@@ -314,6 +350,7 @@ export default function Dashboard() {
             {desk === "binder" && (
               <MissionBinder entries={binder} onRemove={(id) => setBinder((p) => p.filter((x) => x.id !== id))} onMove={moveEntry} />
             )}
+
 
           </Suspense>
         </div>
