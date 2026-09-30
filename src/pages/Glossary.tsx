@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 
 import { GLOSSARY, GlossaryCategory, GlossaryEntry } from "@/content/glossary";
+import Etymology from "@/components/Etymology";
 
 const CATEGORY_LABELS: Record<GlossaryCategory | "all", string> = {
   all: "All Terms",
@@ -189,6 +190,7 @@ export default function Glossary() {
             </FadeIn>
           ))}
         </div>
+        <Etymology />
       </div>
     </>
   );

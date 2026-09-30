@@ -8,6 +8,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Logo from "@/components/Logo";
 import CCBadge from "@/components/CCBadge";
+import CiteWork from "@/components/CiteWork";
 
 
 export default function About() {
@@ -153,6 +154,10 @@ export default function About() {
         </FadeIn>
 
         <FadeIn className="max-w-3xl pb-16">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-10">
+            <p className="text-sm text-muted-foreground m-0">Citing the doctrine in your own work?</p>
+            <CiteWork path="/about" />
+          </div>
           <p className="eyebrow">Correspondence and Inquiries</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="border border-brass/40 bg-primary/[0.03] p-6 sm:p-8">

@@ -12,6 +12,7 @@ import CountryOutline from "@/components/CountryOutline";
 import { CASES, DOMAINS, getCase } from "@/content/cases";
 import CaseDossier from "@/components/CaseDossier";
 import DossierDownload from "@/components/DossierDownload";
+import CiteWork from "@/components/CiteWork";
 
 
 export default function CaseDetail() {
@@ -109,7 +110,8 @@ export default function CaseDetail() {
           >
             ← All case studies
           </Link>
-          <div className="flex items-center gap-3 print:hidden">
+          <div className="flex flex-wrap items-center gap-3 print:hidden">
+            <CiteWork part={`Section ${c.ref}, ${c.title}`} path={`/cases/${c.slug}`} />
             <DossierDownload c={c} />
           </div>
         </nav>
