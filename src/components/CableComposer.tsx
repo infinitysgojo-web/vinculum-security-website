@@ -140,6 +140,12 @@ export default function CableComposer() {
   const [ck, setCk] = useState<CableKey>("action");
   const [auto, setAuto] = useState(true);
   const [manual, setManual] = useState(0);
+  const [theater, setTheater] = useState("");
+  const [drafter, setDrafter] = useState("");
+  const [prec, setPrec] = useState(1);
+  const [cav, setCav] = useState(0);
+  const [annex, setAnnex] = useState(false);
+
   const [copied, setCopied] = useState(false);
   const outRef = useRef<HTMLDivElement>(null);
 
