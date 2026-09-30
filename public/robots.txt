@@ -3,106 +3,174 @@
 
 User-agent: Googlebot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Googlebot-Image
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Googlebot-News
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Storebot-Google
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Bingbot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: BingPreview
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Yandex
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: DuckDuckBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Twitterbot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: facebookexternalhit
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: LinkedInBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Slackbot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 # AI / answer-engine crawlers
 User-agent: GPTBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: OAI-SearchBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: ChatGPT-User
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: anthropic-ai
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Claude-Web
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Perplexity-User
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: CCBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Applebot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Applebot-Extended
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Bytespider
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Amazonbot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: MistralAI-User
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: cohere-ai
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: meta-externalagent
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: FacebookBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Diffbot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: YouBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: Timpibot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: DuckAssistBot
 Allow: /
+Disallow: /dashboard
+Disallow: /login
 
 User-agent: *
 Allow: /

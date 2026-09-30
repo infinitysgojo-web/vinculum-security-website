@@ -1,23 +1,28 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
 import SEO from "@/components/SEO";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
-import BondDiagnostic from "@/components/BondDiagnostic";
-import CableComposer from "@/components/CableComposer";
-import PatternMatcher from "@/components/PatternMatcher";
-import AuditBench from "@/components/AuditBench";
-import LitigationWorkbench from "@/components/LitigationWorkbench";
-import DiagnosticMirror from "@/components/DiagnosticMirror";
-import AdversarialChamber from "@/components/AdversarialChamber";
-import ClauseArchitect from "@/components/desk/ClauseArchitect";
-import SentinelMatrix from "@/components/desk/SentinelMatrix";
-import ReadinessDesk from "@/components/desk/ReadinessDesk";
-import CounterpartPrompter from "@/components/desk/CounterpartPrompter";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
+
+// Proprietary desks are split into separate chunks that are only fetched
+// once a valid session exists, so they never ship with the public site.
+const BondDiagnostic = lazy(() => import("@/components/BondDiagnostic"));
+const CableComposer = lazy(() => import("@/components/CableComposer"));
+const PatternMatcher = lazy(() => import("@/components/PatternMatcher"));
+const AuditBench = lazy(() => import("@/components/AuditBench"));
+const LitigationWorkbench = lazy(() => import("@/components/LitigationWorkbench"));
+const DiagnosticMirror = lazy(() => import("@/components/DiagnosticMirror"));
+const AdversarialChamber = lazy(() => import("@/components/AdversarialChamber"));
+const ClauseArchitect = lazy(() => import("@/components/desk/ClauseArchitect"));
+const SentinelMatrix = lazy(() => import("@/components/desk/SentinelMatrix"));
+const ReadinessDesk = lazy(() => import("@/components/desk/ReadinessDesk"));
+const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartPrompter"));
+
+const IDLE_MS = 20 * 60 * 1000;
 
 const DESKS = [
   {
@@ -100,7 +105,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (!s) navigate("/login", { replace: true });
+    });
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setReady(true);
@@ -109,12 +117,31 @@ export default function Dashboard() {
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
-  if (!ready || !session) return null;
-
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     navigate("/login", { replace: true });
-  };
+  }, [navigate]);
+
+  // Idle auto sign-out: an unattended terminal closes itself.
+  const idleRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!session) return;
+    const reset = () => {
+      if (idleRef.current) window.clearTimeout(idleRef.current);
+      idleRef.current = window.setTimeout(() => {
+        void signOut();
+      }, IDLE_MS);
+    };
+    const events = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "visibilitychange"];
+    events.forEach((e) => window.addEventListener(e, reset, { passive: true }));
+    reset();
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, reset));
+      if (idleRef.current) window.clearTimeout(idleRef.current);
+    };
+  }, [session, signOut]);
+
+  if (!ready || !session) return null;
 
   const active = DESKS.find((d) => d.id === desk)!;
 
@@ -174,22 +201,23 @@ export default function Dashboard() {
         </div>
 
         <div className="pb-24">
-          {desk === "briefing" && <CableComposer />}
-          {desk === "diagnostics" && (
-            <div className="space-y-12">
-              <BondDiagnostic />
-              <PatternMatcher />
-            </div>
-          )}
-          {desk === "audit" && <AuditBench parties={PARTIES} />}
-          {desk === "mirror" && <MirrorDesk />}
-          {desk === "legal" && <LitigationWorkbench />}
-          {desk === "adversarial" && <AdversarialChamber />}
-          {desk === "clauses" && <ClauseArchitect />}
-          {desk === "sentinel" && <SentinelMatrix />}
-          {desk === "readiness" && <ReadinessDesk />}
-          {desk === "counterpart" && <CounterpartPrompter />}
-
+          <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
+            {desk === "briefing" && <CableComposer />}
+            {desk === "diagnostics" && (
+              <div className="space-y-12">
+                <BondDiagnostic />
+                <PatternMatcher />
+              </div>
+            )}
+            {desk === "audit" && <AuditBench parties={PARTIES} />}
+            {desk === "mirror" && <MirrorDesk />}
+            {desk === "legal" && <LitigationWorkbench />}
+            {desk === "adversarial" && <AdversarialChamber />}
+            {desk === "clauses" && <ClauseArchitect />}
+            {desk === "sentinel" && <SentinelMatrix />}
+            {desk === "readiness" && <ReadinessDesk />}
+            {desk === "counterpart" && <CounterpartPrompter />}
+          </Suspense>
         </div>
       </div>
     </>
