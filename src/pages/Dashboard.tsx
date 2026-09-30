@@ -10,6 +10,9 @@ import CableComposer from "@/components/CableComposer";
 import PatternMatcher from "@/components/PatternMatcher";
 import AuditBench from "@/components/AuditBench";
 import LitigationWorkbench from "@/components/LitigationWorkbench";
+import DiagnosticMirror from "@/components/DiagnosticMirror";
+import AdversarialChamber from "@/components/AdversarialChamber";
+import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 
 const DESKS = [
