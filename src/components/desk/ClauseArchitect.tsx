@@ -67,6 +67,15 @@ const FRAGILITIES = [
   },
 ] as const;
 
+const MATRIX = [
+  ["Ceasefire bound to the signatories", "Continuity provision binding the offices they hold", "Northern Ireland: institutions survived repeated changes of First Minister."],
+  ["Elite power-sharing between principals", "Intergenerational standing mechanism with binding referral", "Kenya 2008: the Accord held the principals; the youth bond stayed unrepaired."],
+  ["Self-reported compliance by the parties", "Independent verifier no party can appoint or remove", "Colombia: verification carried the accord through a rejected referendum."],
+  ["Consultation measured by meetings held", "Outcome test: which decision changed because of it", "Liberia: Palava Hut hearings mattered where they altered local settlement."],
+  ["Fixed term that expires with the mandate", "Indefinite duration ending only on a verified conclusion test", "Cambodia: a tribunal outlasted attention but not its narrow mandate."],
+  ["Sanction by consensus of the parties", "Automatic suspension of benefits on a finding of breach", "Rwanda: community-level obligation did not wait for the offender's consent."],
+] as const;
+
 export default function ClauseArchitect() {
   const [ag, setAg] = useState(0);
   const [picked, setPicked] = useState<number[]>([0, 3]);
@@ -169,6 +178,30 @@ export default function ClauseArchitect() {
           </div>
         </div>
         <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
+      </div>
+          <div className="mt-10">
+        <span className={label}>Westphalian and relational clauses compared</span>
+        <p className="text-xs text-muted-foreground mb-3">Counter-positions for when an opposing delegation proposes a fragile clause.</p>
+        <div className="overflow-x-auto border border-border bg-background">
+          <table className="w-full min-w-[40rem] text-sm">
+            <thead>
+              <tr className="border-b border-brass/40 text-left">
+                <th className="p-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Conventional clause</th>
+                <th className="p-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">Relational counter-clause</th>
+                <th className="p-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-accent">Record</th>
+              </tr>
+            </thead>
+            <tbody>
+              {MATRIX.map(([a, b, c]) => (
+                <tr key={a} className="border-b border-border last:border-0 align-top">
+                  <td className="p-3 text-foreground/70">{a}</td>
+                  <td className="p-3 font-serif text-base text-primary leading-snug">{b}</td>
+                  <td className="p-3 text-xs text-muted-foreground">{c}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   );
