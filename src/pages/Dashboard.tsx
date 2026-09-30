@@ -176,9 +176,11 @@ const DESKS = [
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
-  const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("briefing");
+  const [division, setDivision] = useState<(typeof DIVISIONS)[number]["id"]>("assess");
+  const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("diagnostics");
   const navigate = useNavigate();
   const [binder, setBinder] = useState<BinderEntry[]>([]);
+  const [profile, setProfile] = useState<MissionProfile>(EMPTY_PROFILE);
   const addToBinder = useCallback((e: BinderEntry) => {
     setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
   }, []);
