@@ -76,6 +76,14 @@ const MATRIX = [
   ["Sanction by consensus of the parties", "Automatic suspension of benefits on a finding of breach", "Rwanda: community-level obligation did not wait for the offender's consent."],
 ] as const;
 
+type Own = { id: string; label: string; clause: string; note: string };
+
+/** Scaffolds a continuity clause from a plain requirement, deterministically. */
+function scaffold(requirement: string, partyName: string, verifier: string) {
+  const r = requirement.trim().replace(/\.$/, "");
+  return `The Parties undertake that ${r.charAt(0).toLowerCase() + r.slice(1)}. This undertaking attaches to the offices held by the signatories and not to their persons, shall bind every successor officeholder without further act, shall be reported upon at intervals not exceeding twelve months, and shall be verified by ${verifier}, which no Party to this instrument may appoint, fund, house or remove. Where ${partyName} cannot identify a decision altered in compliance with this Article across two successive reporting periods, the failure shall be recorded as non-compliance.`;
+}
+
 export default function ClauseArchitect() {
   const [ag, setAg] = useState(0);
   const [picked, setPicked] = useState<number[]>([0, 3]);
@@ -83,9 +91,23 @@ export default function ClauseArchitect() {
   const [parties, setParties] = useState("");
   const [office, setOffice] = useState("");
   const [rig, setRig] = useState(0);
+  // Custom mode: the practitioner's own agreement type and own drafted requirements.
+  const [ownType, setOwnType] = useState("");
+  const [own, setOwn] = useState<Own[]>([]);
+  const [oLabel, setOLabel] = useState("");
+  const [oText, setOText] = useState("");
+  const addOwn = () => {
+    const l = oLabel.trim();
+    if (!l) return;
+    setOwn((p) => [...p, { id: `o${Date.now()}`, label: l, clause: oText.trim(), note: "Own requirement, drafted on the same continuity rule: the office is bound, not the officeholder." }]);
+    setOLabel("");
+    setOText("");
+  };
+  const dropOwn = (id: string) => setOwn((p) => p.filter((x) => x.id !== id));
 
   const toggle = (i: number) =>
     setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort((a, b) => a - b)));
+
 
   const text = useMemo(() => {
     const a = AGREEMENTS[ag];
