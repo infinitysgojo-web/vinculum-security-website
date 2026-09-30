@@ -208,7 +208,43 @@ export default function ClauseArchitect() {
               ))}
             </div>
           </div>
+
+          <div className="border border-brass/40 bg-background p-4">
+            <span className={label}>Your own agreement type (optional)</span>
+            <input className={field} value={ownType} onChange={(e) => setOwnType(e.target.value)} placeholder="e.g. Inter-county water and pasture compact" />
+            <span className={`${label} mt-5`}>Your own clause requirement</span>
+            <p className="text-xs text-muted-foreground mb-3">
+              Name what the clause must achieve. Leave the drafting box empty and the requirement is
+              written up on the same continuity rule: the office is bound, not the officeholder.
+            </p>
+            <input
+              className={`${field} mb-2`}
+              value={oLabel}
+              onChange={(e) => setOLabel(e.target.value)}
+              placeholder="e.g. Grazing access is reviewed with both councils every dry season"
+            />
+            <textarea
+              className={`${field} min-h-24`}
+              value={oText}
+              onChange={(e) => setOText(e.target.value)}
+              placeholder="Optional: paste or type your own operative wording instead."
+            />
+            <button type="button" onClick={addOwn} disabled={!oLabel.trim()} className="mt-2 min-h-11 border border-brass/50 px-4 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">
+              Add article
+            </button>
+            {own.length > 0 && (
+              <ul className="mt-4 space-y-2">
+                {own.map((o) => (
+                  <li key={o.id} className="flex items-start gap-3 text-sm border-t border-border pt-2">
+                    <span className="flex-1 text-foreground/85">{o.label}</span>
+                    <button type="button" onClick={() => dropOwn(o.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
         <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
       </div>
           <div className="mt-10">
