@@ -21,6 +21,9 @@ const ClauseArchitect = lazy(() => import("@/components/desk/ClauseArchitect"));
 const SentinelMatrix = lazy(() => import("@/components/desk/SentinelMatrix"));
 const ReadinessDesk = lazy(() => import("@/components/desk/ReadinessDesk"));
 const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartPrompter"));
+const SuccessionSimulator = lazy(() => import("@/components/desk/SuccessionSimulator"));
+const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
+
 
 const IDLE_MS = 20 * 60 * 1000;
 
