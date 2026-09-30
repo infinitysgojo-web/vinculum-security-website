@@ -195,12 +195,51 @@ export default function SentinelMatrix() {
                     <span className="text-foreground/85">{s.text}</span>
                   </label>
                 ))}
+                {custom.filter((c) => c.bond === b).map((c) => (
+                  <div key={c.id} className="flex gap-3 items-start text-sm">
+                    <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={cOn.includes(c.id)} onChange={() => toggleCustom(c.id)} />
+                    <span className="text-foreground/85 flex-1">
+                      {c.text}
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-accent ml-2">own · w{c.w}</span>
+                    </span>
+                    <button type="button" onClick={() => dropCustom(c.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
+
+          <div className="border border-brass/40 bg-background p-4">
+            <span className={label}>Add your own warning indicator</span>
+            <p className="text-xs text-muted-foreground mb-3">
+              For a theater the standard tripwires do not cover. Your indicator is weighted alongside them
+              in the same arithmetic, and it stays in this browser.
+            </p>
+            <input
+              className={`${field} text-base sm:text-sm min-h-11 mb-2`}
+              value={cText}
+              onChange={(e) => setCText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } }}
+              placeholder="e.g. The county peace committee has not met for two quarters."
+            />
+            <div className="grid gap-2 sm:grid-cols-3">
+              <select className={`${field} text-base sm:text-sm min-h-11`} value={cBond} onChange={(e) => setCBond(Number(e.target.value))} aria-label="Bond for the custom indicator">
+                {DOMAINS.map((d, i) => <option key={d} value={i}>{d}</option>)}
+              </select>
+              <select className={`${field} text-base sm:text-sm min-h-11`} value={cW} onChange={(e) => setCW(Number(e.target.value))} aria-label="Severity weight">
+                <option value={1}>Weight 1, minor</option>
+                <option value={2}>Weight 2, material</option>
+                <option value={3}>Weight 3, severe</option>
+              </select>
+              <button type="button" onClick={addCustom} disabled={!cText.trim()} className="min-h-11 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">
+                Add indicator
+              </button>
+            </div>
+          </div>
         </div>
         <div className="space-y-4">
           <div className="border border-border bg-background p-4">
+
             <p className={label}>Relational rupture index</p>
             <p className="font-serif text-4xl text-primary">{r.pct}% <span className="text-lg text-accent">{r.b.name}</span></p>
             <p className="text-xs text-muted-foreground mt-2">{on.length} of {SIGNS.length} tripwires recorded. {TREND[trend].note}</p>
