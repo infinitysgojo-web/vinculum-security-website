@@ -131,7 +131,7 @@ export default function SentinelMatrix() {
         ? `Compound exposure: ${traps.map((t) => t.name).join(" together with ")}. Traps in combination fail faster than the sum of their parts; sequence the counter-measures rather than running them in parallel.`
         : "";
     return { byBond, pct, b: band(pct), traps, compound };
-  }, [on, trend]);
+  }, [on, trend, custom, cOn]);
 
   const text = useMemo(() => {
     const L = [
@@ -142,14 +142,17 @@ export default function SentinelMatrix() {
       `DATE: ${todayStamp()}`,
       `OBSERVATION TREND: ${TREND[trend].label}`,
       `RELATIONAL RUPTURE INDEX: ${r.pct}% (${r.b.name.toUpperCase()})`,
-      `SIGNS RECORDED: ${on.length} of ${SIGNS.length}`,
+      `SIGNS RECORDED: ${on.length + cOn.length} of ${SIGNS.length + custom.length}`,
+      `CUSTOM INDICATORS DEFINED: ${custom.length}`,
       "",
     ];
     L.push("BOND STRAIN");
     DOMAINS.forEach((d, i) => L.push(`  ${d}: ${r.byBond[i]}%`));
     L.push("", "SIGNS OBSERVED");
-    if (!on.length) L.push("  None recorded.");
+    if (!on.length && !cOn.length) L.push("  None recorded.");
     [...on].sort((a, b) => a - b).forEach((i) => L.push(`  - [${DOMAINS[SIGNS[i].bond]}] ${SIGNS[i].text}`));
+    custom.filter((c) => cOn.includes(c.id)).forEach((c) => L.push(`  - [${DOMAINS[c.bond]}] ${c.text} (own indicator, weight ${c.w})`));
+
     L.push("", "LATENT TRAPS");
     if (!r.traps.length) L.push("  No trap pattern indicated.");
     r.traps.forEach((t) => {
@@ -160,7 +163,7 @@ export default function SentinelMatrix() {
     if (r.compound) L.push("", r.compound);
     L.push("", `RUPTURE VELOCITY: ${TREND[trend].note}`, `RECOMMENDED POSTURE: ${r.b.advice}`, "", "Rule-based reading, not a prediction. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [r, on, trend, theater]);
+  }, [r, on, trend, theater, custom, cOn]);
 
   return (
     <section className={panel}>
