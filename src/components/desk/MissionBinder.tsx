@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
-import DeskOutput, { field, label, panel, todayStamp, type BinderEntry } from "./DeskOutput";
+import DeskOutput, { BinderContext, field, label, panel, todayStamp, type BinderEntry } from "./DeskOutput";
 
 /**
  * Consolidated Mission Binder. Compiles documents added from any desk into one
@@ -72,7 +72,9 @@ export default function MissionBinder({
             )}
           </div>
         </div>
-        <DeskOutput text={text} fileName="Vinculum-Mission-Binder" />
+        <BinderContext.Provider value={null}>
+          <DeskOutput text={text} fileName="Vinculum-Mission-Binder" />
+        </BinderContext.Provider>
       </div>
     </section>
   );
