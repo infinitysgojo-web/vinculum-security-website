@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import SEO from "@/components/SEO";
 
+const MAX_ATTEMPTS = 3;
+const LOCK_SECONDS = 60;
+const MIN_FILL_MS = 1200;
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [trap, setTrap] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const [lockLeft, setLockLeft] = useState(0);
+  const mountedAt = useRef(Date.now());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,8 +26,22 @@ export default function Login() {
     });
   }, [navigate]);
 
+  useEffect(() => {
+    if (lockLeft <= 0) return;
+    const t = setTimeout(() => setLockLeft((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [lockLeft]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (busy || lockLeft > 0) return;
+
+    // Silent bot screens: hidden decoy field and impossibly fast submission.
+    if (trap.trim() !== "" || Date.now() - mountedAt.current < MIN_FILL_MS) {
+      setError("Those credentials were not recognised. Please check and try again.");
+      return;
+    }
+
     setBusy(true);
     setError(null);
     const { error } = await supabase.auth.signInWithPassword({
@@ -27,12 +49,25 @@ export default function Login() {
       password,
     });
     setBusy(false);
+
     if (error) {
-      setError("Those credentials were not recognised. Please check and try again.");
+      const next = attempts + 1;
+      setAttempts(next);
+      if (next >= MAX_ATTEMPTS) {
+        setAttempts(0);
+        setLockLeft(LOCK_SECONDS);
+        setError("Too many failed attempts. This terminal is held for one minute.");
+      } else {
+        setError("Those credentials were not recognised. Please check and try again.");
+      }
       return;
     }
+
+    setAttempts(0);
     navigate("/dashboard", { replace: true });
   };
+
+  const locked = lockLeft > 0;
 
   return (
     <>
@@ -50,7 +85,20 @@ export default function Login() {
             Access is by credential only. The working desks are not open to the public record.
           </p>
 
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={submit} className="space-y-4" autoComplete="off">
+            <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
+              <label htmlFor="company-reference">Company reference</label>
+              <input
+                id="company-reference"
+                name="company-reference"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={trap}
+                onChange={(e) => setTrap(e.target.value)}
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block">
                 Email
@@ -62,7 +110,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-input bg-background px-3 py-2.5 text-sm"
+                className="w-full border border-input bg-background px-3 py-2.5 text-base sm:text-sm"
               />
             </div>
             <div>
@@ -76,18 +124,27 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-input bg-background px-3 py-2.5 text-sm"
+                className="w-full border border-input bg-background px-3 py-2.5 text-base sm:text-sm"
               />
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
+            {locked && (
+              <p className="text-xs text-muted-foreground">
+                Sign-in reopens in {lockLeft} second{lockLeft === 1 ? "" : "s"}.
+              </p>
+            )}
             <button
               type="submit"
-              disabled={busy}
+              disabled={busy || locked}
               className="w-full border border-accent/60 px-4 py-3 text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-60"
             >
-              {busy ? "Verifying…" : "Enter the dashboard"}
+              {locked ? `Held · ${lockLeft}s` : busy ? "Verifying…" : "Enter the dashboard"}
             </button>
           </form>
+
+          <p className="mt-6 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+            Unauthorised access is prohibited. Sessions close after 20 minutes idle.
+          </p>
         </div>
       </div>
     </>
