@@ -14,6 +14,9 @@ import About from "./pages/About";
 import Glossary from "./pages/Glossary";
 import Dispatches from "./pages/Dispatches";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import { Toaster } from "@/components/ui/sonner";
 
 const SCROLL_KEY = "vs:scroll";
 
@@ -75,12 +78,14 @@ function ScrollMemory() {
 
 export default function App() {
   const [loading, setLoading] = useState(true);
+  const { pathname } = useLocation();
+  const portal = pathname === "/login" || pathname.startsWith("/dashboard");
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      {loading && <LoadingScreen onDone={() => setLoading(false)} />}
+      {loading && !portal && <LoadingScreen onDone={() => setLoading(false)} />}
       <ScrollMemory />
-      <SiteHeader />
+      {!portal && <SiteHeader />}
       <main className="flex-1" role="main">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -93,10 +98,13 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/dispatches" element={<Dispatches />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <SiteFooter />
+      {!portal && <SiteFooter />}
+      <Toaster position="bottom-right" />
     </div>
   );
 }

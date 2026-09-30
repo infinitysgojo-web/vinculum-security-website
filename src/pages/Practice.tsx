@@ -7,9 +7,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
-import BondDiagnostic from "@/components/BondDiagnostic";
 import FieldLexicon from "@/components/FieldLexicon";
-import CableComposer from "@/components/CableComposer";
 
 const PRINCIPLES = [
   {
@@ -33,33 +31,6 @@ const PRINCIPLES = [
     line: "Durable diplomatic outcomes are designed to survive a change in the people who negotiated them, not dependent on the continued goodwill or tenure of any single official.",
   },
 ];
-
-/** The §3B Assessment Bench, described as a free, client-side working tool. */
-const benchLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "@id": `${SITE_URL}/practice#bench`,
-  name: "Vinculum Relational Bond Diagnostic Bench",
-  url: `${SITE_URL}/practice#bench`,
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Any modern web browser",
-  browserRequirements:
-    "Requires JavaScript. Runs entirely in the browser; nothing entered is stored or transmitted.",
-  description:
-    "An interactive diagnostic bench that scores the four Vinculum bonds, interpersonal, communal, intergenerational, and institutional-relational, on a one to five scale, places the result on the Vinculum Continuum (Fractured, Degraded, Contested, Stabilised, Reconstituted), names the most exposed bond with its practice direction, and matches the profile to the nearest documented case study.",
-  author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
-  isPartOf: { "@id": `${SITE_URL}/practice` },
-  isAccessibleForFree: true,
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-  featureList: [
-    "Four-bond scoring on the Vinculum Continuum",
-    "Boundary rules: children are a protected party and are never scored",
-    "Boundary rule: a government never assesses its own institutional-relational bond",
-    "Radar profile of bond integrity",
-    "Nearest documented case match",
-    "Copyable assessment summary for a briefing note",
-  ],
-};
 
 /** The §9A Field Lexicon, described as practitioner guidance. */
 const lexiconLd = {
@@ -102,34 +73,6 @@ const lexiconLd = {
   ],
 };
 
-/** The §12B Operational Briefing Desk, a deterministic memorandum compiler. */
-const composerLd = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "@id": `${SITE_URL}/practice#composer`,
-  name: "Vinculum Operational Briefing Desk",
-  url: `${SITE_URL}/practice#composer`,
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Any modern web browser",
-  browserRequirements:
-    "Requires JavaScript. Runs entirely in the browser; nothing entered is stored or transmitted.",
-  description:
-    "A deterministic chancellery memorandum compiler. The practitioner selects a documented case, the receiving office, the instrument (situation report, action memorandum, or interlocutor brief), and the strained bond; the desk assembles a formatted diplomatic memorandum from the published case record, the §9A scripted inquiries, the §12 practice protocols, and the §15 failure modes. No model or prediction is involved.",
-  author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
-  isPartOf: { "@id": `${SITE_URL}/practice` },
-  isAccessibleForFree: true,
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-  featureList: [
-    "Eight documented cases as sources of record",
-    "Four receiving offices: national security council, special envoy, humanitarian director, parliamentary oversight",
-    "Three instruments: situation report, action memorandum, interlocutor brief",
-    "Relational vulnerability ledger with Vinculum Continuum banding",
-    "Scripted §9A inquiry for the strained bond",
-    "§12 safeguards and §15 failure-mode warning",
-    "Copy to clipboard and plain-text export",
-  ],
-};
-
 export default function Practice() {
   return (
     <>
@@ -149,9 +92,7 @@ export default function Practice() {
               "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
             section: "Companion Handbook — Practice",
           }),
-          benchLd,
           lexiconLd,
-          composerLd,
         ]}
       />
       <ReadingProgress />
@@ -226,9 +167,6 @@ export default function Practice() {
           </div>
         </FadeIn>
 
-        <div className="mb-16">
-          <BondDiagnostic />
-        </div>
 
         <NumeralDivider n="IV" label="Practice Principles" />
 
@@ -260,14 +198,6 @@ export default function Practice() {
           </FadeIn>
         </section>
 
-        <section id="composer" className="scroll-mt-24 mb-16">
-          <FadeIn>
-            <p className="eyebrow">§12B · The Operational Briefing Desk</p>
-            <h2 className="mt-3 font-serif text-primary">Compose a chancellery memorandum</h2>
-            <GoldRule className="mt-4 mb-6" />
-            <CableComposer />
-          </FadeIn>
-        </section>
 
         <FadeIn className="mb-16">
           <p className="eyebrow">Part IV · Practice Under Constraint</p>

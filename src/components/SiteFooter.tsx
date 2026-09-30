@@ -26,6 +26,8 @@ export default function SiteFooter() {
           <span className="text-accent whitespace-nowrap">A Doctrine of Relational Security</span>
           <span className="text-brass hidden sm:inline">·</span>
           <Link to="/glossary" className="whitespace-nowrap hover:text-accent transition-colors">Glossary</Link>
+          <span className="text-brass hidden sm:inline">·</span>
+          <Link to="/login" rel="nofollow" className="whitespace-nowrap text-primary/60 hover:text-accent transition-colors">Practitioner Portal</Link>
         </div>
         <div className="flex items-center gap-2" aria-hidden>
           <span className="w-2 h-2 rounded-full bg-accent" />
