@@ -4,11 +4,16 @@ import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
-  { id: "gov", label: "Government official", caution: "Treat their account of their own institution as a hypothesis, never a conclusion." },
-  { id: "armed", label: "Armed group or ex-combatant leader", caution: "Do not trade recognition for access; standing is tested, not conferred." },
-  { id: "civil", label: "Civil society representative", caution: "Ask who authorised them, and verify with the community separately." },
-  { id: "elder", label: "Traditional or religious elder", caution: "Test whether authority is actually transferred to the next generation." },
-  { id: "youth", label: "Youth delegate", caution: "Never tokenise; ask what changed because they spoke." },
+  { id: "gov", label: "Government official", caution: "Treat their account of their own institution as a hypothesis, never a conclusion.", pivot: "If they answer with a policy document, ask which decision that document changed last year." },
+  { id: "armed", label: "Armed group or ex-combatant leader", caution: "Do not trade recognition for access; standing is tested, not conferred.", pivot: "If they claim to speak for the whole movement, ask who would dispute that, and whether you may ask them." },
+  { id: "civil", label: "Civil society representative", caution: "Ask who authorised them, and verify with the community separately.", pivot: "If they speak in the language of donors, ask how they would put the same point to their own village." },
+  { id: "elder", label: "Traditional or religious elder", caution: "Test whether authority is actually transferred to the next generation.", pivot: "If they invoke custom as settled, ask who under thirty agrees with that reading and where they said so." },
+  { id: "youth", label: "Youth delegate", caution: "Never tokenise; ask what changed because they spoke.", pivot: "If they defer to the elders in the room, offer a written channel and hold the question open." },
+  { id: "spoiler", label: "Spoiler or paramilitary commander", caution: "Assume every concession is a probe; concede nothing verbally that is not already written.", pivot: "If they escalate, restate the cost to their own constituency and end the session on time." },
+  { id: "guarantor", label: "Regional guarantor envoy", caution: "Their interest is regional stability, which is not the same as this settlement holding.", pivot: "If they promise pressure, ask what instrument carries it and who signs it." },
+  { id: "donor", label: "Donor or international financier", caution: "Funding horizons shorter than the settlement create the Generational Cliff.", pivot: "If the horizon is one cycle, ask what survives the cycle and who owns it afterwards." },
+  { id: "bureau", label: "Legalistic bureaucrat", caution: "Procedure is being offered in place of outcome; apply the outcome test every time.", pivot: "If they cite process compliance, ask for one altered decision from the last two reporting periods." },
+  { id: "media", label: "Media or information broker", caution: "Nothing said is off the record; assume publication and speak to the constituency, not the reporter.", pivot: "If they seek a quote on a concession, refer them to the written record and decline the elaboration." },
 ] as const;
 
 const PHASES = ["Opening", "Probing", "Commitment", "Close"] as const;
@@ -40,6 +45,14 @@ const SCRIPT: Record<number, [string, string, string, string]> = {
   ],
 };
 
+const AUDIT = [
+  "Did any answer name an office rather than a person?",
+  "Was a single altered decision identified, with a date?",
+  "Did the counterpart accept independent verification without conditions?",
+  "Was anything conceded verbally that is not yet written?",
+  "Does a named successor exist for every commitment recorded?",
+];
+
 export default function CounterpartPrompter() {
   const [cp, setCp] = useState(0);
   const [bond, setBond] = useState(0);
@@ -47,9 +60,12 @@ export default function CounterpartPrompter() {
 
   const text = useMemo(() => {
     const c = COUNTERPARTS[cp];
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${c.label}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${c.caution}`, ""];
+    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${c.label}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${c.caution}`, `TACTICAL PIVOT: ${c.pivot}`, ""];
     PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${SCRIPT[bond][i]}"`, ""));
-    L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "", "Kenya Copyright Board Registration No. RZ100967.");
+    L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
+    L.push("POST-MEETING AUDIT LEDGER");
+    AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
+    L.push("", "Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
   }, [cp, bond]);
 
@@ -84,6 +100,10 @@ export default function CounterpartPrompter() {
             <blockquote className="border-l-2 border-accent bg-background p-4 sm:p-5 font-serif text-lg sm:text-xl md:text-2xl text-primary leading-snug break-words">
               "{SCRIPT[bond][phase]}"
             </blockquote>
+            <div className="border border-brass/40 bg-background p-4 mt-3">
+              <p className={label}>If they deflect or attack</p>
+              <p className="text-sm text-foreground/85 break-words">{COUNTERPARTS[cp].pivot}</p>
+            </div>
             <div className="flex justify-between items-center gap-3 mt-3">
               <button type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</button>
               <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{phase + 1} / 4</span>

@@ -21,6 +21,9 @@ const ClauseArchitect = lazy(() => import("@/components/desk/ClauseArchitect"));
 const SentinelMatrix = lazy(() => import("@/components/desk/SentinelMatrix"));
 const ReadinessDesk = lazy(() => import("@/components/desk/ReadinessDesk"));
 const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartPrompter"));
+const SuccessionSimulator = lazy(() => import("@/components/desk/SuccessionSimulator"));
+const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
+
 
 const IDLE_MS = 20 * 60 * 1000;
 
@@ -95,7 +98,22 @@ const DESKS = [
     title: "Counterpart protocol prompter",
     note: "Walk a meeting phase by phase with the scripted question for each counterpart and bond.",
   },
+  {
+    id: "succession",
+    label: "Succession Simulator",
+    eyebrow: "§12C · Stress Test",
+    title: "Treaty stress and succession simulator",
+    note: "Test a drafted instrument against leadership change, funding loss and capture, and read which clause breaks first.",
+  },
+  {
+    id: "tracks",
+    label: "Track Sequencing",
+    eyebrow: "§9B · Sequencing",
+    title: "Track I and Track II sequencing",
+    note: "Keep the principals' track and the communal track in step, and see the gap before it becomes an elite pact.",
+  },
 ] as const;
+
 
 
 export default function Dashboard() {
@@ -217,6 +235,9 @@ export default function Dashboard() {
             {desk === "sentinel" && <SentinelMatrix />}
             {desk === "readiness" && <ReadinessDesk />}
             {desk === "counterpart" && <CounterpartPrompter />}
+            {desk === "succession" && <SuccessionSimulator />}
+            {desk === "tracks" && <TrackSequencer />}
+
           </Suspense>
         </div>
       </div>

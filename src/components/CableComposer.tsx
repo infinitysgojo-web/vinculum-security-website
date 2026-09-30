@@ -114,8 +114,17 @@ const FAILURE: Record<number, { name: string; sign: string; recover: string }> =
   },
 };
 
+const PRECEDENCE = ["IMMEDIATE", "PRIORITY", "ROUTINE"] as const;
+
+const CAVEATS = [
+  { id: "open", label: "No caveat", line: "NONE. Releasable within the receiving office." },
+  { id: "verifier", label: "Releasable to verifiers only", line: "RELEASABLE TO INDEPENDENT VERIFIERS ONLY. Not for party circulation." },
+  { id: "eyes", label: "Addressee eyes only", line: "ADDRESSEE EYES ONLY. Onward transmission requires the originating desk's consent." },
+] as const;
+
 const BAND = (n: number) =>
   n <= 1 ? "Fractured" : n === 2 ? "Degraded" : n === 3 ? "Contested" : n === 4 ? "Stabilised" : "Reconstituted";
+
 
 function stamp(d: Date) {
   return d
@@ -131,6 +140,12 @@ export default function CableComposer() {
   const [ck, setCk] = useState<CableKey>("action");
   const [auto, setAuto] = useState(true);
   const [manual, setManual] = useState(0);
+  const [theater, setTheater] = useState("");
+  const [drafter, setDrafter] = useState("");
+  const [prec, setPrec] = useState(1);
+  const [cav, setCav] = useState(0);
+  const [annex, setAnnex] = useState(false);
+
   const [copied, setCopied] = useState(false);
   const outRef = useRef<HTMLDivElement>(null);
 
@@ -156,14 +171,20 @@ export default function CableComposer() {
     ).join("\n");
     const f = FAILURE[bi];
     const s = SCRIPTS[bi];
+    const th = theater.trim();
 
     return `CLASSIFICATION: UNRESTRICTED / WORKING DRAFT
 ${cab.tag}
+PRECEDENCE: ${PRECEDENCE[prec]}
+HANDLING CAVEAT: ${CAVEATS[cav].line}
 REFERENCE: ${ref}
 DATE: ${stamp(today)}
 ORIGINATING DESK: Vinculum Security, Applied Case Engagement, Section ${c.ref}
+DRAFTING OFFICER: ${drafter.trim() || "Not stated"}
 RECIPIENT: ${r.office}
-SUBJECT: ${c.shortTitle}. Relational assessment of the ${DOMAINS[bi].toLowerCase()} bond, with required safeguards.
+DISTRIBUTION: ${r.label}; originating desk file copy${cav === 0 ? "; implementation registry" : ""}
+${th ? `ACTIVE THEATER: ${th}\n` : ""}SUBJECT: ${c.shortTitle}. Relational assessment of the ${DOMAINS[bi].toLowerCase()} bond, with required safeguards${th ? `, read against ${th}` : ""}.
+
 
 PURPOSE
 ${cab.purpose}
@@ -197,11 +218,19 @@ ${c.sources.map((x) => `   · ${x}`).join("\n")}
    · Vinculum Diplomacy: The Practitioner Handbook, Final Edition, Sections 9A, 12 and 15, by ${AUTHOR_NAME}.
    · Canonical record: ${SITE_URL}/cases/${c.slug}
 
+${annex ? `
+ANNEX A · COMPARATIVE PRECEDENT
+Cases of record carrying the same most-exposed bond (${DOMAINS[bi]}):
+${CASES.filter((x) => x.slug !== c.slug && x.scores.indexOf(Math.min(...x.scores)) === bi)
+  .map((x) => `   · ${x.shortTitle}, Section ${x.ref}. ${x.takeaway}`)
+  .join("\n") || "   · No other case of record carries this bond as its most exposed."}
+` : ""}
 Compiled from the published record. No part of this memorandum is machine-generated
 or predictive; every statement above is drawn verbatim from the case file and handbook.
 Kenya Copyright Board Registration No. RZ100967.
 END OF ${cab.tag}`;
-  }, [c, r, cab, bi, today]);
+  }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex]);
+
 
   const copy = async () => {
     try {
@@ -269,8 +298,38 @@ END OF ${cab.tag}`;
           </select>
         </label>
 
-        <div>
+        <label className="block">
+          <span className={lab}>Active theater (optional)</span>
+          <input className={`${field} mt-2`} value={theater} onChange={(e) => setTheater(e.target.value)} placeholder="e.g. Northern Rift corridor, Q3 review" />
+        </label>
+
+        <label className="block">
+          <span className={lab}>Drafting officer (optional)</span>
+          <input className={`${field} mt-2`} value={drafter} onChange={(e) => setDrafter(e.target.value)} placeholder="Name and desk" />
+        </label>
+
+        <label className="block">
+          <span className={lab}>Precedence</span>
+          <select className={`${field} mt-2`} value={prec} onChange={(e) => setPrec(Number(e.target.value))}>
+            {PRECEDENCE.map((p, i) => <option key={p} value={i}>{p}</option>)}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className={lab}>Handling caveat</span>
+          <select className={`${field} mt-2`} value={cav} onChange={(e) => setCav(Number(e.target.value))}>
+            {CAVEATS.map((x, i) => <option key={x.id} value={i}>{x.label}</option>)}
+          </select>
+        </label>
+
+        <label className="flex items-start gap-3 md:col-span-2 text-sm cursor-pointer">
+          <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={annex} onChange={(e) => setAnnex(e.target.checked)} />
+          <span className="text-foreground/85">Append Annex A, comparative precedent from cases sharing the same most exposed bond.</span>
+        </label>
+
+        <div className="md:col-span-2">
           <span className={lab}>Point of strain</span>
+
           <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
