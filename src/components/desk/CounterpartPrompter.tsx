@@ -58,16 +58,42 @@ export default function CounterpartPrompter() {
   const [bond, setBond] = useState(0);
   const [phase, setPhase] = useState(0);
 
+  // Custom mode: define a counterpart the ten archetypes do not cover,
+  // and override any scripted question with your own wording.
+  const [customOn, setCustomOn] = useState(false);
+  const [cLabel, setCLabel] = useState("");
+  const [cCaution, setCCaution] = useState("");
+  const [cPivot, setCPivot] = useState("");
+  const [cQ, setCQ] = useState<[string, string, string, string]>(["", "", "", ""]);
+  const setQ = (i: number, v: string) =>
+    setCQ((p) => p.map((x, j) => (j === i ? v : x)) as [string, string, string, string]);
+
+  const active = useMemo(() => {
+    const base = COUNTERPARTS[cp];
+    if (!customOn) return { label: base.label, caution: base.caution, pivot: base.pivot, custom: false };
+    return {
+      label: cLabel.trim() || "Counterpart defined by the drafting officer",
+      caution: cCaution.trim() || base.caution,
+      pivot: cPivot.trim() || base.pivot,
+      custom: true,
+    };
+  }, [cp, customOn, cLabel, cCaution, cPivot]);
+
+  const questions = useMemo(
+    () => SCRIPT[bond].map((q, i) => (customOn && cQ[i].trim() ? cQ[i].trim() : q)) as [string, string, string, string],
+    [bond, customOn, cQ]
+  );
+
   const text = useMemo(() => {
-    const c = COUNTERPARTS[cp];
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${c.label}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${c.caution}`, `TACTICAL PIVOT: ${c.pivot}`, ""];
-    PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${SCRIPT[bond][i]}"`, ""));
+    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
+    PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${questions[i]}"`, ""));
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
     L.push("", "Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [cp, bond]);
+  }, [active, bond, questions]);
+
 
   return (
     <section className={panel}>
