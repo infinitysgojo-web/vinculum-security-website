@@ -105,7 +105,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (!s) navigate("/login", { replace: true });
+    });
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setReady(true);
@@ -114,12 +117,31 @@ export default function Dashboard() {
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
-  if (!ready || !session) return null;
-
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     navigate("/login", { replace: true });
-  };
+  }, [navigate]);
+
+  // Idle auto sign-out: an unattended terminal closes itself.
+  const idleRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (!session) return;
+    const reset = () => {
+      if (idleRef.current) window.clearTimeout(idleRef.current);
+      idleRef.current = window.setTimeout(() => {
+        void signOut();
+      }, IDLE_MS);
+    };
+    const events = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "visibilitychange"];
+    events.forEach((e) => window.addEventListener(e, reset, { passive: true }));
+    reset();
+    return () => {
+      events.forEach((e) => window.removeEventListener(e, reset));
+      if (idleRef.current) window.clearTimeout(idleRef.current);
+    };
+  }, [session, signOut]);
+
+  if (!ready || !session) return null;
 
   const active = DESKS.find((d) => d.id === desk)!;
 
