@@ -38,13 +38,28 @@ const DESKS = [
     note: "Review one affected party at a time before an assessment is treated as ready for use.",
   },
   {
+    id: "mirror",
+    label: "Comparative Mirror",
+    eyebrow: "VII · Cross-Theatre",
+    title: "The cross-theatre diagnostic mirror",
+    note: "Select two or three documented theatres and read them against one rubric.",
+  },
+  {
     id: "legal",
     label: "Legal Desk",
     eyebrow: "§14 · Litigation",
     title: "Litigation preparation",
     note: "Compile a preparation checklist for a new matter from the doctrine's evidentiary and continuity rules.",
   },
+  {
+    id: "adversarial",
+    label: "Adversarial Chamber",
+    eyebrow: "Section X · Review",
+    title: "Tested by its critics",
+    note: "Rehearse the standing objections and the answers of record before facing them in a room.",
+  },
 ] as const;
+
 
 export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
