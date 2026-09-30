@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SEO from "@/components/SEO";
 import { SITE_URL, personLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
@@ -10,6 +11,7 @@ import CCBadge from "@/components/CCBadge";
 
 
 export default function About() {
+  const [copied, setCopied] = useState(false);
   return (
     <>
       <SEO
@@ -148,6 +150,36 @@ export default function About() {
             Cambridge Open Engage, SSRN, ResearchGate, and the author’s portfolio, alongside Instagram, coming soon,
             for posts on the doctrine.
           </p>
+        </FadeIn>
+
+        <FadeIn className="max-w-3xl pb-16">
+          <p className="eyebrow">Correspondence and Inquiries</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="border border-brass/40 bg-primary/[0.03] p-6 sm:p-8">
+            <p className="text-sm text-muted-foreground leading-relaxed m-0">
+              Correspondence is welcome on academic citation and review, policy and advisory engagements, curriculum
+              use, speaking invitations, and applied use of the doctrine in field or treaty settings.
+            </p>
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-3">
+              <a
+                href="mailto:vinculumsecurity@gmail.com"
+                className="font-serif text-xl sm:text-2xl text-primary hover:text-accent transition-colors break-all"
+              >
+                vinculumsecurity@gmail.com
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText("vinculumsecurity@gmail.com");
+                  setCopied(true);
+                  window.setTimeout(() => setCopied(false), 2000);
+                }}
+                className="self-start sm:ml-auto shrink-0 min-h-11 px-4 border border-brass/60 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:bg-brass/10 transition-colors"
+              >
+                {copied ? "Copied" : "Copy address"}
+              </button>
+            </div>
+          </div>
         </FadeIn>
 
       </div>
