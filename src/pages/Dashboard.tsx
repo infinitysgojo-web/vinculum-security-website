@@ -98,7 +98,22 @@ const DESKS = [
     title: "Counterpart protocol prompter",
     note: "Walk a meeting phase by phase with the scripted question for each counterpart and bond.",
   },
+  {
+    id: "succession",
+    label: "Succession Simulator",
+    eyebrow: "§12C · Stress Test",
+    title: "Treaty stress and succession simulator",
+    note: "Test a drafted instrument against leadership change, funding loss and capture, and read which clause breaks first.",
+  },
+  {
+    id: "tracks",
+    label: "Track Sequencing",
+    eyebrow: "§9B · Sequencing",
+    title: "Track I and Track II sequencing",
+    note: "Keep the principals' track and the communal track in step, and see the gap before it becomes an elite pact.",
+  },
 ] as const;
+
 
 
 export default function Dashboard() {
