@@ -7,6 +7,25 @@ const AGREEMENTS = [
   { id: "ceasefire", label: "Inter-communal ceasefire and disengagement", party: "the Signatory Communities", precedent: "Liberia (2003 Accra Agreement)" },
   { id: "border", label: "Cross-border or resource protocol", party: "the Contracting States", precedent: "Tuvalu and Kiribati (climate mobility and statehood)" },
   { id: "transition", label: "Civil-military transition compact", party: "the Transitional Authorities", precedent: "Colombia (2016 Final Agreement) and Cambodia (1991 Paris Accords)" },
+  { id: "maritime", label: "Maritime and resource boundary protocol", party: "the Coastal States Parties", precedent: "Tuvalu and Kiribati (maritime baselines and statehood permanence)" },
+  { id: "demob", label: "Ceasefire and demobilisation compact", party: "the Armed Parties and the State", precedent: "Liberia (2003 disarmament sequencing) and Colombia (2016 laying down of arms)" },
+  { id: "charter", label: "Constitutional interim charter", party: "the Constituent Parties", precedent: "South Africa (1993 Interim Constitution) and Kenya (2008 Agenda Four)" },
+  { id: "reparations", label: "Post-conflict reparations treaty", party: "the State and the Represented Communities", precedent: "Rwanda (Gacaca and reparation architecture) and Cambodia (victim participation)" },
+] as const;
+
+const RIGOUR = [
+  {
+    id: "strict",
+    label: "Strict enforcement",
+    article: "Any finding of non-compliance by the Independent Verifier shall take effect automatically upon publication, without further decision of the Parties, and shall suspend the benefits enumerated in the Schedule until the finding is discharged by the Verifier.",
+    note: "Automatic effect removes the veto a non-compliant Party would otherwise hold over its own sanction.",
+  },
+  {
+    id: "mediated",
+    label: "Structured mediation",
+    article: "Any finding of non-compliance by the Independent Verifier shall be referred to the Joint Implementation Commission, which shall convene within twenty-one days and shall record, in writing, either the remedial schedule agreed or the failure to agree. Failure to convene within the period shall itself be recorded as non-compliance.",
+    note: "Preserves negotiation space while making the failure to negotiate itself a recorded breach.",
+  },
 ] as const;
 
 const FRAGILITIES = [
@@ -34,46 +53,73 @@ const FRAGILITIES = [
     clause: "Compliance shall be assessed by outcome and not by process. For each consultation relied upon as evidence of compliance, the reporting Party shall identify at least one decision altered by that consultation. Where no altered decision can be identified for two successive reporting periods, the Independent Verifier shall issue a finding of non-compliance and the benefits enumerated in the Schedule shall be suspended until remedied.",
     note: "Counters Bond Theater: consultation that changes nothing is a record of process, not of repair.",
   },
+  {
+    id: "asymmetric",
+    label: "Asymmetric verification",
+    clause: "No Party shall verify its own compliance, nor shall any Party appoint, fund, house or remove the body that verifies it. The Independent Verifier shall hold unannounced access to the records and premises of every Party on equal terms, and any access granted to one Party's records shall be granted to all.",
+    note: "Counters the Non-Self-Assessment failure: verification controlled by the verified party reports only what that party already concedes.",
+  },
+  {
+    id: "exhaustion",
+    label: "Temporal exhaustion",
+    clause: "The obligations under this instrument are of indefinite duration and shall not lapse by reason of the passage of time, the completion of a funding cycle, or the absence of reported incident. Any proposal to conclude implementation shall be tabled in writing, shall state the evidence of durable repair relied upon, and shall be verified before it takes effect.",
+    note: "Counters the quiet expiry of settlements that are declared finished because attention, not the grievance, has run out.",
+  },
 ] as const;
 
 export default function ClauseArchitect() {
   const [ag, setAg] = useState(0);
   const [picked, setPicked] = useState<number[]>([0, 3]);
   const [title, setTitle] = useState("");
+  const [parties, setParties] = useState("");
+  const [office, setOffice] = useState("");
+  const [rig, setRig] = useState(0);
 
   const toggle = (i: number) =>
-    setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort()));
+    setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort((a, b) => a - b)));
 
   const text = useMemo(() => {
     const a = AGREEMENTS[ag];
+    const partyName = parties.trim() || a.party;
+    const verifier = office.trim() || "the Independent Verifier";
     const L: string[] = [];
     L.push("CONTINUITY PROVISIONS · DRAFT FOR NEGOTIATION");
     L.push("Compiled under Vinculum Diplomacy: The Practitioner Handbook, Section 12");
     L.push("");
     L.push(`INSTRUMENT: ${title.trim() || a.label}`);
     L.push(`AGREEMENT TYPE: ${a.label}`);
+    L.push(`PARTIES: ${partyName}`);
+    L.push(`VERIFYING BODY: ${verifier}`);
+    L.push(`ENFORCEMENT POSTURE: ${RIGOUR[rig].label}`);
     L.push(`DATE: ${todayStamp()}`);
     L.push("");
     L.push("PART C · CONTINUITY OF COMMITMENT");
     L.push("");
     picked.forEach((i, n) => {
       const f = FRAGILITIES[i];
+      const body = f.clause
+        .replace("this instrument", `this instrument between ${partyName}`)
+        .replace(/the Independent Verifier/g, verifier);
       L.push(`Article C.${n + 1} (${f.label})`);
-      L.push(`  ${f.clause.replace("this instrument", `this instrument between ${a.party}`)}`);
+      L.push(`  ${body}`);
       L.push(`  Commentary: ${f.note}`);
       L.push("");
     });
     L.push(`Article C.${picked.length + 1} (Independent verification)`);
-    L.push(`  An Independent Verifier, appointed jointly and not removable by any single Party, shall verify the Articles of this Part. No Party's account of its own compliance shall be treated as self-certifying.`);
+    L.push(`  ${verifier}, appointed jointly by ${partyName} and not removable by any single Party, shall verify the Articles of this Part. No Party's account of its own compliance shall be treated as self-certifying.`);
     L.push("");
-    L.push(`Article C.${picked.length + 2} (Survival)`);
+    L.push(`Article C.${picked.length + 2} (Consequence of non-compliance)`);
+    L.push(`  ${RIGOUR[rig].article.replace(/the Independent Verifier/g, verifier)}`);
+    L.push(`  Commentary: ${RIGOUR[rig].note}`);
+    L.push("");
+    L.push(`Article C.${picked.length + 3} (Survival)`);
     L.push("  This Part shall survive any change in the officeholders who negotiated, signed or conceded it, and may be amended only by the procedure that adopted it.");
     L.push("");
     L.push(`PRECEDENT OF RECORD: ${a.precedent}.`);
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [ag, picked, title]);
+  }, [ag, picked, title, parties, office, rig]);
 
   return (
     <section className={panel}>
@@ -88,6 +134,27 @@ export default function ClauseArchitect() {
             <select id="ca-ag" className={field} value={ag} onChange={(e) => setAg(Number(e.target.value))}>
               {AGREEMENTS.map((a, i) => <option key={a.id} value={i}>{a.label}</option>)}
             </select>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="min-w-0">
+              <label className={label} htmlFor="ca-p">Named parties (optional)</label>
+              <input id="ca-p" className={field} value={parties} onChange={(e) => setParties(e.target.value)} placeholder={AGREEMENTS[ag].party} />
+            </div>
+            <div className="min-w-0">
+              <label className={label} htmlFor="ca-o">Verifying body (optional)</label>
+              <input id="ca-o" className={field} value={office} onChange={(e) => setOffice(e.target.value)} placeholder="the Independent Verifier" />
+            </div>
+          </div>
+          <div>
+            <span className={label}>Enforcement posture</span>
+            <div className="grid grid-cols-2 gap-2">
+              {RIGOUR.map((x, i) => (
+                <button key={x.id} type="button" aria-pressed={rig === i} onClick={() => setRig(i)}
+                  className={`min-h-11 px-3 py-2 border text-[10px] font-semibold uppercase tracking-[0.14em] ${rig === i ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
+                  {x.label}
+                </button>
+              ))}
+            </div>
           </div>
           <div>
             <span className={label}>Fragilities to insulate against</span>
