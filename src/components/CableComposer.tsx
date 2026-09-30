@@ -146,6 +146,19 @@ export default function CableComposer() {
   const [cav, setCav] = useState(0);
   const [annex, setAnnex] = useState(false);
 
+  // Custom mode: a live theater that is not one of the eight cases of record,
+  // and a receiving office of the practitioner's own naming.
+  const [ownOn, setOwnOn] = useState(false);
+  const [oName, setOName] = useState("");
+  const [oRef, setORef] = useState("");
+  const [oSummary, setOSummary] = useState("");
+  const [oScores, setOScores] = useState<[number, number, number, number]>([3, 3, 3, 3]);
+  const [oRat, setORat] = useState<[string, string, string, string]>(["", "", "", ""]);
+  const [oOffice, setOOffice] = useState("");
+  const [oDirective, setODirective] = useState("");
+  const setScore = (i: number, v: number) => setOScores((p) => p.map((x, j) => (j === i ? v : x)) as [number, number, number, number]);
+  const setRat = (i: number, v: string) => setORat((p) => p.map((x, j) => (j === i ? v : x)) as [string, string, string, string]);
+
   const [copied, setCopied] = useState(false);
   const outRef = useRef<HTMLDivElement>(null);
 
@@ -157,12 +170,37 @@ export default function CableComposer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const c = CASES[ci];
+  const base = CASES[ci];
+  const c = useMemo(() => {
+    if (!ownOn) return base;
+    const name = oName.trim() || "Unnamed theater";
+    return {
+      ...base,
+      slug: "own-theater",
+      shortTitle: name,
+      title: name,
+      ref: oRef.trim() || "Own file",
+      summary: oSummary.trim() || "Assessment of a live theater recorded by the drafting officer.",
+      pattern: "Own theater. No cross-case pattern of record applies; the reading below rests on the officer's own observation.",
+      scores: oScores,
+      rationales: oRat.map((t, i) => t.trim() || `No rationale recorded for the ${DOMAINS[i].toLowerCase()} bond.`) as [string, string, string, string],
+      practice: base.practice,
+      sources: ["Own field observation, recorded by the drafting officer."],
+    };
+  }, [ownOn, base, oName, oRef, oSummary, oScores, oRat]);
+
   const weakest = c.scores.indexOf(Math.min(...c.scores));
   const bi = auto ? weakest : manual;
-  const r = RECIPIENTS[rk];
+  const rBase = RECIPIENTS[rk];
+  const r = {
+    label: rBase.label,
+    office: oOffice.trim() || rBase.office,
+    frame: rBase.frame,
+    directive: oDirective.trim() || rBase.directive,
+  };
   const cab = CABLES[ck];
   const today = useMemo(() => new Date(), []);
+
 
   const memo = useMemo(() => {
     const ref = `VS-${cab.tag.split(" ")[0].slice(0, 3).toUpperCase()}-${c.ref}-${String(bi + 1).padStart(2, "0")}`;
