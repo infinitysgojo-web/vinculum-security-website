@@ -13,3 +13,4 @@
 - [x] Methodology: Stakeholder Safeguard & Field Audit Bench
 - [x] Case studies: one-click Executive Dossier print/PDF layout
 - [x] Glossary: thematic lineage filter and canonical citation copy
+- [x] Citation exporter, glossary etymology, Mission Binder desk, treaty comparison matrix, compound shocks

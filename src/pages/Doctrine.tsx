@@ -8,6 +8,7 @@ import GoldRule from "@/components/GoldRule";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import Cite from "@/components/Cite";
+import CiteWork from "@/components/CiteWork";
 import ReadingProgress from "@/components/ReadingProgress";
 
 import PrintFootnotes from "@/components/PrintFootnotes";
@@ -103,9 +104,10 @@ export default function Doctrine() {
       <div className="container">
         <PageHeader eyebrow="Section III" title="The Vinculum Security Doctrine" />
 
-        <FadeIn className="flex gap-2 flex-wrap mb-10">
+        <FadeIn className="flex gap-2 flex-wrap items-center mb-10">
           <DiplomatBadge variant="doctrine-core">Doctrine Core</DiplomatBadge>
           <DiplomatBadge variant="briefing-ready">Canonical Text</DiplomatBadge>
+          <span className="ml-auto"><CiteWork part="Section III, The Vinculum Security Doctrine" path="/doctrine" /></span>
         </FadeIn>
 
         <section id="canonical" className="scroll-mt-24">

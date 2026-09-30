@@ -32,6 +32,13 @@ const SHOCKS = [
   { id: "austerity", label: "National austerity reallocates the implementation budget", sev: 16 },
 ] as const;
 
+const BONDS = [
+  { name: "Interpersonal", shocks: ["principal", "election"] },
+  { name: "Communal", shocks: ["capture", "demographic", "theater"] },
+  { name: "Intergenerational", shocks: ["youth", "demographic", "attention"] },
+  { name: "Institutional", shocks: ["donor", "austerity", "guarantor", "capture", "theater"] },
+];
+
 function bandOf(q: number) {
   if (q >= 75) return { name: "Durable", advice: "The instrument survives the modelled shocks. Schedule verification rather than renegotiation." };
   if (q >= 55) return { name: "Resilient with gaps", advice: "Close the named failing provision before the next reporting period." };
@@ -54,7 +61,20 @@ export default function SuccessionSimulator() {
       const insulated = PROVISIONS.some((p) => inForce.includes(p.id) && p.guards.includes(sh.id));
       return s + (insulated ? sh.sev * 0.25 : sh.sev);
     }, 0);
-    const q = Math.max(0, Math.min(100, Math.round(base - exposure + (shocks.length ? 0 : 0))));
+    const uninsulatedCount = SHOCKS.filter(
+      (sh) => shocks.includes(sh.id) && !PROVISIONS.some((p) => inForce.includes(p.id) && p.guards.includes(sh.id))
+    ).length;
+    // Compound amplification: each uninsulated shock beyond the first adds 6 points of strain.
+    const compound = Math.max(0, uninsulatedCount - 1) * 6;
+    const q = Math.max(0, Math.min(100, Math.round(base - exposure - compound)));
+    const bonds = BONDS.map((b) => {
+      const hit = SHOCKS.filter((sh) => shocks.includes(sh.id) && b.shocks.includes(sh.id));
+      const strain = hit.reduce((t, sh) => {
+        const ins = PROVISIONS.some((p) => inForce.includes(p.id) && p.guards.includes(sh.id));
+        return t + (ins ? sh.sev * 0.25 : sh.sev);
+      }, 0);
+      return { name: b.name, strain: Math.min(100, Math.round(strain * 1.6)) };
+    });
     // First clause to break: the highest-weight provision NOT in force that guards an applied shock.
     const gaps = PROVISIONS.filter((p) => !inForce.includes(p.id) && p.guards.some((g) => shocks.includes(g)))
       .sort((a, b) => b.weight - a.weight);
@@ -62,7 +82,7 @@ export default function SuccessionSimulator() {
     const unguarded = SHOCKS.filter(
       (sh) => shocks.includes(sh.id) && !PROVISIONS.some((p) => inForce.includes(p.id) && p.guards.includes(sh.id))
     );
-    return { q, b: bandOf(q), first, gaps, unguarded, base };
+    return { q, b: bandOf(q), first, gaps, unguarded, base, compound, bonds };
   }, [inForce, shocks]);
 
   const text = useMemo(() => {
@@ -73,7 +93,10 @@ export default function SuccessionSimulator() {
       `INSTRUMENT: ${title.trim() || "Unnamed instrument"}`,
       `DATE: ${todayStamp()}`,
       `AGREEMENT SURVIVAL QUOTIENT: ${r.q} of 100 (${r.b.name.toUpperCase()})`,
-      `PROVISION BASE: ${r.base} of 100. SHOCKS MODELLED: ${shocks.length}.`,
+      `PROVISION BASE: ${r.base} of 100. SHOCKS MODELLED: ${shocks.length}. COMPOUND AMPLIFICATION: -${r.compound}.`,
+      "",
+      "STRAIN BY BOND (0 to 100)",
+      ...r.bonds.map((b) => `  ${b.name.padEnd(18)} ${b.strain}`),
       "",
       "PROVISIONS IN FORCE",
     ];
@@ -137,6 +160,18 @@ export default function SuccessionSimulator() {
             <p className={label}>Agreement survival quotient</p>
             <p className="font-serif text-4xl text-primary">{r.q}<span className="text-lg text-muted-foreground">/100</span> <span className="text-lg text-accent">{r.b.name}</span></p>
             <div className="h-1 bg-border mt-3"><div className="h-1 bg-accent transition-all" style={{ width: `${r.q}%` }} /></div>
+          </div>
+          <div className="border border-border bg-background p-4">
+            <p className={label}>Compound strain across the four bonds</p>
+            <div className="space-y-2">
+              {r.bonds.map((b) => (
+                <div key={b.name} className="text-xs">
+                  <div className="flex justify-between"><span className="text-foreground/80">{b.name}</span><span className="text-muted-foreground">{b.strain}</span></div>
+                  <div className="h-1 bg-border mt-1"><div className="h-1 bg-primary transition-all" style={{ width: `${b.strain}%` }} /></div>
+                </div>
+              ))}
+            </div>
+            {r.compound > 0 && <p className="text-xs text-accent mt-3">Compound amplification: {r.compound} points lost to simultaneous uninsulated shocks.</p>}
           </div>
           {r.first && (
             <div className="border border-brass/40 bg-background p-4">

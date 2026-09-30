@@ -7,6 +7,7 @@ import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
+import { BinderContext, type BinderEntry } from "@/components/desk/DeskOutput";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
@@ -22,6 +23,7 @@ const SentinelMatrix = lazy(() => import("@/components/desk/SentinelMatrix"));
 const ReadinessDesk = lazy(() => import("@/components/desk/ReadinessDesk"));
 const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartPrompter"));
 const SuccessionSimulator = lazy(() => import("@/components/desk/SuccessionSimulator"));
+const MissionBinder = lazy(() => import("@/components/desk/MissionBinder"));
 const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
 
 
@@ -112,6 +114,13 @@ const DESKS = [
     title: "Track I and Track II sequencing",
     note: "Keep the principals' track and the communal track in step, and see the gap before it becomes an elite pact.",
   },
+  {
+    id: "binder",
+    label: "Mission Binder",
+    eyebrow: "Consolidation · Master Dossier",
+    title: "Consolidated mission binder",
+    note: "Compile the documents you added from any desk into one numbered master briefing. Held in memory only; it clears on sign-out or refresh.",
+  },
 ] as const;
 
 
@@ -121,6 +130,19 @@ export default function Dashboard() {
   const [ready, setReady] = useState(false);
   const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("briefing");
   const navigate = useNavigate();
+  const [binder, setBinder] = useState<BinderEntry[]>([]);
+  const addToBinder = useCallback((e: BinderEntry) => {
+    setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
+  }, []);
+  const moveEntry = (id: string, dir: -1 | 1) =>
+    setBinder((prev) => {
+      const i = prev.findIndex((x) => x.id === id);
+      const j = i + dir;
+      if (i < 0 || j < 0 || j >= prev.length) return prev;
+      const next = [...prev];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
@@ -207,6 +229,7 @@ export default function Dashboard() {
               }`}
             >
               {d.label}
+              {d.id === "binder" && binder.length > 0 ? ` (${binder.length})` : ""}
             </button>
           ))}
         </div>
@@ -218,6 +241,7 @@ export default function Dashboard() {
           <p className="text-sm text-muted-foreground">{active.note}</p>
         </div>
 
+        <BinderContext.Provider value={{ add: addToBinder }}>
         <div className="pb-24">
           <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
             {desk === "briefing" && <CableComposer />}
@@ -237,9 +261,13 @@ export default function Dashboard() {
             {desk === "counterpart" && <CounterpartPrompter />}
             {desk === "succession" && <SuccessionSimulator />}
             {desk === "tracks" && <TrackSequencer />}
+            {desk === "binder" && (
+              <MissionBinder entries={binder} onRemove={(id) => setBinder((p) => p.filter((x) => x.id !== id))} onMove={moveEntry} />
+            )}
 
           </Suspense>
         </div>
+        </BinderContext.Provider>
       </div>
     </>
   );
