@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { usePublish } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /**
  * §9B, the Track I and Track II sequencing workbench.
