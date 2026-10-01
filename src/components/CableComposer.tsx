@@ -236,7 +236,9 @@ II. RELATIONAL VULNERABILITY LEDGER
 Vinculum Continuum scoring, 1 to 5, higher values indicating stronger observed bond integrity.
 ${ledger}
 Most exposed bond: ${DOMAINS[bi]} at ${c.scores[bi]} of 5 (${BAND(c.scores[bi])}).
-
+${live ? `
+II-A. LIVE READING CARRIED FORWARD FROM THE ASSESSMENT DIVISION
+${telemetryLines(signals).join("\n")}` : ""}
 III. DIRECTIVES FOR THE RECEIVING OFFICE
 ${r.directive}
 Scripted inquiry for the strained bond, Handbook §9A:
