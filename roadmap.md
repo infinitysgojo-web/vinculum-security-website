@@ -19,5 +19,5 @@
 - [x] Desks interconnected as one sequence: shared mission profile, step counter, previous/next bridge
 - [x] Division IV balanced with the Verification Ledger and Mandate Handover desks
 - [x] Engine wired: shock tester, succession simulator publish; readiness locks, verification covenant lines, handover restoration gate, binder situation synopsis
-- [ ] Remaining desks to link: multi-party bench, redliner, legal desk, adversarial chamber, field audit, mirror
-- [ ] Custom Mode deepening across all desks
+- [x] Linked multi-party bench, redliner (plus own rules), legal desk, stress tester
+- [x] Custom mode: redliner own rules added (five desks already had custom mode)
