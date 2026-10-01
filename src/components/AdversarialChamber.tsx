@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import EngineBrief from "@/components/desk/EngineBrief";
+import { useEngine } from "@/components/desk/engine";
 import { PANELS, VERDICT_LABEL, type Verdict } from "@/content/adversarial";
 
 const VERDICT_STYLE: Record<Verdict, string> = {
@@ -11,6 +13,7 @@ type Filter = "all" | Verdict;
 
 export default function AdversarialChamber() {
   const [panelN, setPanelN] = useState(1);
+  const { signals: sg } = useEngine();
   const [filter, setFilter] = useState<Filter>("all");
   const [openQ, setOpenQ] = useState<number | null>(0);
 
@@ -38,6 +41,12 @@ export default function AdversarialChamber() {
 
   return (
     <div>
+      <EngineBrief lines={[
+        sg.weakestBond && `Expect critics to press hardest on the ${sg.weakestBond.toLowerCase()} bond, where your theatre reads ${sg.weakestScore} of 5. Rehearse the open and conceded questions first.`,
+        sg.elitePactAlert && "Your tracks show an Elite-Pact Mirage. Prepare for the realist charge that the deal is only between principals.",
+        (sg.covenants?.length ?? 0) > 0 && `Defend the drafted covenants under challenge: ${sg.covenants!.join("; ")}.`,
+        sg.survivalScore !== undefined && sg.survivalScore < 55 && `Treaty survival reads ${sg.survivalScore} per cent; concede durability limits honestly rather than overclaim.`,
+      ]} />
       <p className="text-muted-foreground max-w-3xl mb-6">
         The doctrine names its own critics before they arrive. Twelve panels, from realist diplomats to
         bad-faith actors, put {counts.all} questions to it. Each answer is marked honestly: answered,
