@@ -9,6 +9,8 @@ import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components/desk/mission";
+import { EngineContext, type Signals } from "@/components/desk/engine";
+import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionVault from "@/components/desk/MissionVault";
 
 // Proprietary desks are split into separate chunks that are only fetched
