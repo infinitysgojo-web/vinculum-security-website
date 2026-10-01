@@ -3,8 +3,10 @@ import { Archive, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
-export { EMPTY_PROFILE } from "./mission";
-export type { MissionProfile } from "./mission";
+import { EMPTY_PROFILE, type MissionProfile } from "./mission";
+
+export { EMPTY_PROFILE };
+export type { MissionProfile };
 
 type Archive = {
   format: "vinculum-mission-archive";
