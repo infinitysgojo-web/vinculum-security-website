@@ -263,62 +263,65 @@ export default function Dashboard() {
         noIndex
       />
       <div className="border-b-2 border-primary bg-background">
-        <div className="container flex flex-wrap items-center justify-between gap-4 py-4">
-          <div className="flex items-center gap-3">
-            <Logo size={26} />
-            <div>
-              <span className="wordmark text-lg leading-none block">Vinculum Dashboard</span>
-              <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="container flex items-center justify-between gap-3 py-3 sm:py-4">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Logo size={24} />
+            <div className="min-w-0">
+              <span className="wordmark text-base sm:text-lg leading-none block truncate">Vinculum Dashboard</span>
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 Pro Omni Humanitate
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] font-semibold">
-            <span className="hidden sm:inline text-muted-foreground normal-case tracking-normal text-xs">
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0 text-[10px] uppercase tracking-[0.18em] font-semibold">
+            <span className="hidden md:inline text-muted-foreground normal-case tracking-normal text-xs">
               {session.user.email}
             </span>
-            <Link to="/" className="text-primary hover:text-accent transition-colors">Public site</Link>
+            <Link to="/" className="text-primary hover:text-accent transition-colors">Site</Link>
             <button onClick={signOut} className="text-accent hover:underline">Sign out</button>
           </div>
         </div>
       </div>
 
-      <div className="container py-8">
-        <div className="mb-8">
+      <div className="container py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
           <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} />
         </div>
 
-        <div className="mb-6 flex flex-wrap gap-x-6 gap-y-3 border-b border-brass/40 pb-3">
-          {DIVISIONS.map((dv) => {
-            const on = division === dv.id;
-            return (
-              <button
-                key={dv.id}
-                type="button"
-                aria-pressed={on}
-                onClick={() => {
-                  setDivision(dv.id);
-                  const first = DESKS.find((d) => d.division === dv.id);
-                  if (first) setDesk(first.id);
-                }}
-                className={`pb-2 -mb-3 border-b-2 text-[10px] font-semibold uppercase tracking-[0.2em] transition-colors ${
-                  on ? "border-accent text-accent" : "border-transparent text-primary/60 hover:text-accent"
-                }`}
-              >
-                {dv.label}
-              </button>
-            );
-          })}
+        <div className="mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40">
+          <div className="flex w-max min-w-full gap-5 sm:gap-6 pb-3">
+            {DIVISIONS.map((dv) => {
+              const on = division === dv.id;
+              return (
+                <button
+                  key={dv.id}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => {
+                    setDivision(dv.id);
+                    const first = DESKS.find((d) => d.division === dv.id);
+                    if (first) setDesk(first.id);
+                  }}
+                  className={`shrink-0 pb-2 -mb-3 border-b-2 text-[10px] font-semibold uppercase tracking-[0.18em] transition-colors ${
+                    on ? "border-accent text-accent" : "border-transparent text-primary/60 hover:text-accent"
+                  }`}
+                >
+                  <span className="sm:hidden">{dv.short}</span>
+                  <span className="hidden sm:inline">{dv.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-10">
-          {DESKS.filter((d) => d.division === division).map((d) => (
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 sm:mb-10">
+          {deskList.map((d) => (
             <button
               key={d.id}
               type="button"
               aria-pressed={desk === d.id}
               onClick={() => setDesk(d.id)}
-              className={`px-4 py-2 border text-[10px] font-semibold uppercase tracking-[0.2em] transition-all ${
+              className={`px-3 sm:px-4 py-2.5 min-h-11 border text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.2em] leading-tight transition-all ${
                 desk === d.id
                   ? "bg-accent text-accent-foreground border-accent"
                   : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
@@ -330,9 +333,14 @@ export default function Dashboard() {
           ))}
         </div>
 
-        <div className="mb-8 max-w-3xl">
-          <p className="eyebrow">{active.eyebrow}</p>
-          <h1 className="mt-3 font-serif text-primary text-2xl md:text-3xl">{active.title}</h1>
+        <div className="mb-7 max-w-3xl">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="eyebrow">{active.eyebrow}</p>
+            <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+              Step {position + 1} of {DESKS.length}
+            </span>
+          </div>
+          <h1 className="mt-3 font-serif text-primary text-xl sm:text-2xl md:text-3xl leading-tight">{active.title}</h1>
           <GoldRule className="mt-4 mb-4" />
           <p className="text-sm text-muted-foreground">{active.note}</p>
           {profile.theatre.trim() && (
@@ -343,8 +351,10 @@ export default function Dashboard() {
           )}
         </div>
 
+        <MissionContext.Provider value={profile}>
+        <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow }}>
         <BinderContext.Provider value={{ add: addToBinder }}>
-        <div className="pb-24">
+        <div className="pb-10">
           <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
             {desk === "briefing" && <CableComposer />}
             {desk === "diagnostics" && (
@@ -366,14 +376,45 @@ export default function Dashboard() {
             {desk === "counterpart" && <CounterpartPrompter />}
             {desk === "succession" && <SuccessionSimulator />}
             {desk === "tracks" && <TrackSequencer />}
+            {desk === "verification" && <VerificationLedger />}
+            {desk === "handover" && <HandoverProtocol />}
             {desk === "binder" && (
               <MissionBinder entries={binder} onRemove={(id) => setBinder((p) => p.filter((x) => x.id !== id))} onMove={moveEntry} />
             )}
-
-
           </Suspense>
         </div>
         </BinderContext.Provider>
+        </DeskMetaContext.Provider>
+        </MissionContext.Provider>
+
+        <div className="mb-20 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5">
+          {prev ? (
+            <button
+              type="button"
+              onClick={() => goTo(prev)}
+              className="text-left border border-brass/40 p-4 hover:border-accent transition-colors"
+            >
+              <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Previous in sequence
+              </span>
+              <span className="mt-1 block font-serif text-primary">{prev.title}</span>
+            </button>
+          ) : (
+            <span />
+          )}
+          {next && (
+            <button
+              type="button"
+              onClick={() => goTo(next)}
+              className="text-left sm:text-right border border-brass/40 p-4 hover:border-accent transition-colors"
+            >
+              <span className="block text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                Next in sequence
+              </span>
+              <span className="mt-1 block font-serif text-primary">{next.title}</span>
+            </button>
+          )}
+        </div>
       </div>
     </>
   );
