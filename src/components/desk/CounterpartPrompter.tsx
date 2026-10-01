@@ -176,7 +176,21 @@ export default function CounterpartPrompter() {
           </div>
         </div>
 
-        <DeskOutput text={text} fileName="Vinculum-Counterpart-Script" />
+        <div className="space-y-4 min-w-0">
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (s.weakestBond) n.push(`The focus bond is set to ${s.weakestBond}, the most exposed reading from Division I.`);
+              if (s.rupture !== undefined && s.rupture >= 35)
+                n.push("Rupture is elevated, so hold the commitment phase until the verification question has been answered.");
+              if (s.elitePactAlert) n.push("An Elite-Pact Mirage is active: ask who in the community would dispute this answer.");
+              return n;
+            }}
+          />
+          <DeskOutput text={text} fileName="Vinculum-Counterpart-Script" />
+        </div>
       </div>
     </section>
   );
