@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
+import { usePublish } from "@/components/desk/engine";
 
 /**
  * Interactive Relational Bond Diagnostic Bench.
