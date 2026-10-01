@@ -3,19 +3,8 @@ import { Archive, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
-export type MissionProfile = {
-  theatre: string;
-  parties: string;
-  classification: string;
-  officer: string;
-};
-
-export const EMPTY_PROFILE: MissionProfile = {
-  theatre: "",
-  parties: "",
-  classification: "Unrestricted, working draft",
-  officer: "",
-};
+export { EMPTY_PROFILE } from "./mission";
+export type { MissionProfile } from "./mission";
 
 type Archive = {
   format: "vinculum-mission-archive";

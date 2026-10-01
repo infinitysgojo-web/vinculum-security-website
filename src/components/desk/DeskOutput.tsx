@@ -104,7 +104,7 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
         )}
       </div>
 
-      <div className="border border-brass/50 bg-cream/60 shadow-sm">
+      <div className="border border-brass/50 bg-background shadow-sm">
         <div className="border-b border-brass/40 px-4 sm:px-6 py-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
             <p className="text-[9px] uppercase tracking-[0.26em] font-semibold text-primary/70">
