@@ -128,6 +128,20 @@ export default function TrackSequencer() {
             <p className="text-sm text-foreground/85 mt-2">{r.reading}</p>
             <p className="text-xs text-muted-foreground mt-2">{r.counter}</p>
           </div>
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (s.bonds)
+                n.push(
+                  `The communal bond scores ${s.bonds.communal} of 5, so the tolerated Track I lead is ${s.bonds.communal <= 2 ? "nil" : "one phase"}.`
+                );
+              if (s.rupture !== undefined && s.rupture >= 35)
+                n.push("With the rupture index elevated, no Track I concession should be tabled ahead of a communal round.");
+              return n;
+            }}
+          />
           <DeskOutput text={text} fileName="Vinculum-Track-Sequencing" />
         </div>
       </div>
