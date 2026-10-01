@@ -12,6 +12,7 @@ import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components
 import { EngineContext, useEngine, type Signals } from "@/components/desk/engine";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionVault from "@/components/desk/MissionVault";
+import SaveSession from "@/components/desk/SaveSession";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
@@ -261,6 +262,37 @@ export default function Dashboard() {
     };
   }, [session, signOut]);
 
+  // Saved session: kept on this device only, per signed-in account.
+  const saveKey = session ? `vinculum-session:${session.user.id}` : null;
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const restoredRef = useRef(false);
+  useEffect(() => {
+    if (!saveKey || restoredRef.current) return;
+    restoredRef.current = true;
+    try {
+      const raw = window.localStorage.getItem(saveKey);
+      if (!raw) return;
+      const s = JSON.parse(raw);
+      if (s.profile) setProfile(s.profile);
+      if (Array.isArray(s.binder)) setBinder(s.binder);
+      if (s.signals) setSignals(s.signals);
+      if (s.division) setDivision(s.division);
+      if (s.desk) setDesk(s.desk);
+      if (s.savedAt) setSavedAt(s.savedAt);
+    } catch {
+      /* ignore a damaged save */
+    }
+  }, [saveKey]);
+  const saveSession = useCallback(() => {
+    if (!saveKey) return;
+    const stamp = new Date().toLocaleString();
+    window.localStorage.setItem(
+      saveKey,
+      JSON.stringify({ profile, binder, signals, division, desk, savedAt: stamp }),
+    );
+    setSavedAt(stamp);
+  }, [saveKey, profile, binder, signals, division, desk]);
+
   if (!ready || !session) return null;
 
   // The desk order is the chancellery lifecycle: assess, engage, draft, govern.
@@ -298,6 +330,7 @@ export default function Dashboard() {
             <span className="hidden md:inline text-muted-foreground normal-case tracking-normal text-xs">
               {session.user.email}
             </span>
+            <SaveSession onSave={saveSession} savedAt={savedAt} />
             <Link to="/" className="text-primary hover:text-accent transition-colors">Site</Link>
             <button onClick={signOut} className="text-accent hover:underline">Sign out</button>
           </div>
