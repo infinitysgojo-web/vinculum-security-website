@@ -301,7 +301,20 @@ export default function ClauseArchitect() {
           </div>
         </div>
 
-        <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
+        <div className="space-y-4 min-w-0">
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (mandated.length)
+                n.push(`${mandated.length} article${mandated.length === 1 ? "" : "s"} selected automatically from the active traps and the exposed bond.`);
+              if ((s.rupture ?? 0) >= 35) n.push("Rupture is elevated, so asymmetric verification is drafted in by default.");
+              return n;
+            }}
+          />
+          <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
+        </div>
       </div>
           <div className="mt-10">
         <span className={label}>Westphalian and relational clauses compared</span>
