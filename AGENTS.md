@@ -1,3 +1,3 @@
 # Project Architecture
 
-- Keep scholarly working tools embedded in their relevant existing page, with browser-local state only, to preserve a focused reading architecture without new routes or data storage.
+- Keep scholarly working tools embedded in their relevant existing page, with browser-local state only, to preserve a focused reading architecture without new routes or data storage.- Dashboard desks share readings only through the MissionEngine signal bus (src/components/desk/engine.ts: usePublish/useEngine, SyncPanel override); why: one deterministic, browser-local chain from assessment to handover.
