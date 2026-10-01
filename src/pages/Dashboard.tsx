@@ -252,7 +252,17 @@ export default function Dashboard() {
 
   if (!ready || !session) return null;
 
-  const active = DESKS.find((d) => d.id === desk)!;
+  // The desk order is the chancellery lifecycle: assess, engage, draft, govern.
+  const position = DESKS.findIndex((d) => d.id === desk);
+  const active = DESKS[position];
+  const prev = position > 0 ? DESKS[position - 1] : null;
+  const next = position < DESKS.length - 1 ? DESKS[position + 1] : null;
+  const deskList = DESKS.filter((d) => d.division === division);
+  const goTo = (d: (typeof DESKS)[number]) => {
+    setDivision(d.division);
+    setDesk(d.id);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <>
