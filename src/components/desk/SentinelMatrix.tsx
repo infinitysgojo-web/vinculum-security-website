@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { usePublish } from "./engine";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
 const SIGNS: { bond: number; text: string; w: number }[] = [
