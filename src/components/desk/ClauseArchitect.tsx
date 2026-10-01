@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /** Handbook §12 Continuity Provision drafting desk. Deterministic; nothing stored. */
 const AGREEMENTS = [
