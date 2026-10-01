@@ -97,7 +97,7 @@ export default function TrackSequencer() {
     L.push(`  Track II: ${r.nextII ? r.nextII.text : "Sequence complete."}`);
     L.push("", "Rule-based sequencing aid. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [process, done, r]);
+  }, [process, done, r, live, signals]);
 
   return (
     <section className={panel}>
