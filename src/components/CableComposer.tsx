@@ -311,6 +311,20 @@ END OF ${cab.tag}`;
         chancellery briefing from the published record alone. Nothing is predicted, stored, or sent.
       </p>
 
+      <div className="mb-6">
+        <SyncPanel
+          linked={linked}
+          onToggle={setLinked}
+          summary={(s) => {
+            const n: string[] = [];
+            if (s.weakestBond) n.push(`The memorandum opens on the ${s.weakestBond.toLowerCase()} bond, carried from the diagnostic bench.`);
+            if (s.rupture !== undefined) n.push(`The rupture index of ${s.rupture} per cent is written into the vulnerability ledger.`);
+            if (s.traps?.length) n.push(`Active traps are named in the body: ${s.traps.join("; ")}.`);
+            return n;
+          }}
+        />
+      </div>
+
       <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6 mb-4 flex items-center justify-between gap-4 flex-wrap">
         <div>
           <span className={lab}>Source of the assessment</span>
