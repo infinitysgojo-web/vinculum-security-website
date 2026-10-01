@@ -37,10 +37,10 @@ const HandoverProtocol = lazy(() => import("@/components/desk/HandoverProtocol")
 const IDLE_MS = 20 * 60 * 1000;
 
 const DIVISIONS = [
-  { id: "assess", label: "I. Assessment and early warning" },
-  { id: "engage", label: "II. Diplomatic engagement" },
-  { id: "legal", label: "III. Legal architecture" },
-  { id: "govern", label: "IV. Mission governance" },
+  { id: "assess", label: "I. Assessment and early warning", short: "I. Assess" },
+  { id: "engage", label: "II. Diplomatic engagement", short: "II. Engage" },
+  { id: "legal", label: "III. Legal architecture", short: "III. Legal" },
+  { id: "govern", label: "IV. Mission governance", short: "IV. Govern" },
 ] as const;
 
 const DESKS = [
