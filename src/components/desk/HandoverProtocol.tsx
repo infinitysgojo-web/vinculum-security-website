@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, usePublish, type Signals } from "./engine";
+import { telemetryLines, useEngine, type Signals } from "./engine";
 
 /** Bond restoration gate: handover is premature while any bond still fails. */
 function handoverLines(s: Signals): string[] {

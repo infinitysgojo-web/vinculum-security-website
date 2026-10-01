@@ -250,7 +250,7 @@ export default function VerificationLedger() {
         </div>
       </div>
 
-      <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()) : ["The upstream reading raises no handover condition."]} />
+      <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()) : ["The upstream reading carries no covenant to verify yet."]} />
 
       <DeskOutput text={text} fileName="Vinculum-Verification-Ledger" />
     </div>
