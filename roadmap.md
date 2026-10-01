@@ -18,3 +18,6 @@
 - [x] Dossier house style for every desk export: chancellery document card plus publication-grade PDF download
 - [x] Desks interconnected as one sequence: shared mission profile, step counter, previous/next bridge
 - [x] Division IV balanced with the Verification Ledger and Mandate Handover desks
+- [x] Engine wired: shock tester, succession simulator publish; readiness locks, verification covenant lines, handover restoration gate, binder situation synopsis
+- [ ] Remaining desks to link: multi-party bench, redliner, legal desk, adversarial chamber, field audit, mirror
+- [ ] Custom Mode deepening across all desks
