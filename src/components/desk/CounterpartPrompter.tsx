@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { useEngine, hasSignal, telemetryLines } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
