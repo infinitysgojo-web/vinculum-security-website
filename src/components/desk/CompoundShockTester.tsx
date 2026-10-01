@@ -212,8 +212,8 @@ export default function CompoundShockTester() {
             <p className={label}>Custom mode: model your own shock</p>
             <input className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Drought displaces pastoralist herds" />
             <input className={field} value={nk} onChange={(e) => setNk(e.target.value)} placeholder="What it breaks first (optional)" />
-            <div className="grid grid-cols-2 gap-2">
-              <label className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Severity {ns}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
+              <label className="min-w-0 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Severity {ns}
                 <input type="range" min={5} max={35} value={ns} onChange={(e) => setNs(Number(e.target.value))} className="w-full accent-[hsl(var(--accent))]" />
               </label>
               <select className={field} value={nb} onChange={(e) => setNb(Number(e.target.value))} aria-label="Bond struck">
