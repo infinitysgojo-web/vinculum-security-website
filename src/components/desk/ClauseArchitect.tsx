@@ -167,6 +167,13 @@ export default function ClauseArchitect() {
     L.push(`ENFORCEMENT POSTURE: ${RIGOUR[rig].label}`);
     L.push(`DATE: ${todayStamp()}`);
     L.push("");
+    if (live) L.push(...telemetryLines(signals));
+    if (mandated.length)
+      L.push(
+        "ARTICLES REQUIRED BY THE LIVE READING",
+        ...mandated.map((i) => `  - ${FRAGILITIES[i].label}: ${FRAGILITIES[i].note}`),
+        ""
+      );
     L.push("PART C · CONTINUITY OF COMMITMENT");
     L.push("");
     let n = 0;
