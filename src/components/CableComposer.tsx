@@ -197,7 +197,10 @@ export default function CableComposer() {
   }, [ownOn, base, oName, oRef, oSummary, oScores, oRat]);
 
   const weakest = c.scores.indexOf(Math.min(...c.scores));
-  const bi = auto ? weakest : manual;
+  // When the engine is linked, the live diagnostic decides which bond the
+  // memorandum opens on, ahead of the case record's own weakest bond.
+  const liveBond = live && signals.weakestBond ? DOMAINS.indexOf(signals.weakestBond) : -1;
+  const bi = auto ? (liveBond >= 0 ? liveBond : weakest) : manual;
   const rBase = RECIPIENTS[rk];
   const r = {
     label: rBase.label,
