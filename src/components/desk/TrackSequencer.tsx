@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { usePublish, useEngine, hasSignal, telemetryLines } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /**
  * §9B, the Track I and Track II sequencing workbench.
@@ -28,6 +30,9 @@ const PHASES = Array.from(new Set(STEPS.map((s) => s.phase)));
 
 export default function TrackSequencer() {
   const [process, setProcess] = useState("");
+  const [linked, setLinked] = useState(true);
+  const { signals } = useEngine();
+  const live = linked && hasSignal(signals);
   const [done, setDone] = useState<string[]>([]);
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
@@ -66,6 +71,8 @@ export default function TrackSequencer() {
     return { a, b, gap, reading, counter, nextI, nextII };
   }, [done]);
 
+  usePublish("tracks", { trackI: r.a, trackII: r.b, trackGap: r.gap, elitePactAlert: r.gap >= 2 });
+
   const text = useMemo(() => {
     const L = [
       "TRACK I AND TRACK II SEQUENCING READING",
@@ -77,6 +84,7 @@ export default function TrackSequencer() {
       `TRACK II DEPTH: Phase ${r.b} of ${PHASES.length}`,
       `SYNCHRONISATION GAP: ${r.gap > 0 ? `+${r.gap} (Track I ahead)` : r.gap < 0 ? `${r.gap} (Track II ahead)` : "0 (in step)"}`,
       "",
+      ...(live ? telemetryLines(signals) : []),
       "SEQUENCE LEDGER",
     ];
     PHASES.forEach((ph) => {
@@ -89,7 +97,7 @@ export default function TrackSequencer() {
     L.push(`  Track II: ${r.nextII ? r.nextII.text : "Sequence complete."}`);
     L.push("", "Rule-based sequencing aid. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [process, done, r]);
+  }, [process, done, r, live, signals]);
 
   return (
     <section className={panel}>
@@ -123,6 +131,20 @@ export default function TrackSequencer() {
             <p className="text-sm text-foreground/85 mt-2">{r.reading}</p>
             <p className="text-xs text-muted-foreground mt-2">{r.counter}</p>
           </div>
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (s.bonds)
+                n.push(
+                  `The communal bond scores ${s.bonds.communal} of 5, so the tolerated Track I lead is ${s.bonds.communal <= 2 ? "nil" : "one phase"}.`
+                );
+              if (s.rupture !== undefined && s.rupture >= 35)
+                n.push("With the rupture index elevated, no Track I concession should be tabled ahead of a communal round.");
+              return n;
+            }}
+          />
           <DeskOutput text={text} fileName="Vinculum-Track-Sequencing" />
         </div>
       </div>

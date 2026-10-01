@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { useEngine, hasSignal, telemetryLines } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
@@ -58,6 +60,15 @@ export default function CounterpartPrompter() {
   const [bond, setBond] = useState(0);
   const [phase, setPhase] = useState(0);
 
+  // Division I decides which bond this meeting is actually about.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const live = linked && hasSignal(signals);
+  const upstreamBond = live && signals.weakestBond ? (DOMAINS as readonly string[]).indexOf(signals.weakestBond) : -1;
+  useEffect(() => {
+    if (upstreamBond >= 0) setBond(upstreamBond);
+  }, [upstreamBond]);
+
   // Custom mode: define a counterpart the ten archetypes do not cover,
   // and override any scripted question with your own wording.
   const [customOn, setCustomOn] = useState(false);
@@ -90,9 +101,10 @@ export default function CounterpartPrompter() {
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
+    if (live) L.push("", ...telemetryLines(signals));
     L.push("", "Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [active, bond, questions]);
+  }, [active, bond, questions, live, signals]);
 
 
   return (
@@ -164,7 +176,21 @@ export default function CounterpartPrompter() {
           </div>
         </div>
 
-        <DeskOutput text={text} fileName="Vinculum-Counterpart-Script" />
+        <div className="space-y-4 min-w-0">
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (s.weakestBond) n.push(`The focus bond is set to ${s.weakestBond}, the most exposed reading from Division I.`);
+              if (s.rupture !== undefined && s.rupture >= 35)
+                n.push("Rupture is elevated, so hold the commitment phase until the verification question has been answered.");
+              if (s.elitePactAlert) n.push("An Elite-Pact Mirage is active: ask who in the community would dispute this answer.");
+              return n;
+            }}
+          />
+          <DeskOutput text={text} fileName="Vinculum-Counterpart-Script" />
+        </div>
       </div>
     </section>
   );

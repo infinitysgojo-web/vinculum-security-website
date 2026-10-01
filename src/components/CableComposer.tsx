@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CASES, DOMAINS } from "@/content/cases";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
+import { useEngine, hasSignal, telemetryLines } from "@/components/desk/engine";
+import SyncPanel from "@/components/desk/SyncPanel";
 
 /**
  * §12B, the Operational Briefing Desk.
@@ -162,6 +164,11 @@ export default function CableComposer() {
   const [copied, setCopied] = useState(false);
   const outRef = useRef<HTMLDivElement>(null);
 
+  // The live feed from Division I and Division II.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const live = linked && hasSignal(signals);
+
   useEffect(() => {
     if (initial >= 0 && outRef.current) {
       outRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -190,7 +197,10 @@ export default function CableComposer() {
   }, [ownOn, base, oName, oRef, oSummary, oScores, oRat]);
 
   const weakest = c.scores.indexOf(Math.min(...c.scores));
-  const bi = auto ? weakest : manual;
+  // When the engine is linked, the live diagnostic decides which bond the
+  // memorandum opens on, ahead of the case record's own weakest bond.
+  const liveBond = live && signals.weakestBond ? (DOMAINS as readonly string[]).indexOf(signals.weakestBond) : -1;
+  const bi = auto ? (liveBond >= 0 ? liveBond : weakest) : manual;
   const rBase = RECIPIENTS[rk];
   const r = {
     label: rBase.label,
@@ -236,7 +246,9 @@ II. RELATIONAL VULNERABILITY LEDGER
 Vinculum Continuum scoring, 1 to 5, higher values indicating stronger observed bond integrity.
 ${ledger}
 Most exposed bond: ${DOMAINS[bi]} at ${c.scores[bi]} of 5 (${BAND(c.scores[bi])}).
-
+${live ? `
+II-A. LIVE READING CARRIED FORWARD FROM THE ASSESSMENT DIVISION
+${telemetryLines(signals).join("\n")}` : ""}
 III. DIRECTIVES FOR THE RECEIVING OFFICE
 ${r.directive}
 Scripted inquiry for the strained bond, Handbook §9A:
@@ -267,7 +279,7 @@ Compiled from the published record. No part of this memorandum is machine-genera
 or predictive; every statement above is drawn verbatim from the case file and handbook.
 Kenya Copyright Board Registration No. RZ100967.
 END OF ${cab.tag}`;
-  }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex]);
+  }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex, live, signals]);
 
 
   const copy = async () => {
@@ -301,6 +313,20 @@ END OF ${cab.tag}`;
         Select a case, the office receiving the memorandum, and its purpose. The desk compiles a
         chancellery briefing from the published record alone. Nothing is predicted, stored, or sent.
       </p>
+
+      <div className="mb-6">
+        <SyncPanel
+          linked={linked}
+          onToggle={setLinked}
+          summary={(s) => {
+            const n: string[] = [];
+            if (s.weakestBond) n.push(`The memorandum opens on the ${s.weakestBond.toLowerCase()} bond, carried from the diagnostic bench.`);
+            if (s.rupture !== undefined) n.push(`The rupture index of ${s.rupture} per cent is written into the vulnerability ledger.`);
+            if (s.traps?.length) n.push(`Active traps are named in the body: ${s.traps.join("; ")}.`);
+            return n;
+          }}
+        />
+      </div>
 
       <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6 mb-4 flex items-center justify-between gap-4 flex-wrap">
         <div>

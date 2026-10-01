@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /** Handbook §12 Continuity Provision drafting desk. Deterministic; nothing stored. */
 const AGREEMENTS = [
@@ -96,6 +98,42 @@ export default function ClauseArchitect() {
   const [own, setOwn] = useState<Own[]>([]);
   const [oLabel, setOLabel] = useState("");
   const [oText, setOText] = useState("");
+
+  // Division I and II decide which fragilities this instrument must insulate against.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const live = linked && hasSignal(signals);
+  const mandated = useMemo(() => {
+    if (!live) return [] as number[];
+    const need = new Set<number>();
+    const trapMap: Record<string, number[]> = {
+      "Elite-Pact Mirage": [0],
+      "Generational Cliff": [1],
+      "Unanchored Repair": [2],
+      "Bond Theater": [3],
+      "Systemic Bond Collapse": [0, 2, 4],
+    };
+    (signals.traps ?? []).forEach((t) => (trapMap[t] ?? []).forEach((i) => need.add(i)));
+    const bondMap: Record<string, number> = {
+      Interpersonal: 0,
+      Communal: 3,
+      Intergenerational: 1,
+      "Institutional-Relational": 2,
+    };
+    if (signals.weakestBond && (signals.weakestScore ?? 5) <= 3) {
+      const i = bondMap[signals.weakestBond];
+      if (i !== undefined) need.add(i);
+    }
+    if ((signals.rupture ?? 0) >= 35) need.add(4);
+    if (signals.elitePactAlert) need.add(0);
+    if ((signals.shocks?.length ?? 0) >= 2) need.add(5);
+    return [...need].sort((a, b) => a - b);
+  }, [live, signals]);
+
+  useEffect(() => {
+    if (!mandated.length) return;
+    setPicked((p) => [...new Set([...p, ...mandated])].sort((a, b) => a - b));
+  }, [mandated]);
   const addOwn = () => {
     const l = oLabel.trim();
     if (!l) return;
@@ -108,6 +146,11 @@ export default function ClauseArchitect() {
   const toggle = (i: number) =>
     setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort((a, b) => a - b)));
 
+
+  usePublish("clauses", {
+    covenants: [...picked.map((i) => FRAGILITIES[i].label), ...own.map((o) => o.label)],
+    verifierSeated: picked.includes(4),
+  });
 
   const text = useMemo(() => {
     const a = AGREEMENTS[ag];
@@ -124,6 +167,13 @@ export default function ClauseArchitect() {
     L.push(`ENFORCEMENT POSTURE: ${RIGOUR[rig].label}`);
     L.push(`DATE: ${todayStamp()}`);
     L.push("");
+    if (live) L.push(...telemetryLines(signals));
+    if (mandated.length)
+      L.push(
+        "ARTICLES REQUIRED BY THE LIVE READING",
+        ...mandated.map((i) => `  - ${FRAGILITIES[i].label}: ${FRAGILITIES[i].note}`),
+        ""
+      );
     L.push("PART C · CONTINUITY OF COMMITMENT");
     L.push("");
     let n = 0;
@@ -159,7 +209,7 @@ export default function ClauseArchitect() {
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig, own, ownType]);
+  }, [ag, picked, title, parties, office, rig, own, ownType, live, signals, mandated]);
 
 
   return (
@@ -203,7 +253,13 @@ export default function ClauseArchitect() {
               {FRAGILITIES.map((f, i) => (
                 <label key={f.id} className="flex gap-3 items-start border border-border bg-background p-3 cursor-pointer text-sm">
                   <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={picked.includes(i)} onChange={() => toggle(i)} />
-                  <span><span className="font-semibold text-primary">{f.label}</span><span className="block text-muted-foreground text-xs mt-1">{f.note}</span></span>
+                  <span className="min-w-0">
+                    <span className="font-semibold text-primary">{f.label}</span>
+                    {mandated.includes(i) && (
+                      <span className="ml-2 text-[9px] uppercase tracking-[0.18em] font-semibold text-accent">Required by the live reading</span>
+                    )}
+                    <span className="block text-muted-foreground text-xs mt-1">{f.note}</span>
+                  </span>
                 </label>
               ))}
             </div>
@@ -245,7 +301,20 @@ export default function ClauseArchitect() {
           </div>
         </div>
 
-        <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
+        <div className="space-y-4 min-w-0">
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (mandated.length)
+                n.push(`${mandated.length} article${mandated.length === 1 ? "" : "s"} selected automatically from the active traps and the exposed bond.`);
+              if ((s.rupture ?? 0) >= 35) n.push("Rupture is elevated, so asymmetric verification is drafted in by default.");
+              return n;
+            }}
+          />
+          <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
+        </div>
       </div>
           <div className="mt-10">
         <span className={label}>Westphalian and relational clauses compared</span>

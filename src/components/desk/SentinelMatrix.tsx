@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { usePublish } from "./engine";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
 const SIGNS: { bond: number; text: string; w: number }[] = [
@@ -132,6 +133,14 @@ export default function SentinelMatrix() {
         : "";
     return { byBond, pct, b: band(pct), traps, compound };
   }, [on, trend, custom, cOn]);
+
+  usePublish("sentinel", {
+    rupture: r.pct,
+    ruptureBand: r.b.name,
+    bondStrain: r.byBond,
+    traps: r.traps.map((t) => t.name),
+    trend: TREND[trend].label,
+  });
 
   const text = useMemo(() => {
     const L = [

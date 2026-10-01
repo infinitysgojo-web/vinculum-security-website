@@ -9,6 +9,8 @@ import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components/desk/mission";
+import { EngineContext, type Signals } from "@/components/desk/engine";
+import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionVault from "@/components/desk/MissionVault";
 
 // Proprietary desks are split into separate chunks that are only fetched
@@ -200,6 +202,15 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [binder, setBinder] = useState<BinderEntry[]>([]);
   const [profile, setProfile] = useState<MissionProfile>(EMPTY_PROFILE);
+  // The mission engine: every desk publishes its readings here, and every
+  // downstream desk reads them. Held in memory only, like the binder.
+  const [signals, setSignals] = useState<Signals>({});
+  const publish = useCallback((_desk: string, patch: Signals) => {
+    setSignals((prev) => {
+      const next = { ...prev, ...patch };
+      return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
+    });
+  }, []);
   const addToBinder = useCallback((e: BinderEntry) => {
     setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
   }, []);
@@ -361,6 +372,9 @@ export default function Dashboard() {
           )}
         </div>
 
+        <TelemetryStrip signals={signals} />
+
+        <EngineContext.Provider value={{ signals, publish }}>
         <MissionContext.Provider value={profile}>
         <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow }}>
         <BinderContext.Provider value={{ add: addToBinder }}>
@@ -396,6 +410,7 @@ export default function Dashboard() {
         </BinderContext.Provider>
         </DeskMetaContext.Provider>
         </MissionContext.Provider>
+        </EngineContext.Provider>
 
         <div className="mb-20 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5">
           {prev ? (
