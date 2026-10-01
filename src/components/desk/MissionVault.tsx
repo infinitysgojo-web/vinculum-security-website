@@ -3,19 +3,10 @@ import { Archive, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
-export type MissionProfile = {
-  theatre: string;
-  parties: string;
-  classification: string;
-  officer: string;
-};
+import { EMPTY_PROFILE, type MissionProfile } from "./mission";
 
-export const EMPTY_PROFILE: MissionProfile = {
-  theatre: "",
-  parties: "",
-  classification: "Unrestricted, working draft",
-  officer: "",
-};
+export { EMPTY_PROFILE };
+export type { MissionProfile };
 
 type Archive = {
   format: "vinculum-mission-archive";
@@ -85,14 +76,14 @@ export default function MissionVault({
   };
 
   const btn =
-    "inline-flex items-center gap-2 border border-brass/50 px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors";
+    "inline-flex items-center justify-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors";
 
   return (
     <div className="border border-brass/40 bg-navy-tint/40">
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-        <div className="flex items-center gap-3">
-          <Archive size={15} className="text-accent" />
-          <div>
+      <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3 px-4 py-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <Archive size={15} className="text-accent shrink-0" />
+          <div className="min-w-0">
             <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/80">
               Mission state vault
             </p>
@@ -102,15 +93,15 @@ export default function MissionVault({
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" className={btn} onClick={() => setOpen((o) => !o)}>
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+          <button type="button" className={`${btn} col-span-2 sm:col-span-1`} onClick={() => setOpen((o) => !o)}>
             {open ? <X size={13} /> : null} {open ? "Close" : "Mission details"}
           </button>
           <button type="button" className={btn} onClick={() => fileRef.current?.click()}>
-            <Upload size={13} /> Load archive
+            <Upload size={13} /> Load
           </button>
           <button type="button" className={btn} onClick={save}>
-            <Archive size={13} /> Save archive
+            <Archive size={13} /> Save
           </button>
           <input
             ref={fileRef}
