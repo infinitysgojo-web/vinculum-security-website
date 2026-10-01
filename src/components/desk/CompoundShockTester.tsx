@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import BondRadar from "./BondRadar";
+import { usePublish } from "./engine";
 
 type Shock = { id: string; label: string; sev: number; bond: number; breaker: string; absorb: string };
 
@@ -112,6 +113,12 @@ export default function CompoundShockTester() {
     const seq = [...active].sort((a, b2) => b2.sev - a.sev);
     return { strain: total, band: b, bondScores: perBond, sequence: seq };
   }, [active]);
+
+  usePublish("shocks", {
+    shocks: active.map((s) => s.label),
+    firstToBreak: sequence[0]?.breaker,
+    shockSeverity: strain,
+  });
 
   const text = useMemo(() => {
     const L: string[] = [];
