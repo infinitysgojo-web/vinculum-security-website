@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
-import { usePublish } from "./engine";
+import { usePublish, useEngine, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 
 /**
