@@ -30,6 +30,7 @@ const PHASES = Array.from(new Set(STEPS.map((s) => s.phase)));
 
 export default function TrackSequencer() {
   const [process, setProcess] = useState("");
+  const [linked, setLinked] = useState(true);
   const [done, setDone] = useState<string[]>([]);
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
