@@ -202,6 +202,15 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [binder, setBinder] = useState<BinderEntry[]>([]);
   const [profile, setProfile] = useState<MissionProfile>(EMPTY_PROFILE);
+  // The mission engine: every desk publishes its readings here, and every
+  // downstream desk reads them. Held in memory only, like the binder.
+  const [signals, setSignals] = useState<Signals>({});
+  const publish = useCallback((_desk: string, patch: Signals) => {
+    setSignals((prev) => {
+      const next = { ...prev, ...patch };
+      return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
+    });
+  }, []);
   const addToBinder = useCallback((e: BinderEntry) => {
     setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
   }, []);
