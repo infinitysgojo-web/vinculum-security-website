@@ -58,6 +58,15 @@ export default function CounterpartPrompter() {
   const [bond, setBond] = useState(0);
   const [phase, setPhase] = useState(0);
 
+  // Division I decides which bond this meeting is actually about.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const live = linked && hasSignal(signals);
+  const upstreamBond = live && signals.weakestBond ? (DOMAINS as readonly string[]).indexOf(signals.weakestBond) : -1;
+  useEffect(() => {
+    if (upstreamBond >= 0) setBond(upstreamBond);
+  }, [upstreamBond]);
+
   // Custom mode: define a counterpart the ten archetypes do not cover,
   // and override any scripted question with your own wording.
   const [customOn, setCustomOn] = useState(false);
