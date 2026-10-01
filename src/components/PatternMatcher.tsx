@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useEngine } from "@/components/desk/engine";
 import { Link } from "react-router-dom";
 import { CASES, DOMAINS } from "@/content/cases";
 
@@ -30,6 +31,13 @@ function warning(s: number[]) {
 
 export default function PatternMatcher() {
   const [scores, setScores] = useState([3, 3, 3, 3]);
+  const { signals } = useEngine();
+  const b = signals.bonds;
+  const liveKey = b ? `${b.interpersonal}${b.communal}${b.intergenerational}${b.institutional}` : "";
+  useEffect(() => {
+    if (b) setScores([b.interpersonal, b.communal, b.intergenerational, b.institutional]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [liveKey]);
 
   const ranked = useMemo(
     () =>
@@ -49,6 +57,9 @@ export default function PatternMatcher() {
         Which precedent does your theater resemble?
       </h2>
       <hr className="gold-rule gold-rule-short mt-4 mb-4" />
+      {b && (
+        <p className="text-xs uppercase tracking-[0.16em] text-accent mb-3">Loaded from the live bond reading in Diagnostics. Adjust freely to test variations.</p>
+      )}
       <p className="text-foreground/80 max-w-3xl mb-6">
         Set the current condition of each bond in the theater you are watching. The matcher measures
         its distance from the eight scored cases and names the pattern to guard against. It runs in
