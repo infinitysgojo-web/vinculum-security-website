@@ -1,6 +1,18 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
+import SyncPanel from "./SyncPanel";
+import { telemetryLines, useEngine, usePublish, type Signals } from "./engine";
+
+/** Covenant anchoring: every covenant drafted upstream becomes a line to verify. */
+function ledgerLines(s: Signals): string[] {
+  const L: string[] = [];
+  (s.covenants ?? []).forEach((c, i) => L.push(`  V-${i + 1}. ${c}: verify the provision is in force and observed, with evidence from an independent source.`));
+  if (s.weakestBond) L.push(`  Priority verification: the ${s.weakestBond.toLowerCase()} bond, the most exposed on the diagnostic bench.`);
+  if (s.firstToBreak) L.push(`  Watch item: ${s.firstToBreak}, the first provision to break under compound shock.`);
+  return L.length ? ["COVENANT-ANCHORED VERIFICATION LINES (live from the mission engine)", ...L] : [];
+}
+
 
 /**
  * Independent verification and compliance ledger, Section VIII safeguards and
@@ -83,10 +95,15 @@ const SAFEGUARDS = [
 
 export default function VerificationLedger() {
   const mission = useMission();
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const engineLines = linked ? ledgerLines(signals) : [];
+  
   const [instrument, setInstrument] = useState("");
   const [seated, setSeated] = useState<string[]>(["civil", "youth"]);
   const [met, setMet] = useState<string[]>([]);
   const [interval, setInterval] = useState("90");
+  usePublish("verification", { verifierSeated: seated.length > 0 });
 
   const toggle = (set: string[], id: string, fn: (v: string[]) => void) =>
     fn(set.includes(id) ? set.filter((x) => x !== id) : [...set, id]);
@@ -159,11 +176,13 @@ export default function VerificationLedger() {
       L.push(`   ${s.text}`);
       L.push("");
     });
+    if (engineLines.length) L.push(...engineLines, "");
+    if (linked) L.push(...telemetryLines(signals));
     L.push("Rule-based ledger. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
     L.push("");
     L.push("END OF LEDGER");
     return L.join("\n");
-  }, [instrument, mission, seated, met, interval, r]);
+  }, [instrument, mission, seated, met, interval, r, engineLines, linked, signals]);
 
   return (
     <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
@@ -230,6 +249,8 @@ export default function VerificationLedger() {
           </div>
         </div>
       </div>
+
+      <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()) : ["The upstream reading raises no handover condition."]} />
 
       <DeskOutput text={text} fileName="Vinculum-Verification-Ledger" />
     </div>
