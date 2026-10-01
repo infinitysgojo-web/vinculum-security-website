@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { usePublish } from "./engine";
 
 /**
  * §12C, the Treaty Stress and Succession Simulator.
@@ -130,6 +131,8 @@ export default function SuccessionSimulator() {
     const unguarded = allShocks.filter((sh) => shocks.includes(sh.id) && !insulatedBy(sh));
     return { q, b: bandOf(q), first, gaps, unguarded, base, compound, bonds };
   }, [inForce, shocks, allProvisions, allShocks, bondMap]);
+
+  usePublish("succession", { survivalScore: r.q });
 
   const text = useMemo(() => {
     const L = [

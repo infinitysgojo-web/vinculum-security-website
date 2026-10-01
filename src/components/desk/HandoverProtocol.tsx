@@ -1,6 +1,22 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
+import SyncPanel from "./SyncPanel";
+import { telemetryLines, useEngine, type Signals } from "./engine";
+
+/** Bond restoration gate: handover is premature while any bond still fails. */
+function handoverLines(s: Signals): string[] {
+  const L: string[] = [];
+  if (s.weakestBond && (s.weakestScore ?? 5) <= 2)
+    L.push(`  HANDOVER PREMATURE: the ${s.weakestBond.toLowerCase()} bond still reads ${s.weakestScore} of 5. Restore it to 3 or above before the mandate passes.`);
+  if (s.rupture !== undefined && s.rupture >= 35)
+    L.push(`  HANDOVER PREMATURE: rupture index at ${s.rupture} per cent. Hand over only once it falls below 35.`);
+  if (s.covenants?.length)
+    L.push(`  Successor office inherits these covenants: ${s.covenants.join("; ")}.`);
+  if (s.gatesCleared) L.push(`  Readiness lifecycle stages cleared: ${s.gatesCleared}.`);
+  return L.length ? ["BOND RESTORATION GATE (live from the mission engine)", ...L] : [];
+}
+
 
 /**
  * Mandate handover and durability protocol, Section VI.B and Handbook §12D.
@@ -38,6 +54,9 @@ const DEPENDENCE = [
 
 export default function HandoverProtocol() {
   const mission = useMission();
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const engineLines = linked ? handoverLines(signals) : [];
   const [mandate, setMandate] = useState("");
   const [successor, setSuccessor] = useState("");
   const [cleared, setCleared] = useState<string[]>([]);
@@ -129,11 +148,13 @@ export default function HandoverProtocol() {
       "   Where an obligation cannot be discharged by the successor office, the failure is recorded publicly at the next reporting interval, and the parties return to the table rather than to silence."
     );
     L.push("");
+    if (engineLines.length) L.push(...engineLines, "");
+    if (linked) L.push(...telemetryLines(signals));
     L.push("Rule-based clearance aid. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
     L.push("");
     L.push("END OF PROTOCOL");
     return L.join("\n");
-  }, [mandate, successor, mission, cleared, deps, r]);
+  }, [mandate, successor, mission, cleared, deps, r, engineLines, linked, signals]);
 
   return (
     <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
@@ -206,6 +227,8 @@ export default function HandoverProtocol() {
           </div>
         </div>
       </div>
+
+      <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()) : ["The upstream reading raises no handover condition."]} />
 
       <DeskOutput text={text} fileName="Vinculum-Handover-Protocol" />
     </div>
