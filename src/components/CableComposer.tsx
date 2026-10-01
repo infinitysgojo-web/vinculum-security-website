@@ -162,6 +162,11 @@ export default function CableComposer() {
   const [copied, setCopied] = useState(false);
   const outRef = useRef<HTMLDivElement>(null);
 
+  // The live feed from Division I and Division II.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const live = linked && hasSignal(signals);
+
   useEffect(() => {
     if (initial >= 0 && outRef.current) {
       outRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
