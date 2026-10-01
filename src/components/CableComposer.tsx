@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CASES, DOMAINS } from "@/content/cases";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
+import { useEngine, hasSignal, telemetryLines } from "@/components/desk/engine";
+import SyncPanel from "@/components/desk/SyncPanel";
 
 /**
  * §12B, the Operational Briefing Desk.
