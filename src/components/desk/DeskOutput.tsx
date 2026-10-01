@@ -92,7 +92,7 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
     "inline-flex items-center justify-center gap-2 border border-brass/50 px-3 py-2.5 min-h-11 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors disabled:opacity-50";
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-w-0">
       <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-4">
         <button type="button" onClick={copy} className={btn}><Copy size={13} /> Copy</button>
         <button type="button" onClick={downloadText} className={btn}><Download size={13} /> Text</button>
@@ -123,7 +123,7 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
             <p>Registry · <span className="text-primary/80">KECOBO RZ100967</span></p>
           </div>
         </div>
-        <pre className="whitespace-pre-wrap break-words px-4 sm:px-6 py-5 text-[0.76rem] sm:text-[0.8rem] leading-relaxed text-foreground/90 max-h-[34rem] overflow-y-auto">
+        <pre className="whitespace-pre-wrap [overflow-wrap:anywhere] px-4 sm:px-6 py-5 text-[0.76rem] sm:text-[0.8rem] leading-relaxed text-foreground/90 max-h-[34rem] overflow-y-auto">
           {text}
         </pre>
       </div>
