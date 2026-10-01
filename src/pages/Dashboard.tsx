@@ -165,6 +165,22 @@ const DESKS = [
     note: "Clear a mission against the doctrine's protection and verification gates before deployment.",
   },
   {
+    id: "verification",
+    division: "govern",
+    label: "Verification Ledger",
+    eyebrow: "VIII · Compliance",
+    title: "Independent verification and compliance ledger",
+    note: "Seat the verifiers, fix the reporting interval, and read compliance against the three standing safeguards.",
+  },
+  {
+    id: "handover",
+    division: "govern",
+    label: "Mandate Handover",
+    eyebrow: "VI.B · Durability",
+    title: "Mandate handover and durability protocol",
+    note: "Test whether the settlement has taken root locally before the external presence departs, and draft the handover instrument.",
+  },
+  {
     id: "binder",
     division: "govern",
     label: "Mission Binder",
