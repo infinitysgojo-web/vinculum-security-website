@@ -410,6 +410,7 @@ export default function Dashboard() {
         </BinderContext.Provider>
         </DeskMetaContext.Provider>
         </MissionContext.Provider>
+        </EngineContext.Provider>
 
         <div className="mb-20 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5">
           {prev ? (
