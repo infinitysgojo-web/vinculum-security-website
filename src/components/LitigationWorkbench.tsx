@@ -2,6 +2,9 @@ import { useMemo, useState } from "react";
 import { Copy, Download, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import GoldRule from "./GoldRule";
+import SyncPanel from "@/components/desk/SyncPanel";
+import { telemetryLines, useEngine } from "@/components/desk/engine";
+import { useEffect } from "react";
 import { DOMAINS } from "@/content/cases";
 
 /**
@@ -147,6 +150,13 @@ export default function LitigationWorkbench() {
   const [bond, setBond] = useState(0);
   const [tactic, setTactic] = useState(0);
 
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  useEffect(() => {
+    if (!linked || !signals.weakestBond) return;
+    const i = (DOMAINS as readonly string[]).indexOf(signals.weakestBond);
+    if (i >= 0) setBond(i);
+  }, [linked, signals.weakestBond]);
   const text = useMemo(() => {
     const f = FORUMS[forum];
     const p = POSTURES[posture];
@@ -192,6 +202,7 @@ export default function LitigationWorkbench() {
       "  3. A continuity provision drafted to survive a change in the officeholders who negotiated or conceded it."
     );
     lines.push("");
+    if (linked) lines.push(...telemetryLines(signals));
     lines.push("VI. NOTE ON COMPILATION");
     lines.push(
       "This checklist is compiled deterministically from fixed doctrinal rules. No part of it is machine-generated or predictive, and nothing entered above leaves this browser."
@@ -199,7 +210,7 @@ export default function LitigationWorkbench() {
     lines.push("Kenya Copyright Board Registration No. RZ100967.");
     lines.push("END OF CHECKLIST.");
     return lines.join("\n");
-  }, [matter, facts, forum, posture, bond, tactic]);
+  }, [matter, facts, forum, posture, bond, tactic, linked, signals]);
 
   const copy = async () => {
     try {
@@ -239,6 +250,7 @@ export default function LitigationWorkbench() {
       <p className="eyebrow">§14 · Legal and Litigation Desk</p>
       <h2 className="mt-3 font-serif text-primary text-2xl md:text-3xl">Litigation preparation checklist</h2>
       <GoldRule className="mt-4 mb-5" />
+      <div className="mb-6"><SyncPanel linked={linked} onToggle={setLinked} summary={(x) => x.weakestBond ? [`Harmed bond set to ${x.weakestBond}, the most exposed bond on the diagnostic bench.`] : []} /></div>
       <p className="mb-7 max-w-3xl text-muted-foreground text-sm leading-relaxed">
         Enter the facts of a new matter and the desk compiles a preparation checklist from the doctrine's
         evidentiary rules, the §9A examination scripts, and the §12 continuity provisions. Nothing is saved
