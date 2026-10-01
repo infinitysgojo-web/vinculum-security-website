@@ -372,6 +372,9 @@ export default function Dashboard() {
           )}
         </div>
 
+        <TelemetryStrip signals={signals} />
+
+        <EngineContext.Provider value={{ signals, publish }}>
         <MissionContext.Provider value={profile}>
         <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow }}>
         <BinderContext.Provider value={{ add: addToBinder }}>
