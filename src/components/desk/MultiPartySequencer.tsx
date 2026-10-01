@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import SyncPanel from "@/components/desk/SyncPanel";
+import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 
 type Actor = {
@@ -162,6 +164,16 @@ export default function MultiPartySequencer() {
     return BONDS.filter((_, i) => !covered.has(i));
   }, [seated]);
 
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  usePublish("multiparty", {
+    seatedParties: seated.length,
+    frictionPairs: frictions.map((f) => `${ACTORS.find((a) => a.id === f.a)?.label} and ${ACTORS.find((a) => a.id === f.b)?.label}`),
+  });
+  const spoiler =
+    linked && frictions.length >= 2 && ((signals.rupture ?? 0) >= 35 || signals.elitePactAlert)
+      ? `Spoiler coalition risk: ${frictions.length} friction pairs at the table while the mission reading is under strain. Seat the frictional parties in separate opening sessions.`
+      : "";
   const text = useMemo(() => {
     const L: string[] = [];
     L.push("MULTI-PARTY SEQUENCING AND DE-CONFLICTION MATRIX");
@@ -212,9 +224,11 @@ export default function MultiPartySequencer() {
       );
     }
     L.push("");
+    if (spoiler) L.push(spoiler, "");
+    if (linked) L.push(...telemetryLines(signals));
     L.push("END OF MATRIX");
     return L.join("\n");
-  }, [theatre, seated, frictions, bondGaps]);
+  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
@@ -273,6 +287,7 @@ export default function MultiPartySequencer() {
         </div>
       </div>
 
+      <SyncPanel linked={linked} onToggle={setLinked} summary={() => [spoiler || `${frictions.length} friction pair(s) at the table; no spoiler coalition flagged by the live reading.`]} />
       <DeskOutput text={text} fileName="Vinculum-Multi-Party-Matrix" />
     </div>
   );

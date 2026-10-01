@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import SyncPanel from "@/components/desk/SyncPanel";
+import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 
 type Rule = {
@@ -96,6 +98,25 @@ export default function ClauseRedliner() {
     [body]
   );
 
+  const [own, setOwn] = useState<{ phrase: string; why: string; sub: string }[]>([]);
+  const [op, setOp] = useState(""); const [ow, setOw] = useState(""); const [os, setOs] = useState("");
+  const ownHits = body.trim().length >= 20 ? own.filter((r) => body.toLowerCase().includes(r.phrase.toLowerCase())) : [];
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  usePublish("redliner", { redlineFlags: findings.length });
+  /** Shock-aware tests: wording that leans on a mechanism the live reading shows is failing. */
+  const live: string[] = [];
+  if (linked && body.trim().length >= 20) {
+    const b = body.toLowerCase();
+    if (signals.shocks?.some((x) => /principal/i.test(x)) && /president|minister|leader|his excellency|personally/.test(b) && !/office|successor/.test(b))
+      live.push("The draft names a person, while a principal-removal shock is active upstream. Bind the Office and every successor instead.");
+    if (signals.weakestBond === "Communal" && !/communit|local|village|elder/.test(b))
+      live.push("The communal bond is the weakest on the bench, yet the draft gives communities no named role. Add a standing community verification seat.");
+    if (signals.weakestBond === "Intergenerational" && !/youth|young|generation/.test(b))
+      live.push("The intergenerational bond is failing, yet the draft is silent on the successor generation. Add a youth continuity forum.");
+    if ((signals.rupture ?? 0) >= 35 && !/verif|monitor|independent/.test(b))
+      live.push(`The rupture index reads ${signals.rupture} per cent, yet the draft names no independent verifier. Add one with defined reporting intervals.`);
+  }
   const clean = body.trim().length >= 20 && findings.length === 0;
 
   const text = useMemo(() => {
@@ -131,6 +152,18 @@ export default function ClauseRedliner() {
         L.push("");
       });
     }
+    if (ownHits.length) {
+      L.push("II-B. FINDINGS UNDER THE ANALYST'S OWN RULES");
+      L.push("");
+      ownHits.forEach((r, i) => L.push(`${i + 1}. Flagged phrase: "${r.phrase}"`, `   Reason: ${r.why || "Analyst rule"}`, ...(r.sub ? [`   Substitute wording: "${r.sub}"`] : []), ""));
+    }
+    if (live.length) {
+      L.push("II-A. FINDINGS RAISED BY THE LIVE MISSION READING");
+      L.push("");
+      live.forEach((x, i) => L.push(`${i + 1}. ${x}`));
+      L.push("");
+    }
+    if (linked) L.push(...telemetryLines(signals));
     L.push("III. STANDING NOTE");
     L.push("");
     L.push(
@@ -139,7 +172,8 @@ export default function ClauseRedliner() {
     L.push("");
     L.push("END OF AUDIT");
     return L.join("\n");
-  }, [title, body, findings, clean]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, body, findings, clean, linked, signals, live.join("|"), ownHits]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
@@ -162,8 +196,22 @@ export default function ClauseRedliner() {
             placeholder="Paste the draft clause or provision here. Nothing you paste leaves this browser."
           />
           <p className="mt-3 text-xs text-muted-foreground">
-            {RULES.length} tests applied. Everything runs in this browser; nothing is saved or sent.
+            {RULES.length + own.length} tests applied. Everything runs in this browser; nothing is saved or sent.
           </p>
+          <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
+            <p className={label}>Custom mode: your own rule</p>
+            <input className={field} value={op} onChange={(e) => setOp(e.target.value)} placeholder="Phrase to flag, e.g. best endeavours" />
+            <input className={field} value={ow} onChange={(e) => setOw(e.target.value)} placeholder="Why it is a risk" />
+            <input className={field} value={os} onChange={(e) => setOs(e.target.value)} placeholder="Substitute wording (optional)" />
+            <button type="button" disabled={!op.trim()} onClick={() => { setOwn((p) => [...p, { phrase: op.trim(), why: ow.trim(), sub: os.trim() }]); setOp(""); setOw(""); setOs(""); }}
+              className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add rule</button>
+            {own.map((r, i) => (
+              <div key={i} className="flex items-center justify-between gap-2 text-xs border border-border p-2">
+                <span className="min-w-0 [overflow-wrap:anywhere]">"{r.phrase}"{ownHits.includes(r) && <span className="ml-2 text-accent">flagged</span>}</span>
+                <button type="button" className="text-muted-foreground hover:text-accent px-2" onClick={() => setOwn((p) => p.filter((_, j) => j !== i))}>Remove</button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="border border-brass/40 p-5">
@@ -188,7 +236,10 @@ export default function ClauseRedliner() {
         </div>
       </div>
 
-      <DeskOutput text={text} fileName="Vinculum-Clause-Redline" />
+      <div className="space-y-4 min-w-0">
+        <SyncPanel linked={linked} onToggle={setLinked} summary={() => live.length ? live : ["The live reading raises no extra finding against this wording."]} />
+        <DeskOutput text={text} fileName="Vinculum-Clause-Redline" />
+      </div>
     </div>
   );
 }
