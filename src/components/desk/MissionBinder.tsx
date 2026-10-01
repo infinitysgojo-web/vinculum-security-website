@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
+import { telemetryLines, useEngine } from "./engine";
 import DeskOutput, { BinderContext, field, label, panel, todayStamp, type BinderEntry } from "./DeskOutput";
 
 /**
@@ -17,6 +18,7 @@ export default function MissionBinder({
 }) {
   const [theatre, setTheatre] = useState("");
   const [envoy, setEnvoy] = useState("");
+  const { signals } = useEngine();
 
   const text = useMemo(() => {
     const bar = "=".repeat(64);
@@ -29,6 +31,7 @@ export default function MissionBinder({
       `DATE: ${todayStamp()}`,
       `CONTENTS: ${entries.length} document${entries.length === 1 ? "" : "s"}`,
       "",
+      ...(telemetryLines(signals).length ? ["SITUATION SYNOPSIS", ...telemetryLines(signals).slice(1)] : []),
       "TABLE OF CONTENTS",
       ...entries.map((e, i) => `  Tab ${i + 1}. ${e.title}`),
     ];
@@ -37,7 +40,7 @@ export default function MissionBinder({
     });
     L.push("", bar, "END OF BINDER. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [entries, theatre, envoy]);
+  }, [entries, theatre, envoy, signals]);
 
   return (
     <section className={panel}>

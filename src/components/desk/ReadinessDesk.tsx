@@ -1,5 +1,26 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import SyncPanel from "./SyncPanel";
+import { telemetryLines, useEngine, usePublish, type Signals } from "./engine";
+
+/** Engine locks: fixed doctrinal conditions read from the upstream divisions. */
+type Lock = { name: string; held: boolean; remedy: string };
+function engineLocks(s: Signals): Lock[] {
+  const cov = (s.covenants ?? []).join(" ").toLowerCase();
+  const continuity = /personal|continuity|office|atrophy/.test(cov);
+  const out: Lock[] = [];
+  if (s.rupture !== undefined && s.rupture >= 35)
+    out.push({ name: `Rupture index ${s.rupture}% requires a continuity covenant`, held: continuity, remedy: "Draft an office-continuity provision in the Clause Architect before clearance." });
+  if (s.elitePactAlert)
+    out.push({ name: `Track gap of ${s.trackGap} phases (Elite-Pact Mirage)`, held: false, remedy: "Hold Track I and advance the communal track until the gap closes to one phase." });
+  if (s.weakestBond && (s.weakestScore ?? 5) <= 2)
+    out.push({ name: `${s.weakestBond} bond at ${s.weakestScore} of 5`, held: (s.covenants?.length ?? 0) > 0, remedy: "Attach at least one remedial covenant addressing the failing bond." });
+  if (s.survivalScore !== undefined)
+    out.push({ name: `Treaty survival under stress at ${s.survivalScore}%`, held: s.survivalScore >= 55, remedy: "Close the first failing provision in the Succession Simulator until survival reaches 55%." });
+  if ((s.shocks?.length ?? 0) >= 2)
+    out.push({ name: `${s.shocks!.length} compound shocks active`, held: (s.covenants?.length ?? 0) >= 2, remedy: "Carry at least two covenants to absorb concurrent shocks." });
+  return out;
+}
 
 /** Mission lifecycle clearance across four stages. Deterministic; nothing stored. */
 type Gate = { id: string; group: string; text: string; critical: boolean; remedy: string };
@@ -62,20 +83,27 @@ export default function ReadinessDesk() {
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   const stage = STAGES[si];
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const locks = linked ? engineLocks(signals) : [];
+  const openLocks = locks.filter((l) => !l.held);
 
   const r = useMemo(() => {
     const gates = stage.gates;
     const missingCritical = gates.filter((g) => g.critical && !done.includes(g.id));
     const met = gates.filter((g) => done.includes(g.id)).length;
     const pct = Math.round((met / gates.length) * 100);
-    const verdict = missingCritical.length ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
+    const verdict = missingCritical.length || openLocks.length ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
     const lifecycle = STAGES.map((s) => {
       const mc = s.gates.filter((g) => g.critical && !done.includes(g.id)).length;
       const m = s.gates.filter((g) => done.includes(g.id)).length;
-      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 };
+      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 };
     });
     return { missingCritical, pct, verdict, met, lifecycle };
-  }, [done, stage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done, stage, JSON.stringify(openLocks)]);
+
+  usePublish("readiness", { gatesCleared: `${r.lifecycle.filter((x) => x.cleared).length}/${r.lifecycle.length}` });
 
   const text = useMemo(() => {
     const L = [
@@ -104,11 +132,20 @@ export default function ReadinessDesk() {
       L.push("", "This stage must not be certified until every critical gate is met.");
       L.push("");
     }
+    if (locks.length) {
+      L.push("ENGINE LOCKS (read from the upstream divisions)");
+      locks.forEach((l) => {
+        L.push(`  [${l.held ? "RELEASED" : "LOCKED  "}] ${l.name}`);
+        if (!l.held) L.push(`    Directive: ${l.remedy}`);
+      });
+      L.push("");
+    }
+    if (linked) L.push(...telemetryLines(signals));
     L.push("LIFECYCLE POSITION");
     r.lifecycle.forEach((s) => L.push(`  ${s.cleared ? "CLEARED    " : "OUTSTANDING"}  ${s.label} (${s.met}/${s.total})`));
     L.push("", "Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [mission, done, r, stage]);
+  }, [mission, done, r, stage, locks, linked, signals]);
 
   let group = "";
   return (
@@ -144,7 +181,19 @@ export default function ReadinessDesk() {
             );
           })}
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
+          <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${openLocks.length} of ${locks.length} engine locks still hold this mission back.`] : ["No upstream condition currently locks clearance."]} />
+          {locks.length > 0 && (
+            <div className="border border-brass/40 bg-background p-4 space-y-2">
+              <p className={label}>Engine locks</p>
+              {locks.map((l) => (
+                <div key={l.name} className={`border-l-2 pl-3 ${l.held ? "border-primary/40" : "border-terracotta"}`}>
+                  <p className="text-xs font-semibold text-foreground/90">{l.held ? "Released" : "Locked"}: {l.name}</p>
+                  {!l.held && <p className="text-xs text-muted-foreground mt-0.5">{l.remedy}</p>}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="border border-border bg-background p-4">
             <p className={label}>{stage.label}</p>
             <p className={`font-serif text-3xl ${r.missingCritical.length ? "text-accent" : "text-primary"}`}>{r.verdict}</p>
