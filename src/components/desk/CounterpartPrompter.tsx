@@ -101,9 +101,10 @@ export default function CounterpartPrompter() {
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
+    if (live) L.push("", ...telemetryLines(signals));
     L.push("", "Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [active, bond, questions]);
+  }, [active, bond, questions, live, signals]);
 
 
   return (
