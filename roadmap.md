@@ -21,3 +21,6 @@
 - [x] Engine wired: shock tester, succession simulator publish; readiness locks, verification covenant lines, handover restoration gate, binder situation synopsis
 - [x] Linked multi-party bench, redliner (plus own rules), legal desk, stress tester
 - [x] Custom mode: redliner own rules added (five desks already had custom mode)
+- [x] Critics' chamber, field audit, comparative mirror respond to the live reading
+- [x] Custom mode: own shocks (compound shock), own parties and frictions (multi-party)
+- [x] Screen sweep 320/768/1920 across all public pages and 18 desks: clean

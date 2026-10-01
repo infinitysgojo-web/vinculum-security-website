@@ -98,7 +98,17 @@ export default function CompoundShockTester() {
 
   const toggle = (id: string) => setOn((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
-  const active = SHOCKS.filter((s) => on.includes(s.id));
+  const [own, setOwn] = useState<Shock[]>([]);
+  const [nl, setNl] = useState(""); const [ns, setNs] = useState(18); const [nb, setNb] = useState(1); const [nk, setNk] = useState("");
+  const ALL = useMemo(() => [...SHOCKS, ...own], [own]);
+  const active = ALL.filter((s) => on.includes(s.id));
+  const addOwn = () => {
+    if (!nl.trim()) return;
+    const id = `own-${Date.now()}`;
+    setOwn((p) => [...p, { id, label: nl.trim(), sev: ns, bond: nb, breaker: nk.trim() || "Provisions resting on the affected bond", absorb: "Analyst-defined shock: draft a matching counter-measure in the Clause Architect's custom provisions." }]);
+    setOn((p) => [...p, id]);
+    setNl(""); setNk("");
+  };
 
   const { strain, band, bondScores, sequence } = useMemo(() => {
     const base = active.reduce((a, s) => a + s.sev, 0);
@@ -127,7 +137,7 @@ export default function CompoundShockTester() {
     L.push("");
     L.push(`THEATRE: ${theatre.trim() || "Unnamed theatre"}`);
     L.push(`DATE: ${todayStamp()}`);
-    L.push(`SHOCKS APPLIED: ${active.length} of ${SHOCKS.length}`);
+    L.push(`SHOCKS APPLIED: ${active.length} of ${ALL.length}`);
     L.push("");
     L.push("I. COMPOUND STRAIN READING");
     L.push("");
@@ -168,7 +178,7 @@ export default function CompoundShockTester() {
   }, [theatre, active, strain, band, sequence, bondScores]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
+    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="cs-theatre">Theatre under test</label>
@@ -181,7 +191,7 @@ export default function CompoundShockTester() {
           />
           <p className={`${label} mt-5`}>Apply shocks simultaneously</p>
           <div className="space-y-2">
-            {SHOCKS.map((s) => (
+            {ALL.map((s) => (
               <label key={s.id} className="flex items-start gap-3 text-sm cursor-pointer">
                 <input
                   type="checkbox"
@@ -196,6 +206,27 @@ export default function CompoundShockTester() {
                   </span>
                 </span>
               </label>
+            ))}
+          </div>
+          <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
+            <p className={label}>Custom mode: model your own shock</p>
+            <input className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Drought displaces pastoralist herds" />
+            <input className={field} value={nk} onChange={(e) => setNk(e.target.value)} placeholder="What it breaks first (optional)" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 min-w-0">
+              <label className="min-w-0 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Severity {ns}
+                <input type="range" min={5} max={35} value={ns} onChange={(e) => setNs(Number(e.target.value))} className="w-full accent-[hsl(var(--accent))]" />
+              </label>
+              <select className={field} value={nb} onChange={(e) => setNb(Number(e.target.value))} aria-label="Bond struck">
+                {BONDS.map((b, i) => <option key={b} value={i}>{b}</option>)}
+              </select>
+            </div>
+            <button type="button" disabled={!nl.trim()} onClick={addOwn}
+              className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add and apply shock</button>
+            {own.map((o) => (
+              <div key={o.id} className="flex items-center justify-between gap-2 text-xs border border-border p-2">
+                <span className="min-w-0 [overflow-wrap:anywhere]">{o.label}</span>
+                <button type="button" className="px-2 text-muted-foreground hover:text-accent" onClick={() => { setOwn((p) => p.filter((x) => x.id !== o.id)); setOn((p) => p.filter((x) => x !== o.id)); }}>Remove</button>
+              </div>
             ))}
           </div>
         </div>

@@ -9,7 +9,7 @@ import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, type Signals } from "@/components/desk/engine";
+import { EngineContext, useEngine, type Signals } from "@/components/desk/engine";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionVault from "@/components/desk/MissionVault";
 
@@ -447,6 +447,8 @@ export default function Dashboard() {
 
 function MirrorDesk() {
   const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
+  const { signals } = useEngine();
+  const analogue = signals.analogue ? CASES.find((c) => c.shortTitle === signals.analogue) : undefined;
 
   const toggle = (slug: string) =>
     setPicked((prev) =>
@@ -463,6 +465,13 @@ function MirrorDesk() {
 
   return (
     <div className="space-y-8">
+      {analogue && !picked.includes(analogue.slug) && (
+        <div className="border border-brass/40 bg-background/70 p-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-foreground/85">Your live bond reading sits closest to <span className="font-semibold">{analogue.shortTitle}</span>.</p>
+          <button type="button" onClick={() => setPicked((p) => [analogue.slug, ...p].slice(0, 3))}
+            className="min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent">Mirror it</button>
+        </div>
+      )}
       <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6">
         <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">
           Select two or three theatres

@@ -16,7 +16,7 @@ type Actor = {
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"];
 
-const ACTORS: Actor[] = [
+const BASE_ACTORS: Actor[] = [
   {
     id: "state",
     label: "State executive",
@@ -146,6 +146,26 @@ const FRICTION: { a: string; b: string; text: string }[] = [
 const PHASES = ["Opening", "Probing", "Commitment", "Close"] as const;
 
 export default function MultiPartySequencer() {
+  const [own, setOwn] = useState<Actor[]>([]);
+  const [ownFric, setOwnFric] = useState<{ a: string; b: string; text: string }[]>([]);
+  const [nl, setNl] = useState(""); const [nb, setNb] = useState(1); const [nc, setNc] = useState(""); const [nf, setNf] = useState("");
+  const ACTORS = [...BASE_ACTORS, ...own];
+  const addParty = () => {
+    if (!nl.trim()) return;
+    const id = `own-${Date.now()}`;
+    const name = nl.trim();
+    setOwn((p) => [...p, {
+      id, label: name, bond: nb,
+      opening: `Open by naming what ${name} stands to lose if the bond fails, before any proposal is tabled.`,
+      probing: `Ask ${name} which commitment it could keep if its own leadership changed tomorrow.`,
+      commitment: `Record one verifiable step ${name} will take before the next session.`,
+      close: `Close by reading back ${name}'s commitment in its own words.`,
+      caution: nc.trim() || `Analyst-defined party; confirm its standing with the community before seating.`,
+    }]);
+    if (nf) setOwnFric((p) => [...p, { a: id, b: nf, text: `Analyst-recorded friction between ${name} and ${BASE_ACTORS.find((x) => x.id === nf)?.label ?? "the named party"}. Seat them in separate opening sessions.` }]);
+    setPicked((p) => (p.length >= 4 ? p : [...p, id]));
+    setNl(""); setNc(""); setNf("");
+  };
   const [theatre, setTheatre] = useState("");
   const [picked, setPicked] = useState<string[]>(["state", "youth", "armed"]);
 
@@ -155,8 +175,8 @@ export default function MultiPartySequencer() {
   const seated = picked.map((id) => ACTORS.find((a) => a.id === id)!).filter(Boolean);
 
   const frictions = useMemo(
-    () => FRICTION.filter((f) => picked.includes(f.a) && picked.includes(f.b)),
-    [picked]
+    () => [...FRICTION, ...ownFric].filter((f) => picked.includes(f.a) && picked.includes(f.b)),
+    [picked, ownFric]
   );
 
   const bondGaps = useMemo(() => {
@@ -231,7 +251,7 @@ export default function MultiPartySequencer() {
   }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
+    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="mp-theatre">Table or theatre</label>
@@ -263,6 +283,22 @@ export default function MultiPartySequencer() {
                 </button>
               );
             })}
+          </div>
+          <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
+            <p className={label}>Custom mode: seat your own party</p>
+            <input className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Diaspora remittance network" />
+            <input className={field} value={nc} onChange={(e) => setNc(e.target.value)} placeholder="Caution to carry into the room (optional)" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <select className={field} value={nb} onChange={(e) => setNb(Number(e.target.value))} aria-label="Bond it carries">
+                {BONDS.map((b, i) => <option key={b} value={i}>Carries: {b}</option>)}
+              </select>
+              <select className={field} value={nf} onChange={(e) => setNf(e.target.value)} aria-label="Friction with">
+                <option value="">No known friction</option>
+                {BASE_ACTORS.map((a) => <option key={a.id} value={a.id}>Friction with: {a.label}</option>)}
+              </select>
+            </div>
+            <button type="button" disabled={!nl.trim()} onClick={addParty}
+              className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add party</button>
           </div>
         </div>
 

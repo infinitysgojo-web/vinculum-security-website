@@ -103,14 +103,14 @@ export default function CaseDetail() {
       <CaseDossier c={c} />
 
       <div className="container">
-        <nav aria-label="Breadcrumb" className="pt-10 flex items-center justify-between gap-4">
+        <nav aria-label="Breadcrumb" className="pt-10 flex flex-wrap items-center justify-between gap-4">
           <Link
             to="/cases"
             className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:underline"
           >
             ← All case studies
           </Link>
-          <div className="flex flex-wrap items-center gap-3 print:hidden">
+          <div className="flex flex-wrap items-center gap-3 min-w-0 max-w-full print:hidden [&_button]:max-w-full [&_button]:whitespace-normal">
             <CiteWork part={`Section ${c.ref}, ${c.title}`} path={`/cases/${c.slug}`} />
             <DossierDownload c={c} />
           </div>

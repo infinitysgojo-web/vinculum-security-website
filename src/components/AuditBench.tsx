@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Check, RotateCcw } from "lucide-react";
 import GoldRule from "./GoldRule";
+import EngineBrief from "@/components/desk/EngineBrief";
+import { useEngine } from "@/components/desk/engine";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +11,7 @@ const CHECKS = ["Relevant evidence reviewed", "Affected party heard directly", "
 
 export default function AuditBench({ parties }: { parties: readonly Party[] }) {
   const [active, setActive] = useState(0);
+  const { signals: sg } = useEngine();
   const [checked, setChecked] = useState<Record<string, boolean[]>>({});
   const party = parties[active];
   if (!party) return null;
@@ -23,6 +26,11 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
       <p className="eyebrow">VI.A · Stakeholder Safeguard</p>
       <h2 className="mt-3 font-serif text-primary text-2xl md:text-3xl">Field audit bench</h2>
       <GoldRule className="mt-4 mb-6" />
+      <EngineBrief lines={[
+        sg.weakestBond && `Audit first the parties who carry the ${sg.weakestBond.toLowerCase()} bond; it is the most exposed on the diagnostic bench.`,
+        (sg.rupture ?? 0) >= 35 && `With the rupture index at ${sg.rupture} per cent, treat any unchecked safeguard as blocking, not advisory.`,
+        (sg.frictionPairs?.length ?? 0) > 0 && `Friction at the table: ${sg.frictionPairs!.join("; ")}. Confirm retaliation safeguards for each side separately.`,
+      ]} />
       <p className="mb-8 max-w-3xl text-muted-foreground">Review one party at a time before a bond assessment is treated as ready for use.</p>
       <label htmlFor="audit-party" className="eyebrow block mb-2 md:hidden">Affected party</label>
       <select id="audit-party" value={active} onChange={(event) => setActive(Number(event.target.value))} className="mb-5 w-full border border-input bg-background px-3 py-2.5 text-sm md:hidden">

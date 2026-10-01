@@ -176,7 +176,7 @@ export default function ClauseRedliner() {
   }, [title, body, findings, clean, linked, signals, live.join("|"), ownHits]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
+    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="rl-title">Instrument or article title</label>
