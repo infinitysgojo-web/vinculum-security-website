@@ -14,3 +14,7 @@
 - [x] Case studies: one-click Executive Dossier print/PDF layout
 - [x] Glossary: thematic lineage filter and canonical citation copy
 - [x] Citation exporter, glossary etymology, Mission Binder desk, treaty comparison matrix, compound shocks
+- [x] Dashboard mobile layout: compact header, scrolling division strip, two-column desk grid, responsive panels
+- [x] Dossier house style for every desk export: chancellery document card plus publication-grade PDF download
+- [x] Desks interconnected as one sequence: shared mission profile, step counter, previous/next bridge
+- [x] Division IV balanced with the Verification Ledger and Mandate Handover desks
