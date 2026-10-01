@@ -134,6 +134,14 @@ export default function SentinelMatrix() {
     return { byBond, pct, b: band(pct), traps, compound };
   }, [on, trend, custom, cOn]);
 
+  usePublish("sentinel", {
+    rupture: r.pct,
+    ruptureBand: r.b.name,
+    bondStrain: r.byBond,
+    traps: r.traps.map((t) => t.name),
+    trend: TREND[trend].label,
+  });
+
   const text = useMemo(() => {
     const L = [
       "EARLY-WARNING SENTINEL READING",
