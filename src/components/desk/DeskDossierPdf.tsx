@@ -151,7 +151,9 @@ function Body({ text }: { text: string }) {
   return (
     <>
       {lines.slice(1).map((raw, i) => {
-        const l = raw.replace(/\s+$/, "");
+        // Leading whitespace in a checkbox marker collapses in PDF text, so the
+        // cleared and open states are spelled out instead.
+        const l = raw.replace(/\s+$/, "").replace(/\[x\]/gi, "[CLEARED]").replace(/\[ \]/g, "[OPEN]");
         if (!l.trim()) return <View key={i} style={s.gap} />;
         if (isHeading(l)) return <Text key={i} style={s.h}>{l.trim()}</Text>;
         if (isKv(l)) return <Text key={i} style={s.kv}>{l.trim()}</Text>;
