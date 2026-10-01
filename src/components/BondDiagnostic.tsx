@@ -147,6 +147,21 @@ export default function BondDiagnostic() {
     return best;
   }, [values]);
 
+  // Publish the reading onto the mission engine for every downstream desk.
+  usePublish("diagnostics", {
+    bonds: {
+      interpersonal: scores.interpersonal,
+      communal: scores.communal,
+      intergenerational: scores.intergenerational,
+      institutional: scores.institutional,
+    },
+    bondMean: mean,
+    weakestBond: weakest.name,
+    weakestScore: scores[weakest.key],
+    standing: standing.label,
+    analogue: analogue.shortTitle,
+  });
+
   const summary = useMemo(() => {
     const lines = [
       "VINCULUM CONTINUUM ASSESSMENT",
