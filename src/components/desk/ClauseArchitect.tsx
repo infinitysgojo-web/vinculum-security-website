@@ -147,6 +147,11 @@ export default function ClauseArchitect() {
     setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort((a, b) => a - b)));
 
 
+  usePublish("clauses", {
+    covenants: [...picked.map((i) => FRAGILITIES[i].label), ...own.map((o) => o.label)],
+    verifierSeated: picked.includes(4),
+  });
+
   const text = useMemo(() => {
     const a = AGREEMENTS[ag];
     const partyName = parties.trim() || a.party;
