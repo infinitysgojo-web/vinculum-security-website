@@ -209,7 +209,7 @@ export default function ClauseArchitect() {
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig, own, ownType]);
+  }, [ag, picked, title, parties, office, rig, own, ownType, live, signals, mandated]);
 
 
   return (
