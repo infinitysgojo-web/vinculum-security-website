@@ -7,8 +7,9 @@ import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import { CASES } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
-import { BinderContext, type BinderEntry } from "@/components/desk/DeskOutput";
-import MissionVault, { EMPTY_PROFILE, type MissionProfile } from "@/components/desk/MissionVault";
+import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
+import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components/desk/mission";
+import MissionVault from "@/components/desk/MissionVault";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
@@ -29,6 +30,8 @@ const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
 const ClauseRedliner = lazy(() => import("@/components/desk/ClauseRedliner"));
 const MultiPartySequencer = lazy(() => import("@/components/desk/MultiPartySequencer"));
 const CompoundShockTester = lazy(() => import("@/components/desk/CompoundShockTester"));
+const VerificationLedger = lazy(() => import("@/components/desk/VerificationLedger"));
+const HandoverProtocol = lazy(() => import("@/components/desk/HandoverProtocol"));
 
 
 const IDLE_MS = 20 * 60 * 1000;
