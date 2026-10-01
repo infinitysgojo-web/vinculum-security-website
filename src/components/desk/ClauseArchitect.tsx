@@ -98,6 +98,42 @@ export default function ClauseArchitect() {
   const [own, setOwn] = useState<Own[]>([]);
   const [oLabel, setOLabel] = useState("");
   const [oText, setOText] = useState("");
+
+  // Division I and II decide which fragilities this instrument must insulate against.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const live = linked && hasSignal(signals);
+  const mandated = useMemo(() => {
+    if (!live) return [] as number[];
+    const need = new Set<number>();
+    const trapMap: Record<string, number[]> = {
+      "Elite-Pact Mirage": [0],
+      "Generational Cliff": [1],
+      "Unanchored Repair": [2],
+      "Bond Theater": [3],
+      "Systemic Bond Collapse": [0, 2, 4],
+    };
+    (signals.traps ?? []).forEach((t) => (trapMap[t] ?? []).forEach((i) => need.add(i)));
+    const bondMap: Record<string, number> = {
+      Interpersonal: 0,
+      Communal: 3,
+      Intergenerational: 1,
+      "Institutional-Relational": 2,
+    };
+    if (signals.weakestBond && (signals.weakestScore ?? 5) <= 3) {
+      const i = bondMap[signals.weakestBond];
+      if (i !== undefined) need.add(i);
+    }
+    if ((signals.rupture ?? 0) >= 35) need.add(4);
+    if (signals.elitePactAlert) need.add(0);
+    if ((signals.shocks?.length ?? 0) >= 2) need.add(5);
+    return [...need].sort((a, b) => a - b);
+  }, [live, signals]);
+
+  useEffect(() => {
+    if (!mandated.length) return;
+    setPicked((p) => [...new Set([...p, ...mandated])].sort((a, b) => a - b));
+  }, [mandated]);
   const addOwn = () => {
     const l = oLabel.trim();
     if (!l) return;
