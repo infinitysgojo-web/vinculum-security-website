@@ -84,6 +84,7 @@ export default function TrackSequencer() {
       `TRACK II DEPTH: Phase ${r.b} of ${PHASES.length}`,
       `SYNCHRONISATION GAP: ${r.gap > 0 ? `+${r.gap} (Track I ahead)` : r.gap < 0 ? `${r.gap} (Track II ahead)` : "0 (in step)"}`,
       "",
+      ...(live ? telemetryLines(signals) : []),
       "SEQUENCE LEDGER",
     ];
     PHASES.forEach((ph) => {
