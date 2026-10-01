@@ -93,15 +93,15 @@ export default function MissionVault({
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" className={btn} onClick={() => setOpen((o) => !o)}>
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+          <button type="button" className={`${btn} col-span-2 sm:col-span-1`} onClick={() => setOpen((o) => !o)}>
             {open ? <X size={13} /> : null} {open ? "Close" : "Mission details"}
           </button>
           <button type="button" className={btn} onClick={() => fileRef.current?.click()}>
-            <Upload size={13} /> Load archive
+            <Upload size={13} /> Load
           </button>
           <button type="button" className={btn} onClick={save}>
-            <Archive size={13} /> Save archive
+            <Archive size={13} /> Save
           </button>
           <input
             ref={fileRef}
