@@ -253,7 +253,13 @@ export default function ClauseArchitect() {
               {FRAGILITIES.map((f, i) => (
                 <label key={f.id} className="flex gap-3 items-start border border-border bg-background p-3 cursor-pointer text-sm">
                   <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={picked.includes(i)} onChange={() => toggle(i)} />
-                  <span><span className="font-semibold text-primary">{f.label}</span><span className="block text-muted-foreground text-xs mt-1">{f.note}</span></span>
+                  <span className="min-w-0">
+                    <span className="font-semibold text-primary">{f.label}</span>
+                    {mandated.includes(i) && (
+                      <span className="ml-2 text-[9px] uppercase tracking-[0.18em] font-semibold text-accent">Required by the live reading</span>
+                    )}
+                    <span className="block text-muted-foreground text-xs mt-1">{f.note}</span>
+                  </span>
                 </label>
               ))}
             </div>
