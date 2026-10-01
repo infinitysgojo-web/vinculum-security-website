@@ -251,7 +251,7 @@ export default function MultiPartySequencer() {
   }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
+    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="mp-theatre">Table or theatre</label>

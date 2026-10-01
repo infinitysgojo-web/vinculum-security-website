@@ -178,7 +178,7 @@ export default function CompoundShockTester() {
   }, [theatre, active, strain, band, sequence, bondScores]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
+    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="cs-theatre">Theatre under test</label>
