@@ -69,6 +69,8 @@ export default function TrackSequencer() {
     return { a, b, gap, reading, counter, nextI, nextII };
   }, [done]);
 
+  usePublish("tracks", { trackI: r.a, trackII: r.b, trackGap: r.gap, elitePactAlert: r.gap >= 2 });
+
   const text = useMemo(() => {
     const L = [
       "TRACK I AND TRACK II SEQUENCING READING",
