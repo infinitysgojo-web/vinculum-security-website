@@ -14,7 +14,19 @@ import BondMathPanel from "@/components/desk/BondMathPanel";
  */
 
 type LevelKey = "interpersonal" | "communal" | "intergenerational" | "institutional";
+export type BondScores = Record<LevelKey, number>;
 
+/** Optional controlled mode: the dashboard owns the scores so presets and archives reach the bench. */
+interface BondDiagnosticProps {
+  scores?: BondScores;
+  onScoresChange?: (scores: BondScores) => void;
+},
+const DEFAULT_SCORES: BondScores = {
+  interpersonal: 3.0,
+  communal: 3.0,
+  intergenerational: 3.0,
+  institutional: 3.0,
+};
 const LEVELS: {
   key: LevelKey;
   ref: string;
@@ -143,14 +155,16 @@ function ScoreInput({ id, value, onChange, name }: { id: string; value: number; 
 
 /* ---------- component ---------- */
 
-export default function BondDiagnostic() {
+export default function BondDiagnostic({ scores: controlled, onScoresChange }: BondDiagnosticProps = {}) {
   const [context, setContext] = useState("");
-  const [scores, setScores] = useState<Record<LevelKey, number>>({
-    interpersonal: 3.0,
-    communal: 3.0,
-    intergenerational: 3.0,
-    institutional: 3.0,
-  });
+  // Controlled when `scores` is passed; otherwise it keeps its own state as before.
+  const [internal, setInternal] = useState<BondScores>(DEFAULT_SCORES);
+  const scores = controlled ?? internal;
+  const setScores = (update: (s: BondScores) => BondScores) => {
+    const next = update(scores);
+    if (!controlled) setInternal(next);
+    onScoresChange?.(next);
+  };
   const [copied, setCopied] = useState(false);
 
   const values = LEVELS.map((l) => scores[l.key]) as [number, number, number, number];
