@@ -11,6 +11,7 @@ import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/d
 import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components/desk/mission";
 import { EngineContext, useEngine, type Signals } from "@/components/desk/engine";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
+import MissionChain from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SaveSession from "@/components/desk/SaveSession";
 
@@ -406,6 +407,7 @@ export default function Dashboard() {
         </div>
 
         <TelemetryStrip signals={signals} />
+        <MissionChain deskId={desk} signals={signals} />
 
         <EngineContext.Provider value={{ signals, publish }}>
         <MissionContext.Provider value={profile}>
@@ -535,4 +537,3 @@ function MirrorDesk() {
     </div>
   );
 }
-
