@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { useMission } from "./mission";
 import { usePublish, TREND_MULT } from "./engine";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
@@ -53,7 +54,10 @@ function band(pct: number) {
 type Custom = { id: string; bond: number; text: string; w: number };
 
 export default function SentinelMatrix() {
-  const [theater, setTheater] = useState("");
+  // The theatre is inherited from the active mission; typing here overrides it for this desk only.
+  const mission = useMission();
+  const [theaterOverride, setTheater] = useState("");
+  const theater = theaterOverride.trim() || mission.theatre.trim();
   const [trend, setTrend] = useState(1);
   const [on, setOn] = useState<number[]>([]);
   const toggle = (i: number) => setOn((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
@@ -182,7 +186,8 @@ export default function SentinelMatrix() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
               <label className={label} htmlFor="sm-t">Theater or file name</label>
-              <input id="sm-t" className={`${field} text-base sm:text-sm min-h-11`} value={theater} onChange={(e) => setTheater(e.target.value)} placeholder="e.g. Northern Rift corridor" />
+              <input id="sm-t" className={`${field} text-base sm:text-sm min-h-11`} value={theaterOverride} onChange={(e) => setTheater(e.target.value)} placeholder={mission.theatre.trim() || "e.g. Northern Rift corridor"} />
+              {!theaterOverride.trim() && mission.theatre.trim() && <p className="mt-1.5 text-[11px] text-muted-foreground">Inherited from the active mission. Type to override on this desk.</p>}
             </div>
             <div className="min-w-0">
               <label className={label} htmlFor="sm-v">Observation trend</label>
