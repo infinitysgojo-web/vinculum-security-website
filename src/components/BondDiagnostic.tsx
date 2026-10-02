@@ -21,6 +21,7 @@ interface BondDiagnosticProps {
   scores?: BondScores;
   onScoresChange?: (scores: BondScores) => void;
 },
+
 const DEFAULT_SCORES: BondScores = {
   interpersonal: 3.0,
   communal: 3.0,
