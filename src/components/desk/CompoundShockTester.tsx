@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
 import BondRadar from "./BondRadar";
-import { usePublish, round1 } from "./engine";
+import { usePublish, useEngine, round1, bondBand } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 type Shock = { id: string; label: string; sev: number; bond: number; breaker: string; absorb: string };
 
@@ -102,6 +103,15 @@ export default function CompoundShockTester() {
   const [theatreOverride, setTheatre] = useState("");
   const theatre = theatreOverride.trim() || mission.theatre.trim();
   const [on, setOn] = useState<string[]>(["principal", "donor"]);
+  // Desk 3 reads the live bond vector scored in Desk 1; Override cuts the feed.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const lb = signals.bonds;
+  const liveVector = useMemo<[number, number, number, number] | undefined>(
+    () => (lb ? [lb.interpersonal, lb.communal, lb.intergenerational, lb.institutional] : undefined),
+    [lb?.interpersonal, lb?.communal, lb?.intergenerational, lb?.institutional] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+  const useLive = linked && liveVector !== undefined;
 
   const toggle = (id: string) => setOn((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
@@ -117,23 +127,47 @@ export default function CompoundShockTester() {
     setNl(""); setNk("");
   };
 
-  const { strain, band, bondScores, sequence } = useMemo(() => {
+  const { strain, band, bondScores, sequence, deductions, failIndex } = useMemo(() => {
     const base = active.reduce((a, s) => a + s.sev, 0);
     const amp = active.length > 1 ? (active.length - 1) * AMPLIFY * 4 : 0;
     const total = Math.min(100, round1(base + amp));
     const b =
       total >= 70 ? "Rupture likely" : total >= 45 ? "Severe strain" : total >= 22 ? "Elevated strain" : "Absorbable";
-    const perBond = [0, 1, 2, 3].map((i) => {
-      const s = active.filter((x) => x.bond === i).reduce((a, x) => a + x.sev, 0);
-      return Math.max(1, round1(5 - Math.min(4, s / 9)));
-    }) as [number, number, number, number];
+    // Total shock weight landing on each bond, sum of omega_a over the active shocks on that bond.
+    const omega = [0, 1, 2, 3].map((i) => active.filter((x) => x.bond === i).reduce((a, x) => a + x.sev, 0));
+    let perBond: [number, number, number, number];
+    if (useLive && liveVector) {
+      // Live mode: B'_i = max(1.0, round1(B_i - sum(omega_a / 10))) against the Desk 1 vector.
+      perBond = liveVector.map((v, i) => Math.max(1, round1(v - omega[i] / 10))) as [number, number, number, number];
+    } else {
+      // Standalone mode: a fresh 5.0 baseline, as before.
+      perBond = omega.map((s) => Math.max(1, round1(5 - Math.min(4, s / 9)))) as [number, number, number, number];
+    }
     const seq = [...active].sort((a, b2) => b2.sev - a.sev);
-    return { strain: total, band: b, bondScores: perBond, sequence: seq };
-  }, [active]);
+    // Phi_fail = argmin_i B'_i, ties to the lower bond index.
+    const fail = perBond.indexOf(Math.min(...perBond));
+    return {
+      strain: total,
+      band: b,
+      bondScores: perBond,
+      sequence: seq,
+      deductions: omega.map((w) => round1(w / 10)),
+      failIndex: fail,
+    };
+  }, [active, useLive, liveVector]);
+
+  // The provision that breaks first: in live mode, the one resting on the weakest post-shock bond.
+  const breakerOn = (bond: number) => sequence.find((x) => x.bond === bond)?.breaker;
+  const firstToBreak: string | undefined = !active.length
+    ? undefined
+    : useLive
+      ? breakerOn(failIndex) ?? `Provisions resting on the ${BONDS[failIndex].toLowerCase()} bond, already the weakest on the live vector`
+      : sequence[0]?.breaker;
 
   usePublish("shocks", {
     shocks: active.map((s) => s.label),
-    firstToBreak: sequence[0]?.breaker,
+    // An empty string clears a stale value from the bus when no shock is applied.
+    firstToBreak: firstToBreak ?? "",
     shockSeverity: strain,
   });
 
@@ -172,8 +206,19 @@ export default function CompoundShockTester() {
     }
     L.push("III. CONTINUUM AFTER THE SHOCKS");
     L.push("");
-    BONDS.forEach((b, i) => L.push(`   ${b}: ${bondScores[i].toFixed(1)} of 5`));
-    L.push("");
+    if (useLive && liveVector) {
+      L.push("Applied against the live bond vector scored on the diagnostic bench:");
+      L.push("   B'_i = max(1.0, B_i - sum(omega_a / 10)), summed over the active shocks on each bond.");
+      L.push("");
+      BONDS.forEach((b, i) =>
+        L.push(`   ${b}: ${liveVector[i].toFixed(1)} - ${deductions[i].toFixed(1)} = ${bondScores[i].toFixed(1)} of 5 (${bondBand(bondScores[i])})`)
+      );
+      L.push("");
+      if (active.length) L.push(`   First provision to break (argmin B'_i): ${BONDS[failIndex]}, ${bondScores[failIndex].toFixed(1)} of 5.`, "");
+    } else {
+      BONDS.forEach((b, i) => L.push(`   ${b}: ${bondScores[i].toFixed(1)} of 5`));
+      L.push("");
+    }
     L.push("IV. STANDING NOTE");
     L.push("");
     L.push(
@@ -182,9 +227,28 @@ export default function CompoundShockTester() {
     L.push("");
     L.push("END OF STRESS TEST");
     return L.join("\n");
-  }, [theatre, active, strain, band, sequence, bondScores]);
+  }, [theatre, active, strain, band, sequence, bondScores, useLive, liveVector, deductions, failIndex]);
 
   return (
+    <div className="space-y-6">
+    <SyncPanel
+      linked={linked}
+      onToggle={setLinked}
+      summary={(x) =>
+        x.bonds
+          ? [
+              `Shocks are applied to the live bond vector (${[x.bonds.interpersonal, x.bonds.communal, x.bonds.intergenerational, x.bonds.institutional].map((n) => n.toFixed(1)).join(", ")}) scored in Desk 1.`,
+              "B′ᵢ = max(1.0, Bᵢ − Σ ωₐ ÷ 10); the provision on the lowest B′ is the first to break.",
+            ]
+          : []
+      }
+    />
+    {linked && !liveVector && (
+      <p className="text-xs text-muted-foreground">
+        No bond vector is on the bus yet. Score the four bonds in Desk 1 and the shocks will be applied to that vector;
+        until then this desk tests against a 5.0 baseline.
+      </p>
+    )}
     <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
@@ -258,10 +322,52 @@ export default function CompoundShockTester() {
           <p className="mt-3 text-xs uppercase tracking-[0.18em] font-semibold text-accent">{band}</p>
         </div>
 
-        <BondRadar scores={bondScores} caption="Continuum after the applied shocks" />
+        {useLive && liveVector && (
+          <div className="border border-brass/40 bg-background p-5 min-w-0">
+            <p className={label}>Live vector after shock · B′ᵢ = max(1.0, Bᵢ − Σ ωₐ ÷ 10)</p>
+            <div className="mt-3 w-full overflow-x-auto">
+              <table className="w-full min-w-[22rem] border-collapse text-xs">
+                <thead>
+                  <tr className="text-left text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    <th className="py-1.5 pr-2 font-semibold">Bond</th>
+                    <th className="py-1.5 px-2 font-semibold text-right">Bᵢ</th>
+                    <th className="py-1.5 px-2 font-semibold text-right">− Σ ωₐ ÷ 10</th>
+                    <th className="py-1.5 pl-2 font-semibold text-right">B′ᵢ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {BONDS.map((b, i) => {
+                    const fails = active.length > 0 && i === failIndex;
+                    return (
+                      <tr key={b} className={`border-t border-border ${fails ? "bg-terracotta/10 font-semibold" : ""}`}>
+                        <td className="py-1.5 pr-2 text-foreground/90">
+                          {b}
+                          {fails && <span className="ml-2 text-[9px] uppercase tracking-[0.14em] text-terracotta">Breaks first</span>}
+                        </td>
+                        <td className="py-1.5 px-2 text-right font-mono tabular-nums">{liveVector[i].toFixed(1)}</td>
+                        <td className="py-1.5 px-2 text-right font-mono tabular-nums">−{deductions[i].toFixed(1)}</td>
+                        <td className="py-1.5 pl-2 text-right font-mono tabular-nums text-accent">
+                          {bondScores[i].toFixed(1)} <span className="text-[9px] uppercase tracking-[0.1em] text-muted-foreground">{bondBand(bondScores[i])}</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {active.length > 0 && (
+              <p className="mt-3 text-xs text-foreground/85">
+                Φ_fail = argmin B′ᵢ = <span className="font-semibold">{BONDS[failIndex]}</span> at {bondScores[failIndex].toFixed(1)}.
+              </p>
+            )}
+          </div>
+        )}
+
+        <BondRadar scores={bondScores} caption={useLive ? "Live continuum after the applied shocks" : "Continuum after the applied shocks"} />
       </div>
 
       <DeskOutput text={text} fileName="Vinculum-Compound-Stress-Test" />
+    </div>
     </div>
   );
 }
