@@ -4,18 +4,26 @@ import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
 import { DEFAULT_BONDS, EMPTY_PROFILE, LEVANT_ARCH_PRESET, sanitizeBonds, type MissionProfile } from "./mission";
+import { sanitizeSignals, type Signals } from "./engine";
 
 export { EMPTY_PROFILE };
 export type { MissionProfile };
 
 type Archive = {
   format: "vinculum-mission-archive";
-  /** 2 adds profile.bonds. Version 1 archives still load, with the bonds at their 3.0 default. */
-  version: 2;
+  /**
+   * 3 adds the live mission signals (rupture index, active shocks, covenants, track divergence).
+   * 2 added profile.bonds. Version 1 and 2 archives still load; they carry no signals,
+   * so the desks upstream have to be revisited, as before.
+   */
+  version: 3;
   savedAt: string;
   profile: MissionProfile;
   binder: BinderEntry[];
+  signals?: Signals;
 };
+
+const ARCHIVE_VERSION = 3;
 
 const fieldCls = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 const labelCls = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
@@ -30,11 +38,16 @@ export default function MissionVault({
   setProfile,
   binder,
   setBinder,
+  signals,
+  setSignals,
 }: {
   profile: MissionProfile;
   setProfile: (p: MissionProfile) => void;
   binder: BinderEntry[];
   setBinder: (b: BinderEntry[]) => void;
+  /** The live mission-engine bus, saved with the archive so a restore needs no upstream re-clicking. */
+  signals: Signals;
+  setSignals: (s: Signals) => void;
 }) {
   const [open, setOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -42,10 +55,11 @@ export default function MissionVault({
   const save = () => {
     const archive: Archive = {
       format: "vinculum-mission-archive",
-      version: 2,
+      version: ARCHIVE_VERSION,
       savedAt: new Date().toISOString(),
       profile: { ...profile, bonds: profile.bonds ?? DEFAULT_BONDS },
       binder,
+      signals,
     };
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(archive, null, 2)], { type: "application/json" })
@@ -65,14 +79,20 @@ export default function MissionVault({
       try {
         const data = JSON.parse(String(reader.result)) as Omit<Archive, "version"> & { version?: number };
         if (data?.format !== "vinculum-mission-archive") throw new Error("wrong format");
-        if (typeof data.version === "number" && data.version > 2) {
+        if (typeof data.version === "number" && data.version > ARCHIVE_VERSION) {
           toast.error("This archive was saved by a newer version of the vault.");
           return;
         }
         // Version 1 archives carry no bonds, so they restore at the 3.0 default.
         setProfile({ ...EMPTY_PROFILE, ...data.profile, bonds: sanitizeBonds(data.profile?.bonds) });
         setBinder(Array.isArray(data.binder) ? data.binder : []);
-        toast.success(`Archive restored. ${data.binder?.length ?? 0} document(s) in the binder.`);
+        // Version 3 archives carry the live signals; restore them so every downstream desk reads the saved mission at once.
+        // Older archives carry none, so the bus is left as it stands rather than wiped.
+        const restoredSignals = data.version === 3 && data.signals ? sanitizeSignals(data.signals) : null;
+        if (restoredSignals) setSignals(restoredSignals);
+        toast.success(
+          `Archive restored. ${data.binder?.length ?? 0} document(s) in the binder${restoredSignals ? " and the live mission signals" : ""}.`
+        );
         setOpen(true);
       } catch {
         toast.error("That file is not a Vinculum mission archive.");
