@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import EngineBrief from "@/components/desk/EngineBrief";
-import { telemetryLines, useEngine } from "@/components/desk/engine";
+import SyncPanel from "@/components/desk/SyncPanel";
+import { telemetryLines, useEngine, type Signals } from "@/components/desk/engine";
 import DeskOutput, { todayStamp } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import { PANELS, VERDICT_LABEL, type Verdict } from "@/content/adversarial";
@@ -15,7 +16,10 @@ type Filter = "all" | Verdict;
 
 export default function AdversarialChamber() {
   const [panelN, setPanelN] = useState(1);
-  const { signals: sg } = useEngine();
+  const { signals } = useEngine();
+  // Linked: the chamber briefs and the audit memo carry the live mission reading. Override: standalone.
+  const [linked, setLinked] = useState(true);
+  const sg = useMemo<Signals>(() => (linked ? signals : {}), [linked, signals]);
   const [filter, setFilter] = useState<Filter>("all");
   const [openQ, setOpenQ] = useState<number | null>(0);
 
@@ -73,6 +77,17 @@ export default function AdversarialChamber() {
 
   return (
     <div>
+      <div className="mb-6">
+        <SyncPanel
+          linked={linked}
+          onToggle={setLinked}
+          summary={(x) =>
+            x.weakestBond
+              ? [`Critics are expected to press hardest on the ${x.weakestBond.toLowerCase()} bond${x.weakestScore !== undefined ? `, where the theatre reads ${x.weakestScore.toFixed(1)} of 5` : ""}.`]
+              : []
+          }
+        />
+      </div>
       <EngineBrief lines={[
         sg.weakestBond && `Expect critics to press hardest on the ${sg.weakestBond.toLowerCase()} bond, where your theatre reads ${sg.weakestScore?.toFixed(1)} of 5. Rehearse the open and conceded questions first.`,
         sg.elitePactAlert && "Your tracks show an Elite-Pact Mirage. Prepare for the realist charge that the deal is only between principals.",
