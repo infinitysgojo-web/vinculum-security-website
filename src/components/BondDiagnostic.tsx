@@ -12,7 +12,6 @@ import BondMathPanel from "@/components/desk/BondMathPanel";
  * Scale, level names, descriptive anchors, and boundary rules follow the
  * doctrine (Sections III.D, V.E, VI) and the handbook (Part IV).
  */
-
 type LevelKey = "interpersonal" | "communal" | "intergenerational" | "institutional";
 export type BondScores = Record<LevelKey, number>;
 
@@ -28,7 +27,6 @@ const DEFAULT_SCORES: BondScores = {
   intergenerational: 3.0,
   institutional: 3.0,
 };
-
 const LEVELS: {
   key: LevelKey;
   ref: string;
