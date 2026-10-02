@@ -5,11 +5,11 @@ import type { Session } from "@supabase/supabase-js";
 import SEO from "@/components/SEO";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
-import { CASES } from "@/content/cases";
+import { CASES, DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
-import { MissionContext, EMPTY_PROFILE, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, useEngine, type Signals } from "@/components/desk/engine";
+import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
+import { EngineContext, useEngine, bondBand, mathReading, type Signals } from "@/components/desk/engine";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
@@ -213,6 +213,29 @@ export default function Dashboard() {
       return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
     });
   }, []);
+  // The bond scores live on the mission profile, so presets, archives and saved
+  // sessions reach the bond bench. Bond Diagnostic runs controlled from here.
+  const bonds = profile.bonds ?? DEFAULT_BONDS;
+  const setBonds = useCallback((b: typeof DEFAULT_BONDS) => setProfile((p) => ({ ...p, bonds: b })), []);
+  // When bonds arrive from a preset or archive while another desk is open, put the
+  // numeric readings on the bus at once so downstream desks never read stale bonds.
+  useEffect(() => {
+    if (!profile.bonds) return;
+    const b = sanitizeBonds(profile.bonds);
+    const v: [number, number, number, number] = [b.interpersonal, b.communal, b.intergenerational, b.institutional];
+    let w = 0;
+    v.forEach((x, i) => { if (x < v[w]) w = i; });
+    const mean = v.reduce((a, c) => a + c, 0) / 4;
+    publish("diagnostics", {
+      bonds: b,
+      bondMean: Math.round(mean * 100) / 100,
+      weakestBond: DOMAINS[w],
+      weakestScore: v[w],
+      weakestBand: bondBand(v[w]),
+      bondVariance: mathReading(v).variance,
+      communalBand: bondBand(b.communal),
+    });
+  }, [profile.bonds, publish]);
   const addToBinder = useCallback((e: BinderEntry) => {
     setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
   }, []);
@@ -274,7 +297,7 @@ export default function Dashboard() {
       const raw = window.localStorage.getItem(saveKey);
       if (!raw) return;
       const s = JSON.parse(raw);
-      if (s.profile) setProfile(s.profile);
+      if (s.profile) setProfile(s.profile.bonds ? { ...s.profile, bonds: sanitizeBonds(s.profile.bonds) } : s.profile);
       if (Array.isArray(s.binder)) setBinder(s.binder);
       if (s.signals) setSignals(s.signals);
       if (s.division) setDivision(s.division);
@@ -418,7 +441,7 @@ export default function Dashboard() {
             {desk === "briefing" && <CableComposer />}
             {desk === "diagnostics" && (
               <div className="space-y-12">
-                <BondDiagnostic />
+                <BondDiagnostic scores={bonds} onScoresChange={setBonds} />
                 <PatternMatcher />
               </div>
             )}
