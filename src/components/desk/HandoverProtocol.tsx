@@ -2,13 +2,13 @@ import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, type Signals } from "./engine";
+import { telemetryLines, useEngine, bondBand, type Signals } from "./engine";
 
 /** Bond restoration gate: handover is premature while any bond still fails. */
 function handoverLines(s: Signals): string[] {
   const L: string[] = [];
-  if (s.weakestBond && (s.weakestScore ?? 5) <= 2)
-    L.push(`  HANDOVER PREMATURE: the ${s.weakestBond.toLowerCase()} bond still reads ${s.weakestScore} of 5. Restore it to 3 or above before the mandate passes.`);
+  if (s.weakestBond && s.weakestScore !== undefined && bondBand(s.weakestScore) === "Failing")
+    L.push(`  HANDOVER PREMATURE: the ${s.weakestBond.toLowerCase()} bond still reads ${s.weakestScore.toFixed(1)} of 5 (Failing). Restore it to the Fragile band (2.1) or above, and ideally Viable (3.1), before the mandate passes.`);
   if (s.rupture !== undefined && s.rupture >= 35)
     L.push(`  HANDOVER PREMATURE: rupture index at ${s.rupture} per cent. Hand over only once it falls below 35.`);
   if (s.covenants?.length)
