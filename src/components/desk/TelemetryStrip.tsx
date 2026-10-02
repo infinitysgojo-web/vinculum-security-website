@@ -9,9 +9,9 @@ export default function TelemetryStrip({ signals }: { signals: Signals }) {
 
   const cells: { k: string; v: string }[] = [];
   if (signals.bondMean !== undefined) cells.push({ k: "Bond mean", v: `${signals.bondMean.toFixed(2)} of 5` });
-  if (signals.weakestBond) cells.push({ k: "Weakest bond", v: signals.weakestBond });
+  if (signals.weakestBond) cells.push({ k: "Limiting bond", v: `${signals.weakestBond}${signals.weakestScore !== undefined ? ` ${signals.weakestScore.toFixed(1)}${signals.weakestBand ? ` · ${signals.weakestBand}` : ""}` : ""}` });
   if (signals.rupture !== undefined) cells.push({ k: "Rupture index", v: `${signals.rupture}% ${signals.ruptureBand ?? ""}` });
-  if (signals.trackGap !== undefined) cells.push({ k: "Track gap", v: String(signals.trackGap) });
+  if (signals.trackGap !== undefined) cells.push({ k: "Track gap", v: `${signals.trackGap}${signals.trackTolerance !== undefined ? ` (tolerance ${signals.trackTolerance})` : ""}` });
   if (signals.shocks?.length) cells.push({ k: "Shocks active", v: String(signals.shocks.length) });
   if (signals.covenants?.length) cells.push({ k: "Covenants", v: String(signals.covenants.length) });
   cells.push({ k: "Alerts", v: critical ? `${critical} critical` : elevated ? `${elevated} elevated` : "none standing" });
