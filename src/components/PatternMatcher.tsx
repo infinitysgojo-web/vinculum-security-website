@@ -30,10 +30,10 @@ function warning(s: number[]) {
 }
 
 export default function PatternMatcher() {
-  const [scores, setScores] = useState([3, 3, 3, 3]);
+  const [scores, setScores] = useState([3.0, 3.0, 3.0, 3.0]);
   const { signals } = useEngine();
   const b = signals.bonds;
-  const liveKey = b ? `${b.interpersonal}${b.communal}${b.intergenerational}${b.institutional}` : "";
+  const liveKey = b ? `${b.interpersonal}|${b.communal}|${b.intergenerational}|${b.institutional}` : "";
   useEffect(() => {
     if (b) setScores([b.interpersonal, b.communal, b.intergenerational, b.institutional]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,7 +75,7 @@ export default function PatternMatcher() {
                   {d}
                 </label>
                 <span className="font-serif text-accent text-sm">
-                  {LEVELS[i][scores[i] - 1]} · {scores[i]}/5
+                  {LEVELS[i][Math.min(5, Math.max(1, Math.round(scores[i]))) - 1]} · {scores[i].toFixed(1)}/5
                 </span>
               </div>
               <input
@@ -83,9 +83,9 @@ export default function PatternMatcher() {
                 type="range"
                 min={1}
                 max={5}
-                step={1}
+                step={0.1}
                 value={scores[i]}
-                onChange={(e) => setScores((s) => s.map((v, j) => (j === i ? Number(e.target.value) : v)))}
+                onChange={(e) => setScores((s) => s.map((v, j) => (j === i ? Math.round(Number(e.target.value) * 10) / 10 : v)))}
                 className="w-full mt-2 accent-[hsl(var(--accent))]"
               />
             </div>
