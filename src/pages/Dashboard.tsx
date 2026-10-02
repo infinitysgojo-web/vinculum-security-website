@@ -10,6 +10,7 @@ import { PARTIES } from "@/content/parties";
 import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
 import { EngineContext, useEngine, bondBand, mathReading, type Signals } from "@/components/desk/engine";
+import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
@@ -363,7 +364,7 @@ export default function Dashboard() {
 
       <div className="container py-6 sm:py-8">
         <div className="mb-6 sm:mb-8">
-          <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} />
+          <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
         </div>
 
         <div className="mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40">
@@ -506,7 +507,14 @@ export default function Dashboard() {
 function MirrorDesk() {
   const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
   const { signals } = useEngine();
-  const analogue = signals.analogue ? CASES.find((c) => c.shortTitle === signals.analogue) : undefined;
+  // Linked: the live theatre's own bond vector can be drawn on the radar. Override: historical cases only.
+  const [linked, setLinked] = useState(true);
+  const [showLive, setShowLive] = useState(true);
+  const liveVector =
+    linked && signals.bonds
+      ? [signals.bonds.interpersonal, signals.bonds.communal, signals.bonds.intergenerational, signals.bonds.institutional]
+      : null;
+  const analogue = linked && signals.analogue ? CASES.find((c) => c.shortTitle === signals.analogue) : undefined;
 
   const toggle = (slug: string) =>
     setPicked((prev) =>
@@ -523,6 +531,29 @@ function MirrorDesk() {
 
   return (
     <div className="space-y-8">
+      <SyncPanel
+        linked={linked}
+        onToggle={setLinked}
+        summary={(x) =>
+          x.bonds
+            ? [
+                `The live theatre vector (${[x.bonds.interpersonal, x.bonds.communal, x.bonds.intergenerational, x.bonds.institutional].map((n) => n.toFixed(1)).join(", ")}) is available to plot on the radar beside the selected cases.`,
+                ...(x.analogue ? [`Closest documented case by Euclidean distance: ${x.analogue}.`] : []),
+              ]
+            : []
+        }
+      />
+      {liveVector && (
+        <label className="flex min-h-11 cursor-pointer items-center gap-3 border border-brass/40 bg-background/70 px-4 py-2 text-xs text-foreground/85">
+          <input
+            type="checkbox"
+            checked={showLive}
+            onChange={(e) => setShowLive(e.target.checked)}
+            className="accent-[hsl(var(--accent))]"
+          />
+          Plot the live theatre vector on the radar
+        </label>
+      )}
       {analogue && !picked.includes(analogue.slug) && (
         <div className="border border-brass/40 bg-background/70 p-4 flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-foreground/85">Your live bond reading sits closest to <span className="font-semibold">{analogue.shortTitle}</span>.</p>
@@ -556,7 +587,7 @@ function MirrorDesk() {
           })}
         </div>
       </div>
-      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} />
+      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={showLive ? liveVector : null} />
     </div>
   );
 }
