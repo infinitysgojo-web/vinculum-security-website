@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Check, RotateCcw } from "lucide-react";
 import GoldRule from "./GoldRule";
 import EngineBrief from "@/components/desk/EngineBrief";
-import { useEngine } from "@/components/desk/engine";
+import SyncPanel from "@/components/desk/SyncPanel";
+import { useEngine, type Signals } from "@/components/desk/engine";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -11,7 +12,10 @@ const CHECKS = ["Relevant evidence reviewed", "Affected party heard directly", "
 
 export default function AuditBench({ parties }: { parties: readonly Party[] }) {
   const [active, setActive] = useState(0);
-  const { signals: sg } = useEngine();
+  const { signals } = useEngine();
+  // Linked: the audit prompts follow the live mission reading. Override: the bench works standalone.
+  const [linked, setLinked] = useState(true);
+  const sg: Signals = linked ? signals : {};
   const [checked, setChecked] = useState<Record<string, boolean[]>>({});
   const party = parties[active];
   if (!party) return null;
@@ -26,6 +30,17 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
       <p className="eyebrow">VI.A · Stakeholder Safeguard</p>
       <h2 className="mt-3 font-serif text-primary text-2xl md:text-3xl">Field audit bench</h2>
       <GoldRule className="mt-4 mb-6" />
+      <div className="mb-6">
+        <SyncPanel
+          linked={linked}
+          onToggle={setLinked}
+          summary={(x) =>
+            x.weakestBond
+              ? [`Audit order follows the live reading: the ${x.weakestBond.toLowerCase()} bond is the most exposed on the diagnostic bench.`]
+              : []
+          }
+        />
+      </div>
       <EngineBrief lines={[
         sg.weakestBond && `Audit first the parties who carry the ${sg.weakestBond.toLowerCase()} bond; it is the most exposed on the diagnostic bench.`,
         (sg.rupture ?? 0) >= 35 && `With the rupture index at ${sg.rupture} per cent, treat any unchecked safeguard as blocking, not advisory.`,
