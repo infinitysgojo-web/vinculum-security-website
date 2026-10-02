@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, usePublish, type Signals } from "./engine";
+import { telemetryLines, useEngine, usePublish, bondBand, type Signals } from "./engine";
 
 /** Engine locks: fixed doctrinal conditions read from the upstream divisions. */
 type Lock = { name: string; held: boolean; remedy: string };
@@ -11,10 +11,12 @@ function engineLocks(s: Signals): Lock[] {
   const out: Lock[] = [];
   if (s.rupture !== undefined && s.rupture >= 35)
     out.push({ name: `Rupture index ${s.rupture}% requires a continuity covenant`, held: continuity, remedy: "Draft an office-continuity provision in the Clause Architect before clearance." });
+  if (s.rupture !== undefined && s.rupture >= 35)
+    out.push({ name: `Rupture index ${s.rupture}% requires an independent verifier seated`, held: s.verifierSeated === true, remedy: "Seat an independent verifier in the Verification Ledger; no party may appoint, fund or remove it." });
   if (s.elitePactAlert)
     out.push({ name: `Track gap of ${s.trackGap} phases (Elite-Pact Mirage)`, held: false, remedy: "Hold Track I and advance the communal track until the gap closes to one phase." });
-  if (s.weakestBond && (s.weakestScore ?? 5) <= 2)
-    out.push({ name: `${s.weakestBond} bond at ${s.weakestScore} of 5`, held: (s.covenants?.length ?? 0) > 0, remedy: "Attach at least one remedial covenant addressing the failing bond." });
+  if (s.weakestBond && s.weakestScore !== undefined && bondBand(s.weakestScore) === "Failing")
+    out.push({ name: `${s.weakestBond} bond at ${s.weakestScore.toFixed(1)} of 5 (Failing)`, held: (s.covenants?.length ?? 0) > 0, remedy: "Attach at least one remedial covenant addressing the failing bond." });
   if (s.survivalScore !== undefined)
     out.push({ name: `Treaty survival under stress at ${s.survivalScore}%`, held: s.survivalScore >= 55, remedy: "Close the first failing provision in the Succession Simulator until survival reaches 55%." });
   if ((s.shocks?.length ?? 0) >= 2)
@@ -120,7 +122,7 @@ export default function ReadinessDesk() {
     let g = "";
     stage.gates.forEach((x) => {
       if (x.group !== g) { g = x.group; L.push(g.toUpperCase()); }
-      L.push(`  [${done.includes(x.id) ? "x" : " "}] ${x.text}${x.critical ? " (critical)" : ""}`);
+      L.push(`  [${done.includes(x.id) ? "SATISFIED" : "LOCKED   "}] ${x.text}${x.critical ? " (critical)" : ""}`);
     });
     L.push("");
     if (r.missingCritical.length) {
@@ -135,7 +137,7 @@ export default function ReadinessDesk() {
     if (locks.length) {
       L.push("ENGINE LOCKS (read from the upstream divisions)");
       locks.forEach((l) => {
-        L.push(`  [${l.held ? "RELEASED" : "LOCKED  "}] ${l.name}`);
+        L.push(`  [${l.held ? "SATISFIED" : "LOCKED   "}] ${l.name}`);
         if (!l.held) L.push(`    Directive: ${l.remedy}`);
       });
       L.push("");
@@ -175,20 +177,28 @@ export default function ReadinessDesk() {
                 {head && <p className={`${label} mt-4`}>{x.group}</p>}
                 <label className="flex gap-3 items-start text-sm cursor-pointer">
                   <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(x.id)} onChange={() => toggle(x.id)} />
-                  <span className="text-foreground/85">{x.text}{x.critical && <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-accent">Critical</span>}</span>
+                  <span className="text-foreground/85">
+                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] ${done.includes(x.id) ? "border-primary/50 text-primary bg-primary/5" : "border-terracotta/60 text-terracotta"}`}>
+                      {done.includes(x.id) ? "✓ Satisfied" : "🔒 Locked"}
+                    </span>
+                    {x.text}{x.critical && <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-accent">Critical</span>}
+                  </span>
                 </label>
               </div>
             );
           })}
         </div>
         <div className="space-y-4 min-w-0">
-          <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${openLocks.length} of ${locks.length} engine locks still hold this mission back.`] : ["No upstream condition currently locks clearance."]} />
+          <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${locks.length - openLocks.length} of ${locks.length} engine conditions satisfied; ${openLocks.length} still locked.`] : ["No upstream condition currently locks clearance."]} />
           {locks.length > 0 && (
             <div className="border border-brass/40 bg-background p-4 space-y-2">
               <p className={label}>Engine locks</p>
               {locks.map((l) => (
                 <div key={l.name} className={`border-l-2 pl-3 ${l.held ? "border-primary/40" : "border-terracotta"}`}>
-                  <p className="text-xs font-semibold text-foreground/90">{l.held ? "Released" : "Locked"}: {l.name}</p>
+                  <p className="text-xs font-semibold text-foreground/90">
+                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${l.held ? "border-primary/50 text-primary" : "border-terracotta/60 text-terracotta"}`}>{l.held ? "✓ Satisfied" : "🔒 Locked"}</span>
+                    {l.name}
+                  </p>
                   {!l.held && <p className="text-xs text-muted-foreground mt-0.5">{l.remedy}</p>}
                 </div>
               ))}
