@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
-import { usePublish } from "./engine";
+import { usePublish, useEngine, successionDurability, SUCCESSION_TRAP } from "./engine";
+import SyncPanel from "./SyncPanel";
+import { AlertTriangle, ShieldCheck } from "lucide-react";
 
 /**
  * §12C, the Treaty Stress and Succession Simulator.
@@ -51,6 +53,9 @@ type Shock = { id: string; label: string; sev: number };
 
 export default function SuccessionSimulator() {
   const [title, setTitle] = useState("");
+  // Linked: the canonical durability formula reads the live mission bus. Override: the drafted-text quotient alone.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
   const [inForce, setInForce] = useState<string[]>(["office", "verify", "outcome"]);
   const [shocks, setShocks] = useState<string[]>(["principal"]);
 
@@ -132,7 +137,10 @@ export default function SuccessionSimulator() {
     return { q, b: bandOf(q), first, gaps, unguarded, base, compound, bonds };
   }, [inForce, shocks, allProvisions, allShocks, bondMap]);
 
-  usePublish("succession", { survivalScore: r.q });
+  // Section 4.5 canonical durability, from the live bonds, rupture index and covenants on the bus.
+  const canon = useMemo(() => (linked ? successionDurability(signals) : undefined), [linked, signals]);
+  // Publish the canonical S% when linked, otherwise the drafted-text quotient, so Desk 15 always has live data.
+  usePublish("succession", { survivalScore: canon ? canon.percent : r.q });
 
   const text = useMemo(() => {
     const L = [
@@ -141,7 +149,10 @@ export default function SuccessionSimulator() {
       "",
       `INSTRUMENT: ${title.trim() || "Unnamed instrument"}`,
       `DATE: ${todayStamp()}`,
-      `AGREEMENT SURVIVAL QUOTIENT: ${r.q} of 100 (${r.b.name.toUpperCase()})`,
+      canon
+        ? `SUCCESSION DURABILITY S%: ${canon.percent.toFixed(1)} of 100 (${bandOf(canon.percent).name.toUpperCase()}${canon.trap ? "; TERMINAL SUCCESSION TRAP ENGAGED" : ""})`
+        : "SUCCESSION DURABILITY S%: not computed (override engaged or no bond vector on the bus)",
+      `DRAFTED-TEXT PROVISION QUOTIENT: ${r.q} of 100 (${r.b.name.toUpperCase()})`,
       `PROVISION BASE: ${r.base} of 100. SHOCKS MODELLED: ${shocks.length}. COMPOUND AMPLIFICATION: -${r.compound}.`,
       `OWN PROVISIONS DEFINED: ${ownProv.length}. OWN SHOCKS DEFINED: ${ownShock.length}.`,
       "",
@@ -170,13 +181,42 @@ export default function SuccessionSimulator() {
       L.push("", "UNINSULATED EXPOSURES");
       r.unguarded.forEach((s) => L.push(`  - ${s.label}`));
     }
+    if (canon) {
+      L.push("", "CANONICAL DURABILITY DERIVATION (Section 4.5)");
+      L.push("  S_raw = 0.35 mu_B + 0.25 B_IG + 0.25 B_IR + 0.15 I_cov - 0.20 R~     S% = S_raw / 5.0 x 100");
+      L.push(`  mu_B = ${canon.mu.toFixed(3)}, B_IG = ${canon.ig.toFixed(1)}, B_IR = ${canon.ir.toFixed(1)}, covenants in force = ${canon.covenantCount} (I_cov = ${canon.covenantIndicator.toFixed(1)}), R = ${canon.rupturePct}% (R~ = ${canon.rupturePenaltyBase.toFixed(2)})`);
+      canon.terms.forEach((t) => L.push(`  ${t.value >= 0 ? "+" : "-"} ${Math.abs(t.value).toFixed(4)}   ${t.label}`));
+      L.push(`  S_raw = ${canon.raw.toFixed(4)}`);
+      L.push(`  S% = ${canon.raw.toFixed(4)} / 5.0 x 100 = ${canon.percent.toFixed(1)}%`);
+      L.push(canon.trap ? `  [TERMINAL SUCCESSION TRAP ENGAGED] S% is below the ${SUCCESSION_TRAP.toFixed(1)}% gate; Desk 15 clearance is locked.` : `  Gate passed: S% is at or above ${SUCCESSION_TRAP.toFixed(1)}%.`);
+    }
     L.push("", `READING: ${r.b.advice}`);
     L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock]);
+  }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon]);
 
   return (
     <section className={panel}>
+      <div className="mb-6">
+        <SyncPanel
+          linked={linked}
+          onToggle={setLinked}
+          summary={(x) =>
+            x.bonds
+              ? [
+                  `Durability is computed from the live bonds, ${x.rupture !== undefined ? `the ${x.rupture} per cent rupture index` : "no rupture reading yet (taken as 0)"} and ${x.covenants?.length ?? 0} covenant(s) drafted upstream.`,
+                  `The score published to Desk 15 is the canonical S%, gated at ${SUCCESSION_TRAP.toFixed(1)}%.`,
+                ]
+              : []
+          }
+        />
+        {linked && !signals.bonds && (
+          <p className="mt-2 text-xs text-muted-foreground">
+            No bond vector is on the bus yet. Score the four bonds in Desk 1 to compute the canonical durability; until then
+            the drafted-text quotient below is what Desk 15 receives.
+          </p>
+        )}
+      </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-5">
           <div>
@@ -256,9 +296,70 @@ export default function SuccessionSimulator() {
             </div>
           </div>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
+          {canon && (
+            <div className={`border bg-background p-4 ${canon.trap ? "border-terracotta/60" : "border-brass/40"}`}>
+              <p className={label}>Succession durability S% · Section 4.5</p>
+              <p className="font-serif text-4xl text-primary">
+                {canon.percent.toFixed(1)}<span className="text-lg text-muted-foreground">%</span>{" "}
+                <span className="text-lg text-accent">{bandOf(canon.percent).name}</span>
+              </p>
+              <div className="h-1 bg-border mt-3 relative">
+                <div className="h-1 bg-accent transition-all" style={{ width: `${canon.percent}%` }} />
+                <span className="absolute -top-1 h-3 w-px bg-terracotta" style={{ left: `${SUCCESSION_TRAP}%` }} aria-hidden />
+              </div>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Gate at {SUCCESSION_TRAP.toFixed(1)}%</p>
+              {canon.trap ? (
+                <div role="alert" className="mt-3 border border-terracotta/60 bg-terracotta/10 px-3 py-2">
+                  <p className="flex items-start gap-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-terracotta">
+                    <AlertTriangle size={13} className="shrink-0 mt-px" />
+                    <span>[TERMINAL SUCCESSION TRAP ENGAGED]</span>
+                  </p>
+                  <p className="mt-1 text-xs text-foreground/85">
+                    S% = {canon.percent.toFixed(1)} is below {SUCCESSION_TRAP.toFixed(1)}. Mission clearance in Desk 15 stays locked until durability reaches the gate.
+                  </p>
+                </div>
+              ) : (
+                <p className="mt-3 flex items-start gap-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary/80">
+                  <ShieldCheck size={13} className="shrink-0 mt-px" /> Gate passed
+                </p>
+              )}
+
+              <p className="mt-4 text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Step 5 · Derivation</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                S_raw = 0.35 μB + 0.25 B_IG + 0.25 B_IR + 0.15 𝕀_cov − 0.20 R̃ · S% = S_raw ÷ 5.0 × 100%
+              </p>
+              <div className="mt-2 w-full overflow-x-auto">
+                <table className="w-full min-w-[20rem] border-collapse text-xs">
+                  <tbody>
+                    {canon.terms.map((t) => (
+                      <tr key={t.label} className="border-t border-border">
+                        <td className="py-1.5 pr-2 text-foreground/85">{t.label}</td>
+                        <td className="py-1.5 px-2 text-right font-mono tabular-nums text-muted-foreground">
+                          {t.weight < 0 ? "−" : ""}{Math.abs(t.weight).toFixed(2)} × {t.input.toFixed(t.label.startsWith("0.35") ? 3 : 2)}
+                        </td>
+                        <td className="py-1.5 pl-2 text-right font-mono tabular-nums text-primary">{t.value >= 0 ? "+" : "−"}{Math.abs(t.value).toFixed(4)}</td>
+                      </tr>
+                    ))}
+                    <tr className="border-t-2 border-brass/60 font-semibold">
+                      <td className="py-1.5 pr-2 text-primary" colSpan={2}>S_raw</td>
+                      <td className="py-1.5 pl-2 text-right font-mono tabular-nums text-primary">{canon.raw.toFixed(4)}</td>
+                    </tr>
+                    <tr className="font-semibold">
+                      <td className="py-1.5 pr-2 text-primary" colSpan={2}>S% = {canon.raw.toFixed(4)} ÷ 5.0 × 100</td>
+                      <td className="py-1.5 pl-2 text-right font-mono tabular-nums text-accent">{canon.percent.toFixed(1)}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                {canon.covenantCount} covenant(s) in force → 𝕀_cov = {canon.covenantIndicator.toFixed(1)} (1.0 from two covenants, otherwise 0.5 each).
+                R = {canon.rupturePct}% → R̃ = {canon.rupturePenaltyBase.toFixed(2)}.
+              </p>
+            </div>
+          )}
           <div className="border border-border bg-background p-4">
-            <p className={label}>Agreement survival quotient</p>
+            <p className={label}>{canon ? "Drafted-text provision quotient (supplementary)" : "Agreement survival quotient"}</p>
             <p className="font-serif text-4xl text-primary">{r.q}<span className="text-lg text-muted-foreground">/100</span> <span className="text-lg text-accent">{r.b.name}</span></p>
             <div className="h-1 bg-border mt-3"><div className="h-1 bg-accent transition-all" style={{ width: `${r.q}%` }} /></div>
           </div>
@@ -287,4 +388,3 @@ export default function SuccessionSimulator() {
     </section>
   );
 }
-
