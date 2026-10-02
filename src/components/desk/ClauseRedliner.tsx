@@ -89,6 +89,31 @@ const RULES: Rule[] = [
   },
 ];
 
+/** Deliberately flawed sample clauses, so the linter can be seen working. Fictional text. */
+const PRESETS: { id: string; chip: string; title: string; body: string }[] = [
+  {
+    id: "consult",
+    chip: "Performative consultation",
+    title: "Natural Resource Protocol §9",
+    body:
+      "Article 9. The Provincial Authority shall consult with affected communities, including youth representatives, before any extraction licence is issued, and shall take into account the views expressed at the consultation. Licensing decisions remain with the Authority.",
+  },
+  {
+    id: "mandate",
+    chip: "Personalised executive mandate",
+    title: "Elite Transitional Accord §4",
+    body:
+      "Article 4. The President shall appoint the Joint Security Commission and shall personally chair its sessions. The Commission shall report in due course, and the Parties shall use best efforts to complete demobilisation when circumstances permit. Youth delegates may attend as observers. Any breach shall be referred to the President for resolution.",
+  },
+  {
+    id: "selfcert",
+    chip: "Self-certified state accord",
+    title: "Bilateral Ceasefire §12",
+    body:
+      "Article 12. The Government shall certify its own compliance with the withdrawal schedule, and its certification shall be final. The Government may terminate this Article at its sole discretion if it judges conditions to have changed. Any breach by the opposing party shall be reported to the Government for determination.",
+  },
+];
+
 export default function ClauseRedliner() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -187,6 +212,28 @@ export default function ClauseRedliner() {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Article 14, Transitional Security Arrangements"
           />
+          <p className={`${label} mt-5`}>Sample flawed clauses</p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Sample clauses">
+            {PRESETS.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => { setTitle(p.title); setBody(p.body); }}
+                className="min-h-11 border border-brass/50 px-3 py-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors"
+              >
+                {p.chip}
+              </button>
+            ))}
+            {body && (
+              <button
+                type="button"
+                onClick={() => { setTitle(""); setBody(""); }}
+                className="min-h-11 px-3 py-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-muted-foreground hover:text-accent transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
           <label className={`${label} mt-5`} htmlFor="rl-body">Clause text to audit</label>
           <textarea
             id="rl-body"
