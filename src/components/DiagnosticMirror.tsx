@@ -69,14 +69,21 @@ function highest(c: CaseStudy) {
   return [...ordered(c)].sort((a, b) => b.score - a.score)[0];
 }
 
-function Radar({ cases }: { cases: CaseStudy[] }) {
+/** The live theatre vector is drawn as a dashed ink polygon with diamond markers, distinct from the case series. */
+const LIVE_STROKE = "hsl(var(--foreground))";
+
+function Radar({ cases, live }: { cases: CaseStudy[]; live?: readonly number[] | null }) {
   const rings = [1, 2, 3, 4, 5];
   return (
     <svg
       viewBox={`0 0 ${SIZE} ${SIZE}`}
       className="w-full max-w-[320px] mx-auto"
       role="img"
-      aria-label="Four bond domains compared across the selected theaters"
+      aria-label={
+        live
+          ? "Four bond domains compared across the selected theaters, with the live theatre vector overlaid"
+          : "Four bond domains compared across the selected theaters"
+      }
     >
       {rings.map((r) => (
         <polygon
@@ -105,6 +112,31 @@ function Radar({ cases }: { cases: CaseStudy[] }) {
           const [x, y] = point(i, s);
           return <circle key={`${c.slug}-${i}`} cx={x} cy={y} r={3} fill={SERIES[n % 3].stroke} />;
         })
+      )}
+      {live && (
+        <>
+          <polygon
+            points={polygon(live)}
+            fill="hsl(var(--brass) / 0.22)"
+            stroke={LIVE_STROKE}
+            strokeWidth={2.4}
+            strokeDasharray="6 4"
+          />
+          {live.map((s, i) => {
+            const [x, y] = point(i, s);
+            return (
+              <rect
+                key={`live-${i}`}
+                x={x - 3.6}
+                y={y - 3.6}
+                width={7.2}
+                height={7.2}
+                transform={`rotate(45 ${x} ${y})`}
+                fill={LIVE_STROKE}
+              />
+            );
+          })}
+        </>
       )}
       {DOMAINS.map((d, i) => {
         const side = i === 1 || i === 3;
@@ -172,9 +204,12 @@ function Inquiry({
 export default function DiagnosticMirror({
   cases,
   onSelectPairing,
+  live,
 }: {
   cases: CaseStudy[];
   onSelectPairing: (slugs: string[]) => void;
+  /** Optional live theatre vector (four bond scores) plotted over the selected cases. */
+  live?: readonly number[] | null;
 }) {
   const activePairing = useMemo(() => {
     if (cases.length !== 2) return null;
@@ -204,7 +239,7 @@ export default function DiagnosticMirror({
       )}
 
       <div className="grid gap-6 md:grid-cols-[320px_1fr] items-start border border-brass/40 bg-gold-tint/40 p-5">
-        <Radar cases={cases} />
+        <Radar cases={cases} live={live} />
         <div className="space-y-4">
           {cases.map((c, i) => (
             <div key={c.slug}>
@@ -231,6 +266,30 @@ export default function DiagnosticMirror({
               <p className="mt-2 text-[0.85rem] italic text-foreground/70 leading-snug">{c.pattern}</p>
             </div>
           ))}
+          {live && (
+            <div className="border-t border-brass/40 pt-4">
+              <p className="flex items-center gap-2 font-serif text-primary text-lg leading-tight">
+                <span
+                  className="inline-block h-2.5 w-2.5 shrink-0 rotate-45 bg-foreground"
+                  aria-hidden
+                />
+                Live theatre vector
+              </p>
+              <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2">
+                {DOMAINS.map((d, idx) => (
+                  <div key={d}>
+                    <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight">
+                      {d === "Institutional-Relational" ? "Institutional" : d}
+                    </p>
+                    <p className="font-serif text-accent text-sm">{live[idx].toFixed(1)} / 5</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 text-[0.85rem] italic text-foreground/70 leading-snug">
+                Scored live on the diagnostic bench and drawn dashed on the radar.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
