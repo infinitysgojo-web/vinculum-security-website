@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
-import { usePublish, TREND_MULT } from "./engine";
+import { usePublish, useEngine, TREND_MULT } from "./engine";
+import SyncPanel from "./SyncPanel";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
 const SIGNS: { bond: number; text: string; w: number }[] = [
@@ -56,6 +57,10 @@ type Custom = { id: string; bond: number; text: string; w: number };
 export default function SentinelMatrix() {
   // The theatre is inherited from the active mission; typing here overrides it for this desk only.
   const mission = useMission();
+  // Linked: signs that sit on the weakest bond from Desk 1 are flagged. Override: work standalone.
+  const { signals } = useEngine();
+  const [linked, setLinked] = useState(true);
+  const weakestIdx = linked && signals.weakestBond ? DOMAINS.findIndex((d) => d === signals.weakestBond) : -1;
   const [theaterOverride, setTheater] = useState("");
   const theater = theaterOverride.trim() || mission.theatre.trim();
   const [trend, setTrend] = useState(1);
@@ -179,8 +184,25 @@ export default function SentinelMatrix() {
     return L.join("\n");
   }, [r, on, trend, theater, custom, cOn]);
 
+  const alignedCount = weakestIdx >= 0 ? SIGNS.filter((x) => x.bond === weakestIdx).length : 0;
+  const alignedOn = weakestIdx >= 0 ? SIGNS.reduce((n, x, i) => n + (x.bond === weakestIdx && on.includes(i) ? 1 : 0), 0) : 0;
+
   return (
     <section className={panel}>
+      <div className="mb-6">
+        <SyncPanel
+          linked={linked}
+          onToggle={setLinked}
+          summary={(x) =>
+            x.weakestBond
+              ? [
+                  `The weakest bond on the diagnostic bench is ${x.weakestBond}${x.weakestScore !== undefined ? ` at ${x.weakestScore.toFixed(1)} of 5` : ""}. Its ${alignedCount} tripwires are flagged below as aligned with the live reading.`,
+                  `${alignedOn} of ${alignedCount} aligned tripwires are recorded so far; check these first.`,
+                ]
+              : []
+          }
+        />
+      </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -198,8 +220,15 @@ export default function SentinelMatrix() {
           </div>
           {DOMAINS.map((d, b) => (
             <div key={d}>
-              <div className="flex justify-between items-baseline">
-                <span className={label}>{d}</span>
+              <div className="flex justify-between items-baseline gap-3">
+                <span className={label}>
+                  {d}
+                  {b === weakestIdx && (
+                    <span className="ml-2 inline-block border border-terracotta/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-terracotta">
+                      Weakest live bond{signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}
+                    </span>
+                  )}
+                </span>
                 <span className="text-xs text-muted-foreground">{r.byBond[b]}%</span>
               </div>
               <div className="h-1 bg-border mb-3"><div className="h-1 bg-accent transition-all" style={{ width: `${r.byBond[b]}%` }} /></div>
@@ -207,7 +236,12 @@ export default function SentinelMatrix() {
                 {SIGNS.map((s, i) => s.bond === b && (
                   <label key={i} className="flex gap-3 items-start text-sm cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={on.includes(i)} onChange={() => toggle(i)} />
-                    <span className="text-foreground/85">{s.text}</span>
+                    <span className="text-foreground/85">
+                      {s.text}
+                      {s.bond === weakestIdx && (
+                        <span className="ml-2 text-[9px] uppercase tracking-[0.14em] font-semibold text-terracotta whitespace-nowrap">· Aligned with weakest bond</span>
+                      )}
+                    </span>
                   </label>
                 ))}
                 {custom.filter((c) => c.bond === b).map((c) => (
