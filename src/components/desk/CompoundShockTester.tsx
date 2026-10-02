@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import { useMission } from "./mission";
 import BondRadar from "./BondRadar";
 import { usePublish, round1 } from "./engine";
 
@@ -96,7 +97,10 @@ const AMPLIFY = 1.25;
 const fmt = (n: number) => (Number.isInteger(round1(n)) ? String(round1(n)) : round1(n).toFixed(1));
 
 export default function CompoundShockTester() {
-  const [theatre, setTheatre] = useState("");
+  // The theatre is inherited from the active mission; typing here overrides it for this desk only.
+  const mission = useMission();
+  const [theatreOverride, setTheatre] = useState("");
+  const theatre = theatreOverride.trim() || mission.theatre.trim();
   const [on, setOn] = useState<string[]>(["principal", "donor"]);
 
   const toggle = (id: string) => setOn((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
@@ -188,10 +192,13 @@ export default function CompoundShockTester() {
           <input
             id="cs-theatre"
             className={field}
-            value={theatre}
+            value={theatreOverride}
             onChange={(e) => setTheatre(e.target.value)}
-            placeholder="Transitional settlement, year two"
+            placeholder={mission.theatre.trim() || "Transitional settlement, year two"}
           />
+          {!theatreOverride.trim() && mission.theatre.trim() && (
+            <p className="mt-1.5 text-[11px] text-muted-foreground">Inherited from the active mission. Type to override on this desk.</p>
+          )}
           <p className={`${label} mt-5`}>Apply shocks simultaneously</p>
           <div className="space-y-2">
             {ALL.map((s) => (
