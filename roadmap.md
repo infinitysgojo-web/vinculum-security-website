@@ -24,3 +24,7 @@
 - [x] Critics' chamber, field audit, comparative mirror respond to the live reading
 - [x] Custom mode: own shocks (compound shock), own parties and frictions (multi-party)
 - [x] Screen sweep 320/768/1920 across all public pages and 18 desks: clean
+- [ ] Dashboard audit: expose decimal bond scoring, formulas, thresholds, and stage-to-stage consequences clearly on screen
+- [ ] Dashboard integrity: harmonize scoring bands, trend terminology, track tolerance, and readiness locks with the documented mathematics
+- [ ] Case Studies: restore the score matrix directly beneath the Relational Atlas and make each case row actionable
+- [ ] Run an authenticated end-to-end mission and responsive visual verification; exclude the master PDF
