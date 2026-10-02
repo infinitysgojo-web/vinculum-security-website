@@ -42,7 +42,7 @@ export default function AdversarialChamber() {
   return (
     <div>
       <EngineBrief lines={[
-        sg.weakestBond && `Expect critics to press hardest on the ${sg.weakestBond.toLowerCase()} bond, where your theatre reads ${sg.weakestScore} of 5. Rehearse the open and conceded questions first.`,
+        sg.weakestBond && `Expect critics to press hardest on the ${sg.weakestBond.toLowerCase()} bond, where your theatre reads ${sg.weakestScore?.toFixed(1)} of 5. Rehearse the open and conceded questions first.`,
         sg.elitePactAlert && "Your tracks show an Elite-Pact Mirage. Prepare for the realist charge that the deal is only between principals.",
         (sg.covenants?.length ?? 0) > 0 && `Defend the drafted covenants under challenge: ${sg.covenants!.join("; ")}.`,
         sg.survivalScore !== undefined && sg.survivalScore < 55 && `Treaty survival reads ${sg.survivalScore} per cent; concede durability limits honestly rather than overclaim.`,
