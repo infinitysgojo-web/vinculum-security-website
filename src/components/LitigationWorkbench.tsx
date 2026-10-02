@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
-import { Copy, Download, RotateCcw } from "lucide-react";
-import { toast } from "sonner";
+import { RotateCcw } from "lucide-react";
 import GoldRule from "./GoldRule";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine } from "@/components/desk/engine";
 import { useEffect } from "react";
 import { DOMAINS } from "@/content/cases";
+import DeskOutput from "@/components/desk/DeskOutput";
 
 /**
  * The Legal & Litigation Preparation Workbench.
@@ -212,26 +212,8 @@ export default function LitigationWorkbench() {
     return lines.join("\n");
   }, [matter, facts, forum, posture, bond, tactic, linked, signals]);
 
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Checklist copied");
-    } catch {
-      toast.error("Copy failed. Select the text and copy manually.");
-    }
-  };
-
-  const download = () => {
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Vinculum-Litigation-Checklist-${(matter.trim() || "matter")
-      .replace(/[^a-z0-9]+/gi, "-")
-      .slice(0, 40)}.txt`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
-  };
+  // Binder id follows the matter, so each matter keeps its own binder entry.
+  const fileName = `Vinculum-Litigation-Checklist-${(matter.trim() || "matter").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0, 40)}`;
 
   const reset = () => {
     setMatter("");
@@ -308,21 +290,13 @@ export default function LitigationWorkbench() {
           </div>
         </div>
 
-        <div className="flex flex-col">
-          <div className="flex flex-wrap gap-2 mb-3">
-            <button type="button" onClick={copy} className="inline-flex items-center gap-2 border border-accent/60 px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors">
-              <Copy size={13} /> Copy
-            </button>
-            <button type="button" onClick={download} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
-              <Download size={13} /> Download
-            </button>
-            <button type="button" onClick={reset} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
+        <div className="flex flex-col min-w-0">
+          <div className="mb-3">
+            <button type="button" onClick={reset} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
               <RotateCcw size={13} /> Reset
             </button>
           </div>
-          <pre className="flex-1 whitespace-pre-wrap break-words border border-border bg-background p-4 text-[0.78rem] leading-relaxed text-foreground/90 max-h-[32rem] overflow-y-auto">
-            {text}
-          </pre>
+          <DeskOutput text={text} fileName={fileName} />
         </div>
       </div>
     </section>
