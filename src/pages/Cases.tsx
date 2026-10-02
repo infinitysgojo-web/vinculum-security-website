@@ -47,7 +47,11 @@ export default function Cases() {
 
   const toggle = <T,>(s: Set<T>, v: T, set: (s: Set<T>) => void) => {
     const next = new Set(s);
-    next.has(v) ? next.delete(v) : next.add(v);
+        if (next.has(v)) {
+      next.delete(v);
+    } else {
+      next.add(v);
+    }
     set(next);
   };
 
