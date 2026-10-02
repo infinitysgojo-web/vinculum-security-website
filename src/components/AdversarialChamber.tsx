@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import EngineBrief from "@/components/desk/EngineBrief";
-import { useEngine } from "@/components/desk/engine";
+import { telemetryLines, useEngine } from "@/components/desk/engine";
+import DeskOutput, { todayStamp } from "@/components/desk/DeskOutput";
+import { useMission } from "@/components/desk/mission";
 import { PANELS, VERDICT_LABEL, type Verdict } from "@/content/adversarial";
 
 const VERDICT_STYLE: Record<Verdict, string> = {
@@ -33,6 +35,36 @@ export default function AdversarialChamber() {
   );
   const panel = visiblePanels.find((p) => p.n === panelN) ?? visiblePanels[0];
   const exchanges = panel.exchanges.filter((e) => filter === "all" || e.verdict === filter);
+
+  const mission = useMission();
+  const memo = useMemo(() => {
+    const L: string[] = [];
+    L.push("ADVERSARIAL CHAMBER AUDIT");
+    L.push("Vinculum Security, Legal Architecture Division");
+    L.push("");
+    L.push(`MISSION: ${mission.theatre.trim() || "Unnamed mission"}`);
+    L.push(`DATE: ${todayStamp()}`);
+    L.push(`SCOPE: ${filter === "all" ? "Every question" : VERDICT_LABEL[filter]}, ${visiblePanels.length} panel(s)`);
+    L.push(`TALLY (ALL PANELS): ${counts.answered} answered, ${counts.conceded} conceded, ${counts.open} held open of ${counts.all}`);
+    L.push("");
+    if (sg.weakestBond)
+      L.push(`PRESSURE POINT: Critics will press hardest on the ${sg.weakestBond.toLowerCase()} bond${sg.weakestScore !== undefined ? ` (${sg.weakestScore.toFixed(1)} of 5)` : ""}.`, "");
+    L.push(...telemetryLines(sg));
+    visiblePanels.forEach((p) => {
+      const ex = p.exchanges.filter((e) => filter === "all" || e.verdict === filter);
+      L.push(`PANEL ${p.n}. ${p.title.toUpperCase()} (${p.lens})`);
+      ex.forEach((e, i) => {
+        L.push(`  Q${i + 1}. ${e.q}`);
+        L.push(`  Answer: ${e.a}`);
+        L.push(`  Verdict: ${VERDICT_LABEL[e.verdict]}${e.ref ? ` · Doctrine ${e.ref}` : ""}`);
+        L.push("");
+      });
+    });
+    L.push("Each held question maps to an item on the Research and Practice Agenda (Section XI).");
+    L.push("Rule-based record of the doctrine's own answers. Not legal advice. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("END OF AUDIT");
+    return L.join("\n");
+  }, [mission.theatre, filter, visiblePanels, counts, sg]);
 
   const choose = (n: number) => {
     setPanelN(n);
@@ -152,6 +184,14 @@ export default function AdversarialChamber() {
             })}
           </ul>
         </div>
+      </div>
+
+      <div className="mt-10">
+        <p className="eyebrow mb-3">Compiled audit</p>
+        <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
+          The audit follows the filter above. Add it to the Mission Binder to carry the critics' questions into the dossier.
+        </p>
+        <DeskOutput text={memo} fileName="Vinculum-Adversarial-Audit" />
       </div>
 
       <p className="mt-6 text-sm italic text-muted-foreground max-w-3xl">
