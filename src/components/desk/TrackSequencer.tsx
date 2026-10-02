@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
-import { usePublish, useEngine, hasSignal, telemetryLines } from "./engine";
+import { usePublish, useEngine, hasSignal, telemetryLines, communalTolerance } from "./engine";
 import SyncPanel from "./SyncPanel";
 
 /**
@@ -36,6 +36,14 @@ export default function TrackSequencer() {
   const [done, setDone] = useState<string[]>([]);
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
+  // Communal-bond tolerance: Failing = Track I may not lead, Fragile = one phase,
+  // Viable or Fortified = two phases. With no live communal reading, the
+  // baseline of one phase applies and the rule is advisory only.
+  const communal = linked ? signals.bonds?.communal : undefined;
+  const tol = communal !== undefined ? communalTolerance(communal) : null;
+  const tolerance = tol ? tol.phases : 1;
+  const enforced = tol !== null;
+
   const r = useMemo(() => {
     const depthOf = (t: "I" | "II") => {
       let d = 0;
@@ -50,12 +58,15 @@ export default function TrackSequencer() {
     const gap = a - b;
     let reading: string;
     let counter: string;
-    if (gap >= 2) {
-      reading = "The Elite-Pact Mirage is forming: the principals' track has run ahead of the communal track by two phases or more.";
+    if (gap > tolerance) {
+      reading = `The Elite-Pact Mirage is forming: the principals' track leads the communal track by ${gap} phases, beyond the ${tolerance}-phase tolerance${tol ? ` set by the ${tol.band.toLowerCase()} communal bond` : ""}.`;
       counter = "Hold Track I at its current phase and run Track II forward before any further concession is tabled.";
-    } else if (gap === 1) {
-      reading = "Track I leads Track II by one phase, which is the maximum tolerable lead.";
+    } else if (gap >= 1 && gap === tolerance) {
+      reading = `Track I leads Track II by ${gap} phase${gap === 1 ? "" : "s"}, which is the maximum tolerable lead${tol ? ` while the communal bond is ${tol.band}` : ""}.`;
       counter = "Do not table a further Track I step until the matching Track II step is recorded.";
+    } else if (gap >= 1) {
+      reading = `Track I leads Track II by ${gap} phase${gap === 1 ? "" : "s"}, inside the ${tolerance}-phase tolerance.`;
+      counter = "Keep Track II moving; the next Track I step stays inside tolerance only until the lead reaches the limit.";
     } else if (gap <= -2) {
       reading = "Unanchored Repair is forming: communal work has advanced with no principal-level instrument to settle into.";
       counter = "Convert the communal findings into a tabled Track I item before expectation outpaces authority.";
@@ -68,10 +79,25 @@ export default function TrackSequencer() {
     }
     const nextI = STEPS.find((s) => s.track === "I" && !done.includes(s.id));
     const nextII = STEPS.find((s) => s.track === "II" && !done.includes(s.id));
-    return { a, b, gap, reading, counter, nextI, nextII };
-  }, [done]);
+    const blockedNow = gap >= tolerance;
+    return { a, b, gap, reading, counter, nextI, nextII, blockedNow };
+  }, [done, tolerance, tol?.band]);
 
-  usePublish("tracks", { trackI: r.a, trackII: r.b, trackGap: r.gap, elitePactAlert: r.gap >= 2 });
+  /** Would completing this Track I step push the lead beyond the tolerance? */
+  const blockedStep = (s: Step) => {
+    if (!enforced || s.track !== "I" || done.includes(s.id)) return false;
+    const idx = PHASES.indexOf(s.phase);
+    return idx + 1 - r.b > tolerance;
+  };
+
+  usePublish("tracks", {
+    trackI: r.a,
+    trackII: r.b,
+    trackGap: r.gap,
+    elitePactAlert: r.gap > tolerance,
+    trackTolerance: tolerance,
+    ...(tol ? { communalBand: tol.band } : {}),
+  });
 
   const text = useMemo(() => {
     const L = [
@@ -83,6 +109,7 @@ export default function TrackSequencer() {
       `TRACK I DEPTH: Phase ${r.a} of ${PHASES.length}`,
       `TRACK II DEPTH: Phase ${r.b} of ${PHASES.length}`,
       `SYNCHRONISATION GAP: ${r.gap > 0 ? `+${r.gap} (Track I ahead)` : r.gap < 0 ? `${r.gap} (Track II ahead)` : "0 (in step)"}`,
+      `COMMUNAL-BOND TOLERANCE: Track I may lead by ${tolerance} phase${tolerance === 1 ? "" : "s"}${tol ? ` (communal bond ${communal!.toFixed(1)}, ${tol.band})` : " (baseline, no live communal reading)"}`,
       "",
       ...(live ? telemetryLines(signals) : []),
       "SEQUENCE LEDGER",
@@ -97,7 +124,7 @@ export default function TrackSequencer() {
     L.push(`  Track II: ${r.nextII ? r.nextII.text : "Sequence complete."}`);
     L.push("", "Rule-based sequencing aid. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
     return L.join("\n");
-  }, [process, done, r, live, signals]);
+  }, [process, done, r, live, signals, tolerance, tol, communal]);
 
   return (
     <section className={panel}>
@@ -111,15 +138,20 @@ export default function TrackSequencer() {
             <div key={ph}>
               <p className={label}>{ph}</p>
               <div className="grid gap-2 sm:grid-cols-2">
-                {STEPS.filter((s) => s.phase === ph).map((s) => (
-                  <label key={s.id} className="flex gap-3 items-start border border-border bg-background p-3 text-sm cursor-pointer">
-                    <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(s.id)} onChange={() => toggle(s.id)} />
-                    <span>
-                      <span className="block text-[10px] uppercase tracking-[0.18em] text-accent mb-1">Track {s.track}</span>
-                      <span className="text-foreground/85">{s.text}</span>
-                    </span>
-                  </label>
-                ))}
+                {STEPS.filter((s) => s.phase === ph).map((s) => {
+                  const blocked = blockedStep(s);
+                  return (
+                    <label key={s.id} className={`flex gap-3 items-start border border-border bg-background p-3 text-sm ${blocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}>
+                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(s.id)} disabled={blocked} onChange={() => toggle(s.id)} />
+                      <span>
+                        <span className="block text-[10px] uppercase tracking-[0.18em] text-accent mb-1">
+                          Track {s.track}{blocked ? " · Blocked by communal tolerance" : ""}
+                        </span>
+                        <span className="text-foreground/85">{s.text}</span>
+                      </span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
           ))}
@@ -130,6 +162,11 @@ export default function TrackSequencer() {
             <p className="font-serif text-3xl text-primary">Track I {r.a} · Track II {r.b}</p>
             <p className="text-sm text-foreground/85 mt-2">{r.reading}</p>
             <p className="text-xs text-muted-foreground mt-2">{r.counter}</p>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-accent mt-3">
+              Tolerated Track I lead: {tolerance} phase{tolerance === 1 ? "" : "s"}
+              {tol ? ` · communal ${tol.band}` : " · baseline"}
+              {r.blockedNow ? " · next Track I step blocked" : ""}
+            </p>
           </div>
           <SyncPanel
             linked={linked}
@@ -137,9 +174,16 @@ export default function TrackSequencer() {
             summary={(s) => {
               const n: string[] = [];
               if (s.bonds)
-                n.push(
-                  `The communal bond scores ${s.bonds.communal} of 5, so the tolerated Track I lead is ${s.bonds.communal <= 2 ? "nil" : "one phase"}.`
-                );
+                {
+                  const t = communalTolerance(s.bonds.communal);
+                  n.push(
+                    `The communal bond scores ${s.bonds.communal.toFixed(1)} of 5 (${t.band}), so ${
+                      t.phases === 0
+                        ? "Track I leads are blocked until the communal bond leaves the Failing band"
+                        : `Track I may lead by at most ${t.phases === 1 ? "one phase" : "two phases"}`
+                    }.`
+                  );
+                }
               if (s.rupture !== undefined && s.rupture >= 35)
                 n.push("With the rupture index elevated, no Track I concession should be tabled ahead of a communal round.");
               return n;
