@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
-import { usePublish } from "./engine";
+import { usePublish, TREND_MULT } from "./engine";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
 const SIGNS: { bond: number; text: string; w: number }[] = [
@@ -38,9 +38,9 @@ const SIGNS: { bond: number; text: string; w: number }[] = [
 const MAX = SIGNS.reduce((s, x) => s + x.w, 0);
 
 const TREND = [
-  { id: "accel", label: "Accelerating (signs added this quarter)", mult: 1.15, note: "Rupture velocity is rising; compress the review interval." },
-  { id: "stable", label: "Stable (no material change)", mult: 1, note: "Rupture velocity is flat; hold the current review interval." },
-  { id: "decel", label: "Decelerating (signs cleared this quarter)", mult: 0.9, note: "Rupture velocity is falling; verify the clearance independently before relaxing." },
+  { id: "deteriorating", label: "Deteriorating (signs added this quarter)", mult: TREND_MULT.deteriorating, note: "Rupture velocity is rising; compress the review interval." },
+  { id: "static", label: "Static (no material change)", mult: TREND_MULT.static, note: "Rupture velocity is flat; hold the current review interval." },
+  { id: "improving", label: "Improving (signs cleared this quarter)", mult: TREND_MULT.improving, note: "Rupture velocity is falling; verify the clearance independently before relaxing." },
 ] as const;
 
 function band(pct: number) {
@@ -139,7 +139,8 @@ export default function SentinelMatrix() {
     ruptureBand: r.b.name,
     bondStrain: r.byBond,
     traps: r.traps.map((t) => t.name),
-    trend: TREND[trend].label,
+    trend: TREND[trend].label.split(" (")[0],
+    trendMultiplier: TREND[trend].mult,
   });
 
   const text = useMemo(() => {
@@ -149,7 +150,7 @@ export default function SentinelMatrix() {
       "",
       `THEATER: ${theater.trim() || "Unnamed theater"}`,
       `DATE: ${todayStamp()}`,
-      `OBSERVATION TREND: ${TREND[trend].label}`,
+      `OBSERVATION TREND: ${TREND[trend].label} (multiplier ×${TREND[trend].mult.toFixed(2)})`,
       `RELATIONAL RUPTURE INDEX: ${r.pct}% (${r.b.name.toUpperCase()})`,
       `SIGNS RECORDED: ${on.length + cOn.length} of ${SIGNS.length + custom.length}`,
       `CUSTOM INDICATORS DEFINED: ${custom.length}`,
@@ -186,7 +187,7 @@ export default function SentinelMatrix() {
             <div className="min-w-0">
               <label className={label} htmlFor="sm-v">Observation trend</label>
               <select id="sm-v" className={`${field} text-base sm:text-sm min-h-11`} value={trend} onChange={(e) => setTrend(Number(e.target.value))}>
-                {TREND.map((t, i) => <option key={t.id} value={i}>{t.label}</option>)}
+                {TREND.map((t, i) => <option key={t.id} value={i}>{t.label} ×{t.mult.toFixed(2)}</option>)}
               </select>
             </div>
           </div>
