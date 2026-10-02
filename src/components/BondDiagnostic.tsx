@@ -119,11 +119,31 @@ function ring(value: number) {
     .join(" ");
 }
 
-/* ---------- paired slider and numeric input ---------- */
+/* ---------- decimal score controls: nudge, numeric entry, quick-select chips ---------- */
+
+/** Canonical test scores, one tap each. */
+const QUICK_SCORES: { v: number; label: string }[] = [
+  { v: 1.0, label: "Severed" },
+  { v: 1.4, label: "Worked Ex." },
+  { v: 2.0, label: "Failing" },
+  { v: 2.6, label: "Contested" },
+  { v: 3.1, label: "Viable" },
+  { v: 4.0, label: "Tested" },
+  { v: 5.0, label: "Durable" },
+];
+
+const nudgeCls =
+  "inline-flex items-center justify-center min-h-11 min-w-11 px-2 border border-brass/60 bg-background font-mono text-xs font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-35 disabled:hover:border-brass/60 disabled:hover:text-primary transition-colors";
 
 function ScoreInput({ id, value, onChange, name }: { id: string; value: number; onChange: (v: number) => void; name: string }) {
   const [draft, setDraft] = useState(value.toFixed(1));
-  useEffect(() => setDraft(value.toFixed(1)), [value]);
+  // Follow outside changes (slider, nudge, chips, presets, archives) without
+  // overwriting a decimal the analyst is still typing, such as "2." or "2.65".
+  useEffect(() => {
+    const typed = parseFloat(draft);
+    if (Number.isNaN(typed) || clampScore(typed) !== value) setDraft(value.toFixed(1));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
   const commit = () => {
     const n = parseFloat(draft);
     if (Number.isNaN(n)) return setDraft(value.toFixed(1));
@@ -131,25 +151,75 @@ function ScoreInput({ id, value, onChange, name }: { id: string; value: number; 
     onChange(v);
     setDraft(v.toFixed(1));
   };
+  const nudge = (delta: number) => {
+    const v = clampScore(value + delta);
+    onChange(v);
+    setDraft(v.toFixed(1));
+  };
   return (
-    <input
-      id={id}
-      aria-label={`${name} bond score, numeric entry, 1.0 to 5.0`}
-      type="number"
-      inputMode="decimal"
-      min={1}
-      max={5}
-      step={0.1}
-      value={draft}
-      onChange={(e) => {
-        setDraft(e.target.value);
-        const n = parseFloat(e.target.value);
-        if (!Number.isNaN(n) && n >= 1 && n <= 5) onChange(clampScore(n));
-      }}
-      onBlur={commit}
-      onKeyDown={(e) => e.key === "Enter" && commit()}
-      className="w-20 bg-background border border-border px-2 py-1.5 text-center font-serif text-xl text-accent leading-none focus:outline-none focus:border-accent"
-    />
+    <div className="flex items-center gap-1.5">
+      <button
+        type="button"
+        aria-label={`Lower the ${name} bond score by 0.1`}
+        onClick={() => nudge(-0.1)}
+        disabled={value <= 1}
+        className={nudgeCls}
+      >
+        −0.1
+      </button>
+      <input
+        id={id}
+        aria-label={`${name} bond score, numeric entry, 1.0 to 5.0`}
+        type="number"
+        inputMode="decimal"
+        min={1}
+        max={5}
+        step={0.1}
+        value={draft}
+        onChange={(e) => {
+          setDraft(e.target.value);
+          const n = parseFloat(e.target.value);
+          if (!Number.isNaN(n) && n >= 1 && n <= 5) onChange(clampScore(n));
+        }}
+        onBlur={commit}
+        onKeyDown={(e) => e.key === "Enter" && commit()}
+        className="w-20 min-h-11 bg-background border border-border px-2 py-1.5 text-center font-serif text-xl text-accent leading-none focus:outline-none focus:border-accent"
+      />
+      <button
+        type="button"
+        aria-label={`Raise the ${name} bond score by 0.1`}
+        onClick={() => nudge(0.1)}
+        disabled={value >= 5}
+        className={nudgeCls}
+      >
+        +0.1
+      </button>
+    </div>
+  );
+}
+
+function QuickScores({ name, value, onPick }: { name: string; value: number; onPick: (v: number) => void }) {
+  return (
+    <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label={`Quick-select scores for ${name}`}>
+      {QUICK_SCORES.map((q) => {
+        const on = Math.abs(value - q.v) < 0.001;
+        return (
+          <button
+            key={q.v}
+            type="button"
+            aria-pressed={on}
+            onClick={() => onPick(q.v)}
+            className={`min-h-9 px-2.5 border text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors ${
+              on
+                ? "bg-accent text-accent-foreground border-accent"
+                : "border-brass/50 text-primary hover:border-accent hover:text-accent"
+            }`}
+          >
+            <span className="font-mono">{q.v.toFixed(1)}</span> {q.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -285,7 +355,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
               const v = scores[l.key];
               return (
                 <div key={l.key}>
-                  <div className="flex items-baseline justify-between gap-4">
+                  <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
                     <div className="flex items-baseline gap-3">
                       <span className="font-serif text-accent text-sm">§ {l.ref}</span>
                       <h4 className="font-serif text-primary">{l.name}</h4>
@@ -315,6 +385,11 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
                     <span>Severed</span>
                     <span>Durable</span>
                   </div>
+                  <QuickScores
+                    name={l.name}
+                    value={v}
+                    onPick={(n) => setScores((s) => ({ ...s, [l.key]: n }))}
+                  />
                   <p className="mt-3 text-sm leading-relaxed text-foreground/75">
                     <span className="font-semibold text-primary">{bondBand(v)} band · {anchorFor(v).label}.</span>{" "}
                     {anchorFor(v).text}
