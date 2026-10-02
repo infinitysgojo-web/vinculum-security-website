@@ -136,9 +136,12 @@ export default function Cases() {
             flagship. Select any row to open its case dossier.
           </p>
 
-          {/* Tablet and desktop: full matrix, every row opens its case */}
-          <div className="hidden md:block overflow-x-auto border border-border">
-            <table className="w-full text-sm border-collapse">
+          {/* All viewports: the full 32-score matrix, scrollable sideways on narrow screens; every row opens its case */}
+          <p className="md:hidden mb-2 text-[11px] italic text-muted-foreground">
+            Swipe horizontally to inspect all 32 scores across the 8 cases.
+          </p>
+          <div className="w-full overflow-x-auto border border-border" tabIndex={0} role="region" aria-label="Cross-case pattern summary, scrollable">
+            <table className="w-full min-w-[40rem] text-sm border-collapse">
               <thead>
                 <tr className="bg-primary text-primary-foreground text-left">
                   <th className="px-3 py-3 font-serif font-medium">Case</th>
@@ -188,32 +191,6 @@ export default function Cases() {
                 ))}
               </tbody>
             </table>
-          </div>
-
-          {/* Below 768px: stacked cards, no horizontal scroll */}
-          <div className="md:hidden space-y-3">
-            {CASES.map((c) => (
-              <Link
-                key={c.slug}
-                to={`/cases/${c.slug}`}
-                aria-label={`Open the case dossier: ${c.title}`}
-                className="block border border-border bg-card p-4 hover:border-accent transition-colors"
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <span className="font-serif text-primary text-lg leading-tight">{c.shortTitle}</span>
-                  <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-accent shrink-0">Open →</span>
-                </div>
-                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
-                  {DOMAINS.map((d, idx) => (
-                    <div key={d} className="min-w-0">
-                      <dt className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight">{d}</dt>
-                      <dd className="font-serif text-accent text-sm">{c.scores[idx]} / 5</dd>
-                    </div>
-                  ))}
-                </dl>
-                <p className="mt-3 text-[0.8rem] leading-snug text-foreground/80 [overflow-wrap:anywhere]">{c.pattern}</p>
-              </Link>
-            ))}
           </div>
 
           <p className="mt-5 text-sm italic text-foreground/70 max-w-3xl">
