@@ -20,7 +20,7 @@ export type BondScores = Record<LevelKey, number>;
 interface BondDiagnosticProps {
   scores?: BondScores;
   onScoresChange?: (scores: BondScores) => void;
-},
+}
 
 const DEFAULT_SCORES: BondScores = {
   interpersonal: 3.0,
@@ -28,6 +28,7 @@ const DEFAULT_SCORES: BondScores = {
   intergenerational: 3.0,
   institutional: 3.0,
 };
+
 const LEVELS: {
   key: LevelKey;
   ref: string;
