@@ -111,6 +111,142 @@ export function mathReading(v: [number, number, number, number]): MathReading {
   };
 }
 
+/* ------------------------------------------------------------------ */
+/* Full mathematical derivation (Section III of the deposition)        */
+/* ------------------------------------------------------------------ */
+
+/** Year of the settlement instrument for each canonical case, from the Section VII quick-facts. */
+export const CASE_YEARS: Record<string, number> = {
+  "northern-ireland": 1998,
+  colombia: 2016,
+  cambodia: 2001,
+  liberia: 2009,
+  rwanda: 2002,
+  kenya: 2008,
+  "south-africa": 1995,
+  "tuvalu-kiribati": 2023,
+};
+
+export type FacadeReading = {
+  engaged: boolean;
+  variance: number;
+  max: number;
+  min: number;
+  /** The three conditions, evaluated separately so the panel can show which hold. */
+  tests: { varianceAbove: boolean; maxAtLeast: boolean; minAtMost: boolean };
+};
+
+/**
+ * Structural Facade Syndrome: superficial harmony masking severe rupture.
+ * Engaged when variance exceeds 1.25 AND the strongest bond is at least 4.0
+ * AND the weakest bond is at most 2.0.
+ */
+export function facadeSyndrome(v: readonly number[]): FacadeReading {
+  const mean = v.reduce((a, b) => a + b, 0) / v.length;
+  const variance = v.reduce((a, b) => a + (b - mean) ** 2, 0) / v.length;
+  const max = Math.max(...v);
+  const min = Math.min(...v);
+  const tests = { varianceAbove: variance > 1.25 + 1e-9, maxAtLeast: max >= 4.0, minAtMost: min <= 2.0 };
+  return { engaged: tests.varianceAbove && tests.maxAtLeast && tests.minAtMost, variance, max, min, tests };
+}
+
+export type DistanceRow = {
+  slug: string;
+  shortTitle: string;
+  year: number | undefined;
+  coords: [number, number, number, number];
+  distance: number;
+  /** R_k = (1 - d / 8) x 100, to one decimal place. */
+  resonance: number;
+  nearest: boolean;
+};
+
+/**
+ * Euclidean distance d(B, C_k) and resonance R_k to all eight canonical cases,
+ * in canonical case order, with the closest historical twin flagged.
+ * Ties for closest go to the earlier case in canonical order.
+ */
+export function distanceTable(v: readonly number[]): DistanceRow[] {
+  const rows = CASES.map((c) => {
+    const d = Math.sqrt(c.scores.reduce((a, s, i) => a + (v[i] - s) ** 2, 0));
+    return {
+      slug: c.slug,
+      shortTitle: c.shortTitle,
+      year: CASE_YEARS[c.slug],
+      coords: [...c.scores] as [number, number, number, number],
+      distance: d,
+      resonance: round1((1 - d / MAX_DISTANCE) * 100),
+      nearest: false,
+    };
+  });
+  let best = 0;
+  rows.forEach((r, i) => {
+    if (r.distance < rows[best].distance) best = i;
+  });
+  rows[best].nearest = true;
+  return rows;
+}
+
+/** Number of covenants in force at which the covenant indicator saturates. */
+export const COVENANT_SATURATION = 2;
+
+export type SuccessionReading = {
+  mu: number;
+  ig: number;
+  ir: number;
+  covenantCount: number;
+  /** 1.0 when two or more covenants are in force, otherwise 0.5 per covenant. */
+  covenantIndicator: number;
+  /** Rupture index R, in per cent, and its normalised form R/100. */
+  rupturePct: number;
+  rupturePenaltyBase: number;
+  terms: { label: string; weight: number; input: number; value: number }[];
+  raw: number;
+  percent: number;
+  trap: boolean;
+};
+
+/** Terminal succession trap gate, in per cent. */
+export const SUCCESSION_TRAP = 55.0;
+
+/**
+ * Canonical succession durability from Section 4.5:
+ * S_raw = 0.35 mu_B + 0.25 B_IG + 0.25 B_IR + 0.15 I_cov - 0.20 R~,  S% = S_raw / 5 x 100.
+ * A missing rupture reading counts as R = 0; missing covenants count as none.
+ * Returns undefined until the bond vector is on the bus.
+ */
+export function successionDurability(s: Signals): SuccessionReading | undefined {
+  if (!s.bonds) return undefined;
+  const b = s.bonds;
+  const mu = (b.interpersonal + b.communal + b.intergenerational + b.institutional) / 4;
+  const covenantCount = s.covenants?.length ?? 0;
+  const covenantIndicator = covenantCount >= COVENANT_SATURATION ? 1.0 : 0.5 * covenantCount;
+  const rupturePct = s.rupture ?? 0;
+  const rTilde = rupturePct / 100;
+  const terms = [
+    { label: "0.35 × μB (composite mean)", weight: 0.35, input: mu, value: 0.35 * mu },
+    { label: "0.25 × B_IG (intergenerational)", weight: 0.25, input: b.intergenerational, value: 0.25 * b.intergenerational },
+    { label: "0.25 × B_IR (institutional-relational)", weight: 0.25, input: b.institutional, value: 0.25 * b.institutional },
+    { label: "0.15 × I_cov (covenant indicator)", weight: 0.15, input: covenantIndicator, value: 0.15 * covenantIndicator },
+    { label: "−0.20 × R̃ (rupture, R ÷ 100)", weight: -0.2, input: rTilde, value: -0.2 * rTilde },
+  ];
+  const raw = terms.reduce((a, t) => a + t.value, 0);
+  const percent = Math.min(100, Math.max(0, round1((raw / 5.0) * 100)));
+  return {
+    mu,
+    ig: b.intergenerational,
+    ir: b.institutional,
+    covenantCount,
+    covenantIndicator,
+    rupturePct,
+    rupturePenaltyBase: rTilde,
+    terms,
+    raw,
+    percent,
+    trap: percent < SUCCESSION_TRAP,
+  };
+}
+
 export type Signals = {
   /** Division I, bond diagnostic. */
   bonds?: BondVector;
@@ -151,6 +287,49 @@ export type Signals = {
   verifierSeated?: boolean;
   gatesCleared?: string;
 };
+
+const SIGNAL_NUMBERS = [
+  "bondMean", "weakestScore", "bondVariance", "trackTolerance", "rupture", "trendMultiplier",
+  "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
+] as const;
+const SIGNAL_STRINGS = [
+  "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
+  "firstToBreak", "gatesCleared",
+] as const;
+const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated"] as const;
+const SIGNAL_STRING_LISTS = ["traps", "shocks", "frictionPairs", "covenants"] as const;
+
+/**
+ * Coerce anything read from a mission archive into a valid Signals object.
+ * Unknown keys and wrongly typed values are dropped; bond scores are clamped to 1.0 to 5.0.
+ */
+export function sanitizeSignals(raw: unknown): Signals {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const src = raw as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+  for (const k of SIGNAL_NUMBERS) if (typeof src[k] === "number" && Number.isFinite(src[k])) out[k] = src[k];
+  for (const k of SIGNAL_STRINGS) if (typeof src[k] === "string") out[k] = src[k];
+  for (const k of SIGNAL_BOOLEANS) if (typeof src[k] === "boolean") out[k] = src[k];
+  for (const k of SIGNAL_STRING_LISTS)
+    if (Array.isArray(src[k])) out[k] = (src[k] as unknown[]).filter((x): x is string => typeof x === "string");
+  if (Array.isArray(src.bondStrain))
+    out.bondStrain = (src.bondStrain as unknown[]).filter((x): x is number => typeof x === "number" && Number.isFinite(x));
+  const b = src.bonds as Record<string, unknown> | undefined;
+  if (b && typeof b === "object") {
+    const pick = (key: keyof BondVector) => {
+      const n = Number(b[key]);
+      return Number.isFinite(n) ? clampScore(n) : undefined;
+    };
+    const bonds = {
+      interpersonal: pick("interpersonal"),
+      communal: pick("communal"),
+      intergenerational: pick("intergenerational"),
+      institutional: pick("institutional"),
+    };
+    if (Object.values(bonds).every((x) => x !== undefined)) out.bonds = bonds as BondVector;
+  }
+  return out as Signals;
+}
 
 export type Engine = {
   signals: Signals;
