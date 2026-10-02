@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
-import { usePublish } from "@/components/desk/engine";
+import { usePublish, bondBand, clampScore, mathReading } from "@/components/desk/engine";
+import BondMathPanel from "@/components/desk/BondMathPanel";
 
 /**
  * Interactive Relational Bond Diagnostic Bench.
@@ -55,6 +56,9 @@ const LEVELS: {
   },
 ];
 
+/** Scores are decimal (0.1 steps); the descriptive anchor follows the nearest whole level. */
+const anchorFor = (v: number) => ANCHORS[Math.min(5, Math.max(1, Math.round(v)))];
+
 const ANCHORS: Record<number, { label: string; text: string }> = {
   1: {
     label: "Severed",
@@ -103,20 +107,55 @@ function ring(value: number) {
     .join(" ");
 }
 
+/* ---------- paired slider and numeric input ---------- */
+
+function ScoreInput({ id, value, onChange, name }: { id: string; value: number; onChange: (v: number) => void; name: string }) {
+  const [draft, setDraft] = useState(value.toFixed(1));
+  useEffect(() => setDraft(value.toFixed(1)), [value]);
+  const commit = () => {
+    const n = parseFloat(draft);
+    if (Number.isNaN(n)) return setDraft(value.toFixed(1));
+    const v = clampScore(n);
+    onChange(v);
+    setDraft(v.toFixed(1));
+  };
+  return (
+    <input
+      id={id}
+      aria-label={`${name} bond score, numeric entry, 1.0 to 5.0`}
+      type="number"
+      inputMode="decimal"
+      min={1}
+      max={5}
+      step={0.1}
+      value={draft}
+      onChange={(e) => {
+        setDraft(e.target.value);
+        const n = parseFloat(e.target.value);
+        if (!Number.isNaN(n) && n >= 1 && n <= 5) onChange(clampScore(n));
+      }}
+      onBlur={commit}
+      onKeyDown={(e) => e.key === "Enter" && commit()}
+      className="w-20 bg-background border border-border px-2 py-1.5 text-center font-serif text-xl text-accent leading-none focus:outline-none focus:border-accent"
+    />
+  );
+}
+
 /* ---------- component ---------- */
 
 export default function BondDiagnostic() {
   const [context, setContext] = useState("");
   const [scores, setScores] = useState<Record<LevelKey, number>>({
-    interpersonal: 3,
-    communal: 3,
-    intergenerational: 3,
-    institutional: 3,
+    interpersonal: 3.0,
+    communal: 3.0,
+    intergenerational: 3.0,
+    institutional: 3.0,
   });
   const [copied, setCopied] = useState(false);
 
-  const values = LEVELS.map((l) => scores[l.key]);
+  const values = LEVELS.map((l) => scores[l.key]) as [number, number, number, number];
   const mean = values.reduce((a, b) => a + b, 0) / 4;
+  const reading = useMemo(() => mathReading(values), [values.join(",")]);
 
   const weakest = useMemo(() => {
     let w = LEVELS[0];
@@ -124,7 +163,7 @@ export default function BondDiagnostic() {
     return w;
   }, [scores]);
 
-  const spread = Math.max(...values) - Math.min(...values);
+  const spread = Math.round((Math.max(...values) - Math.min(...values)) * 10) / 10;
 
   const standing = useMemo(() => {
     if (mean < 2) return { label: "Fractured", note: "The relational base is not carrying the process. Formal progress made now will rest on bonds that are not there." };
@@ -134,18 +173,10 @@ export default function BondDiagnostic() {
     return { label: "Reconstituted", note: "Durable across transitions and independent of any single officeholder." };
   }, [mean]);
 
-  const analogue = useMemo(() => {
-    let best = CASES[0];
-    let bestDist = Infinity;
-    for (const c of CASES) {
-      const d = c.scores.reduce((acc, s, i) => acc + Math.abs(s - values[i]), 0);
-      if (d < bestDist) {
-        bestDist = d;
-        best = c;
-      }
-    }
-    return best;
-  }, [values]);
+  const analogue = useMemo(
+    () => CASES.find((c) => c.slug === reading.nearest.slug) ?? CASES[0],
+    [reading],
+  );
 
   // Publish the reading onto the mission engine for every downstream desk.
   usePublish("diagnostics", {
@@ -155,9 +186,12 @@ export default function BondDiagnostic() {
       intergenerational: scores.intergenerational,
       institutional: scores.institutional,
     },
-    bondMean: mean,
+    bondMean: Math.round(mean * 100) / 100,
     weakestBond: weakest.name,
     weakestScore: scores[weakest.key],
+    weakestBand: bondBand(scores[weakest.key]),
+    bondVariance: reading.variance,
+    communalBand: bondBand(scores.communal),
     standing: standing.label,
     analogue: analogue.shortTitle,
   });
@@ -168,24 +202,26 @@ export default function BondDiagnostic() {
       context.trim() ? `Context: ${context.trim()}` : "Context: unnamed",
       "",
       ...LEVELS.map(
-        (l) => `${l.name} (§ ${l.ref}): ${scores[l.key]} of 5, ${ANCHORS[scores[l.key]].label}`
+        (l) => `${l.name} (§ ${l.ref}): ${scores[l.key].toFixed(1)} of 5, ${bondBand(scores[l.key])} (${anchorFor(scores[l.key]).label})`
       ),
       "",
-      `Standing: ${standing.label} (mean ${mean.toFixed(2)} of 5, spread ${spread})`,
+      `Standing: ${standing.label} (mean ${mean.toFixed(2)} of 5, variance ${reading.variance.toFixed(2)}, spread ${spread.toFixed(1)})`,
+      `State vector: (${values.map((v) => v.toFixed(1)).join(", ")})`,
+      `Limiting factor: ${weakest.name} at ${scores[weakest.key].toFixed(1)} (${bondBand(scores[weakest.key])})`,
       `Most exposed bond: ${weakest.name}`,
       `Diagnostic question: ${weakest.question}`,
       "",
       "Practice direction:",
       weakest.guidance,
       "",
-      `Nearest documented case by profile: ${analogue.shortTitle} (${analogue.scores.join(", ")}).`,
+      `Nearest documented case by profile: ${analogue.shortTitle} (${analogue.scores.join(", ")}), distance ${reading.nearest.distance.toFixed(2)}, resonance ${reading.nearest.resonance}%.`,
       "",
       "Boundary rules in force: children are a protected party and are not scored; a government does not assess its own institutional-relational bond; a bond score does not substitute for a protection determination.",
       "",
       "Assessed against Vinculum Security, A Doctrine of Relational Security, by James Wesley Ndua.",
     ];
     return lines.join("\n");
-  }, [context, scores, standing, mean, spread, weakest, analogue]);
+  }, [context, scores, standing, mean, spread, weakest, analogue, reading]);
 
   async function copySummary() {
     try {
@@ -240,7 +276,12 @@ export default function BondDiagnostic() {
                       <span className="font-serif text-accent text-sm">§ {l.ref}</span>
                       <h4 className="font-serif text-primary">{l.name}</h4>
                     </div>
-                    <span className="font-serif text-2xl text-accent leading-none">{v}</span>
+                    <ScoreInput
+                      id={`bench-${l.key}`}
+                      name={l.name}
+                      value={v}
+                      onChange={(n) => setScores((s) => ({ ...s, [l.key]: n }))}
+                    />
                   </div>
                   <p className="mt-2 font-serif italic text-sm text-primary/80">{l.question}</p>
 
@@ -249,10 +290,10 @@ export default function BondDiagnostic() {
                     type="range"
                     min={1}
                     max={5}
-                    step={1}
+                    step={0.1}
                     value={v}
                     onChange={(e) =>
-                      setScores((s) => ({ ...s, [l.key]: Number(e.target.value) }))
+                      setScores((s) => ({ ...s, [l.key]: clampScore(Number(e.target.value)) }))
                     }
                     className="mt-4 w-full accent-[hsl(var(--accent))] cursor-pointer"
                   />
@@ -261,8 +302,8 @@ export default function BondDiagnostic() {
                     <span>Durable</span>
                   </div>
                   <p className="mt-3 text-sm leading-relaxed text-foreground/75">
-                    <span className="font-semibold text-primary">{ANCHORS[v].label}.</span>{" "}
-                    {ANCHORS[v].text}
+                    <span className="font-semibold text-primary">{bondBand(v)} band · {anchorFor(v).label}.</span>{" "}
+                    {anchorFor(v).text}
                   </p>
                 </div>
               );
@@ -276,7 +317,7 @@ export default function BondDiagnostic() {
             <p className="eyebrow">Reading</p>
             <h4 className="mt-3 font-serif text-primary text-2xl leading-tight">{standing.label}</h4>
             <p className="mt-1 text-sm text-muted-foreground">
-              Mean {mean.toFixed(2)} of 5 &middot; spread {spread}
+              Mean {mean.toFixed(2)} of 5 &middot; spread {spread.toFixed(1)}
             </p>
             <hr className="gold-rule gold-rule-short mt-5 mb-5" />
 
@@ -284,7 +325,7 @@ export default function BondDiagnostic() {
               viewBox={`0 0 ${SIZE} ${SIZE}`}
               className="w-full max-w-[280px] mx-auto"
               role="img"
-              aria-label={`Bond profile: ${LEVELS.map((l) => `${l.name} ${scores[l.key]}`).join(", ")}`}
+              aria-label={`Bond profile: ${LEVELS.map((l) => `${l.name} ${scores[l.key].toFixed(1)}`).join(", ")}`}
             >
               {[1, 2, 3, 4, 5].map((r) => (
                 <polygon
@@ -342,16 +383,18 @@ export default function BondDiagnostic() {
             <p className="mt-5 text-sm leading-relaxed text-foreground/80">{standing.note}</p>
           </div>
 
+          <BondMathPanel scores={values} />
+
           <div className="bg-navy-tint border border-border p-6 md:p-8">
             <p className="eyebrow">Most exposed bond</p>
             <h4 className="mt-3 font-serif text-primary text-xl">
-              {weakest.name} &middot; {scores[weakest.key]} of 5
+              {weakest.name} &middot; {scores[weakest.key].toFixed(1)} of 5 &middot; {bondBand(scores[weakest.key])}
             </h4>
             <hr className="gold-rule gold-rule-short mt-4 mb-4" />
             <p className="text-sm leading-relaxed text-foreground/85">{weakest.guidance}</p>
             {spread >= 2 && (
               <p className="mt-4 text-sm leading-relaxed text-accent">
-                The reading is uneven by {spread} points. A strong score elsewhere does not compensate for
+                The reading is uneven by {spread.toFixed(1)} points. A strong score elsewhere does not compensate for
                 this one, and should be read as a reason to look harder here.
               </p>
             )}
