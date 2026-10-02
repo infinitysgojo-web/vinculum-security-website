@@ -7,7 +7,7 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import ReadingProgress from "@/components/ReadingProgress";
 import RelationalAtlas from "@/components/RelationalAtlas";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CASES, DOMAINS, type Region, type Pillar, type Threat } from "@/content/cases";
 
 
@@ -40,6 +40,7 @@ function Chip({
 }
 
 export default function Cases() {
+  const navigate = useNavigate();
   const [regions, setRegions] = useState<Set<Region>>(new Set());
   const [pillars, setPillars] = useState<Set<Pillar>>(new Set());
   const [threats, setThreats] = useState<Set<Threat>>(new Set());
@@ -120,6 +121,106 @@ export default function Cases() {
 
         <FadeIn>
           <RelationalAtlas />
+        </FadeIn>
+
+        {/* Cross-Case Pattern Summary, directly beneath the Relational Atlas */}
+        <FadeIn className="mb-16">
+          <p className="eyebrow">VII.I · Cross-Case Pattern Summary</p>
+          <hr className="gold-rule mt-4 mb-6" />
+          <p className="text-muted-foreground mb-6 max-w-3xl">
+            All thirty-two scores across the eight cases, ordered here with no case privileged as
+            flagship. Select any row to open its case dossier.
+          </p>
+
+          {/* Tablet and desktop: full matrix, every row opens its case */}
+          <div className="hidden md:block overflow-x-auto border border-border">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-primary text-primary-foreground text-left">
+                  <th className="px-3 py-3 font-serif font-medium">Case</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Interp.</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Communal</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Intergen.</th>
+                  <th className="px-2 py-3 font-serif font-medium text-center">Instit.</th>
+                  <th className="px-3 py-3 font-serif font-medium">Pattern</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CASES.map((c, i) => (
+                  <tr
+                    key={c.slug}
+                    tabIndex={0}
+                    role="link"
+                    aria-label={`Open the case dossier: ${c.title}`}
+                    onClick={() => navigate(`/cases/${c.slug}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        navigate(`/cases/${c.slug}`);
+                      }
+                    }}
+                    className={`cursor-pointer transition-colors hover:bg-accent/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                      i % 2 === 0 ? "bg-background" : "bg-gold-tint"
+                    }`}
+                  >
+                    <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">
+                      <Link
+                        to={`/cases/${c.slug}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="hover:text-accent hover:underline"
+                      >
+                        {c.shortTitle}
+                      </Link>
+                    </td>
+                    {c.scores.map((s, j) => (
+                      <td key={j} className="px-2 py-2 align-top text-center font-serif text-accent">
+                        {s}
+                      </td>
+                    ))}
+                    <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
+                      {c.pattern}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Below 768px: stacked cards, no horizontal scroll */}
+          <div className="md:hidden space-y-3">
+            {CASES.map((c) => (
+              <Link
+                key={c.slug}
+                to={`/cases/${c.slug}`}
+                aria-label={`Open the case dossier: ${c.title}`}
+                className="block border border-border bg-card p-4 hover:border-accent transition-colors"
+              >
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-serif text-primary text-lg leading-tight">{c.shortTitle}</span>
+                  <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-accent shrink-0">Open →</span>
+                </div>
+                <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
+                  {DOMAINS.map((d, idx) => (
+                    <div key={d} className="min-w-0">
+                      <dt className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight">{d}</dt>
+                      <dd className="font-serif text-accent text-sm">{c.scores[idx]} / 5</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="mt-3 text-[0.8rem] leading-snug text-foreground/80 [overflow-wrap:anywhere]">{c.pattern}</p>
+              </Link>
+            ))}
+          </div>
+
+          <p className="mt-5 text-sm italic text-foreground/70 max-w-3xl">
+            The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is
+            the only case scoring uniformly low, making it the doctrine's single most important
+            test case for the falsifiability standard.
+          </p>
+          <p className="mt-4 text-sm text-foreground/75 max-w-3xl">
+            These eight processes, among them Rwanda, Colombia, and South Africa, are the major historical and ongoing
+            case studies against which both the doctrine and its companion handbook have been tested.
+          </p>
         </FadeIn>
 
 
@@ -213,60 +314,6 @@ export default function Cases() {
             );
           })}
         </div>
-
-        {/* Cross-Case Pattern Summary */}
-        <FadeIn className="mb-24">
-          <p className="eyebrow">VII.I · Cross-Case Pattern Summary</p>
-          <hr className="gold-rule mt-4 mb-6" />
-          <p className="text-muted-foreground mb-6 max-w-3xl">
-            All thirty-two scores across the eight cases, ordered here with no case privileged as
-            flagship.
-          </p>
-          <div className="overflow-x-auto border border-border">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-primary text-primary-foreground text-left">
-                  <th className="px-3 py-3 font-serif font-medium">Case</th>
-                  <th className="px-2 py-3 font-serif font-medium text-center">Interp.</th>
-                  <th className="px-2 py-3 font-serif font-medium text-center">Communal</th>
-                  <th className="px-2 py-3 font-serif font-medium text-center">Intergen.</th>
-                  <th className="px-2 py-3 font-serif font-medium text-center">Instit.</th>
-                  <th className="px-3 py-3 font-serif font-medium">Pattern</th>
-                </tr>
-              </thead>
-              <tbody>
-                {CASES.map((c, i) => (
-                  <tr key={c.slug} className={i % 2 === 0 ? "bg-background" : "bg-gold-tint"}>
-                    <td className="px-3 py-2 align-top font-medium text-primary whitespace-nowrap">
-                      <Link to={`/cases/${c.slug}`} className="hover:text-accent hover:underline">
-                        {c.shortTitle}
-                      </Link>
-                    </td>
-                    {c.scores.map((s, j) => (
-                      <td key={j} className="px-2 py-2 align-top text-center font-serif text-accent">
-                        {s}
-                      </td>
-                    ))}
-                    <td className="px-3 py-2 align-top text-foreground/80 text-[0.8rem] leading-snug">
-                      {c.pattern}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-5 text-sm italic text-foreground/70 max-w-3xl">
-            The pattern holds across all eight cases: no case scores uniformly high, and Cambodia is
-            the only case scoring uniformly low, making it the doctrine's single most important
-            test case for the falsifiability standard.
-          </p>
-          <p className="mt-4 text-sm text-foreground/75 max-w-3xl">
-            These eight processes, among them Rwanda, Colombia, and South Africa, are the major historical and ongoing
-            case studies against which both the doctrine and its companion handbook have been tested.
-          </p>
-
-        </FadeIn>
-
 
       </div>
     </>
