@@ -1,12 +1,17 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
 
-export default function FadeIn({ children, delay = 0, as: Tag = "div", className = "" }: {
+export default function FadeIn({
+  children,
+  delay = 0,
+  as: Tag = "div",
+  className = "",
+}: {
   children: ReactNode;
   delay?: number;
-  as?: keyof JSX.IntrinsicElements;
+  as?: ElementType;
   className?: string;
 }) {
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -27,9 +32,9 @@ export default function FadeIn({ children, delay = 0, as: Tag = "div", className
     return () => io.disconnect();
   }, [delay]);
 
-  const Component = Tag as any;
+  const Component = Tag;
   return (
-    <Component ref={ref as any} className={`fade-in ${visible ? "is-visible" : ""} ${className}`}>
+    <Component ref={ref} className={`fade-in ${visible ? "is-visible" : ""} ${className}`}>
       {children}
     </Component>
   );
