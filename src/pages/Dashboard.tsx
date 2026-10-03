@@ -15,6 +15,7 @@ import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SaveSession from "@/components/desk/SaveSession";
+import DeskFinder from "@/components/desk/DeskFinder";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
@@ -355,6 +356,14 @@ export default function Dashboard() {
             <span className="hidden md:inline text-muted-foreground normal-case tracking-normal text-xs">
               {session.user.email}
             </span>
+            <DeskFinder
+              desks={DESKS}
+              divisions={DIVISIONS}
+              onPick={(id) => {
+                const d = DESKS.find((x) => x.id === id);
+                if (d) goTo(d);
+              }}
+            />
             <SaveSession onSave={saveSession} savedAt={savedAt} />
             <Link to="/" className="text-primary hover:text-accent transition-colors">Site</Link>
             <button onClick={signOut} className="text-accent hover:underline">Sign out</button>
