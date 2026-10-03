@@ -249,7 +249,7 @@ export default function CompoundShockTester() {
         until then this desk tests against a 5.0 baseline.
       </p>
     )}
-    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full min-w-0 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="cs-theatre">Theatre under test</label>
@@ -325,7 +325,7 @@ export default function CompoundShockTester() {
         {useLive && liveVector && (
           <div className="border border-brass/40 bg-background p-5 min-w-0">
             <p className={label}>Live vector after shock · B′ᵢ = max(1.0, Bᵢ − Σ ωₐ ÷ 10)</p>
-            <div className="mt-3 w-full overflow-x-auto">
+            <div className="mt-3 w-full max-w-full min-w-0 overflow-x-auto">
               <table className="w-full min-w-[22rem] border-collapse text-xs">
                 <thead>
                   <tr className="text-left text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
