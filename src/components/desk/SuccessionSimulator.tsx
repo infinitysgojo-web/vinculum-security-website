@@ -217,7 +217,7 @@ export default function SuccessionSimulator() {
           </p>
         )}
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="ss-t">Instrument under test</label>
@@ -329,7 +329,7 @@ export default function SuccessionSimulator() {
               <p className="mt-1 text-[11px] text-muted-foreground">
                 S_raw = 0.35 μB + 0.25 B_IG + 0.25 B_IR + 0.15 𝕀_cov − 0.20 R̃ · S% = S_raw ÷ 5.0 × 100%
               </p>
-              <div className="mt-2 w-full overflow-x-auto">
+              <div className="mt-2 w-full max-w-full min-w-0 overflow-x-auto">
                 <table className="w-full min-w-[20rem] border-collapse text-xs">
                   <tbody>
                     {canon.terms.map((t) => (
