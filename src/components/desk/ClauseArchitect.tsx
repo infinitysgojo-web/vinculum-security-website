@@ -214,7 +214,7 @@ export default function ClauseArchitect() {
 
   return (
     <section className={panel}>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="ca-title">Instrument title (optional)</label>
@@ -319,7 +319,7 @@ export default function ClauseArchitect() {
           <div className="mt-10">
         <span className={label}>Westphalian and relational clauses compared</span>
         <p className="text-xs text-muted-foreground mb-3">Counter-positions for when an opposing delegation proposes a fragile clause.</p>
-        <div className="overflow-x-auto border border-border bg-background">
+        <div className="w-full max-w-full min-w-0 overflow-x-auto border border-border bg-background">
           <table className="w-full min-w-[40rem] text-sm">
             <thead>
               <tr className="border-b border-brass/40 text-left">
