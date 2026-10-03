@@ -51,7 +51,7 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
       <select id="audit-party" value={active} onChange={(event) => setActive(Number(event.target.value))} className="mb-5 w-full border border-input bg-background px-3 py-2.5 text-sm md:hidden">
         {parties.map(([name], index) => <option key={name} value={index}>{name}</option>)}
       </select>
-      <div className="grid gap-6 md:grid-cols-[13rem_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[13rem_minmax(0,1fr)] w-full min-w-0 [&>*]:min-w-0">
         <div className="hidden border-r border-border pr-4 md:block" role="tablist" aria-label="Affected parties">
           {parties.map(([name], index) => (
             <Button key={name} type="button" variant="ghost" role="tab" aria-selected={active === index} onClick={() => setActive(index)} className={cn("h-auto w-full justify-between rounded-none px-3 py-2.5", active === index && "bg-secondary text-primary")}>
