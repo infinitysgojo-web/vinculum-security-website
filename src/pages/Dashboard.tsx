@@ -376,7 +376,7 @@ export default function Dashboard() {
           <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
         </div>
 
-        <div className="mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40">
+        <div className="mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40 scrollbar-none [webkit-overflow-scrolling:touch]">
           <div className="flex w-max min-w-full gap-5 sm:gap-6 pb-3">
             {DIVISIONS.map((dv) => {
               const on = division === dv.id;
@@ -402,14 +402,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 sm:mb-10">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 sm:mb-10 w-full min-w-0">
           {deskList.map((d) => (
             <button
               key={d.id}
               type="button"
               aria-pressed={desk === d.id}
               onClick={() => setDesk(d.id)}
-              className={`px-3 sm:px-4 py-2.5 min-h-11 border text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.2em] leading-tight transition-all ${
+              className={`min-w-0 break-words px-3 sm:px-4 py-2.5 min-h-11 border text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.2em] leading-tight transition-all ${
                 desk === d.id
                   ? "bg-accent text-accent-foreground border-accent"
                   : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
@@ -446,7 +446,7 @@ export default function Dashboard() {
         <MissionContext.Provider value={profile}>
         <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow }}>
         <BinderContext.Provider value={{ add: addToBinder }}>
-        <div className="pb-10">
+        <div className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden">
           <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
             {desk === "briefing" && <CableComposer />}
             {desk === "diagnostics" && (
