@@ -25,7 +25,7 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
   const nearest = table.find((r) => r.nearest)!;
 
   return (
-    <div className="bg-background border border-brass/40 p-6 md:p-8 min-w-0">
+    <div className="bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full overflow-hidden">
       <p className="eyebrow">Mathematical reading</p>
       <hr className="gold-rule gold-rule-short mt-4 mb-4" />
 
@@ -127,7 +127,7 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
       <p className="mt-1 text-[11px] text-muted-foreground">
         d(B, C<sub>k</sub>) = √Σ(Bᵢ − C<sub>k,i</sub>)² · R<sub>k</sub> = (1 − d ÷ 8) × 100%
       </p>
-      <div className="mt-3 w-full overflow-x-auto border border-border">
+      <div className="mt-3 w-full max-w-full min-w-0 overflow-x-auto border border-border">
         <table className="w-full min-w-[30rem] border-collapse text-xs">
           <thead>
             <tr className="bg-primary text-primary-foreground text-left">
