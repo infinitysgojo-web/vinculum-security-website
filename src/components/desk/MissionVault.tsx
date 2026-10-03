@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Archive, Upload, X } from "lucide-react";
+import { Archive, RotateCcw, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
@@ -130,11 +130,24 @@ export default function MissionVault({
           <button type="button" className={`${btn} col-span-2 sm:col-span-1`} onClick={() => setOpen((o) => !o)}>
             {open ? <X size={13} /> : null} {open ? "Close" : "Mission details"}
           </button>
-          <button type="button" className={btn} onClick={() => fileRef.current?.click()}>
-            <Upload size={13} /> Load
+          <button type="button" className={btn} onClick={() => fileRef.current?.click()} title="Import a mission file from your device">
+            <Upload size={13} /> Import file
           </button>
-          <button type="button" className={btn} onClick={save}>
-            <Archive size={13} /> Save
+          <button type="button" className={btn} onClick={save} title="Export this mission as a file to your device">
+            <Archive size={13} /> Export file
+          </button>
+          <button
+            type="button"
+            className={`${btn} col-span-2 sm:col-span-1`}
+            onClick={() => {
+              if (!window.confirm("Start a new blank mission? The profile, bond scores, live readings and binder will be cleared. Export a file first if you want to keep this mission.")) return;
+              setProfile({ ...EMPTY_PROFILE });
+              setBinder([]);
+              setSignals({});
+              toast.success("New blank mission started.");
+            }}
+          >
+            <RotateCcw size={13} /> New mission
           </button>
           <input
             ref={fileRef}
