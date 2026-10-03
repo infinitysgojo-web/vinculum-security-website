@@ -185,7 +185,7 @@ export default function VerificationLedger() {
   }, [instrument, mission, seated, met, interval, r, engineLines, linked, signals]);
 
   return (
-    <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 w-full min-w-0 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="vl-i">Instrument under verification</label>
