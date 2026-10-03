@@ -157,7 +157,7 @@ export default function HandoverProtocol() {
   }, [mandate, successor, mission, cleared, deps, r, engineLines, linked, signals]);
 
   return (
-    <div className="grid gap-6 lg:gap-8 lg:grid-cols-2">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 w-full min-w-0 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="hp-m">Mandate under handover</label>
