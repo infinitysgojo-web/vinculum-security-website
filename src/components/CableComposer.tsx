@@ -4,6 +4,7 @@ import { CASES, DOMAINS } from "@/content/cases";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import { useEngine, hasSignal, telemetryLines } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
+import DeskOutput from "@/components/desk/DeskOutput";
 
 /**
  * §12B, the Operational Briefing Desk.
@@ -477,31 +478,11 @@ END OF ${cab.tag}`;
         </div>
       </div>
 
-      <div className="mt-6 border border-border bg-card">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
-          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70">
-            {cab.tag} · {c.shortTitle} · {DOMAINS[bi]}
-          </p>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={copy}
-              className="px-3 py-1.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary hover:border-accent hover:text-accent transition-colors"
-            >
-              {copied ? "Copied" : "Copy memorandum"}
-            </button>
-            <button
-              type="button"
-              onClick={download}
-              className="px-3 py-1.5 border border-accent bg-accent text-accent-foreground text-[10px] font-semibold uppercase tracking-[0.18em] hover:opacity-90 transition-opacity"
-            >
-              Download
-            </button>
-          </div>
-        </div>
-        <pre className="max-h-[32rem] overflow-auto px-4 py-5 text-[0.78rem] leading-[1.7] text-foreground/85 whitespace-pre-wrap break-words font-mono">
-{memo}
-        </pre>
+      <div className="mt-6 min-w-0">
+        <p className="mb-3 text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70">
+          {cab.tag} · {c.shortTitle} · {DOMAINS[bi]}
+        </p>
+        <DeskOutput text={memo} fileName={`Vinculum-Briefing-${cab.tag.replace(/\s+/g, "-")}`} />
       </div>
     </div>
   );
