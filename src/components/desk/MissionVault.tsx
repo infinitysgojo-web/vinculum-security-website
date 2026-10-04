@@ -3,7 +3,7 @@ import { Archive, RotateCcw, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
-import { DEFAULT_BONDS, EMPTY_PROFILE, LEVANT_ARCH_PRESET, sanitizeBonds, type MissionProfile } from "./mission";
+import { DEFAULT_BONDS, EMPTY_PROFILE, sanitizeBonds, type MissionProfile } from "./mission";
 import { sanitizeSignals, type Signals } from "./engine";
 
 export { EMPTY_PROFILE };
@@ -101,12 +101,6 @@ export default function MissionVault({
     reader.readAsText(file);
   };
 
-  const loadLevantArch = () => {
-    const hasWork = profile.theatre.trim() || profile.parties.trim() || profile.officer.trim() || profile.bonds;
-    if (hasWork && !window.confirm("Replace the active mission profile and bond scores with Operation Levant Arch? The binder is kept.")) return;
-    setProfile({ ...LEVANT_ARCH_PRESET, bonds: { ...LEVANT_ARCH_PRESET.bonds! } });
-    toast.success("Operation Levant Arch loaded. Bond bench seeded.");
-  };
 
   const btn =
     "inline-flex items-center justify-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors";
@@ -203,14 +197,6 @@ export default function MissionVault({
               value={profile.classification}
               onChange={(e) => setProfile({ ...profile, classification: e.target.value })}
             />
-          </div>
-          <div className="sm:col-span-2 flex flex-col sm:flex-row sm:items-center gap-3 border border-dashed border-brass/50 px-4 py-3">
-            <button type="button" className={btn} onClick={loadLevantArch}>
-              Load Official Mission: Operation Levant Arch
-            </button>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Seeds the profile and sets the bond bench to 3.1 / 1.8 / 2.4 / 3.6, so every desk can be tested end to end.
-            </p>
           </div>
           <p className="sm:col-span-2 text-xs text-muted-foreground leading-relaxed">
             The archive is a file on your own machine. It is never uploaded, and the system keeps no copy.

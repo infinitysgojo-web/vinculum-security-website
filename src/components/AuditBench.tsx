@@ -3,6 +3,7 @@ import { Check, RotateCcw } from "lucide-react";
 import GoldRule from "./GoldRule";
 import EngineBrief from "@/components/desk/EngineBrief";
 import SyncPanel from "@/components/desk/SyncPanel";
+import DeskOutput from "@/components/desk/DeskOutput";
 import { useEngine, type Signals } from "@/components/desk/engine";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,25 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
     ...current,
     [party[0]]: state.map((value, i) => i === index ? !value : value),
   }));
+
+  const record = [
+    "FIELD AUDIT RECORD · STAKEHOLDER SAFEGUARD REVIEW",
+    "",
+    sg.weakestBond ? `Most exposed bond (live reading): ${sg.weakestBond}` : "Most exposed bond: not linked to the diagnostic bench",
+    typeof sg.rupture === "number" ? `Rupture index: ${sg.rupture}%${sg.rupture >= 35 ? " (unchecked safeguards are blocking)" : ""}` : "Rupture index: not yet read",
+    (sg.frictionPairs?.length ?? 0) > 0 ? `Friction at the table: ${sg.frictionPairs!.join("; ")}` : "",
+    "",
+    ...parties.flatMap(([name]) => {
+      const s = checked[name] ?? CHECKS.map(() => false);
+      const done = s.filter(Boolean).length;
+      return [
+        `${name}: ${done}/${CHECKS.length} safeguards ${done === CHECKS.length ? "COMPLETE" : "OUTSTANDING"}`,
+        ...CHECKS.map((c, i) => `  [${s[i] ? "x" : " "}] ${c}`),
+        "",
+      ];
+    }),
+    "A field prompt only. Completion is not certification and never replaces protection obligations.",
+  ].filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
 
   return (
     <section id="audit-bench" className="scroll-mt-24 print:hidden">
@@ -77,6 +97,9 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
             <Button type="button" variant="ghost" size="sm" onClick={() => setChecked({})}><RotateCcw /> Reset</Button>
           </div>
         </div>
+      </div>
+      <div className="mt-10 min-w-0">
+        <DeskOutput text={record} fileName="Vinculum-Field-Audit" />
       </div>
     </section>
   );
