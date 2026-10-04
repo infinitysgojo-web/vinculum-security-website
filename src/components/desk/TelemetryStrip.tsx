@@ -1,4 +1,8 @@
 import { alerts, hasSignal, type Signals } from "./engine";
+import { Lex } from "./Lexicon";
+
+/** Telemetry labels that carry a lexicon definition. */
+const LEX_FOR: Record<string, string> = { "Limiting bond": "liebig", "Rupture index": "rupture", "Track gap": "track-divergence" };
 
 /** The standing readout carried across the top of every desk. */
 export default function TelemetryStrip({ signals }: { signals: Signals }) {
@@ -24,7 +28,9 @@ export default function TelemetryStrip({ signals }: { signals: Signals }) {
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2">
         {cells.map((c) => (
           <div key={c.k} className="min-w-0">
-            <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground">{c.k}</p>
+            <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+              {LEX_FOR[c.k] ? <Lex term={LEX_FOR[c.k]}>{c.k}</Lex> : c.k}
+            </p>
             <p
               className={`text-xs sm:text-sm font-serif leading-snug [overflow-wrap:anywhere] ${
                 c.k === "Alerts" && critical ? "text-terracotta" : "text-primary"
