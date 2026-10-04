@@ -7,10 +7,11 @@ import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import { CASES, DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
-import DeskOutput, { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
-import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, useMission, type MissionProfile } from "@/components/desk/mission";
+import DeskOutput, { BinderContext, DeskMetaContext, todayStamp, type BinderEntry } from "@/components/desk/DeskOutput";
+import { useMission } from "@/components/desk/mission";
+import { PAIRINGS } from "@/content/pairings";
+import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
 import { EngineContext, useEngine, usePublish, bondBand, mathReading, type Signals } from "@/components/desk/engine";
-import { buildMirrorMemo } from "@/components/desk/mirrorMemo";
 import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain from "@/components/desk/MissionChain";
@@ -521,7 +522,6 @@ export default function Dashboard() {
 }
 
 function MirrorDesk() {
-  const profile = useMission();
   const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
   const { signals } = useEngine();
   // Linked: the live theatre's own bond vector can be drawn on the radar. Override: historical cases only.
@@ -546,21 +546,71 @@ function MirrorDesk() {
     .map((s) => CASES.find((c) => c.slug === s))
     .filter(Boolean) as typeof CASES;
 
-  // Put the comparative precedent selection on the signal bus for downstream desks.
+  const mission = useMission();
+  // Publish the comparative selection to the mission engine.
   usePublish("mirror", { mirrors: picked });
 
-  // The comparative memorandum, compiled from exactly what is on screen. It needs two
-  // theatres at least; the live vector is included only when it is linked and plotted.
-  const memoLive = showLive ? liveVector : null;
-  const liveKey = memoLive ? memoLive.join(",") : "";
-  const mirrorText = useMemo(
-    () => (selected.length >= 2 ? buildMirrorMemo({ cases: selected, live: memoLive, profile }) : ""),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [picked.join(","), liveKey, profile],
-  );
+  const mirrorText = useMemo(() => {
+    const bar = "-".repeat(64);
+    const fmt = (v: readonly number[]) => v.map((n) => n.toFixed(1)).join(", ");
+    const rank = (c: (typeof CASES)[number]) =>
+      c.scores.map((score, idx) => ({ score, domain: DOMAINS[idx], why: c.rationales[idx] })).sort((a, b) => a.score - b.score);
+    const pairing = PAIRINGS.find((p) => p.slugs.length === picked.length && p.slugs.every((x) => picked.includes(x)));
+    const L = [
+      "VINCULUM SECURITY · COMPARATIVE PRECEDENT MIRROR",
+      "Desk 4 · Cross-Theater Diagnostic Mirror",
+      "",
+      `THEATRE: ${mission.theatre.trim() || "Unnamed theatre"}`,
+      `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
+      `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
+      `DATE: ${todayStamp()}`,
+      "REGISTRY: Kenya Copyright Board Registration No. RZ100967",
+      "",
+      bar,
+      "I. SELECTED THEATRES (Interpersonal, Communal, Intergenerational, Institutional)",
+      bar,
+      ...(liveVector ? [`  Live theatre: (${fmt(liveVector)})`] : ["  Live theatre: not linked or not yet scored"]),
+      ...selected.map((c) => {
+        const d = liveVector ? Math.sqrt(c.scores.reduce((a, v, i) => a + (v - liveVector[i]) ** 2, 0)) : null;
+        return `  ${c.shortTitle} (§ VII.${c.ref}): (${fmt(c.scores)})${d !== null ? ` · distance from live ${d.toFixed(2)}` : ""}`;
+      }),
+      "",
+      bar,
+      "II. CURATED PAIRING",
+      bar,
+      pairing ? `  ${pairing.label}: ${pairing.note}` : "  No curated pairing; a custom comparison.",
+      "",
+      bar,
+      "III. THE FOUR DOCTRINAL INQUIRIES",
+      bar,
+    ];
+    selected.forEach((c) => {
+      const r = rank(c);
+      L.push(
+        "",
+        `  ${c.shortTitle.toUpperCase()}`,
+        `  Inquiry I · Primary rupture point: ${r[0].domain} (${r[0].score.toFixed(1)}). ${r[0].why}`,
+        `  Inquiry II · Intervention mechanism: ${r[3].domain} (${r[3].score.toFixed(1)}). ${r[3].why}`,
+        `  Inquiry III · Unresolved vulnerability: ${r[1].domain} (${r[1].score.toFixed(1)}). ${r[1].why}`,
+        `  Inquiry IV · Transferable lesson: ${c.takeaway}`
+      );
+    });
+    L.push(
+      "",
+      bar,
+      "IV. CAUTIONARY NOTES",
+      bar,
+      "  · A precedent is a mirror, not a template. Institutions do not transfer between theatres; only tested relational lessons do.",
+      "  · Resemblance in scores is not resemblance in history. Verify each lesson against the live theatre's own sources.",
+      "  · Do not stage a precedent's ceremony without its substance. Anti-theatrics: an outcome test applies to every borrowed mechanism.",
+      "",
+      "Pro Omni Humanitate."
+    );
+    return L.join("\n");
+  }, [mission, picked, selected, liveVector]);
 
   return (
-    <div className="space-y-8 min-w-0 max-w-full">
+    <div className="space-y-8">
       <SyncPanel
         linked={linked}
         onToggle={setLinked}
@@ -617,15 +667,8 @@ function MirrorDesk() {
           })}
         </div>
       </div>
-      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={memoLive} />
-      {mirrorText && (
-        <div className="min-w-0 max-w-full border border-brass/40 bg-navy-tint/40 p-4 sm:p-5 md:p-7">
-          <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-4">
-            Comparative memorandum
-          </p>
-          <DeskOutput text={mirrorText} fileName="Vinculum-Comparative-Mirror" />
-        </div>
-      )}
+      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={showLive ? liveVector : null} />
+      {selected.length >= 2 && <DeskOutput text={mirrorText} fileName="Vinculum-Comparative-Mirror" />}
     </div>
   );
 }
