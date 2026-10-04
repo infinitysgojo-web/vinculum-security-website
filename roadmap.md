@@ -28,3 +28,4 @@
 - [x] Dashboard integrity: harmonize scoring bands, trend terminology, track tolerance, and readiness locks with the documented mathematics
 - [x] Case Studies: restore the score matrix directly beneath the Relational Atlas and make each case row actionable
 - [ ] Run an authenticated end-to-end mission and responsive visual verification; exclude the master PDF
+- [ ] Six linked additions: Chancellery Breviary desk, multi-theatre mission library, What-If simulator, SHA-256 integrity stamps, in-desk lexicon, offline field mode
