@@ -1,23 +1,61 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { LEXICON, findLex } from "./lexicon";
+import { LEXICON, findLex } from "./lexiconData";
 
-/** Inline term with a pop-out definition. Opens in place; working state is untouched. */
+/**
+ * Inline term with a pop-out definition. Opens instantly on hover (mouse), on tap
+ * (touch) and on Enter or Space (keyboard); Escape or an outside tap closes it.
+ * Working state is untouched.
+ */
 export function Lex({ term, children }: { term: string; children?: React.ReactNode }) {
   const e = findLex(term);
+  const [open, setOpen] = useState(false);
+  const timer = useRef<number | null>(null);
+  const cancel = () => {
+    if (timer.current) window.clearTimeout(timer.current);
+    timer.current = null;
+  };
+  useEffect(() => cancel, []);
   if (!e) return <>{children ?? term}</>;
+
+  const hoverOpen = (ev: React.PointerEvent) => {
+    if (ev.pointerType !== "mouse") return;
+    cancel();
+    setOpen(true);
+  };
+  const hoverClose = (ev: React.PointerEvent) => {
+    if (ev.pointerType !== "mouse") return;
+    cancel();
+    timer.current = window.setTimeout(() => setOpen(false), 160);
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="underline decoration-dotted decoration-brass underline-offset-2 hover:text-accent">
+        <button
+          type="button"
+          onPointerEnter={hoverOpen}
+          onPointerLeave={hoverClose}
+          // Hover has already opened the card; a click must not toggle it shut again.
+          onClick={(ev) => {
+            ev.preventDefault();
+            setOpen(true);
+          }}
+          className="inline text-left [text-transform:inherit] underline decoration-dotted decoration-brass underline-offset-2 hover:text-accent"
+        >
           {children ?? e.term}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-72 text-xs">
+      <PopoverContent
+        onPointerEnter={hoverOpen}
+        onPointerLeave={hoverClose}
+        onOpenAutoFocus={(ev) => ev.preventDefault()}
+        className="w-72 max-w-[calc(100vw-2rem)] text-xs normal-case tracking-normal"
+      >
         <p className="font-serif text-primary text-base">{e.term}</p>
-        <p className="mt-2 text-foreground/85 leading-relaxed">{e.short}</p>
+        <p className="mt-2 text-foreground/85 leading-relaxed font-sans">{e.short}</p>
         <p className="mt-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{e.source}</p>
       </PopoverContent>
     </Popover>
@@ -34,7 +72,12 @@ export function LexiconDrawer() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button type="button" title="Lexicon" className="inline-flex items-center gap-1.5 text-primary hover:text-accent">
+        <button
+          type="button"
+          title="Lexicon"
+          aria-label="Open the working lexicon"
+          className="inline-flex items-center gap-1.5 min-h-9 text-primary hover:text-accent transition-colors"
+        >
           <BookOpen size={14} /> <span className="hidden sm:inline">Lexicon</span>
         </button>
       </SheetTrigger>
@@ -46,13 +89,14 @@ export function LexiconDrawer() {
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search a term"
+          aria-label="Search the lexicon"
           className="mt-4 w-full border border-input bg-background px-3 py-2.5 text-sm"
         />
         <ul className="mt-4 space-y-4">
           {list.map((e) => (
-            <li key={e.id} className="border-b border-brass/30 pb-3">
+            <li key={e.id} className="border-b border-brass/30 pb-3 min-w-0">
               <p className="font-serif text-primary">{e.term}</p>
-              <p className="mt-1 text-xs text-foreground/85 leading-relaxed">{e.short}</p>
+              <p className="mt-1 text-xs text-foreground/85 leading-relaxed [overflow-wrap:anywhere]">{e.short}</p>
               <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">{e.source}</p>
             </li>
           ))}
