@@ -2,19 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
-import {
-  usePublish,
-  bondBand,
-  clampScore,
-  mathReading,
-  bondArchetype,
-  distanceTable,
-  facadeSyndrome,
-  BOND_NAMES,
-} from "@/components/desk/engine";
-import BondMathPanel from "@/components/desk/BondMathPanel";
+import { usePublish, bondBand, clampScore, mathReading, MAX_DISTANCE } from "@/components/desk/engine";
 import DeskOutput, { todayStamp } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
+import BondMathPanel from "@/components/desk/BondMathPanel";
 
 /**
  * Interactive Relational Bond Diagnostic Bench.
@@ -238,11 +229,9 @@ function QuickScores({ name, value, onPick }: { name: string; value: number; onP
 
 export default function BondDiagnostic({ scores: controlled, onScoresChange }: BondDiagnosticProps = {}) {
   const mission = useMission();
-  // Inherits the active theatre from the Mission Vault; the analyst may overwrite it here.
   const [context, setContext] = useState(mission.theatre);
-  useEffect(() => {
-    setContext(mission.theatre);
-  }, [mission.theatre]);
+  // Follow the Mission Vault when the active theatre changes.
+  useEffect(() => setContext(mission.theatre), [mission.theatre]);
   // Controlled when `scores` is passed; otherwise it keeps its own state as before.
   const [internal, setInternal] = useState<BondScores>(DEFAULT_SCORES);
   const scores = controlled ?? internal;
@@ -252,9 +241,9 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
     onScoresChange?.(next);
   };
 
-  const values = useMemo(() => LEVELS.map((l) => scores[l.key]) as [number, number, number, number], [scores]);
+  const values = LEVELS.map((l) => scores[l.key]) as [number, number, number, number];
   const mean = values.reduce((a, b) => a + b, 0) / 4;
-  const reading = useMemo(() => mathReading(values), [values]);
+  const reading = useMemo(() => mathReading(values), [values.join(",")]);
 
   const weakest = useMemo(() => {
     let w = LEVELS[0];
@@ -295,99 +284,95 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
     analogue: analogue.shortTitle,
   });
 
-  const archetype = useMemo(() => bondArchetype(values), [values]);
-  const precedents = useMemo(
-    () => [...distanceTable(values)].sort((x, y) => x.distance - y.distance).slice(0, 3),
-    [values],
-  );
-  const facade = useMemo(() => facadeSyndrome(values), [values]);
+  /** Doctrinal band labels used in the dossier (Failing <2.0, Fragile 2.0-2.9, Viable 3.0-3.9, Fortified 4.0-5.0). */
+  const dossierBand = (v: number) => (v < 2 ? "Failing" : v < 3 ? "Fragile" : v < 4 ? "Viable" : "Fortified");
 
-  // The chancellery dossier: one deterministic text, built only from what is on the bench.
-  const text = useMemo(() => {
-    const bar = "=".repeat(64);
-    const theatre = context.trim() || mission.theatre.trim() || "No active mission named";
-    const weakScore = scores[weakest.key];
-    const weakBand = bondBand(weakScore);
-    const pad = (t: string, n: number) => t.padEnd(n, " ");
-    const L: string[] = [
+  /** The active structural archetype, evaluated in order of severity. */
+  const archetype = useMemo(() => {
+    const { interpersonal: ip, communal: cm, intergenerational: ig, institutional: inst } = scores;
+    if (values.every((v) => v < 2))
+      return { name: "Systemic Bond Collapse", text: "Every bond reads Failing. No channel can carry a settlement; restore a single tested interpersonal channel before any formal process is attempted." };
+    if ((ip >= 3 || inst >= 3) && cm < 2.5)
+      return { name: "The Elite-Pact Mirage", text: "Elite or institutional bonds run ahead of communal standing. An agreement struck now will be signed above the community and disowned within it." };
+    if (ig < 2.5 && mean >= 2.8)
+      return { name: "Generational Cliff", text: "The successor generation holds no standing. The settlement may hold for its signatories and fail with their succession." };
+    if (ip >= 3.5 && inst < 2.5)
+      return { name: "Unanchored Repair", text: "Personal trust is real but no office carries it. The repair ends when the people who made it leave their posts." };
+    if (inst >= 3.5 && (ip + cm + ig) / 3 < 2.5)
+      return { name: "Bond Theater Risk", text: "Formal machinery outstrips the relationships it is meant to serve. Treat institutional scores as form until tested by a setback." };
+    if (spread >= 1.5)
+      return { name: "Uneven Continuum", text: `The reading is uneven by ${spread.toFixed(1)} points. A strong bond does not compensate for the limiting one.` };
+    return { name: "No warning archetype engaged", text: "The four bonds move together within a 1.5-point spread. Continue monitoring the limiting bond." };
+  }, [scores, values, mean, spread]);
+
+  /** Top three documented analogues by Euclidean distance over the four-bond vector. */
+  const precedents = useMemo(
+    () =>
+      CASES.map((c) => {
+        const d = Math.sqrt(c.scores.reduce((acc, v, i) => acc + (v - values[i]) ** 2, 0));
+        return { c, d, res: Math.round((1 - d / MAX_DISTANCE) * 100) };
+      })
+        .sort((x, y) => x.d - y.d)
+        .slice(0, 3),
+    [values.join(",")],
+  );
+
+  const summary = useMemo(() => {
+    const bar = "-".repeat(64);
+    const theatre = context.trim() || mission.theatre.trim() || "Unnamed theatre";
+    const lines = [
       "VINCULUM SECURITY · OPERATIONAL RELATIONAL DOSSIER",
-      "Compiled under A Doctrine of Relational Security (Sections III.D, V.E and VI)",
+      "Desk 1 · Relational Bond Diagnostic",
       "",
-      `THEATRE         : ${theatre}`,
+      `THEATRE: ${theatre}`,
       `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
-      `CLASSIFICATION  : ${mission.classification.trim() || "Unrestricted, working draft"}`,
-      `DATE            : ${todayStamp()}`,
-      "REGISTRY        : KECOBO RZ100967 (Kenya Copyright Board Registration No. RZ100967)",
+      `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
+      `DATE: ${todayStamp()}`,
+      "REGISTRY: Kenya Copyright Board Registration No. RZ100967",
       "",
       bar,
-      "I. THE FOUR-BOND SCORES",
+      "I. FOUR-BOND SCORES",
       bar,
-      "Scale 1.0 to 5.0. Bands: Failing 1.0-2.0, Fragile 2.1-3.0, Viable 3.1-4.0, Fortified 4.1-5.0.",
-      "",
-      ...LEVELS.flatMap((l) => [
-        `  ${pad(`${l.name} (§ ${l.ref})`, 40)}${scores[l.key].toFixed(1)} of 5 · ${bondBand(scores[l.key])} band · ${anchorFor(scores[l.key]).label}`,
-        `      ${anchorFor(scores[l.key]).text}`,
-      ]),
-      "",
-      `  State vector B = (${values.map((v) => v.toFixed(1)).join(", ")})`,
+      ...LEVELS.map(
+        (l) => `  ${l.name} (§ ${l.ref}): ${scores[l.key].toFixed(1)} of 5 · ${dossierBand(scores[l.key])} · ${anchorFor(scores[l.key]).label}`
+      ),
+      `  State vector: (${values.map((v) => v.toFixed(1)).join(", ")})`,
       "",
       bar,
       "II. MATHEMATICAL DERIVATION",
       bar,
-      `  Composite mean  μB  = ¼ Σ Bᵢ            = ${reading.mean.toFixed(3)}  (${bondBand(reading.mean)} band)`,
-      `  Population variance σB² = ¼ Σ (Bᵢ − μB)² = ${reading.variance.toFixed(3)}  (σB = ${Math.sqrt(reading.variance).toFixed(3)})`,
-      `  Spread          max Bᵢ − min Bᵢ     = ${spread.toFixed(1)}`,
-      `  Liebig limiting factor  B_min = min Bᵢ = ${reading.limitingScore.toFixed(1)}  (${BOND_NAMES[reading.limitingIndex]}, ${bondBand(reading.limitingScore)} band)`,
-      "  Ties for the limiting factor go to the lower bond index.",
-      ...(reading.limitingScore <= 2.0
-        ? [`  [LIEBIG LOCK FAILING] ${BOND_NAMES[reading.limitingIndex]} scores ${reading.limitingScore.toFixed(1)}, at or below 2.0. The weakest bond caps the whole continuum; strength elsewhere does not compensate for it.`]
-        : []),
-      `  Structural Facade Syndrome: ${facade.engaged ? "ENGAGED" : "not engaged"} (σB² > 1.25: ${facade.tests.varianceAbove ? "yes" : "no"}; max ≥ 4.0: ${facade.tests.maxAtLeast ? "yes" : "no"}; min ≤ 2.0: ${facade.tests.minAtMost ? "yes" : "no"}).`,
+      `  Mean μ = ${mean.toFixed(2)} of 5 (standing: ${standing.label})`,
+      `  Population variance σ² = ${reading.variance.toFixed(3)}`,
+      `  Spread (max − min) = ${spread.toFixed(1)}`,
+      `  Liebig limiting factor: ${weakest.name} at ${scores[weakest.key].toFixed(1)} (${dossierBand(scores[weakest.key])})`,
       "",
       bar,
       "III. STRUCTURAL DIAGNOSIS AND WARNING ARCHETYPE",
       bar,
-      `  Relational standing : ${standing.label}`,
-      `  ${standing.note}`,
-      "",
-      `  ACTIVE ARCHETYPE    : ${archetype.name}`,
+      `  Active archetype: ${archetype.name}`,
       `  ${archetype.text}`,
+      `  Standing note: ${standing.note}`,
       "",
       bar,
-      "IV. HISTORICAL PRECEDENTS (three nearest canonical cases)",
+      "IV. HISTORICAL PRECEDENTS (Euclidean distance over the bond vector)",
       bar,
-      "  Euclidean distance d = √Σ(Bᵢ − Cᵢ)²; resonance R = (1 − d / 8) × 100%.",
-      "",
-      ...precedents.flatMap((r, i) => {
-        const c = CASES.find((x) => x.slug === r.slug);
-        return [
-          `  ${i + 1}. ${r.shortTitle}${r.year ? ` (${r.year})` : ""}${r.nearest ? "  [closest historical twin]" : ""}`,
-          `     Vector (${r.coords.join(", ")}) · distance ${r.distance.toFixed(2)} · resonance ${r.resonance.toFixed(1)}%`,
-          ...(c ? [`     ${c.pattern}`] : []),
-        ];
-      }),
+      ...precedents.map(
+        (p, i) => `  ${i + 1}. ${p.c.shortTitle} (${p.c.scores.map((v) => v.toFixed(1)).join(", ")}) · distance ${p.d.toFixed(2)} · resonance ${p.res}%`
+      ),
+      `  Pattern of nearest case: ${precedents[0]?.c.pattern ?? ""}`,
       "",
       bar,
       "V. BOUNDARY RULES AND PRACTICE DIRECTIVE",
       bar,
-      `  Limiting bond: ${weakest.name} (§ ${weakest.ref}) at ${weakScore.toFixed(1)} of 5, ${weakBand} band.`,
-      `  Diagnostic question: ${weakest.question}`,
+      `  Diagnostic question for the limiting bond: ${weakest.question}`,
+      `  Practice directive: ${weakest.guidance}`,
+      ...BOUNDARY_RULES.map((r) => `  · ${r}`),
       "",
-      "  Practice directive:",
-      `  ${weakest.guidance}`,
-      ...(spread >= 2
-        ? ["", `  The reading is uneven by ${spread.toFixed(1)} points. A strong score elsewhere does not compensate for this one, and should be read as a reason to look harder here.`]
-        : []),
-      "",
-      "  Boundary rules in force:",
-      ...BOUNDARY_RULES.map((r, i) => `  ${i + 1}. ${r}`),
-      "",
-      bar,
       "Assessed against Vinculum Security, A Doctrine of Relational Security, by James Wesley Ndua.",
-      "Pro Omni Humanitate. Kenya Copyright Board Registration No. RZ100967.",
+      "Pro Omni Humanitate.",
     ];
-    return L.join("\n");
-  }, [context, mission, scores, standing, spread, weakest, archetype, precedents, facade, reading, values]);
+    return lines.join("\n");
+  }, [context, mission, scores, standing, mean, spread, weakest, reading, archetype, precedents, values]);
 
   return (
     <section id="bench" className="scroll-mt-24">
@@ -587,15 +572,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
             </ul>
           </div>
 
-          <div className="bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
-            <p className="eyebrow">Chancellery dossier</p>
-            <hr className="gold-rule gold-rule-short mt-4 mb-4" />
-            <p className="mb-5 text-sm leading-relaxed text-foreground/80">
-              The full operational relational dossier for this reading. Copy it, download it as text or as a
-              PDF dossier, or add it to the Mission Binder. Every export carries a SHA-256 seal computed on this device.
-            </p>
-            <DeskOutput text={text} fileName="Vinculum-Bond-Diagnostic" />
-          </div>
+          <DeskOutput text={summary} fileName="Vinculum-Bond-Diagnostic" />
         </div>
       </FadeIn>
     </section>
