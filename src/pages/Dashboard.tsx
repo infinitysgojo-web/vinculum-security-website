@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, lazy, Suspense } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
@@ -7,9 +7,10 @@ import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import { CASES, DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
-import { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
-import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, useEngine, bondBand, mathReading, type Signals } from "@/components/desk/engine";
+import DeskOutput, { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
+import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, useMission, type MissionProfile } from "@/components/desk/mission";
+import { EngineContext, useEngine, usePublish, bondBand, mathReading, type Signals } from "@/components/desk/engine";
+import { buildMirrorMemo } from "@/components/desk/mirrorMemo";
 import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain from "@/components/desk/MissionChain";
@@ -520,6 +521,7 @@ export default function Dashboard() {
 }
 
 function MirrorDesk() {
+  const profile = useMission();
   const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
   const { signals } = useEngine();
   // Linked: the live theatre's own bond vector can be drawn on the radar. Override: historical cases only.
@@ -544,8 +546,21 @@ function MirrorDesk() {
     .map((s) => CASES.find((c) => c.slug === s))
     .filter(Boolean) as typeof CASES;
 
+  // Put the comparative precedent selection on the signal bus for downstream desks.
+  usePublish("mirror", { mirrors: picked });
+
+  // The comparative memorandum, compiled from exactly what is on screen. It needs two
+  // theatres at least; the live vector is included only when it is linked and plotted.
+  const memoLive = showLive ? liveVector : null;
+  const liveKey = memoLive ? memoLive.join(",") : "";
+  const mirrorText = useMemo(
+    () => (selected.length >= 2 ? buildMirrorMemo({ cases: selected, live: memoLive, profile }) : ""),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [picked.join(","), liveKey, profile],
+  );
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-w-0 max-w-full">
       <SyncPanel
         linked={linked}
         onToggle={setLinked}
@@ -602,7 +617,15 @@ function MirrorDesk() {
           })}
         </div>
       </div>
-      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={showLive ? liveVector : null} />
+      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={memoLive} />
+      {mirrorText && (
+        <div className="min-w-0 max-w-full border border-brass/40 bg-navy-tint/40 p-4 sm:p-5 md:p-7">
+          <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-4">
+            Comparative memorandum
+          </p>
+          <DeskOutput text={mirrorText} fileName="Vinculum-Comparative-Mirror" />
+        </div>
+      )}
     </div>
   );
 }
