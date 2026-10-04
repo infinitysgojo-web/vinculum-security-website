@@ -286,15 +286,20 @@ export type Signals = {
   /** Division IV, governance. */
   verifierSeated?: boolean;
   gatesCleared?: string;
+  /** Division IV, mandate handover: durability quotient H, in per cent, its band, and the successor office named as oversight body. */
+  handoverViability?: number;
+  handoverBand?: string;
+  oversightBody?: string;
 };
 
 const SIGNAL_NUMBERS = [
   "bondMean", "weakestScore", "bondVariance", "trackTolerance", "rupture", "trendMultiplier",
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
+  "handoverViability",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
-  "firstToBreak", "gatesCleared",
+  "firstToBreak", "gatesCleared", "handoverBand", "oversightBody",
 ] as const;
 const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated"] as const;
 const SIGNAL_STRING_LISTS = ["traps", "shocks", "frictionPairs", "covenants"] as const;
@@ -427,6 +432,27 @@ export function alerts(s: Signals): Alert[] {
         directive: "Carry the matching counter-measure into the drafting and governance divisions.",
       });
 
+  return out;
+}
+
+/** Engine locks: fixed doctrinal conditions read from the upstream divisions. */
+export type Lock = { name: string; held: boolean; remedy: string };
+export function engineLocks(s: Signals): Lock[] {
+  const cov = (s.covenants ?? []).join(" ").toLowerCase();
+  const continuity = /personal|continuity|office|atrophy/.test(cov);
+  const out: Lock[] = [];
+  if (s.rupture !== undefined && s.rupture >= 35)
+    out.push({ name: `Rupture index ${s.rupture}% requires a continuity covenant`, held: continuity, remedy: "Draft an office-continuity provision in the Clause Architect before clearance." });
+  if (s.rupture !== undefined && s.rupture >= 35)
+    out.push({ name: `Rupture index ${s.rupture}% requires an independent verifier seated`, held: s.verifierSeated === true, remedy: "Seat an independent verifier in the Verification Ledger; no party may appoint, fund or remove it." });
+  if (s.elitePactAlert)
+    out.push({ name: `Track gap of ${s.trackGap} phases (Elite-Pact Mirage)`, held: false, remedy: "Hold Track I and advance the communal track until the gap closes to one phase." });
+  if (s.weakestBond && s.weakestScore !== undefined && bondBand(s.weakestScore) === "Failing")
+    out.push({ name: `${s.weakestBond} bond at ${s.weakestScore.toFixed(1)} of 5 (Failing)`, held: (s.covenants?.length ?? 0) > 0, remedy: "Attach at least one remedial covenant addressing the failing bond." });
+  if (s.survivalScore !== undefined)
+    out.push({ name: `Treaty survival under stress at ${s.survivalScore}%`, held: s.survivalScore >= 55, remedy: "Close the first failing provision in the Succession Simulator until survival reaches 55%." });
+  if ((s.shocks?.length ?? 0) >= 2)
+    out.push({ name: `${s.shocks!.length} compound shocks active`, held: (s.covenants?.length ?? 0) >= 2, remedy: "Carry at least two covenants to absorb concurrent shocks." });
   return out;
 }
 
