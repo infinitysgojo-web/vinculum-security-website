@@ -22,7 +22,7 @@ const FLOW: Record<string, Flow> = {
   diagnostics: { reads: [], publishes: ["Bond vector (0.1 precision)", "Mean, variance, limiting bond and band", "Nearest documented case"] },
   sentinel: { reads: [], publishes: ["Rupture index and band", "Observation trend and multiplier (0.85 / 1.00 / 1.15)", "Latent traps"] },
   compound: { reads: [], publishes: ["Active shocks", "First provision to break", "Compound strain index"] },
-  mirror: { reads: [ANALOGUE], publishes: [] },
+  mirror: { reads: [ANALOGUE, BOND], publishes: ["Comparative precedent selection"] },
   briefing: { reads: [WEAK, RUPT], publishes: [] },
   counterpart: { reads: [WEAK, RUPT, GAP], publishes: [] },
   multiparty: { reads: [RUPT, GAP], publishes: ["Seated parties", "Friction pairs"] },
@@ -30,12 +30,12 @@ const FLOW: Record<string, Flow> = {
   audit: { reads: [WEAK, RUPT, FRICTION], publishes: [] },
   clauses: { reads: [WEAK, RUPT, SHOCK, GAP], publishes: ["Covenants drafted"] },
   redliner: { reads: [WEAK, RUPT, SHOCK], publishes: ["Redline flag count"] },
-  succession: { reads: [], publishes: ["Treaty survival under stress"] },
+  succession: { reads: [BOND, RUPT, COV], publishes: ["Treaty survival under stress"] },
   legal: { reads: [WEAK], publishes: [] },
   adversarial: { reads: [WEAK, GAP, COV, SURV], publishes: [] },
   readiness: { reads: [RUPT, GAP, WEAK, SURV, SHOCK, COV, VER], publishes: ["Lifecycle stages cleared"] },
   verification: { reads: [WEAK, COV, SHOCK], publishes: ["Verifier seated (releases the independent-verifier lock)"] },
-  handover: { reads: [WEAK, RUPT, COV, GATES], publishes: [] },
+  handover: { reads: [WEAK, RUPT, COV, GATES], publishes: ["Handover durability quotient H%", "Designated local oversight body"] },
   binder: { reads: [BOND, RUPT, SHOCK, GAP, COV, SURV, VER, GATES], publishes: [] },
 };
 

@@ -134,7 +134,7 @@ export default function VerificationLedger() {
     L.push("INDEPENDENT VERIFICATION AND COMPLIANCE LEDGER");
     L.push("Compiled under Section VIII safeguards and Handbook Section 12E");
     L.push("");
-    L.push(`INSTRUMENT: ${instrument.trim() || "Unnamed instrument"}`);
+    L.push(`INSTRUMENT: ${instrument.trim() || `${mission.theatre.trim() || "Mission"} Verification Protocol`}`);
     L.push(`MISSION: ${mission.theatre.trim() || "No active mission named"}`);
     L.push(`DATE: ${todayStamp()}`);
     L.push(`REPORTING INTERVAL: ${INTERVALS.find((i) => i.id === interval)!.label}`);

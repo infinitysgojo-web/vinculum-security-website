@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useMission } from "./mission";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import SyncPanel from "./SyncPanel";
 import { telemetryLines, useEngine, usePublish, engineLocks } from "./engine";
@@ -58,7 +59,10 @@ const STAGES: { id: string; label: string; anchor: string; gates: Gate[] }[] = [
 ];
 
 export default function ReadinessDesk() {
-  const [mission, setMission] = useState("");
+  const profile = useMission();
+  const [mission, setMission] = useState(profile.theatre);
+  // Follow the Mission Vault when the theatre changes; a manual entry stays until the theatre itself changes.
+  useEffect(() => setMission(profile.theatre), [profile.theatre]);
   const [si, setSi] = useState(0);
   const [done, setDone] = useState<string[]>([]);
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));

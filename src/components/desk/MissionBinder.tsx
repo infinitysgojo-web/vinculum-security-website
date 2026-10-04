@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useMission } from "./mission";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { telemetryLines, useEngine } from "./engine";
 import DeskOutput, { BinderContext, field, label, panel, todayStamp, type BinderEntry } from "./DeskOutput";
@@ -16,8 +17,12 @@ export default function MissionBinder({
   onRemove: (id: string) => void;
   onMove: (id: string, dir: -1 | 1) => void;
 }) {
-  const [theatre, setTheatre] = useState("");
-  const [envoy, setEnvoy] = useState("");
+  const profile = useMission();
+  const [theatre, setTheatre] = useState(profile.theatre);
+  const [envoy, setEnvoy] = useState(profile.officer || "Office of the Special Envoy");
+  // Inherit from the Mission Vault whenever the theatre or officer changes; manual edits remain possible.
+  useEffect(() => setTheatre(profile.theatre), [profile.theatre]);
+  useEffect(() => setEnvoy(profile.officer || "Office of the Special Envoy"), [profile.officer]);
   const { signals } = useEngine();
 
   const text = useMemo(() => {

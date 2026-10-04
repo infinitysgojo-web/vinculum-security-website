@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect } from "react";
-import { CASES, DOMAINS } from "@/content/cases";
+import { CASES } from "@/content/cases";
 
 /**
  * The Vinculum Mission Engine.
@@ -109,35 +109,6 @@ export function mathReading(v: [number, number, number, number]): MathReading {
       resonance: Math.round((1 - bestD / MAX_DISTANCE) * 100),
     },
   };
-}
-
-/* ------------------------------------------------------------------ */
-/* Structural warning archetypes                                       */
-/* ------------------------------------------------------------------ */
-
-export type BondArchetype = { name: string; text: string };
-
-/**
- * The structural warning archetype for a four-bond vector, evaluated in fixed
- * order: the first rule that fires is the active archetype. Shared by the
- * Cross-Case Stress Tester and the Desk 1 dossier so both always agree.
- */
-export function bondArchetype(s: readonly number[]): BondArchetype {
-  const [ip, cm, ig, ins] = s;
-  const min = Math.min(...s);
-  const max = Math.max(...s);
-  if (max <= 2)
-    return { name: "Systemic Bond Collapse", text: "Every level is weak at once. No single channel can carry the settlement; repair must begin simultaneously at the communal and interpersonal levels before institutions can hold." };
-  if (ip >= 4 && (cm <= 2 || ig <= 2))
-    return { name: "The Elite-Pact Mirage", text: "Trust at the leadership level is masking weakness below it. An accord signed here risks collapsing at the first grassroots shock or leadership transition." };
-  if (ins >= 4 && ig <= 2)
-    return { name: "Generational Cliff", text: "Institutions are sound but the generation that did not live the conflict has no stake in them. Durability is borrowed time unless transfer is built in." };
-  if (cm >= 4 && ins <= 2)
-    return { name: "Unanchored Repair", text: "Communities are reconciling faster than institutions can follow through. Without institutional anchoring, communal gains decay into disillusionment." };
-  // Rounded so that a one-decimal spread of exactly 1.0 is not lost to floating-point error.
-  if (round1(max - min) <= 1)
-    return { name: "Bond Theater Risk", text: "Scores are even and moderate, the profile most easily performed rather than lived. Verify each bond independently before treating it as real." };
-  return { name: "Uneven Continuum", text: `The ${DOMAINS[s.indexOf(min)].toLowerCase()} bond is the weakest link. Sequence intervention there first; strength elsewhere will not compensate for it.` };
 }
 
 /* ------------------------------------------------------------------ */
@@ -296,8 +267,6 @@ export type Signals = {
   traps?: string[];
   trend?: string;
   trendMultiplier?: number;
-  /** Division I, comparative mirror: slugs of the documented theatres currently selected. */
-  mirrors?: string[];
   /** Division I, compound shock tester. */
   shocks?: string[];
   firstToBreak?: string;
@@ -321,6 +290,8 @@ export type Signals = {
   handoverViability?: number;
   handoverBand?: string;
   oversightBody?: string;
+  /** Division I, comparative mirror: selected case slugs. */
+  mirrors?: string[];
 };
 
 const SIGNAL_NUMBERS = [

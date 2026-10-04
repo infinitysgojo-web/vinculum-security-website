@@ -100,7 +100,7 @@ export default function HandoverProtocol() {
     L.push("MANDATE HANDOVER AND DURABILITY PROTOCOL");
     L.push("Compiled under Section VI.B and Handbook Section 12D");
     L.push("");
-    L.push(`MANDATE: ${mandate.trim() || "Unnamed mandate"}`);
+    L.push(`MANDATE: ${mandate.trim() || `${mission.theatre.trim() || "Mission"} Durability Mandate`}`);
     L.push(`SUCCESSOR OFFICE: ${successor.trim() || "Not named"}`);
     L.push(`MISSION: ${mission.theatre.trim() || "No active mission named"}`);
     L.push(`DATE: ${todayStamp()}`);
@@ -148,7 +148,7 @@ export default function HandoverProtocol() {
     L.push("VI. HANDOVER INSTRUMENT, OPERATIVE TEXT");
     L.push("");
     L.push(
-      `   The obligations established under ${mandate.trim() || "this mandate"} pass in full to ${successor.trim() || "the named successor office"}, which holds them as an office and not through any officeholder. The transfer takes effect on the recorded date and is not conditional on the continued presence of any external party.`
+      `   The obligations established under ${mandate.trim() || `the ${mission.theatre.trim() || "Mission"} Durability Mandate`} pass in full to ${successor.trim() || "the named successor office"}, which holds them as an office and not through any officeholder. The transfer takes effect on the recorded date and is not conditional on the continued presence of any external party.`
     );
     L.push("");
     L.push(
