@@ -4,8 +4,8 @@ import SyncPanel from "./SyncPanel";
 import { telemetryLines, useEngine, usePublish, bondBand, type Signals } from "./engine";
 
 /** Engine locks: fixed doctrinal conditions read from the upstream divisions. */
-type Lock = { name: string; held: boolean; remedy: string };
-function engineLocks(s: Signals): Lock[] {
+export type Lock = { name: string; held: boolean; remedy: string };
+export function engineLocks(s: Signals): Lock[] {
   const cov = (s.covenants ?? []).join(" ").toLowerCase();
   const continuity = /personal|continuity|office|atrophy/.test(cov);
   const out: Lock[] = [];
