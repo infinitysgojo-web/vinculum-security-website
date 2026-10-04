@@ -32,19 +32,6 @@ export const EMPTY_PROFILE: MissionProfile = {
   officer: "",
 };
 
-/** Official test mission: seeds the profile and the bond bench in one action. */
-export const LEVANT_ARCH_PRESET: MissionProfile = {
-  theatre: "Operation Levant Arch — Northern Buffer Province",
-  parties: "Provincial Transitional Authority, Borderland Council of Elders, Union of Demobilized Officers",
-  classification: "Confidential · Chancellery Working Draft",
-  officer: "Special Envoy Desk / Levant Working Group",
-  bonds: {
-    interpersonal: 3.1,
-    communal: 1.8,
-    intergenerational: 2.4,
-    institutional: 3.6,
-  },
-};
 
 /** Coerce anything read from a file or a saved session into a valid bond vector. */
 export function sanitizeBonds(raw: unknown): MissionBonds {
