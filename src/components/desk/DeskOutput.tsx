@@ -1,7 +1,8 @@
-import { createContext, useContext, useState } from "react";
-import { Copy, Download, BookPlus, FileText, Loader2 } from "lucide-react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { MissionContext } from "./mission";
+import { sha256, sealText, shortHash } from "./integrity";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 export const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
@@ -32,38 +33,56 @@ function reference(fileName: string) {
  * Shared chancellery document view for every dashboard desk. Presents the
  * compiled text on a formal dossier sheet and exports it as plain text or as
  * a publication-grade PDF in the same house style as the case dossiers.
+ * Every export carries a SHA-256 integrity stamp computed on this device.
  */
 export default function DeskOutput({ text, fileName }: { text: string; fileName: string }) {
   const binder = useContext(BinderContext);
   const profile = useContext(MissionContext);
   const meta = useContext(DeskMetaContext);
   const [busy, setBusy] = useState(false);
+  const [hash, setHash] = useState("");
   const ref = reference(fileName);
+
+  // Live fingerprint of the document on screen, recomputed whenever the text changes.
+  useEffect(() => {
+    let active = true;
+    setHash("");
+    sha256(text).then((h) => {
+      if (active) setHash(h);
+    });
+    return () => {
+      active = false;
+    };
+  }, [text]);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Copied");
+      const { stamped } = await sealText(text);
+      await navigator.clipboard.writeText(stamped);
+      toast.success("Copied with SHA-256 integrity stamp");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");
     }
   };
 
-  const downloadText = () => {
-    const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  const downloadText = async () => {
+    const { stamped } = await sealText(text);
+    const url = URL.createObjectURL(new Blob([stamped], { type: "text/plain;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = `${fileName}.txt`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
+    toast.success("Text dossier downloaded with integrity seal");
   };
 
   const downloadPdf = async () => {
     setBusy(true);
     try {
       const { buildDeskDossier } = await import("./DeskDossierPdf");
+      const { stamped } = await sealText(text);
       const blob = await buildDeskDossier({
-        text,
+        text: stamped,
         deskTitle: meta.title,
         eyebrow: meta.eyebrow,
         reference: ref,
@@ -83,9 +102,10 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
     }
   };
 
-  const addToBinder = () => {
-    binder?.add({ id: fileName, title: text.split("\n")[0] || fileName, text });
-    toast.success("Added to the Mission Binder");
+  const addToBinder = async () => {
+    const { stamped } = await sealText(text);
+    binder?.add({ id: fileName, title: text.split("\n")[0] || fileName, text: stamped });
+    toast.success("Added to the Mission Binder with integrity seal");
   };
 
   const btn =
@@ -121,11 +141,22 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
             <p>Issued · <span className="text-primary/80">{todayStamp()}</span></p>
             <p className="truncate">Mission · <span className="text-primary/80">{profile.theatre.trim() || "Not named"}</span></p>
             <p>Registry · <span className="text-primary/80">KECOBO RZ100967</span></p>
+            <p className="sm:col-span-2 flex min-w-0 flex-wrap items-center gap-x-1.5">
+              <ShieldCheck size={12} className="shrink-0 text-accent" />
+              <span>SHA-256 ·</span>
+              <span className="font-mono normal-case tracking-normal text-primary/80" title={hash}>{shortHash(hash)}</span>
+            </p>
           </div>
         </div>
         <pre className="whitespace-pre-wrap [overflow-wrap:anywhere] px-4 sm:px-6 py-5 text-[0.76rem] sm:text-[0.8rem] leading-relaxed text-foreground/90 max-h-[34rem] overflow-y-auto">
           {text}
         </pre>
+        {hash && (
+          <div className="flex min-w-0 items-center justify-between gap-3 border-t border-brass/30 bg-muted/20 px-4 sm:px-6 py-2.5 text-[10px] text-muted-foreground">
+            <span className="min-w-0 truncate font-mono" title={hash}>SEAL: {hash}</span>
+            <span className="shrink-0 text-[9px] font-semibold uppercase tracking-widest text-accent">Local verified</span>
+          </div>
+        )}
       </div>
     </div>
   );
