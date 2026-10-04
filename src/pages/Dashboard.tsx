@@ -16,12 +16,15 @@ import MissionChain from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SaveSession from "@/components/desk/SaveSession";
 import DeskFinder from "@/components/desk/DeskFinder";
+import { LexiconDrawer } from "@/components/desk/Lexicon";
+import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
 const BondDiagnostic = lazy(() => import("@/components/BondDiagnostic"));
 const CableComposer = lazy(() => import("@/components/CableComposer"));
 const PatternMatcher = lazy(() => import("@/components/PatternMatcher"));
+const DeltaSimulator = lazy(() => import("@/components/desk/DeltaSimulator"));
 const AuditBench = lazy(() => import("@/components/AuditBench"));
 const LitigationWorkbench = lazy(() => import("@/components/LitigationWorkbench"));
 const DiagnosticMirror = lazy(() => import("@/components/DiagnosticMirror"));
@@ -342,7 +345,7 @@ export default function Dashboard() {
         noIndex
       />
       <div className="border-b-2 border-primary bg-background">
-        <div className="container flex items-center justify-between gap-3 py-3 sm:py-4">
+        <div className="container flex flex-wrap items-center justify-between gap-x-3 gap-y-2 py-3 sm:py-4">
           <div className="flex items-center gap-2.5 min-w-0">
             <Logo size={24} />
             <div className="min-w-0">
@@ -352,10 +355,12 @@ export default function Dashboard() {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0 text-[10px] uppercase tracking-[0.18em] font-semibold">
+          <div className="flex flex-wrap items-center justify-end gap-x-3 sm:gap-x-4 gap-y-2 min-w-0 max-w-full text-[10px] uppercase tracking-[0.18em] font-semibold">
             <span className="hidden md:inline text-muted-foreground normal-case tracking-normal text-xs">
               {session.user.email}
             </span>
+            <ChancelleryBreviary signals={signals} profile={profile} onAddToBinder={addToBinder} />
+            <LexiconDrawer />
             <DeskFinder
               desks={DESKS}
               divisions={DIVISIONS}
@@ -452,6 +457,7 @@ export default function Dashboard() {
             {desk === "diagnostics" && (
               <div className="space-y-12">
                 <BondDiagnostic scores={bonds} onScoresChange={setBonds} />
+                <DeltaSimulator baseline={bonds} onApply={(sim) => setBonds(sim)} />
                 <PatternMatcher />
               </div>
             )}
