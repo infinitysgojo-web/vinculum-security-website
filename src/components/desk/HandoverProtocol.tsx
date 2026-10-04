@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, bondBand, type Signals } from "./engine";
+import { telemetryLines, useEngine, usePublish, bondBand, type Signals } from "./engine";
 
 /** Bond restoration gate: handover is premature while any bond still fails. */
 function handoverLines(s: Signals): string[] {
@@ -87,6 +87,13 @@ export default function HandoverProtocol() {
           : "Handover is withheld. The settlement still rests on the external presence rather than on local offices.";
     return { base, penalty, durability, openCritical, band, directive };
   }, [cleared, deps]);
+
+  // Handover viability H% and the designated oversight body go onto the bus for the Chancellery Breviary.
+  usePublish("handover", {
+    handoverViability: r.durability,
+    handoverBand: r.band,
+    oversightBody: successor.trim(),
+  });
 
   const text = useMemo(() => {
     const L: string[] = [];
