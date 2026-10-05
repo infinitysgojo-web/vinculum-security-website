@@ -43,7 +43,7 @@ export default function MissionBinder({
     entries.forEach((e, i) => {
       L.push("", bar, `TAB ${i + 1} OF ${entries.length}`, bar, "", e.text);
     });
-    L.push("", bar, "END OF BINDER. Kenya Copyright Board Registration No. RZ100967.");
+   L.push("", bar, "END OF BINDER. KECOBO Registrations: RZ100967 (Doctrine) · RZ104942 (Dashboard) · RZ105005 (Nervous System).");
     return L.join("\n");
   }, [entries, theatre, envoy, signals]);
 
