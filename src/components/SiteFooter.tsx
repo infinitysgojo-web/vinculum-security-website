@@ -75,7 +75,8 @@ export default function SiteFooter() {
               >
                 creativecommons.org/licenses/by-nc-nd/4.0/
               </a>
-              . Registered with the Kenya Copyright Board (KECOBO). Registration No. RZ100967, approved 27 July 2026.
+              . Registered with the Kenya Copyright Board (KECOBO): Vinculum Security & Vinculum Diplomacy (No. RZ100967, 27 July 2026); The Vinculum Dashboard (No. RZ104942, 5 October 2026); The Vinculum Unified Operational Nervous System (No. RZ105005, 5 October 2026).
+
             </p>
           </div>
         </div>
