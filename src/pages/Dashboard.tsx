@@ -564,7 +564,7 @@ function MirrorDesk() {
       `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
       `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
       `DATE: ${todayStamp()}`,
-      "REGISTRY: Kenya Copyright Board Registration No. RZ100967",
+      "REGISTRY: KECOBO RZ100967 (Doctrine) · RZ104942 (Dashboard) · RZ105005 (Nervous System)",
       "",
       bar,
       "I. SELECTED THEATRES (Interpersonal, Communal, Intergenerational, Institutional)",
