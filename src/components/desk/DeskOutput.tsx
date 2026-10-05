@@ -140,7 +140,7 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
             <p>Reference · <span className="text-primary/80">{ref}</span></p>
             <p>Issued · <span className="text-primary/80">{todayStamp()}</span></p>
             <p className="truncate">Mission · <span className="text-primary/80">{profile.theatre.trim() || "Not named"}</span></p>
-            <p>Registry · <span className="text-primary/80">KECOBO RZ100967</span></p>
+                        <p>Registry · <span className="text-primary/80">KECOBO RZ100967 · RZ104942 · RZ105005</span></p>
             <p className="sm:col-span-2 flex min-w-0 flex-wrap items-center gap-x-1.5">
               <ShieldCheck size={12} className="shrink-0 text-accent" />
               <span>SHA-256 ·</span>
