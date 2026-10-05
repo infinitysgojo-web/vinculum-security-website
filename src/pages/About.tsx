@@ -114,7 +114,7 @@ export default function About() {
               </p>
             </div>
             <p>
-              Both works are ready for use in academic circles, in mainstream policy, and in the wider public
+              All three works are ready for use in academic circles, in mainstream policy, and in the wider public
               discourse where they can be applied.
             </p>
 
