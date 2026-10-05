@@ -228,7 +228,7 @@ export default function Home() {
               name: "Is Vinculum Security ready for practical use?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Yes. Both works, the doctrine and its companion handbook Vinculum Diplomacy, are fully developed and copyrighted (Kenya Copyright Board, Registration No. RZ100967, 27 July 2026), and have been tested against major historical and ongoing case studies, including the peace processes in Rwanda, Colombia, and South Africa. Both are operational and ready for use in academic circles, in mainstream policy, and in the public discourse where they can be applied.",
+               text: "Yes. The doctrine and handbook are copyrighted under KECOBO No. RZ100967 (27 July 2026), alongside The Vinculum Dashboard (KECOBO No. RZ104942, 5 October 2026) and The Vinculum Unified Operational Nervous System (KECOBO No. RZ105005, 5 October 2026). All systems are fully developed, tested against major historical peace processes, and operational for academic, policy, and field practice.",
               },
             },
           ],
@@ -348,11 +348,11 @@ export default function Home() {
           <p className="eyebrow">Status of the Works</p>
           <hr className="gold-rule gold-rule-short mt-4 mb-4" />
           <p className="text-sm leading-relaxed text-foreground/75">
-            Both works, the doctrine and its companion handbook, are fully developed and copyrighted, registered with
-            the Kenya Copyright Board (KECOBO) under Registration No. RZ100967, approved 27 July 2026. Both have been
-            tested against major historical and ongoing case studies, including the peace processes in Rwanda,
-            Colombia, and South Africa, and are operational and ready for use in academic circles, in mainstream policy,
-            and in the public discourse where they can be applied.
+            The foundational doctrine and companion handbook are registered with the Kenya Copyright Board (KECOBO) under
+            Registration No. RZ100967 (approved 27 July 2026). The operational architecture is independently registered:
+            The Vinculum Dashboard (Registration No. RZ104942, approved 5 October 2026) and The Vinculum Unified
+            Operational Nervous System (Registration No. RZ105005, approved 5 October 2026). All works have been
+            empirically calibrated against historical case studies and are ready for field and chancellery deployment.
           </p>
          </FadeIn>
 
