@@ -217,7 +217,7 @@ export async function buildDeskDossier({
               ["Parties of record", profile.parties.trim() || "Not recorded"],
               ["Drafting officer", profile.officer.trim() || "Not recorded"],
               ["Date of issue", issued],
-              ["Registered work", "Kenya Copyright Board No. RZ100967"],
+              ["Registered works", "KECOBO RZ100967 · RZ104942 · RZ105005"],
               ["Classification", classification],
             ].map(([k, v]) => (
               <View key={k} style={s.ledgerRow}>
@@ -257,7 +257,7 @@ export async function buildDeskDossier({
               practitioner's own browser. Nothing entered was stored or transmitted.
             </Text>
             <Text style={s.backLead}>
-              {"\u00A9"} {new Date().getFullYear()} {AUTHOR_NAME}. Kenya Copyright Board No. RZ100967.
+              {"\u00A9"} {new Date().getFullYear()} {AUTHOR_NAME}. KECOBO No. RZ100967 (Doctrine) · RZ104942 (Dashboard) · RZ105005 (Unified Nervous System).
               CC BY-NC-SA 4.0.
             </Text>
           </View>
