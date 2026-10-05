@@ -109,7 +109,7 @@ function breviaryText(r: BreviaryReading, profile: MissionProfile, now: Date, an
     BAR,
     "VINCULUM SECURITY · ONE-PAGE CHANCELLERY BREVIARY",
     "90-Second Executive Mission Snapshot · Relational Security Doctrine",
-    "Kenya Copyright Board Registration No. RZ100967",
+    "KECOBO Registrations: RZ100967 (Doctrine) · RZ104942 (Dashboard) · RZ105005 (Nervous System)",
     BAR,
     "",
     `THEATRE        : ${profile.theatre.trim() || "Not named"}`,
