@@ -102,9 +102,17 @@ export default function About() {
           <p className="eyebrow">Rights, Registration and Repositories</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
-            <p>
-              Registered with the Kenya Copyright Board (KECOBO). Registration No. RZ100967, approved 27 July 2026.
-            </p>
+                        <div className="space-y-1.5 text-sm">
+              <p>
+                <strong>Doctrine & Handbook:</strong> Registered with the Kenya Copyright Board (KECOBO), No. RZ100967, approved 27 July 2026.
+              </p>
+              <p>
+                <strong>The Vinculum Dashboard:</strong> Registered with KECOBO, No. RZ104942, approved 5 October 2026.
+              </p>
+              <p>
+                <strong>The Vinculum Unified Operational Nervous System:</strong> Registered with KECOBO, No. RZ105005, approved 5 October 2026.
+              </p>
+            </div>
             <p>
               Both works are ready for use in academic circles, in mainstream policy, and in the wider public
               discourse where they can be applied.
