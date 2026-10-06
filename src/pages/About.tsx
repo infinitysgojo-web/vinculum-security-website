@@ -102,7 +102,7 @@ export default function About() {
           <p className="eyebrow">Rights, Registration and Repositories</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85">
-                        <div className="space-y-1.5 text-sm">
+                                    <div className="space-y-1.5 text-sm">
               <p>
                 <strong>Doctrine & Handbook:</strong> Registered with the Kenya Copyright Board (KECOBO), No. RZ100967, approved 27 July 2026.
               </p>
@@ -112,10 +112,12 @@ export default function About() {
               <p>
                 <strong>The Vinculum Unified Operational Nervous System:</strong> Registered with KECOBO, No. RZ105005, approved 5 October 2026.
               </p>
+              <p>
+                <strong>Jurisprudential Framework:</strong> Originator of <em>Deterministic Relational Law</em> (<em>Lex Relationalis Determinata</em>), establishing the mathematical and non-linear foundations of treaty durability and relational security.
+              </p>
             </div>
             <p>
-              All three works are ready for use in academic circles, in mainstream policy, and in the wider public
-              discourse where they can be applied.
+              All three works are fully developed, operational, and verified across both historical peace processes and active field missions. They are ready for immediate deployment in academic jurisprudence, mainstream multilateral policy, and operational chanceries.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4 mt-6">
