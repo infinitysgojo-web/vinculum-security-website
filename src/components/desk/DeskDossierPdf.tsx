@@ -115,14 +115,21 @@ const s = StyleSheet.create({
   },
   runFoot: {
     position: "absolute",
-    bottom: 32,
+    top: 785,
     left: 58,
     right: 58,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderTopWidth: 0.5,
-    borderTopColor: RULE,
     paddingTop: 7,
+  },
+  runFootRule: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    width: "100%",
+    height: 0.5,
+    backgroundColor: RULE,
   },
   h: {
     fontFamily: "InterDoc",
@@ -235,6 +242,7 @@ export async function buildDeskDossier({
           <Text style={s.runText}>{classification}</Text>
         </View>
         <View style={s.runFoot} fixed>
+          <View style={s.runFootRule} />
           <Text style={s.runText}>{reference}</Text>
           <Text style={s.runText} render={({ pageNumber }) => `Page ${pageNumber}`} />
         </View>
