@@ -56,6 +56,15 @@
     </image:image>
   </url>
   <url>
+    <loc>https://www.vinculumsecurity.kidnexus.or.ke/the-vinculum-dashboard</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.vinculumsecurity.kidnexus.or.ke/og-image.jpg</image:loc>
+      <image:title>The Vinculum Dashboard: Operational Architecture</image:title>
+    </image:image>
+  </url>
+  <url>
     <loc>https://www.vinculumsecurity.kidnexus.or.ke/about</loc>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
