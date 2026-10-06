@@ -13,6 +13,7 @@ import Practice from "./pages/Practice";
 import About from "./pages/About";
 import Glossary from "./pages/Glossary";
 import Dispatches from "./pages/Dispatches";
+import TheVinculumDashboard from "./pages/TheVinculumDashboard";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
