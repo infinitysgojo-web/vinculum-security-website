@@ -22,8 +22,9 @@ export default function SiteFooter() {
           <span className="whitespace-nowrap">All Rights Reserved</span>
           <span className="text-brass hidden sm:inline">·</span>
           <span className="whitespace-nowrap">First articulated MMXXVI</span>
-          <span className="text-brass hidden sm:inline">·</span>
           <span className="text-accent whitespace-nowrap">A Doctrine of Relational Security</span>
+          <span className="text-brass hidden sm:inline">·</span>
+          <Link to="/the-vinculum-dashboard" className="whitespace-nowrap hover:text-accent transition-colors">The Dashboard</Link>
           <span className="text-brass hidden sm:inline">·</span>
           <Link to="/glossary" className="whitespace-nowrap hover:text-accent transition-colors">Glossary</Link>
           <span className="text-brass hidden sm:inline">·</span>
