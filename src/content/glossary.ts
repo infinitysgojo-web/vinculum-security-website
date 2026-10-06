@@ -306,6 +306,38 @@ export const GLOSSARY: GlossaryEntry[] = [
     quote: "A government's own claim of strong institutional-relational bond-integrity should always be treated as a hypothesis requiring independent verification, never as a self-certifying conclusion.",
     category: "method",
   },
+  {
+    id: "deterministic-relational-law",
+    term: "Deterministic Relational Law",
+    short: "Original jurisprudence and mathematical framework holding that peace accords are dynamic relational structures governed by deterministic laws rather than probabilistic heuristics.",
+    source: "Jurisprudence · Lex Relationalis Determinata (KECOBO RZ100967 · RZ104942 · RZ105005)",
+    quote: "Deterministic Relational Law establishes that systemic peace and treaty durability are non-fungible, auditable, and bounded by deterministic relational vectors, kinematic track synchronization, and covenantal transition gates.",
+    category: "core",
+  },
+  {
+    id: "vinculum-dashboard",
+    term: "The Vinculum Dashboard",
+    short: "The 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits.",
+    source: "Operational Architecture (KECOBO RZ104942)",
+    quote: "An interconnected operational interface spanning four divisions—Assessment and Early Warning, Diplomatic Engagement, Legal Architecture, and Mission Governance—designed for zero-leakage diplomatic operations.",
+    category: "field",
+  },
+  {
+    id: "vinculum-nervous-system",
+    term: "The Vinculum Unified Operational Nervous System",
+    short: "The deterministic core signal bus interconnecting all 18 desks of the Vinculum Dashboard with browser-local execution and SHA-256 integrity seals.",
+    source: "Deterministic Core Architecture (KECOBO RZ105005)",
+    quote: "A zero-variance deterministic engine operating entirely browser-locally to ensure complete sovereign confidentiality, uninterrupted mission continuity, and tamper-evident audit trails.",
+    category: "method",
+  },
+  {
+    id: "liebig-relational-capacity",
+    term: "Liebig Relational Capacity",
+    short: "The foundational principle that the durability of any peace settlement is strictly bounded by its weakest relational bond.",
+    source: "Jurisprudence § II · Principle of the Weakest Bond",
+    quote: "No accumulation of elite institutional agreements or textual declarations can compensate for an unaddressed communal or interpersonal deficit.",
+    category: "method",
+  },
 ];
 
 export const GLOSSARY_MAP: Record<string, GlossaryEntry> = Object.fromEntries(
