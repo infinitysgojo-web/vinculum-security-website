@@ -9,6 +9,7 @@ const NAV = [
   { to: "/cases", label: "Case Studies" },
   { to: "/methodology", label: "Methodology" },
   { to: "/practice", label: "Practice" },
+  { to: "/the-vinculum-dashboard", label: "The Dashboard" },
   { to: "/glossary", label: "Glossary" },
   { to: "/about", label: "About" },
   { to: "/dispatches", label: "Dispatches" },
