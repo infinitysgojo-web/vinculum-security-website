@@ -80,7 +80,7 @@ const dashboardLd = {
   copyrightHolder: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   copyrightYear: 2026,
   copyrightNotice:
-    "Registered with the Kenya Copyright Board (KECOBO No. RZ104942, approved 5 October 2026). Deterministic Signal Bus registered under KECOBO No. RZ105005.",
+    "Registered with the Kenya Copyright Board: The Vinculum Dashboard (KECOBO No. RZ104942) and The Vinculum Unified Operational Nervous System (KECOBO No. RZ105005), both approved 5 October 2026. Private, restricted-access software.",
 };
 
 export default function TheVinculumDashboard() {
@@ -105,10 +105,10 @@ export default function TheVinculumDashboard() {
         />
 
         <FadeIn className="flex gap-2 flex-wrap mb-10">
-          <DiplomatBadge variant="doctrine-core">KECOBO RZ104942</DiplomatBadge>
-          <DiplomatBadge variant="briefing-ready">Nervous System RZ105005</DiplomatBadge>
+          <DiplomatBadge variant="doctrine-core">KECOBO RZ100967</DiplomatBadge>
+          <DiplomatBadge variant="briefing-ready">Dashboard RZ104942 · Nervous System RZ105005</DiplomatBadge>
           <DiplomatBadge variant="methodology">18 Operational Desks</DiplomatBadge>
-          <DiplomatBadge variant="field-notes">Sovereign Air-Gap</DiplomatBadge>
+          <DiplomatBadge variant="field-notes">Private · Restricted Access</DiplomatBadge>
         </FadeIn>
 
         {/* Section 1: The Core Philosophy */}
@@ -200,17 +200,13 @@ export default function TheVinculumDashboard() {
 
         {/* Section 4: Access & Statutory Notice */}
         <FadeIn className="max-w-3xl my-16 p-8 border-2 border-primary bg-primary/5">
-          <h3 className="font-serif text-xl text-primary mb-3">Practitioner Access & Accreditation</h3>
+          <h3 className="font-serif text-xl text-primary mb-3">Private & Restricted Chancellery</h3>
           <p className="text-sm leading-relaxed text-foreground/80 mb-6">
-            The operational dashboard is reserved for accredited envoys, chancellery legal teams, and designated mission leads. Access requires authenticated credentials issued through the Vinculum Practitioner Portal.
+            The Vinculum Dashboard is strictly private. It is not open to the public and accepts no public registration
+            or unsolicited requests. Use is reserved solely for its author, James Wesley Ndua, and for accredited envoys,
+            chancellery legal teams, and designated mission leads he personally authorizes under direct mandate.
           </p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold bg-primary text-background hover:bg-accent transition-colors"
-            >
-              Enter Practitioner Portal
-            </Link>
             <Link
               to="/methodology"
               className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold border border-primary text-primary hover:bg-primary/10 transition-colors"
