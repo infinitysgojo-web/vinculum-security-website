@@ -95,12 +95,14 @@ export default function App() {
           <Route path="/cases" element={<Cases />} />
           <Route path="/cases/:slug" element={<CaseDetail />} />
           <Route path="/methodology" element={<Methodology />} />
+          <Route path="/practice" element={<Practice />} />
           <Route path="/about" element={<About />} />
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/dispatches" element={<Dispatches />} />
           <Route path="/the-vinculum-dashboard" element={<TheVinculumDashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {!portal && <SiteFooter />}
