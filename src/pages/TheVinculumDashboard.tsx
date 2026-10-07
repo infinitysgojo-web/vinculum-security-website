@@ -8,6 +8,7 @@ import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
+import { GLOSSARY } from "@/content/glossary";
 
 const DIVISIONS = [
   {
@@ -83,6 +84,22 @@ const dashboardLd = {
     "Registered with the Kenya Copyright Board: The Vinculum Dashboard (KECOBO No. RZ104942) and The Vinculum Unified Operational Nervous System (KECOBO No. RZ105005), both approved 5 October 2026. Private, restricted-access software.",
 };
 
+const VOCAB = GLOSSARY.filter((g) => g.category === "field" || g.id === "liebig-relational-capacity" || g.id === "deterministic-relational-law");
+
+const vocabLd = {
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "@id": `${SITE_URL}/the-vinculum-dashboard#vocabulary`,
+  name: "The Vinculum Dashboard Working Vocabulary",
+  creator: { "@id": PERSON_ID },
+  hasDefinedTerm: VOCAB.map((g) => ({
+    "@type": "DefinedTerm",
+    name: g.term,
+    description: g.short,
+    url: `${SITE_URL}/glossary#${g.id}`,
+  })),
+};
+
 export default function TheVinculumDashboard() {
   return (
     <>
@@ -93,7 +110,7 @@ export default function TheVinculumDashboard() {
         keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, diplomatic mediation software, KECOBO RZ104942, KECOBO RZ105005, peace treaty drafting, sovereign diplomacy"
         scholarly
         citationTitle="The Vinculum Dashboard: Operational Architecture of Deterministic Relational Law"
-        jsonLd={[dashboardLd]}
+        jsonLd={[dashboardLd, vocabLd]}
       />
       <ReadingProgress />
 
@@ -197,6 +214,26 @@ export default function TheVinculumDashboard() {
               </li>
             </ul>
           </div>
+        </FadeIn>
+
+        {/* Working vocabulary — concepts only, no formulas or thresholds */}
+        <FadeIn className="max-w-4xl my-16">
+          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Working Vocabulary</p>
+          <h2 className="mt-2 font-serif text-3xl text-primary">The Language of the Chancellery</h2>
+          <p className="mt-3 text-sm leading-relaxed text-foreground/80">
+            Terms originated by {AUTHOR_NAME} for The Vinculum Dashboard (KECOBO RZ104942) and The Vinculum Unified
+            Operational Nervous System (KECOBO RZ105005). Each is defined here as a concept; the operative rules remain private.
+          </p>
+          <dl className="mt-8 grid gap-4 md:grid-cols-2">
+            {VOCAB.map((g) => (
+              <div key={g.id} className="border border-brass/40 p-5 min-w-0">
+                <dt className="font-serif text-lg text-primary">
+                  <Link to={`/glossary#${g.id}`} className="hover:text-accent">{g.term}</Link>
+                </dt>
+                <dd className="mt-2 text-sm text-foreground/80 leading-relaxed">{g.short}</dd>
+              </div>
+            ))}
+          </dl>
         </FadeIn>
 
         {/* Section 4: Access & Statutory Notice */}
