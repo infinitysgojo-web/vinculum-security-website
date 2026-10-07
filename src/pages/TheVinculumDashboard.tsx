@@ -157,7 +157,7 @@ export default function TheVinculumDashboard() {
         <PageHeader
           eyebrow="Operational Architecture"
           title="The Vinculum Dashboard"
-          lede="The 18-desk chancellery for high-stakes mediation, relational audit, and treaty engineering—powered by Deterministic Relational Law."
+          lede="The 18-desk chancellery for high-stakes mediation, relational audit, and treaty engineering, powered by Deterministic Relational Law."
         />
 
         <FadeIn className="flex gap-2 flex-wrap mb-10">
