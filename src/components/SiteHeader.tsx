@@ -6,7 +6,7 @@ import Logo from "@/components/Logo";
 const NAV = [
   { to: "/doctrine", label: "The Doctrine" },
   { to: "/foundations", label: "Foundations" },
-  { to: "/cases", label: "Case Studies" },
+  { to: "/cases", label: "Cases" },
   { to: "/methodology", label: "Methodology" },
   { to: "/practice", label: "Practice" },
   { to: "/the-vinculum-dashboard", label: "The Dashboard" },
