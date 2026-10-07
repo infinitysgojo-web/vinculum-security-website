@@ -122,7 +122,8 @@ export default function TheVinculumDashboard() {
               accords collapse, the cost is measured in violent relapse and institutional devastation.
             </p>
             <p>
-              <strong>The Vinculum Dashboard</strong> was engineered by James Wesley Ndua to replace subjective
+              <strong>The Vinculum Dashboard</strong> (KECOBO RZ104942), driven by The Vinculum Unified Operational
+              Nervous System (KECOBO RZ105005), was engineered by James Wesley Ndua to replace subjective
               optimism with <em>Deterministic Relational Law</em> (<span className="italic">Lex Relationalis Determinata</span>).
               It treats a peace accord not as a static text, but as a dynamic relational structure governed by strict
               mathematical bounds: the weakest bond determines systemic capacity, diplomatic tracks must stay
