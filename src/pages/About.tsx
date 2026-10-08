@@ -1,5 +1,7 @@
 import { useState } from "react";
 import SEO from "@/components/SEO";
+import FaqBlock, { faqLd } from "@/components/FaqBlock";
+import { ABOUT_FAQ } from "@/content/faqs";
 import { SITE_URL, personLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
@@ -22,7 +24,7 @@ export default function About() {
         image="/og/about.jpg"
         keywords="James Wesley Ndua, originator of Vinculum Security, relational security doctrine author, Youth Peace and Security, Nairobi, ORCID 0009-0005-9861-8849"
         citationTitle="About James Wesley Ndua, originator of Vinculum Security"
-        jsonLd={{
+        jsonLd={[{
           "@context": "https://schema.org",
           "@type": "ProfilePage",
           "@id": `${SITE_URL}/about#profilepage`,
@@ -32,7 +34,7 @@ export default function About() {
           isPartOf: { "@id": `${SITE_URL}/#website` },
           mainEntity: personLd,
           about: personLd,
-        }}
+        }, faqLd("/about", ABOUT_FAQ)]}
       />
       <div className="container">
         <PageHeader eyebrow="Section I" title="About the Author" />
@@ -197,6 +199,7 @@ export default function About() {
           </div>
         </FadeIn>
 
+        <FaqBlock items={ABOUT_FAQ} />
       </div>
 
     </>

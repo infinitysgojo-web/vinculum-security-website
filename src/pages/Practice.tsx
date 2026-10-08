@@ -1,4 +1,6 @@
 import SEO from "@/components/SEO";
+import FaqBlock, { faqLd } from "@/components/FaqBlock";
+import { PRACTICE_FAQ } from "@/content/faqs";
 import { sectionLd, SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
@@ -93,6 +95,7 @@ export default function Practice() {
             section: "Companion Handbook — Practice",
           }),
           lexiconLd,
+          faqLd("/practice", PRACTICE_FAQ),
         ]}
       />
       <ReadingProgress />
@@ -246,6 +249,7 @@ export default function Practice() {
           </p>
         </FadeIn>
 
+        <FaqBlock items={PRACTICE_FAQ} />
       </div>
     </>
   );

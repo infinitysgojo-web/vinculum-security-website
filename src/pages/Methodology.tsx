@@ -1,4 +1,6 @@
 import SEO from "@/components/SEO";
+import FaqBlock, { faqLd } from "@/components/FaqBlock";
+import { METHODOLOGY_FAQ } from "@/content/faqs";
 import { sectionLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
@@ -64,13 +66,13 @@ export default function Methodology() {
         keywords="bond integrity indicators, relational security assessment, Vinculum Security methodology, diagnostic framework"
         scholarly
         citationTitle="Vinculum Security: Operational Framework and Methodology"
-        jsonLd={sectionLd({
+        jsonLd={[sectionLd({
           path: "/methodology",
           headline: "Vinculum Security: Operational Framework",
           description:
             "The diagnostic method and bond-integrity indicators used to assess a case, drawn from Section V of the Vinculum Security doctrine.",
           section: "Section V — Methodology",
-        })}
+        }), faqLd("/methodology", METHODOLOGY_FAQ)]}
       />
       <ReadingProgress />
       <div className="container">
@@ -214,6 +216,7 @@ export default function Methodology() {
 
 
         <PrintFootnotes terms={CITED} />
+        <FaqBlock items={METHODOLOGY_FAQ} />
       </div>
     </>
   );
