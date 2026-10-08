@@ -207,7 +207,7 @@ export default function ClauseArchitect() {
     L.push("");
     L.push(`PRECEDENT OF RECORD: ${a.precedent}.`);
     L.push("");
-    L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [ag, picked, title, parties, office, rig, own, ownType, live, signals, mandated]);
 
