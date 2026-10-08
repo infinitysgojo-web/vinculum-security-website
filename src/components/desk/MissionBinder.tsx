@@ -43,7 +43,7 @@ export default function MissionBinder({
     entries.forEach((e, i) => {
       L.push("", bar, `TAB ${i + 1} OF ${entries.length}`, bar, "", e.text);
     });
-   L.push("", bar, "END OF BINDER. KECOBO Registrations: RZ100967 (Doctrine) · RZ104942 (Dashboard) · RZ105005 (Nervous System).");
+   L.push("", bar, "END OF BINDER. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [entries, theatre, envoy, signals]);
 
