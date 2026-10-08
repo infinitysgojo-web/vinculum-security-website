@@ -180,7 +180,7 @@ export default function SentinelMatrix() {
       L.push(`    Counter-measure: ${t.counter}`);
     });
     if (r.compound) L.push("", r.compound);
-    L.push("", `RUPTURE VELOCITY: ${TREND[trend].note}`, `RECOMMENDED POSTURE: ${r.b.advice}`, "", "Rule-based reading, not a prediction. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("", `RUPTURE VELOCITY: ${TREND[trend].note}`, `RECOMMENDED POSTURE: ${r.b.advice}`, "", "Rule-based reading, not a prediction. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [r, on, trend, theater, custom, cOn]);
 
