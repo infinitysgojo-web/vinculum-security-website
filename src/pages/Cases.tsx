@@ -109,12 +109,9 @@ export default function Cases() {
               url: `${SITE_URL}/cases/${c.slug}`,
             })),
           },
+          faqLd("/cases", CASES_FAQ),
         ]}
-             url: `${SITE_URL}/cases/${c.slug}`,
-          })),
-        },
-        faqLd("/cases", CASES_FAQ),
-      ]}
+      />
       />
       <ReadingProgress />
       <div className="container">
