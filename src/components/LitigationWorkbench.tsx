@@ -207,7 +207,7 @@ export default function LitigationWorkbench() {
     lines.push(
       "This checklist is compiled deterministically from fixed doctrinal rules. No part of it is machine-generated or predictive, and nothing entered above leaves this browser."
     );
-    lines.push("Kenya Copyright Board Registration No. RZ100967.");
+    lines.push("Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     lines.push("END OF CHECKLIST.");
     return lines.join("\n");
   }, [matter, facts, forum, posture, bond, tactic, linked, signals]);
