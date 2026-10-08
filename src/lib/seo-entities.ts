@@ -27,7 +27,7 @@ export const ONTOLOGICAL_CLAIM = "The bond is the unit of security analysis.";
 
 /** Stated on every scholarly page to define the doctrine affirmatively. */
 export const DISAMBIGUATION =
-  "Vinculum Security is an original, standalone doctrine, also stated as A Doctrine of Relational Security, originated by James Wesley Ndua. Its distinctive claim is that the bond is the unit of security analysis.";
+  "Vinculum Security is an original, standalone doctrine, also stated as A Doctrine of Relational Security, originated by James Wesley Ndua. Its distinctive claim is that the bond is the unit of security analysis. It is a scholarly doctrine, unrelated to Vinculum Solutions, Vin eRetail, or any commercial or retail software company.";
 
 /** Every external profile or deposit that represents the same author/work. */
 export const SAME_AS = [
