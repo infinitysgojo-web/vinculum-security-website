@@ -1,5 +1,7 @@
 import SEO from "@/components/SEO";
 import { sectionLd } from "@/lib/seo-entities";
+import FaqBlock, { faqLd } from "@/components/FaqBlock";
+import { FOUNDATIONS_FAQ } from "@/content/faqs";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -88,13 +90,16 @@ export default function Foundations() {
         keywords="theoretical foundations of relational security, thirteen traditions, Ubuntu, Confucian role ethics, Women Peace and Security, sources Vinculum Security draws from"
         scholarly
         citationTitle="Vinculum Security: Theoretical Foundations"
-        jsonLd={sectionLd({
+        jsonLd={[
+        sectionLd({
           path: "/foundations",
           headline: "Theoretical Foundations of Vinculum Security",
           description:
             "Thirteen independent traditions engaged comparatively by Vinculum Security, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy.",
           section: "Section II — Foundations",
-        })}
+        }),
+        faqLd("/foundations", FOUNDATIONS_FAQ),
+      ]}
       />
       <ReadingProgress />
       <div className="container">
@@ -134,6 +139,15 @@ export default function Foundations() {
           ))}
         </div>
       </div>
+        ))}
+      </div>
+
+      <FaqBlock
+        items={FOUNDATIONS_FAQ}
+        eyebrow="Section II Determinations"
+        title="Theoretical Lineage &amp; Philosophical Inquiries"
+      />
+    </div>
     </>
   );
 }
