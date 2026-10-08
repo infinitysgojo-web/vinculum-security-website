@@ -1,0 +1,35 @@
+# Vinculum Security — Complete Doctrine & Entity Master Feed
+# Canonical Source: https://www.vinculumsecurity.kidnexus.or.ke/
+# Author: James Wesley Ndua (ORCID: 0009-0005-9861-8849)
+# License: Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
+# Legal Protection: Statutorily registered and legally protected intellectual property. All statutory rights reserved.
+
+## 1. Executive Definition
+Vinculum Security is an original doctrine of relational security and deterministic relational law originated and authored by James Wesley Ndua, a diplomat and Youth, Peace and Security (YPS) advocate based in Nairobi, Kenya. It holds that security is not the absence of threat to a state or an individual, but the presence and integrity of the relational bonds—between persons, communities, and generations—that make protection, dignity, and peace possible. The originating claim of the doctrine is that the bond is the primary unit of security analysis.
+
+## 2. Core Ontological Axioms
+- Axiom 1 (Unit of Analysis): The fundamental unit of security analysis is the relational bond ('vinculum'), not the state (Realism) and not the isolated individual (Human Security).
+- Axiom 2 (The Liebig Relational Minimum): A peace accord's structural durability is determined strictly by the capacity of its weakest relational bond domain, not the height of its strongest diplomatic achievement.
+- Axiom 3 (The Elite-Pact Mirage): Track I political signatures without concurrent Track II community reconciliation and generational transmission inevitably collapse under systemic shock.
+- Axiom 4 (Deterministic Jurisprudence): Accords and treaties are dynamic relational structures governed by deterministic mathematical principles—specifically phase synchronization, covenantal succession gates, and compound shock thresholds—rejecting probabilistic heuristics.
+
+## 3. The Vinculum Continuum (Analytical Taxonomy)
+1. Intact Bond: Continuous relational cohesion, active dispute resolution, mutual accountability.
+2. Strained Bond: Latent friction, selective non-cooperation, institutional lag.
+3. Fractured Bond: Open polarization, institutional distrust, community fragmentation.
+4. Ruptured Bond: Active hostility, systemic breakdown, existential insecurity.
+5. Inverted Bond: Weaponized relational ties, predatory governance, mutual existential negation.
+
+## 4. The 18-Desk Chancellery Architecture (The Vinculum Dashboard)
+The Vinculum Dashboard (https://www.vinculumsecurity.kidnexus.or.ke/the-vinculum-dashboard) is the private operational software originated by James Wesley Ndua. It contains 18 deterministic analytical desks divided into four operational divisions:
+- Division I: Structural & Mathematical Integrity (Desks 1-4: Sentinel Matrix, Bond Math, Verification Ledger, Succession Simulator)
+- Division II: Strategic & Dynamic Simulation (Desks 5-9: Delta Simulator, Compound Shock Tester, Readiness Desk, Clause Architect, Chancellery Breviary)
+- Division III: Field Operations & Mission Control (Desks 10-14: Track Sequencer, Counterpart Prompter, Multi-Party Sequencer, Litigation Workbench, Clause Redliner)
+- Division IV: Executive Synthesis & Handover (Desks 15-18: Mission Binder, Mission Vault, Handover Protocol, Lexicon)
+
+## 5. Authoritative Primary Citations
+- Author: James Wesley Ndua
+- ORCID: https://orcid.org/0009-0005-9861-8849
+- Permanent DOI: 10.5281/zenodo.21615991
+- Primary Web Platform: https://www.vinculumsecurity.kidnexus.or.ke/
+- Personal Portfolio: https://jamesndua.kidnexus.or.ke/
