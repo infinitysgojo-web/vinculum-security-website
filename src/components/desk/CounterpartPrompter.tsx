@@ -102,7 +102,7 @@ export default function CounterpartPrompter() {
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
     if (live) L.push("", ...telemetryLines(signals));
-    L.push("", "Kenya Copyright Board Registration No. RZ100967.");
+    L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [active, bond, questions, live, signals]);
 
