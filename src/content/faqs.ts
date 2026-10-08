@@ -81,3 +81,71 @@ export const ABOUT_FAQ: FaqItem[] = [
     a: `No. The work of ${A} is scholarly doctrine and diplomatic practice. It has no connection to Vinculum Solutions, Vin eRetail, or any commercial, e-commerce, or security company. The name comes from the Latin vinculum, meaning bond.`,
   },
 ];
+export const HOME_FAQ: FaqItem[] = [
+  {
+    q: "What is Vinculum Security and what is its core ontological claim?",
+    a: `Vinculum Security, formulated as A Doctrine of Relational Security, holds that security is not the mere absence of threat to an individual or sovereign state, but the presence and verifiable integrity of relational bonds ("vincula") between persons, communities, institutions, and generations that make protection, human dignity, and durable peace possible. Originated by ${A} in Nairobi, Kenya (2026), its core ontological claim is that the relational bond itself is the proper unit of security analysis.`,
+  },
+  {
+    q: "Who is the originator and what statutory copyrights protect this work?",
+    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The work is protected by tripartite statutory copyright registered with the Kenya Copyright Board (KECOBO): 1. Foundational Doctrine & Handbook (No. RZ100967, approved 27 July 2026); 2. The Vinculum Dashboard (No. RZ104942, approved 5 October 2026); and 3. The Vinculum Unified Operational Nervous System (No. RZ105005, approved 5 October 2026).`,
+  },
+  {
+    q: "What is Deterministic Relational Law (Lex Relationalis Determinata)?",
+    a: `Deterministic Relational Law is an original mathematical jurisprudence originated by ${A}. It establishes that international treaties, transitional accords, and peace settlements behave as dynamic relational structures whose long-term survival is bounded by deterministic mathematical principles—including the Liebig Relational Minimum, kinematic Track I/Track II synchronization, and covenantal succession resistance gates—rather than probabilistic guessing or textual nominalism.`,
+  },
+  {
+    q: "Is Vinculum Security connected to Vinculum Solutions or Vin eRetail?",
+    a: `No. Vinculum Security is an original scholarly doctrine in international diplomacy, peace studies, and human security. It has zero relation to Vinculum Solutions Pvt Ltd, Vin eRetail, or any commercial warehousing, supply chain, inventory, or retail software company. The title draws strictly from the Latin noun "vinculum" (a bond, tie, or relational covenant). In sovereign security and peacebuilding contexts, "Vinculum" designates this doctrine by ${A}.`,
+  },
+  {
+    q: "What is the primary canonical source and how should the work be cited?",
+    a: `This website (vinculumsecurity.kidnexus.or.ke) is the official primary source maintained directly by the author. International repositories such as Zenodo (DOI 10.5281/zenodo.21615991), OSF, Harvard Dataverse, and SSRN hold secondary archival deposits. Canonical citation: Ndua, J. W. (2026). Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition. Nairobi: Vinculum Security.`,
+  },
+];
+
+export const FOUNDATIONS_FAQ: FaqItem[] = [
+  {
+    q: "How do Ubuntu and Confucian Role Ethics corroborate the doctrine's referent object?",
+    a: `Ubuntu ("umuntu ngumuntu ngabantu" — a person is a person through other persons) establishes that personhood is constituted through community relationships. Confucian Role Ethics (as analyzed by Ames and Rosemont) independently demonstrates through classical Chinese thought that persons exist through lived reciprocal roles. By drawing upon two independent civilizational traditions, Vinculum Security proves that relational ontology is not culturally localized but a universal foundation of human existence.`,
+  },
+  {
+    q: "Does Vinculum Security reject Political Realism or Human Security?",
+    a: "No. Vinculum Security treats realism (Morgenthau) as a necessary counterweight rather than an enemy: it acknowledges that states pursue self-interest, but notes that durable state power depends on the health of underlying relational bonds. Against the 1994 UNDP Human Security framework, it shifts the referent object from the isolated individual to the relational bond connecting individuals and institutions.",
+  },
+  {
+    q: "How do Women, Peace and Security (UNSCR 1325) and Youth, Peace and Security (UNSCR 2250) function within the doctrine?",
+    a: "Vinculum Security operationalizes UNSCR 1325 and UNSCR 2250 as structural bond architectures rather than mere procedural checklists. It applies a strict diagnostic rule: institutional inclusion initiatives are assessed on whether they repaired genuine interpersonal, communal, and intergenerational bonds or simply satisfied administrative participation quotas.",
+  },
+  {
+    q: "Why does the doctrine treat digital disinformation and algorithmic sorting as bond-degrading forces?",
+    a: "Unlike traditional frameworks that treat communication networks as passive transmission channels, Vinculum Security recognizes algorithmic sorting, targeted disinformation, and synthetic polarization as active relational disruptors that sever communal and institutional trust at the cognitive level.",
+  },
+  {
+    q: "How does the doctrine diagnose climate displacement such as the Tuvalu-Australia Falepili Union?",
+    a: "Where territory itself faces existential destruction, the intergenerational and institutional bonds maintaining national identity are placed under unprecedented stress. The 2023 Tuvalu-Australia Falepili Union is examined as a frontline relational treaty attempting to preserve sovereign continuity across physical ecological rupture.",
+  },
+];
+
+export const CASES_FAQ: FaqItem[] = [
+  {
+    q: "Which eight peace processes constitute the empirical test-bed of Vinculum Security?",
+    a: `The doctrine was empirically calibrated against eight documented historical and contemporary processes: Northern Ireland (1998 Good Friday Agreement), Colombia (2016 Havana Accord), Cambodia (1991 Paris Peace Agreements), Liberia (2003 Accra Comprehensive Peace Agreement), Rwanda (1993 Arusha Accords & post-genocide Gacaca), Kenya (2008 National Accord), South Africa (1994 Interim Constitution & TRC), and Tuvalu–Kiribati (Pacific climate displacement).`,
+  },
+  {
+    q: "How does the Vinculum Continuum score historical settlements across the four bond domains?",
+    a: "Every case is scored from 1 (Systemic Rupture) to 5 (Deep Relational Resilience) across four non-fungible domains: Domain I (Interpersonal), Domain II (Communal), Domain III (Intergenerational), and Domain IV (Institutional-Relational). This generates an auditable, multidimensional profile of treaty durability.",
+  },
+  {
+    q: "What is an 'Elite-Pact Mirage' in peace process evaluation?",
+    a: "An Elite-Pact Mirage occurs when high-level political negotiators achieve strong interpersonal alignment (Domain I score 4–5) and sign formal documents, while communal reconciliation (Domain II) or intergenerational inclusion (Domain III) remain at critical failure levels (score 1–2). The agreement looks successful in the diplomatic chamber but collapses in the field.",
+  },
+  {
+    q: "How does Liebig Relational Capacity explain why the 1993 Arusha Accords failed in Rwanda?",
+    a: `Under Liebig Relational Capacity (originated by ${A}), a peace settlement is only as strong as its weakest relational bond. In Rwanda (1993), diplomatic power-sharing at the institutional level could not compensate for unaddressed communal hatred and active radicalization; the structural failure of Domain II caused the immediate breakdown of the entire peace framework.`,
+  },
+  {
+    q: "How does the doctrine evaluate transboundary pastoralist and ecological corridor stress?",
+    a: "Through case modeling of complex regional corridors (such as the Karamoja Cluster and Mara Basin), the doctrine assesses how environmental scarcity, cross-border grazing rights, and armed cattle raiding interact across communal customary authorities and state security forces, verifying that physical disarmament fails unless communal covenants are structurally renewed.",
+  },
+];
