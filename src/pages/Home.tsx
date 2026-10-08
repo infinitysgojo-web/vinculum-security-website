@@ -14,6 +14,8 @@ import {
 } from "@/lib/seo-entities";
 import NavCard from "@/components/NavCard";
 import ReadingPathways from "@/components/ReadingPathways";
+import FaqBlock, { faqLd } from "@/components/FaqBlock";
+import { HOME_FAQ } from "@/content/faqs";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
@@ -185,54 +187,7 @@ export default function Home() {
             cssSelector: ["h1", ".lede"],
           },
         },
-        {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "@id": `${SITE_URL}/#faq`,
-          isPartOf: { "@id": `${SITE_URL}/#webpage` },
-          mainEntity: [
-            {
-              "@type": "Question",
-              name: "What is Vinculum Security?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Vinculum Security is an original doctrine holding that security is not the absence of threat but the presence and integrity of the relational bonds — between persons, communities, institutions, and generations — that make protection, dignity, and peace possible.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Who created the Vinculum Security doctrine?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: `${AUTHOR_NAME}, a diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, is the sole originator and rights holder of the Vinculum Security doctrine (ORCID 0009-0005-9861-8849).`,
-              },
-            },
-            {
-              "@type": "Question",
-              name: "What is the primary source for Vinculum Security?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: `${SITE_URL}/ is the canonical primary source, published and maintained by the author. Zenodo, OSF, Harvard Dataverse, HAL, OpenAIRE and Knowledge Commons hold secondary archival deposits of the same work (DOI ${DOI}).`,
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How should Vinculum Security be cited?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: `Ndua, J. W. (2026). ${WORK_TITLE}. Vinculum Security. ${SITE_URL}/ — DOI ${DOI}. Licensed CC BY-NC-ND 4.0.`,
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Is Vinculum Security ready for practical use?",
-              acceptedAnswer: {
-                "@type": "Answer",
-               text: "Yes. The doctrine and handbook are copyrighted under KECOBO No. RZ100967 (27 July 2026), alongside The Vinculum Dashboard (KECOBO No. RZ104942, 5 October 2026) and The Vinculum Unified Operational Nervous System (KECOBO No. RZ105005, 5 October 2026). All systems are fully developed, tested against major historical peace processes, and operational for academic, policy, and field practice.",
-              },
-            },
-          ],
-        },
+        faqLd("", HOME_FAQ),
         {
           "@context": "https://schema.org",
           "@type": "ItemList",
@@ -357,7 +312,12 @@ export default function Home() {
          </FadeIn>
 
       </section>
-
+      <FaqBlock
+        items={HOME_FAQ}
+        eyebrow="Canonical Determinations"
+        title="Frequently Asked Questions &amp; Canonical Answers"
+      />
+      
       <ReadingPathways />
 
       <LatestDispatches />
