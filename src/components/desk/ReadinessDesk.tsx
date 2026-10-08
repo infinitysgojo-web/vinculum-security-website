@@ -128,7 +128,7 @@ export default function ReadinessDesk() {
     if (linked) L.push(...telemetryLines(signals));
     L.push("LIFECYCLE POSITION");
     r.lifecycle.forEach((s) => L.push(`  ${s.cleared ? "CLEARED    " : "OUTSTANDING"}  ${s.label} (${s.met}/${s.total})`));
-    L.push("", "Kenya Copyright Board Registration No. RZ100967.");
+    L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [mission, done, r, stage, locks, linked, signals]);
 
