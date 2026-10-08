@@ -191,7 +191,7 @@ export default function SuccessionSimulator() {
       L.push(canon.trap ? `  [TERMINAL SUCCESSION TRAP ENGAGED] S% is below the ${SUCCESSION_TRAP.toFixed(1)}% gate; Desk 15 clearance is locked.` : `  Gate passed: S% is at or above ${SUCCESSION_TRAP.toFixed(1)}%.`);
     }
     L.push("", `READING: ${r.b.advice}`);
-    L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon]);
 
