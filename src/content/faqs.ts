@@ -15,9 +15,9 @@ export const DOCTRINE_FAQ: FaqItem[] = [
     q: "What is the Vinculum Continuum?",
     a: "The Vinculum Continuum is the doctrine's four-level analytic instrument: I Interpersonal, II Communal, III Intergenerational, and IV Institutional-Relational. It lets an analyst locate exactly which level of bonds is strong and which is failing.",
   },
-  {
+    {
     q: "Who owns the copyright in Vinculum Security?",
-    a: `${A} is the sole originator and rights holder. The doctrine and handbook are registered with the Kenya Copyright Board under No. RZ100967, approved 27 July 2026, and published under CC BY-NC-ND 4.0.`,
+    a: `${A} is the sole originator and rights holder. The doctrine and companion handbook are original intellectual property formally registered and protected under statutory copyright law, published under CC BY-NC-ND 4.0 with all rights reserved.`,
   },
   {
     q: "Is Vinculum Security a security company or product?",
@@ -38,9 +38,9 @@ export const PRACTICE_FAQ: FaqItem[] = [
     q: "Who is the Vinculum Diplomacy handbook for?",
     a: "It is written for mediators, envoys, peacebuilders, youth, peace and security practitioners, and policy staff who need a field-ready method grounded in relationships rather than titles or rooms.",
   },
-  {
+    {
     q: "Is Vinculum Diplomacy protected by copyright?",
-    a: `Yes. Vinculum Diplomacy is part of the work registered by ${A} with the Kenya Copyright Board under No. RZ100967, approved 27 July 2026.`,
+    a: `Yes. Vinculum Diplomacy is part of the original work authored by ${A}, formally registered and protected under statutory copyright law.`,
   },
 ];
 
@@ -68,9 +68,9 @@ export const ABOUT_FAQ: FaqItem[] = [
     q: "Who is James Wesley Ndua?",
     a: `${A} is a Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya (ORCID 0009-0005-9861-8849). He is the originator of Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, and The Vinculum Dashboard.`,
   },
-  {
-    q: "What are the three Kenya Copyright Board registrations?",
-    a: "RZ100967 covers the Vinculum Security doctrine and Vinculum Diplomacy handbook (approved 27 July 2026). RZ104942 covers The Vinculum Dashboard and RZ105005 covers The Vinculum Unified Operational Nervous System (both approved 5 October 2026).",
+    {
+    q: "What are the statutory copyright registrations?",
+    a: "The foundational doctrine, companion handbook, The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System are original works authored by James Wesley Ndua and are formally registered and protected under statutory copyright law with all rights reserved.",
   },
   {
     q: "Where is the primary source for this work?",
@@ -88,7 +88,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Who is the originator and what statutory copyrights protect this work?",
-    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The work is protected by tripartite statutory copyright registered with the Kenya Copyright Board (KECOBO): 1. Foundational Doctrine & Handbook (No. RZ100967, approved 27 July 2026); 2. The Vinculum Dashboard (No. RZ104942, approved 5 October 2026); and 3. The Vinculum Unified Operational Nervous System (No. RZ105005, approved 5 October 2026).`,
+    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The entire body of work—including the foundational doctrine, the companion handbook, The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System—is formally registered and protected under statutory copyright law with all legal rights strictly reserved.`,
   },
   {
     q: "What is Deterministic Relational Law (Lex Relationalis Determinata)?",
