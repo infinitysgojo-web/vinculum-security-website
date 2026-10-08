@@ -78,7 +78,7 @@ const dashboardLd = {
   description:
     "An 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits. Governed by Deterministic Relational Law and powered by The Vinculum Unified Operational Nervous System.",
   alternateName: ["Vinculum Dashboard", "The Vinculum Security Dashboard", "Vinculum Diplomacy Dashboard"],
-    disambiguatingDescription:
+  disambiguatingDescription:
     "The diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya. Protected by statutory copyright. Not to be confused with Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software.",
   keywords: "The Vinculum Dashboard, Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, James Wesley Ndua, peace mediation, relational security",
   creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
@@ -89,6 +89,7 @@ const dashboardLd = {
   copyrightYear: 2026,
   copyrightNotice:
     "Copyright © 2026 James Wesley Ndua. All Statutory Rights Reserved. Formally registered under statutory copyright law. Private, restricted-access software.",
+};
 
 const VOCAB = GLOSSARY.filter((g) => g.category === "field" || g.id === "liebig-relational-capacity" || g.id === "deterministic-relational-law");
 
@@ -252,7 +253,7 @@ export default function TheVinculumDashboard() {
           <div className="prose-body text-foreground/85 space-y-4">
             <p>
               High-stakes diplomatic negotiations cannot occur within centralized surveillance environments or third-party
-              commercial clouds. The Vinculum Dashboard is driven by <strong>The Vinculum Unified Operational Nervous System</strong> (KECOBO RZ105005),
+              commercial clouds. The Vinculum Dashboard is driven by <strong>The Vinculum Unified Operational Nervous System</strong> (Statutorily Registered &amp; Protected),
               operating under strict sovereign air-gap principles:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-sm text-foreground/80">
