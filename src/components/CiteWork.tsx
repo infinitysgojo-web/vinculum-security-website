@@ -14,11 +14,11 @@ function format(style: Style, part: string | undefined, path: string) {
   const p = part ? `"${part}." In ` : "";
   switch (style) {
     case "APA":
-      return `Ndua, J. W. (2026). ${part ? `${part}. In ` : ""}${t}. Kenya Copyright Board Reg. No. RZ100967. ${DOI_URL}`;
+      return `Ndua, J. W. (2026). ${part ? `${part}. In ` : ""}${t}. Protected by Statutory Copyright Law. ${DOI_URL}`;
     case "Chicago":
-      return `Ndua, James Wesley. ${p}${t}. Nairobi, 2026. Kenya Copyright Board Reg. No. RZ100967. ${DOI_URL}.`;
+      return `Ndua, James Wesley. ${p}${t}. Nairobi, 2026. Protected by Statutory Copyright Law. ${DOI_URL}.`;
     case "Harvard":
-      return `Ndua, J.W. (2026) ${part ? `'${part}', in ` : ""}${t}. Registered with the Kenya Copyright Board, RZ100967. Available at: ${url} (Accessed: ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}).`;
+      return `Ndua, J.W. (2026) ${part ? `'${part}', in ` : ""}${t}. Protected by Statutory Copyright Law. Available at: ${url} (Accessed: ${new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}).`;
     case "Bluebook":
       return `James Wesley Ndua, ${part ? `${part}, in ` : ""}${t.toUpperCase()} (2026), ${url}.`;
     case "BibTeX": {
@@ -32,7 +32,7 @@ function format(style: Style, part: string | undefined, path: string) {
         `  address   = {Nairobi},`,
         `  doi       = {${DOI}},`,
         `  url       = {${url}},`,
-        `  note      = {Kenya Copyright Board Reg. No. RZ100967}`,
+        `  note      = {Protected by Statutory Copyright Law}`,
         `}`,
       ].filter(Boolean).join("\n");
     }
