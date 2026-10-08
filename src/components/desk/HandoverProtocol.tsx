@@ -157,7 +157,7 @@ export default function HandoverProtocol() {
     L.push("");
     if (engineLines.length) L.push(...engineLines, "");
     if (linked) L.push(...telemetryLines(signals));
-    L.push("Rule-based clearance aid. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("Rule-based clearance aid. Nothing entered here is stored or transmitted. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     L.push("");
     L.push("END OF PROTOCOL");
     return L.join("\n");
