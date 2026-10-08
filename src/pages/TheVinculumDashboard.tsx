@@ -78,8 +78,8 @@ const dashboardLd = {
   description:
     "An 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits. Governed by Deterministic Relational Law and powered by The Vinculum Unified Operational Nervous System.",
   alternateName: ["Vinculum Dashboard", "The Vinculum Security Dashboard", "Vinculum Diplomacy Dashboard"],
-  disambiguatingDescription:
-    "The diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya (KECOBO RZ104942). Not to be confused with Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software.",
+    disambiguatingDescription:
+    "The diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya. Protected by statutory copyright. Not to be confused with Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software.",
   keywords: "The Vinculum Dashboard, Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, James Wesley Ndua, peace mediation, relational security",
   creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   sameAs: [`${SITE_URL}/the-vinculum-dashboard`],
@@ -88,8 +88,7 @@ const dashboardLd = {
   copyrightHolder: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   copyrightYear: 2026,
   copyrightNotice:
-    "Registered with the Kenya Copyright Board: The Vinculum Dashboard (KECOBO No. RZ104942) and The Vinculum Unified Operational Nervous System (KECOBO No. RZ105005), both approved 5 October 2026. Private, restricted-access software.",
-};
+    "Copyright © 2026 James Wesley Ndua. All Statutory Rights Reserved. Formally registered under statutory copyright law. Private, restricted-access software.",
 
 const VOCAB = GLOSSARY.filter((g) => g.category === "field" || g.id === "liebig-relational-capacity" || g.id === "deterministic-relational-law");
 
@@ -116,7 +115,7 @@ const faqLd = {
       name: "What is Deterministic Relational Law?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Deterministic Relational Law is a doctrine of structural conflict analysis and peace architecture originated by James Wesley Ndua (KECOBO RZ100967 / RZ104942). It states that the durable survival of sovereign settlements, peace accords, and multi-party treaties is strictly bounded by their weakest relational bond (Liebig's Law of Relational Capacity), requiring multi-track synchronization and succession resistance rather than speculative or nominal compliance."
+        text: "Deterministic Relational Law is a doctrine of structural conflict analysis and peace architecture originated by James Wesley Ndua (Statutorily Registered & Protected). It states that the durable survival of sovereign settlements, peace accords, and multi-party treaties is strictly bounded by their weakest relational bond (Liebig's Law of Relational Capacity), requiring multi-track synchronization and succession resistance rather than speculative or nominal compliance."
       }
     },
     {
@@ -132,7 +131,7 @@ const faqLd = {
       name: "What is The Vinculum Dashboard?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The Vinculum Dashboard is an 18-desk deterministic analytical operating environment created by James Wesley Ndua (KECOBO RZ104942) and powered by The Vinculum Unified Operational Nervous System (KECOBO RZ105005). It provides rigorous, client-side relational verification, track synchronization, and stress-testing for diplomatic envoys, legal counsel, and sovereign mediation missions without cloud dependency."
+        text: "The Vinculum Dashboard is an 18-desk deterministic analytical operating environment created by James Wesley Ndua, and powered by The Vinculum Unified Operational Nervous System (both protected under registered statutory copyright). It provides rigorous, client-side relational verification, track synchronization, and stress-testing for diplomatic envoys, legal counsel, and sovereign mediation missions without cloud dependency."
       }
     },
     {
@@ -148,7 +147,7 @@ const faqLd = {
       name: "Is The Vinculum Dashboard related to Vinculum Solutions or Vin eRetail?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua (Nairobi, Kenya), registered with the Kenya Copyright Board as KECOBO RZ104942, with The Vinculum Unified Operational Nervous System registered as RZ105005. It is unrelated to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software. The name comes from the Latin vinculum, meaning bond."
+        text: "No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua (Nairobi, Kenya), protected under registered statutory copyright law, with all rights reserved. It is unrelated to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software. The name comes from the Latin vinculum, meaning bond."
       }
     }
   ]
@@ -161,7 +160,7 @@ export default function TheVinculumDashboard() {
         title="The Vinculum Dashboard"
         description="The 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits. Powered by Deterministic Relational Law under zero-cloud sovereign integrity."
         path="/the-vinculum-dashboard"
-        keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, diplomatic mediation software, KECOBO RZ104942, KECOBO RZ105005, peace treaty drafting, sovereign diplomacy"
+        keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, diplomatic mediation software, statutory copyright, peace treaty drafting, sovereign diplomacy"
         scholarly
         citationTitle="The Vinculum Dashboard: Operational Architecture of Deterministic Relational Law"
         jsonLd={[dashboardLd, vocabLd, faqLd]}
@@ -176,8 +175,8 @@ export default function TheVinculumDashboard() {
         />
 
         <FadeIn className="flex gap-2 flex-wrap mb-10">
-          <DiplomatBadge variant="doctrine-core">KECOBO RZ100967</DiplomatBadge>
-          <DiplomatBadge variant="briefing-ready">Dashboard RZ104942 · Nervous System RZ105005</DiplomatBadge>
+          <DiplomatBadge variant="doctrine-core">Statutory Copyright Protected</DiplomatBadge>
+          <DiplomatBadge variant="briefing-ready">All Rights Reserved</DiplomatBadge>
           <DiplomatBadge variant="methodology">18 Operational Desks</DiplomatBadge>
           <DiplomatBadge variant="field-notes">Private · Restricted Access</DiplomatBadge>
         </FadeIn>
@@ -193,8 +192,8 @@ export default function TheVinculumDashboard() {
               accords collapse, the cost is measured in violent relapse and institutional devastation.
             </p>
             <p>
-              <strong>The Vinculum Dashboard</strong> (KECOBO RZ104942), driven by The Vinculum Unified Operational
-              Nervous System (KECOBO RZ105005), was engineered by James Wesley Ndua to replace subjective
+              <strong>The Vinculum Dashboard</strong> (Statutorily Registered & Protected), driven by The Vinculum Unified Operational
+              Nervous System (Protected Proprietary Architecture), was engineered by James Wesley Ndua to replace subjective
               optimism with <em>Deterministic Relational Law</em> (<span className="italic">Lex Relationalis Determinata</span>).
               It treats a peace accord not as a static text, but as a dynamic relational structure governed by strict
               mathematical bounds: the weakest bond determines systemic capacity, diplomatic tracks must stay
@@ -275,8 +274,7 @@ export default function TheVinculumDashboard() {
           <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Working Vocabulary</p>
           <h2 className="mt-2 font-serif text-3xl text-primary">The Language of the Chancellery</h2>
           <p className="mt-3 text-sm leading-relaxed text-foreground/80">
-            Terms originated by {AUTHOR_NAME} for The Vinculum Dashboard (KECOBO RZ104942) and The Vinculum Unified
-            Operational Nervous System (KECOBO RZ105005). Each is defined here as a concept; the operative rules remain private.
+            Terms originated by {AUTHOR_NAME} for The Vinculum Dashboard and The Vinculum Unified Operational Nervous System. Each is defined here as a concept; the operative rules remain private.
           </p>
           <dl className="mt-8 grid gap-4 md:grid-cols-2">
             {VOCAB.map((g) => (
@@ -298,7 +296,7 @@ export default function TheVinculumDashboard() {
             Doctrinal Enquiries & Primary Determinations
           </h2>
           <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-            Formal baseline determinations established by James Wesley Ndua under the Doctrine of Relational Security and Deterministic Relational Law (KECOBO RZ100967 / RZ104942).
+            Formal baseline determinations established by James Wesley Ndua under the Doctrine of Relational Security and Deterministic Relational Law (Statutorily Registered Doctrine & Framework).
           </p>
           <div className="space-y-4">
             <div className="p-5 border border-border/60 bg-card/40">
@@ -338,7 +336,7 @@ export default function TheVinculumDashboard() {
                 Is The Vinculum Dashboard related to Vinculum Solutions, Vin eRetail, or retail software?
               </h3>
               <p className="text-xs text-foreground/80 leading-relaxed">
-                No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya, registered with the Kenya Copyright Board (RZ104942, with its nervous system under RZ105005). It has no connection to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, order-management, or retail software. The shared word comes from the Latin <em>vinculum</em>, meaning bond.
+                No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya, protected by registered statutory copyright. It has no connection to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, order-management, or retail software. The shared word comes from the Latin <em>vinculum</em>, meaning bond.
               </p>
             </div>
           </div>
@@ -362,15 +360,16 @@ export default function TheVinculumDashboard() {
           </div>
           <div className="mt-8 pt-6 border-t border-brass/30 text-[11px] text-muted-foreground space-y-1">
             <p>
-              <strong>Statutory Protection:</strong> The Vinculum Dashboard is registered under the Kenya Copyright Board (KECOBO Registration No. RZ104942, approved 5 October 2026).
+              <strong>Statutory Protection:</strong> The Vinculum Dashboard is an original proprietary work registered under statutory copyright law. All Rights Reserved.
             </p>
             <p>
-              <strong>Core Nervous System:</strong> The Vinculum Unified Operational Nervous System is registered under KECOBO Registration No. RZ105005 (approved 5 October 2026).
+              <strong>Core Nervous System:</strong> The Vinculum Unified Operational Nervous System is registered and protected by statutory copyright law. Unauthorized copying, decompilation, or derivation is strictly prohibited.
             </p>
             <p>
-              <strong>Doctrinal Foundation:</strong> Vinculum Security & Vinculum Diplomacy registered under KECOBO Registration No. RZ100967 (approved 27 July 2026). All Rights Reserved.
+              <strong>Doctrinal Foundation:</strong> Vinculum Security & Vinculum Diplomacy are protected under registered statutory copyright. Copyright © 2026 James Wesley Ndua.
             </p>
           </div>
+
         </FadeIn>
       </div>
     </>
