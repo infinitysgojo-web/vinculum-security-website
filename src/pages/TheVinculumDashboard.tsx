@@ -77,6 +77,13 @@ const dashboardLd = {
   operatingSystem: "Web-native / Browser-local sovereign runtime",
   description:
     "An 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits. Governed by Deterministic Relational Law and powered by The Vinculum Unified Operational Nervous System.",
+  alternateName: ["Vinculum Dashboard", "The Vinculum Security Dashboard", "Vinculum Diplomacy Dashboard"],
+  disambiguatingDescription:
+    "The diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya (KECOBO RZ104942). Not to be confused with Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software.",
+  keywords: "The Vinculum Dashboard, Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, James Wesley Ndua, peace mediation, relational security",
+  creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+  sameAs: [`${SITE_URL}/the-vinculum-dashboard`],
+  isPartOf: { "@id": `${SITE_URL}/#website` },
   author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   copyrightHolder: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   copyrightYear: 2026,
@@ -134,6 +141,14 @@ const faqLd = {
       acceptedAnswer: {
         "@type": "Answer",
         text: "An Elite-Pact Mirage occurs when political leaders sign high-visibility agreements that appear solid at the ministerial level while community-level and cross-border bonds remain critically fractured. Under Deterministic Relational Law, the agreement eventually collapses along the neglected communal fault line upon leadership succession or local stress."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Is The Vinculum Dashboard related to Vinculum Solutions or Vin eRetail?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua (Nairobi, Kenya), registered with the Kenya Copyright Board as KECOBO RZ104942, with The Vinculum Unified Operational Nervous System registered as RZ105005. It is unrelated to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software. The name comes from the Latin vinculum, meaning bond."
       }
     }
   ]
@@ -316,6 +331,14 @@ export default function TheVinculumDashboard() {
               </h3>
               <p className="text-xs text-foreground/80 leading-relaxed">
                 Under the Sovereign Browser Locality standard, all assessment data, mission dossiers, and telemetry parameters reside exclusively in browser-local volatile memory with zero cloud egress, preserving diplomatic confidentiality and sovereign privilege.
+              </p>
+            </div>
+            <div className="p-5 border border-border/60 bg-card/40">
+              <h3 className="font-serif text-base text-foreground mb-1.5 font-semibold">
+                Is The Vinculum Dashboard related to Vinculum Solutions, Vin eRetail, or retail software?
+              </h3>
+              <p className="text-xs text-foreground/80 leading-relaxed">
+                No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya, registered with the Kenya Copyright Board (RZ104942, with its nervous system under RZ105005). It has no connection to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, order-management, or retail software. The shared word comes from the Latin <em>vinculum</em>, meaning bond.
               </p>
             </div>
           </div>
