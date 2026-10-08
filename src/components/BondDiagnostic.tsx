@@ -328,7 +328,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
       `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
       `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
       `DATE: ${todayStamp()}`,
-      "REGISTRY: KECOBO RZ100967 (Doctrine) · RZ104942 (Dashboard) · RZ105005 (Nervous System)",
+      "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.",
       "",
       bar,
       "I. FOUR-BOND SCORES",
