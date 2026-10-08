@@ -302,21 +302,16 @@ export default function Cases() {
             );
           })}
         </div>
-        })}
-      </div>
 
-      <FaqBlock
-        items={CASES_FAQ}
-        eyebrow="Section VII Determinations"
-        title="Empirical Methodology &amp; Case Evidence Inquiries"
-      />
-
-    </div>
+        <FaqBlock
+          items={CASES_FAQ}
+          eyebrow="Section VII Determinations"
+          title="Empirical Methodology &amp; Case Evidence Inquiries"
+        />
       </div>
     </>
   );
 }
-
 function FilterGroup<T extends string>({
   label,
   items,
