@@ -1,5 +1,8 @@
 # Vinculum Security — robots.txt
 # Full access granted to major web + AI crawlers.
+# LLM Knowledge Endpoints
+# Primary summary: https://www.vinculumsecurity.kidnexus.or.ke/llms.txt
+# Complete reference feed: https://www.vinculumsecurity.kidnexus.or.ke/llms-full.txt
 
 User-agent: Googlebot
 Allow: /
