@@ -55,7 +55,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
           </div>
           <div>
             <span>Registration</span>
-            <strong>KECOBO No. RZ100967</strong>
+            <strong>Protected by Statutory Copyright</strong>
           </div>
           <div>
             <span>Classification</span>
@@ -95,7 +95,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
             <th>Prepared by</th>
             <td>{AUTHOR_NAME}</td>
             <th>Registration</th>
-            <td>KECOBO No. RZ100967</td>
+            <td>Protected by Statutory Copyright</td>
           </tr>
           <tr>
             <th>Theater</th>
@@ -216,7 +216,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
             © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
           </p>
           <p>
-            Registered with the Kenya Copyright Board, Registration No. RZ100967. Released under
+            Protected by Statutory Copyright. Released under
             Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
             4.0).
           </p>
