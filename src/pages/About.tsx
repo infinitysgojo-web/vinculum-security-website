@@ -106,20 +106,20 @@ export default function About() {
           <div className="prose-body text-foreground/85">
                                     <div className="space-y-1.5 text-sm">
               <p>
-                <strong>Doctrine & Handbook:</strong> Registered with the Kenya Copyright Board (KECOBO), No. RZ100967, approved 27 July 2026.
+                <strong>Doctrine & Handbook:</strong> Formally registered and protected under statutory copyright law. All rights reserved.
               </p>
               <p>
-                <strong>The Vinculum Dashboard:</strong> Registered with KECOBO, No. RZ104942, approved 5 October 2026.
+                <strong>The Vinculum Dashboard:</strong> Proprietary operational chancellery software; registered under statutory copyright.
               </p>
               <p>
-                <strong>The Vinculum Unified Operational Nervous System:</strong> Registered with KECOBO, No. RZ105005, approved 5 October 2026.
+                <strong>The Vinculum Unified Operational Nervous System:</strong> Proprietary deterministic signal architecture; statutorily registered and protected.
               </p>
               <p>
                 <strong>Jurisprudential Framework:</strong> Originator of <em>Deterministic Relational Law</em> (<em>Lex Relationalis Determinata</em>), establishing the mathematical and non-linear foundations of treaty durability and relational security.
               </p>
             </div>
             <p>
-              All three works are fully developed, operational, and verified across both historical peace processes and active field missions. They are ready for immediate deployment in academic jurisprudence, mainstream multilateral policy, and operational chanceries.
+              All three works are original intellectual property authored by James Wesley Ndua, fully developed, operational, and protected under statutory copyright law.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4 mt-6">
