@@ -278,7 +278,7 @@ ${CASES.filter((x) => x.slug !== c.slug && x.scores.indexOf(Math.min(...x.scores
 ` : ""}
 Compiled from the published record. No part of this memorandum is machine-generated
 or predictive; every statement above is drawn verbatim from the case file and handbook.
-Kenya Copyright Board Registration No. RZ100967.
+Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.
 END OF ${cab.tag}`;
   }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex, live, signals]);
 
