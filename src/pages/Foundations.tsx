@@ -138,16 +138,13 @@ export default function Foundations() {
             </FadeIn>
           ))}
         </div>
-      </div>
-        ))}
-      </div>
 
-      <FaqBlock
-        items={FOUNDATIONS_FAQ}
-        eyebrow="Section II Determinations"
-        title="Theoretical Lineage &amp; Philosophical Inquiries"
-      />
-    </div>
+        <FaqBlock
+          items={FOUNDATIONS_FAQ}
+          eyebrow="Section II Determinations"
+          title="Theoretical Lineage &amp; Philosophical Inquiries"
+        />
+      </div>
     </>
   );
 }
