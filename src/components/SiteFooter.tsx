@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import CCBadge from "@/components/CCBadge";
 import ScholarlyLinks from "@/components/ScholarlyLinks";
 
-
 export default function SiteFooter() {
   return (
     <footer className="bg-background mt-24 border-t border-brass/40">
