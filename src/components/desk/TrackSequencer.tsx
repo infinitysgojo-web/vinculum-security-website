@@ -122,7 +122,7 @@ export default function TrackSequencer() {
     L.push("NEXT STEPS OF RECORD");
     L.push(`  Track I:  ${r.nextI ? r.nextI.text : "Sequence complete."}`);
     L.push(`  Track II: ${r.nextII ? r.nextII.text : "Sequence complete."}`);
-    L.push("", "Rule-based sequencing aid. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("", "Rule-based sequencing aid. Nothing entered here is stored or transmitted. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
   }, [process, done, r, live, signals, tolerance, tol, communal]);
 
