@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import SEO from "@/components/SEO";
 import { sectionLd, SITE_URL } from "@/lib/seo-entities";
+import FaqBlock, { faqLd } from "@/components/FaqBlock";
+import { CASES_FAQ } from "@/content/faqs";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -108,6 +110,11 @@ export default function Cases() {
             })),
           },
         ]}
+             url: `${SITE_URL}/cases/${c.slug}`,
+          })),
+        },
+        faqLd("/cases", CASES_FAQ),
+      ]}
       />
       <ReadingProgress />
       <div className="container">
@@ -295,7 +302,16 @@ export default function Cases() {
             );
           })}
         </div>
+        })}
+      </div>
 
+      <FaqBlock
+        items={CASES_FAQ}
+        eyebrow="Section VII Determinations"
+        title="Empirical Methodology &amp; Case Evidence Inquiries"
+      />
+
+    </div>
       </div>
     </>
   );
