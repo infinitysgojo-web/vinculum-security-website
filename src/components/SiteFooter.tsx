@@ -74,7 +74,8 @@ export default function SiteFooter() {
               >
                 creativecommons.org/licenses/by-nc-nd/4.0/
               </a>
-              . Registered with the Kenya Copyright Board (KECOBO): Vinculum Security & Vinculum Diplomacy (No. RZ100967, 27 July 2026); The Vinculum Dashboard (No. RZ104942, 5 October 2026); The Vinculum Unified Operational Nervous System (No. RZ105005, 5 October 2026).
+              . All foundational doctrine, operational software, and nervous system architectures are original works created and owned by James Wesley Ndua. Protected by statutory copyright law with all rights strictly reserved.
+            </p>
 
             </p>
           </div>
