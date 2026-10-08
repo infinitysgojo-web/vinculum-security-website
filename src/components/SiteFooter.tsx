@@ -46,7 +46,7 @@ export default function SiteFooter() {
             </a>
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             <a
               href="https://creativecommons.org/licenses/by-nc-nd/4.0/"
               target="_blank"
@@ -76,15 +76,9 @@ export default function SiteFooter() {
               </a>
               . All foundational doctrine, operational software, and nervous system architectures are original works created and owned by James Wesley Ndua. Protected by statutory copyright law with all rights strictly reserved.
             </p>
-
-            </p>
           </div>
         </div>
       </div>
-
-
     </footer>
   );
 }
-
-
