@@ -258,7 +258,7 @@ function Chart({ landscape }: { landscape: boolean }) {
           <View style={s.headRight}>
             <Text style={s.headRightLine}>Doctrinal Reference Chart</Text>
             <Text style={s.headRightLine}>{AUTHOR_NAME}</Text>
-            <Text style={s.headRightLine}>KECOBO Reg. No. RZ100967</Text>
+            <Text style={s.headRightLine}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</Text>
           </View>
         </View>
         <View style={s.brassRule} />
