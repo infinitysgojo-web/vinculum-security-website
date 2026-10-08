@@ -178,7 +178,7 @@ export default function VerificationLedger() {
     });
     if (engineLines.length) L.push(...engineLines, "");
     if (linked) L.push(...telemetryLines(signals));
-    L.push("Rule-based ledger. Nothing entered here is stored or transmitted. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("Rule-based ledger. Nothing entered here is stored or transmitted. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     L.push("");
     L.push("END OF LEDGER");
     return L.join("\n");
