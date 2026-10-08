@@ -32,7 +32,7 @@ export default function FaqBlock({
       <GoldRule className="mt-4 mb-6" />
       <h2 className="font-serif text-2xl text-primary mb-4">{title}</h2>
       <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-        Answers stated by James Wesley Ndua, originator of Vinculum Security (KECOBO RZ100967).
+        Answers stated by James Wesley Ndua, author and originator of Vinculum Security. Protected under statutory copyright law.
       </p>
       <div className="space-y-4">
         {items.map((i) => (
