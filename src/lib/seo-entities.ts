@@ -94,7 +94,7 @@ export const personLd = {
     "Diplomatic Security",
     "Peace and Security",
     "Youth, Peace and Security",
-    "KECOBO Copyrights RZ100967 RZ104942 RZ105005",
+        "Statutory Copyright Protected Works",
   ],
   identifier: {
     "@type": "PropertyValue",
