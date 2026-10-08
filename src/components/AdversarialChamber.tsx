@@ -65,7 +65,7 @@ export default function AdversarialChamber() {
       });
     });
     L.push("Each held question maps to an item on the Research and Practice Agenda (Section XI).");
-    L.push("Rule-based record of the doctrine's own answers. Not legal advice. Kenya Copyright Board Registration No. RZ100967.");
+    L.push("Rule-based record of the doctrine's own answers. Not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     L.push("END OF AUDIT");
     return L.join("\n");
   }, [mission.theatre, filter, visiblePanels, counts, sg]);
