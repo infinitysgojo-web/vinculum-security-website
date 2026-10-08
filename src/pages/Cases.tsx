@@ -112,7 +112,6 @@ export default function Cases() {
           faqLd("/cases", CASES_FAQ),
         ]}
       />
-      />
       <ReadingProgress />
       <div className="container">
         <PageHeader
