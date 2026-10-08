@@ -338,7 +338,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
 
   const Footer = () => (
     <View style={s.footer} fixed>
-      <Text style={s.footerText}>Unrestricted · Public Record · KECOBO No. RZ100967</Text>
+      <Text style={s.footerText}>Unrestricted · Public Record · Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</Text>
       <Text
         style={s.footerText}
         fixed
@@ -400,7 +400,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
               </View>
               <View style={s.coverFootCell}>
                 <Text style={s.coverFootLabel}>Registration</Text>
-                <Text style={s.coverFootValue}>KECOBO No. RZ100967</Text>
+                <Text style={s.coverFootValue}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</Text>
               </View>
               <View style={s.coverFootCell}>
                 <Text style={s.coverFootLabel}>Classification</Text>
@@ -426,7 +426,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
             { label: "Document reference", value: docRef },
             { label: "Date of issue", value: issued },
             { label: "Prepared by", value: AUTHOR_NAME },
-            { label: "Registration", value: "KECOBO No. RZ100967" },
+            { label: "Registration", value: "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved" },
             { label: "Theater", value: c.region },
             { label: "Period of record", value: c.era },
             { label: "Canonical record", value: url },
@@ -528,7 +528,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
               © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
             </Text>
             <Text>
-              Registered with the Kenya Copyright Board, Registration No. RZ100967. Released under
+              Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved. Released under
               Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
               4.0).
             </Text>
