@@ -311,18 +311,16 @@ export default function Home() {
       </section>
       <section className="container max-w-4xl my-16">
         <div className="p-8 border border-brass/50 bg-card/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="space-y-2">
+         <div className="space-y-2">
             <p className="text-[10px] uppercase font-semibold tracking-[0.2em] text-accent">
               Canonical Inquiries &amp; Commentary
             </p>
             <h3 className="font-serif text-xl text-primary font-medium">
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
-            // Update to 34:
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-            Consult the 34-inquiry authoritative repository for exhaustive doctrinal commentary,
-            mathematical formulations, and statutory determinations.
-            </p>
+              Consult the 34-inquiry authoritative repository for exhaustive doctrinal commentary,
+              mathematical formulations, and statutory determinations.
             </p>
           </div>
           <a
