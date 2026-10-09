@@ -1,6 +1,4 @@
 import SEO from "@/components/SEO";
-import FaqBlock, { faqLd } from "@/components/FaqBlock";
-import { DOCTRINE_FAQ } from "@/content/faqs";
 import { sectionLd, SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
 import { PANELS, VERDICT_LABEL } from "@/content/adversarial";
 import PageHeader from "@/components/PageHeader";
@@ -101,7 +99,6 @@ export default function Doctrine() {
             section: "Section III — The Doctrine",
           }),
           adversarialLd,
-          faqLd("/doctrine", DOCTRINE_FAQ),
         ]}
       />
       <ReadingProgress />
