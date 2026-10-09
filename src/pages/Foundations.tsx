@@ -1,7 +1,5 @@
 import SEO from "@/components/SEO";
 import { sectionLd } from "@/lib/seo-entities";
-import FaqBlock, { faqLd } from "@/components/FaqBlock";
-import { FOUNDATIONS_FAQ } from "@/content/faqs";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
@@ -98,7 +96,6 @@ export default function Foundations() {
             "Thirteen independent traditions engaged comparatively by Vinculum Security, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy.",
           section: "Section II — Foundations",
         }),
-        faqLd("/foundations", FOUNDATIONS_FAQ),
       ]}
       />
       <ReadingProgress />
