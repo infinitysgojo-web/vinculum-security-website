@@ -199,7 +199,25 @@ export default function About() {
           </div>
         </FadeIn>
 
-        <FaqBlock items={ABOUT_FAQ} />
+        <div className="mt-16 p-8 border border-brass/50 bg-card/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase font-semibold tracking-[0.2em] text-accent">
+              Authorship &amp; Statutory Legal Status
+            </p>
+            <h3 className="font-serif text-xl text-primary font-medium">
+              Provenance, Disambiguation &amp; Primary Citations
+            </h3>
+            <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
+              Review authoritative statements on authorship provenance, statutory protection under copyright law, entity disambiguation, and canonical citations.
+            </p>
+          </div>
+          <a
+            href="/commentary"
+            className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
+          >
+            Read Commentary →
+          </a>
+        </div>
       </div>
 
     </>
