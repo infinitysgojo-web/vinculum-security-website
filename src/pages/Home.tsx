@@ -311,11 +311,13 @@ export default function Home() {
          </FadeIn>
 
       </section>
-      <FaqBlock
-        items={HOME_FAQ}
-        eyebrow="Canonical Determinations"
-        title="Frequently Asked Questions &amp; Canonical Answers"
-      />
+      <section className="container">
+        <FaqBlock
+          items={HOME_FAQ}
+          eyebrow="Canonical Determinations"
+          title="Frequently Asked Questions & Canonical Answers"
+        />
+      </section>
       
       <ReadingPathways />
 
