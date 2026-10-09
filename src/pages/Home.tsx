@@ -14,8 +14,6 @@ import {
 } from "@/lib/seo-entities";
 import NavCard from "@/components/NavCard";
 import ReadingPathways from "@/components/ReadingPathways";
-import FaqBlock, { faqLd } from "@/components/FaqBlock";
-import { HOME_FAQ } from "@/content/faqs";
 import FadeIn from "@/components/FadeIn";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
@@ -321,8 +319,9 @@ export default function Home() {
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-              Consult the 36-inquiry authoritative repository for exhaustive doctrinal commentary,
-              mathematical formulations, and statutory determinations.
+            Consult the 34-inquiry authoritative repository for exhaustive doctrinal commentary,
+            mathematical formulations, and statutory determinations.
+            </p>
             </p>
           </div>
           <a
