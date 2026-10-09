@@ -12,6 +12,7 @@ import Methodology from "./pages/Methodology";
 import Practice from "./pages/Practice";
 import About from "./pages/About";
 import Glossary from "./pages/Glossary";
+import Commentary from "./pages/Commentary";
 import Dispatches from "./pages/Dispatches";
 import TheVinculumDashboard from "./pages/TheVinculumDashboard";
 import NotFound from "./pages/NotFound";
