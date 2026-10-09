@@ -299,11 +299,25 @@ export default function Cases() {
           })}
         </div>
 
-        <FaqBlock
-          items={CASES_FAQ}
-          eyebrow="Section VII Determinations"
-          title="Empirical Methodology &amp; Case Evidence Inquiries"
-        />
+        <div className="mt-16 p-8 border border-brass/50 bg-card/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase font-semibold tracking-[0.2em] text-accent">
+              Empirical Calibration
+            </p>
+            <h3 className="font-serif text-xl text-primary font-medium">
+              Empirical Case Calibration Inquiries
+            </h3>
+            <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
+              Review empirical calibration across the eight canonical peace processes, adversarial rescoring demonstrations, and environmental security baselines.
+            </p>
+          </div>
+          <a
+            href="/commentary"
+            className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
+          >
+            Read Commentary →
+          </a>
+        </div>
       </div>
     </>
   );
