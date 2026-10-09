@@ -302,7 +302,25 @@ export default function Doctrine() {
 
 
         <PrintFootnotes terms={CITED} />
-        <FaqBlock items={DOCTRINE_FAQ} />
+        <div className="mt-16 p-8 border border-brass/50 bg-card/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase font-semibold tracking-[0.2em] text-accent">
+              Canonical Interpretation
+            </p>
+            <h3 className="font-serif text-xl text-primary font-medium">
+              Doctrinal Commentary &amp; Interpretive Inquiries
+            </h3>
+            <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
+              For complete derivations of Deterministic Relational Law, the Liebig Minimum, and the Arusha failure analysis, consult the formal repository.
+            </p>
+          </div>
+          <a
+            href="/commentary"
+            className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
+          >
+            Read Commentary →
+          </a>
+        </div>
       </div>
     </>
   );
