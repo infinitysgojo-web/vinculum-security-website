@@ -31,13 +31,13 @@ export default function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-x-5 2xl:gap-x-7 ml-8" aria-label="Primary">
+        <nav className="hidden 2xl:flex items-center gap-x-4 2xl:gap-x-5 ml-6" aria-label="Primary">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `text-[11px] font-semibold uppercase tracking-[0.14em] whitespace-nowrap transition-colors relative pb-1 border-b-2 ${
+                `text-[10.5px] 2xl:text-[11px] font-semibold uppercase tracking-[0.08em] 2xl:tracking-[0.11em] whitespace-nowrap transition-colors relative pb-1 border-b-2 ${
                   isActive
                     ? "border-accent text-accent"
                     : "border-transparent text-primary hover:text-accent hover:border-accent/60"
@@ -50,7 +50,7 @@ export default function SiteHeader() {
         </nav>
 
         <button
-          className="xl:hidden p-2 -mr-2 text-primary"
+          className="2xl:hidden p-2 -mr-2 text-primary"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -60,7 +60,7 @@ export default function SiteHeader() {
       </div>
 
       {open && (
-        <div className="xl:hidden border-t border-brass/40 bg-background">
+        <div className="2xl:hidden border-t border-brass/40 bg-background">
           <nav className="container flex flex-col py-2" aria-label="Mobile">
             {NAV.map((n) => (
               <NavLink
