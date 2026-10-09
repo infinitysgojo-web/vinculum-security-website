@@ -40,7 +40,7 @@ function buildCommentarySchema() {
         name: "Vinculum Security: Doctrinal Commentary & Interpretive Inquiries",
         headline: "Canonical commentary, analytical laws, and systemic determinations of Vinculum Security",
         author: { "@id": PERSON_ID },
-        description: "Exhaustive thirty-six inquiry authoritative commentary on Vinculum Security, Deterministic Relational Law, and chancellery deployment protocols.",
+        description: `Exhaustive ${COMMENTARY_COUNT}-inquiry authoritative commentary on Vinculum Security, Deterministic Relational Law, and chancellery deployment protocols.`,
       },
     ],
   };
@@ -77,7 +77,7 @@ export default function Commentary() {
     <>
       <SEO
         title="Doctrinal Commentary & Interpretive Inquiries | Vinculum Security"
-        description="Authoritative doctrinal commentary, analytical laws, and systemic determinations by James Wesley Ndua. 36 canonical inquiries across 7 analytical divisions."
+        description={`Authoritative doctrinal commentary, analytical laws, and systemic determinations by James Wesley Ndua. ${COMMENTARY_COUNT} canonical inquiries across 7 analytical divisions.`}
         path="/commentary"
         structuredData={buildCommentarySchema()}
       />
@@ -86,7 +86,7 @@ export default function Commentary() {
         <PageHeader
           eyebrow="Canonical Interpretation"
           title="Doctrinal Commentary & Interpretive Inquiries"
-          lede="Thirty-six authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
+          lede="Thirty-four authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
         />
 
         <div className="py-8">
