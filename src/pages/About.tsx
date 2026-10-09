@@ -1,7 +1,5 @@
 import { useState } from "react";
 import SEO from "@/components/SEO";
-import FaqBlock, { faqLd } from "@/components/FaqBlock";
-import { ABOUT_FAQ } from "@/content/faqs";
 import { SITE_URL, personLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
@@ -34,7 +32,7 @@ export default function About() {
           isPartOf: { "@id": `${SITE_URL}/#website` },
           mainEntity: personLd,
           about: personLd,
-        }, faqLd("/about", ABOUT_FAQ)]}
+        }, ]}
       />
       <div className="container">
         <PageHeader eyebrow="Section I" title="About the Author" />
