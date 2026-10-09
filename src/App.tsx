@@ -99,6 +99,7 @@ export default function App() {
           <Route path="/practice" element={<Practice />} />
           <Route path="/about" element={<About />} />
           <Route path="/glossary" element={<Glossary />} />
+          <Route path="/commentary" element={<Commentary />} />
           <Route path="/dispatches" element={<Dispatches />} />
           <Route path="/the-vinculum-dashboard" element={<TheVinculumDashboard />} />
           <Route path="/login" element={<Login />} />
