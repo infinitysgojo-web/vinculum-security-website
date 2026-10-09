@@ -82,13 +82,14 @@ export default function Commentary() {
         structuredData={buildCommentarySchema()}
       />
 
-      <PageHeader
-        eyebrow="Canonical Interpretation"
-        title="Doctrinal Commentary & Interpretive Inquiries"
-        subtitle="Thirty-six authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
-      />
+      <div className="container max-w-4xl">
+        <PageHeader
+          eyebrow="Canonical Interpretation"
+          title="Doctrinal Commentary & Interpretive Inquiries"
+          lede="Thirty-six authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
+        />
 
-      <div className="container max-w-4xl py-12">
+        <div className="py-8">
         {/* Search Bar & Stats */}
         <div className="mb-12">
           <div className="relative">
@@ -196,3 +197,4 @@ export default function Commentary() {
     </>
   );
 }
+      
