@@ -193,8 +193,8 @@ export default function Commentary() {
             reserved. Made available for scholarly reading under CC BY-NC-ND 4.0.
           </p>
         </div>
+        </div>
       </div>
     </>
   );
-}
-      
+}     
