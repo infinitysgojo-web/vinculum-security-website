@@ -25,6 +25,8 @@ export default function SiteFooter() {
           <span className="text-brass hidden sm:inline">·</span>
           <Link to="/the-vinculum-dashboard" className="whitespace-nowrap hover:text-accent transition-colors">The Dashboard</Link>
           <span className="text-brass hidden sm:inline">·</span>
+          <Link to="/commentary" className="whitespace-nowrap hover:text-accent transition-colors">Commentary</Link>
+          <span className="text-brass hidden sm:inline">·</span>
           <Link to="/glossary" className="whitespace-nowrap hover:text-accent transition-colors">Glossary</Link>
         </div>
         <div className="flex items-center gap-2" aria-hidden>
