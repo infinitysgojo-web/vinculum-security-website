@@ -185,7 +185,7 @@ export default function Home() {
             cssSelector: ["h1", ".lede"],
           },
         },
-        faqLd("", HOME_FAQ),
+                 
         {
           "@context": "https://schema.org",
           "@type": "ItemList",
@@ -318,6 +318,7 @@ export default function Home() {
             <h3 className="font-serif text-xl text-primary font-medium">
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
+            // Update to 34:
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
             Consult the 34-inquiry authoritative repository for exhaustive doctrinal commentary,
             mathematical formulations, and statutory determinations.
