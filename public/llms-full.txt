@@ -246,3 +246,108 @@ The name derives independently from the classical Latin *vinculum* (meaning "bon
 The authoritative citation for the complete doctrine across all academic formats is:
 
 Ndua, J. W. (2026). *Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition*. Nairobi: Vinculum Security. DOI: 10.5281/zenodo.21615991. Primary Canonical URL: https://www.vinculumsecurity.kidnexus.or.ke/
+
+
+### Additional Doctrinal Determinations
+
+#### What is Relational Entropy, and why is peace not self-sustaining?
+_Division I: Ontological and Foundational Claims_
+
+Relational Entropy names the tendency of bonds to weaken when they are not deliberately maintained. Political turnover, economic strain, displacement, and the simple passing of time all wear at the trust and shared expectation on which an agreement depends.
+
+The doctrine therefore treats peace as a maintained condition rather than a completed event. A settlement that is signed and then left unattended is expected to decay, and the absence of visible conflict is not taken as proof that its bonds remain sound.
+
+The practical consequence is that monitoring, renewal, and re-verification are part of the settlement itself, continuing long after the signing ceremony has passed.
+
+#### How does Vinculum Security relate to Johan Galtung's negative and positive peace?
+_Division I: Ontological and Foundational Claims_
+
+Galtung distinguished negative peace, the absence of direct violence, from positive peace, the removal of structural violence embedded in institutions and social arrangements. The distinction remains foundational in peace studies.
+
+Vinculum Security builds on rather than replaces it. Its contribution is to locate both forms of peace in the relational bonds that make structures workable: a just institution still fails if the communities it serves do not trust it, and the absence of violence is fragile if it rests on a single bond.
+
+Read in this way, relational peace is positive peace made measurable at the level of the bond, with explicit attention to the interpersonal, communal, institutional, and intergenerational ties that structural analysis can pass over.
+
+#### Why did post-Cold War liberal peacebuilding so often see conflict relapse?
+_Division II: Philosophical and Comparative Traditions_
+
+Much post-Cold War peacebuilding followed a common sequence: rapid elections, market liberalisation, and the transfer of institutional templates. Scholarly assessments of this period have repeatedly noted that the sequence often ran ahead of the trust needed to sustain it.
+
+Through the lens of the Liebig Relational Minimum, the explanation is structural. Elections held while communal bonds are at failure levels can turn electoral competition into communal mobilisation, and institutions built before they are trusted carry little weight when tested.
+
+The doctrine does not reject elections or institutions. It argues for sequencing that verifies the weakest bonds before placing heavy load on them.
+
+#### How does the doctrine engage customary African and Indigenous dispute resolution?
+_Division II: Philosophical and Comparative Traditions_
+
+Many customary systems, among them Rwanda's gacaca courts, community baraza in Kenya, and the Acholi practice of mato oput, act directly on relationships: they seek acknowledgement, restoration, and the return of a person or group into the community, not only the assignment of punishment.
+
+Vinculum Security treats such mechanisms as serious sources of relational jurisprudence rather than informal supplements to statutory law. They carry knowledge about how bonds are repaired that formal systems often lack.
+
+This engagement is analytical, not uncritical. Customary processes are also assessed for who they include and exclude, including women and youth, since a mechanism that repairs one bond while breaking another does not meet the doctrine's standard.
+
+#### What is Relational Contagion, and how does failure at one level spread to others?
+_Division III: The Vinculum Continuum and Diagnostic Method_
+
+Relational Contagion describes the way a breach at one level of the Vinculum Continuum transmits pressure to the others. A collapse of trust among leaders can be read by communities as permission to mobilise; communal division can in turn paralyse the institutions expected to manage it.
+
+Because the levels are coupled, the diagnostic method does not read them in isolation. It looks for the pathways along which a local failure is likely to travel, so that attention can be directed to the bond whose failure would spread furthest.
+
+#### How can a state appear institutionally strong while its relational foundations are failing?
+_Division III: The Vinculum Continuum and Diagnostic Method_
+
+A state may have functioning courts, a working legislature, and capable security services while large parts of its population, often young people or marginalised communities, regard those institutions as distant or illegitimate.
+
+Capacity indices tend to read such a state as stable because they measure the institutions, not the bonds between institutions and citizens. The Continuum separates these readings, making visible a gap that conventional indicators can conceal until it is tested.
+
+The doctrine treats that gap, high institutional capacity alongside low communal or intergenerational trust, as a distinct and early form of fragility.
+
+#### Why does the Vinculum Dashboard keep working data in the user's own browser?
+_Division IV: The Vinculum Dashboard_
+
+The Dashboard is designed so that the readings an analyst enters stay in that analyst's own browser session. Its desks pass readings to one another locally, in a single fixed sequence, rather than sending working material to a shared online store.
+
+The rationale is discretion and control. Diplomatic and mediation work often involves material that should remain with the person handling it, and keeping working data local means the analyst decides what, if anything, leaves their device.
+
+This is a design principle about where data lives, not a claim of absolute security; the analyst remains responsible for the device and for anything they choose to export or share.
+
+#### How are Dashboard readings made traceable and reviewable?
+_Division IV: The Vinculum Dashboard_
+
+Because the Dashboard is deterministic, the same inputs always produce the same outputs. Any reading can therefore be reproduced by re-entering its inputs, and a reviewer can check how a conclusion followed from the evidence recorded.
+
+This traceability is intended to support careful internal review and transparent reasoning. Whether any output is admissible or persuasive in a particular forum is a matter for that forum and its rules; the doctrine's claim is reproducibility, not automatic evidentiary standing.
+
+#### What is the Third-Party Guarantor Dilemma?
+_Division V: Chancellery Practice and Treaty Mechanics_
+
+When an agreement relies chiefly on an external power, donor, or organisation to enforce it, the parties may never build the direct bonds that would let the agreement stand on its own. The guarantor supplies the stability the relationship does not yet have.
+
+The dilemma appears when the guarantor's priorities change. If its commitment weakens or ends, an agreement that depended on it can lose its main support all at once.
+
+Vinculum Diplomacy therefore treats external guarantees as scaffolding: useful and sometimes essential, but paired with deliberate measures to grow the parties' own communal and institutional bonds so that the agreement can outlast the guarantee.
+
+#### How should transitional justice balance accountability with communal repair?
+_Division V: Chancellery Practice and Treaty Mechanics_
+
+Accountability matters; impunity corrodes trust in any settlement. Yet processes that are purely retributive, without any path to reintegration, can harden divisions by fixing communities into permanent roles of victim and perpetrator.
+
+The doctrine's approach is to assess transitional justice provisions by their effect on bonds: whether they acknowledge harm, whether affected communities see them as legitimate, and whether they leave a credible route back into shared civic life.
+
+In practice this favours combinations of mechanisms, such as truth-telling, reparation, and accountability, designed together and sequenced with the condition of the weakest bonds in mind.
+
+#### How does the doctrine read Kenya's 2008 National Accord and Agenda Item Four?
+_Division VI: Empirical Calibration Against the Canonical Cases_
+
+The 2008 National Accord, mediated by a panel led by Kofi Annan after the post-election violence, ended the immediate crisis and created a power-sharing arrangement between the principal political leaders.
+
+Its negotiators also recognised that a leaders' agreement alone would not be enough. Agenda Item Four set out long-term issues, including constitutional and institutional reform, land, inequality, youth unemployment, and national cohesion, which later fed into the reform process that produced the 2010 Constitution.
+
+Read through the Vinculum Continuum, the settlement illustrates both the value of elite agreement in halting violence and the doctrine's warning against the Elite-Pact Mirage: durable peace depended on addressing communal, institutional, and intergenerational bonds that the leaders' pact could not repair by itself.
+
+#### How can universities and diplomatic academies study or teach Vinculum Security?
+_Division VII: Authorship, Legal Status, and Citation_
+
+The public doctrine, its comparative analysis, and the published papers may be read, taught, and discussed in academic and professional settings, provided the work is properly attributed using the canonical citation and the terms of the applicable licence are respected.
+
+Where content is published under CC BY-NC-ND 4.0, it may be shared non-commercially and without modification. Adaptation, commercial use, and operational deployment of the doctrine's instruments are reserved to the author, and enquiries can be made through the institutional correspondence channel listed on the site.
