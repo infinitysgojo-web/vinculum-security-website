@@ -222,22 +222,21 @@ export default function Home() {
         {
           "@context": "https://schema.org",
           "@type": "ItemList",
-          "@id": `${SITE_URL}/#sections`,
-          name: "Sections of the Vinculum Security doctrine",
+          "@id": `${SITE_URL}/#sitelinks`,
+          name: "Vinculum Security Core Directory",
           description:
-            "The canonical sections of the Vinculum Security doctrine, published in full on this site as the primary source.",
+            "Primary navigational pillars and canonical doctrinal repositories of Vinculum Security.",
           isPartOf: { "@id": `${SITE_URL}/#webpage` },
-          about: { "@id": BOOK_ID },
           itemListOrder: "https://schema.org/ItemListOrderAscending",
-          numberOfItems: CARDS.length,
-          itemListElement: CARDS.map((c, i) => ({
-            "@type": "ListItem",
+          numberOfItems: SITELINKS.length,
+          itemListElement: SITELINKS.map((item, i) => ({
+            "@type": "SiteNavigationElement",
             position: i + 1,
-            name: c.title,
-            description: c.description,
-            url: `${SITE_URL}${c.to}`,
+            name: item.name,
+            description: item.description,
+            url: `${SITE_URL}${item.to}`,
           })),
-        }]}
+        }
       />
 
       {/* Hero */}
