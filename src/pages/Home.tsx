@@ -44,6 +44,39 @@ function formatDate(iso: string): string {
   }
 }
 
+const SITELINKS = [
+  {
+    name: "The Doctrine",
+    description: "The foundational definition of relational security and the four-level Vinculum Continuum.",
+    to: "/doctrine",
+  },
+  {
+    name: "Doctrinal Commentary",
+    description: "Fifty-six authoritative determinations across seven analytical divisions.",
+    to: "/commentary",
+  },
+  {
+    name: "Case Studies",
+    description: "Canonical peace processes and bilateral treaties scored across four relational bond domains.",
+    to: "/cases",
+  },
+  {
+    name: "The Vinculum Dashboard",
+    description: "Eighteen deterministic operational desks for relational security analysis and handovers.",
+    to: "/the-vinculum-dashboard",
+  },
+  {
+    name: "Theoretical Foundations",
+    description: "Comparative engagement with Ubuntu, restorative justice, and legal philosophy traditions.",
+    to: "/foundations",
+  },
+  {
+    name: "About the Author",
+    description: "Authored by James Wesley Ndua. Scholarly affiliations, ORCID record, and statutory notices.",
+    to: "/about",
+  },
+];
+
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
   { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen independent traditions engaged comparatively, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy." },
