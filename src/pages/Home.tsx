@@ -75,6 +75,11 @@ const SITELINKS = [
     description: "Authored by James Wesley Ndua. Scholarly affiliations, ORCID record, and statutory notices.",
     to: "/about",
   },
+  {
+    name: "Field Dispatches",
+    description: "Published articles, field notes, and analytical dispatches by James Wesley Ndua.",
+    to: "/dispatches",
+  },
 ];
 
 const CARDS = [
