@@ -86,7 +86,7 @@ export default function Commentary() {
         <PageHeader
           eyebrow="Canonical Interpretation"
           title="Doctrinal Commentary & Interpretive Inquiries"
-          lede="Forty-six authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
+          lede="Fifty-six authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
         />
 
         <div className="py-8">

@@ -75,6 +75,22 @@ export const COMMENTARY: Division[] = [
           "Read in this way, relational peace is positive peace made measurable at the level of the bond, with explicit attention to the interpersonal, communal, institutional, and intergenerational ties that structural analysis can pass over.",
         ],
       },
+      {
+        id: "sovereignty-obligation",
+        q: "How does Vinculum Security understand the relationship between state sovereignty and relational obligation?",
+        a: [
+          "The doctrine does not treat sovereignty as an isolated shield behind which internal decay can be ignored. In practice, a state's authority is sustained by relationships: with its own communities, with neighbouring states, and with the institutions that recognise and engage it.",
+          "On this reading, durable covenants do not erode sovereignty; they help sustain it. A state whose bonds are intact can exercise its authority with less coercion and greater legitimacy than one whose authority rests on formal status alone.",
+        ],
+      },
+      {
+        id: "relational-deficit",
+        q: "What is a relational deficit, and how can it be recognised before open conflict?",
+        a: [
+          "A relational deficit arises when the volume of friction between parties grows faster than the channels able to absorb it: trusted intermediaries, functioning institutions, and shared forums for grievance.",
+          "It is recognised through patterns rather than single events: grievances that go unheard, channels that fall silent, and disputes that escalate because no accepted route exists to settle them. A persistent deficit is read as a warning that the settlement is becoming fragile, not as a prediction of any particular outcome.",
+        ],
+      },
     ],
   },
   {
@@ -149,6 +165,22 @@ export const COMMENTARY: Division[] = [
           "This engagement is analytical, not uncritical. Customary processes are also assessed for who they include and exclude, including women and youth, since a mechanism that repairs one bond while breaking another does not meet the doctrine's standard.",
         ],
       },
+      {
+        id: "security-dilemma",
+        q: "How does the doctrine engage with the Realist security dilemma?",
+        a: [
+          "Classical Realism observes that measures one party takes for its own defence can appear threatening to another, prompting reciprocal build-ups. Vinculum Security accepts the observation but locates much of its force in a shortage of verifiable transparency between the parties.",
+          "Where commitments are anchored in shared verification and sustained communication, defensive measures can be read as predictable rather than menacing. The doctrine does not claim to dissolve the dilemma; it identifies relational verification as one of the conditions that can soften it.",
+        ],
+      },
+      {
+        id: "rawls-law-of-peoples",
+        q: "How does the doctrine relate to John Rawls' The Law of Peoples?",
+        a: [
+          "Rawls sets out principles by which well-ordered peoples should conduct relations with one another and with societies burdened by unfavourable conditions. His work is primarily normative: it describes what a just international order should look like.",
+          "Vinculum Security is complementary rather than competing. It concentrates on the practical question of whether the relationships needed to sustain such an order actually exist and hold, offering a diagnostic vocabulary for societies working through historical grievance without importing a single external model.",
+        ],
+      },
     ],
   },
   {
@@ -204,6 +236,14 @@ export const COMMENTARY: Division[] = [
           "A state may have functioning courts, a working legislature, and capable security services while large parts of its population, often young people or marginalised communities, regard those institutions as distant or illegitimate.",
           "Capacity indices tend to read such a state as stable because they measure the institutions, not the bonds between institutions and citizens. The Continuum separates these readings, making visible a gap that conventional indicators can conceal until it is tested.",
           "The doctrine treats that gap, high institutional capacity alongside low communal or intergenerational trust, as a distinct and early form of fragility.",
+        ],
+      },
+      {
+        id: "incident-vs-decay",
+        q: "How does the diagnostic method distinguish an acute incident from systemic relational decay?",
+        a: [
+          "An acute incident, such as an isolated border dispute or a diplomatic quarrel, creates friction at one level while the other levels of the Continuum remain broadly resilient. Such incidents are serious but usually manageable through existing channels.",
+          "Systemic decay is indicated when distrust is compounding across several levels at once. In that condition an otherwise minor incident can carry disproportionate consequences, because the bonds that would normally contain it are already weakened.",
         ],
       },
     ],
@@ -269,6 +309,14 @@ export const COMMENTARY: Division[] = [
         a: [
           "Because the Dashboard is deterministic, the same inputs always produce the same outputs. Any reading can therefore be reproduced by re-entering its inputs, and a reviewer can check how a conclusion followed from the evidence recorded.",
           "This traceability is intended to support careful internal review and transparent reasoning. Whether any output is admissible or persuasive in a particular forum is a matter for that forum and its rules; the doctrine's claim is reproducibility, not automatic evidentiary standing.",
+        ],
+      },
+      {
+        id: "dashboard-and-judgement",
+        q: "How should Dashboard readings be weighed alongside expert judgement?",
+        a: [
+          "Dashboard readings are structured aids to reasoning, not substitutes for it. They make assumptions explicit, show how a conclusion follows from recorded inputs, and allow colleagues to examine and challenge each step.",
+          "Final assessments remain the responsibility of the analyst and the institution they serve. Contextual knowledge, local expertise, and professional judgement determine how a reading is interpreted and whether it should inform a decision.",
         ],
       },
     ],
@@ -337,6 +385,22 @@ export const COMMENTARY: Division[] = [
           "In practice this favours combinations of mechanisms, such as truth-telling, reparation, and accountability, designed together and sequenced with the condition of the weakest bonds in mind.",
         ],
       },
+      {
+        id: "escalation-clauses",
+        q: "How should agreements structure dispute-escalation provisions so that minor breaches do not collapse the whole accord?",
+        a: [
+          "A common doctrinal recommendation is tiered escalation: disputes first go to working-level consultation, then to a designated technical or joint review body, and only afterwards to arbitration or other formal remedies.",
+          "Tiering gives parties time and space to resolve misunderstandings before positions harden, and reduces the risk that a minor infraction is used politically to discredit the agreement as a whole.",
+        ],
+      },
+      {
+        id: "sunset-clauses",
+        q: "What role do sunset clauses play in long-term accords, and when can they become destabilising?",
+        a: [
+          "Sunset clauses can reassure hesitant parties that obligations are not permanent, which may help an agreement to be signed in the first place.",
+          "Fixed calendar expirations can, however, invite delay: a reluctant party may wait out the deadline rather than comply. The doctrine therefore favours transitions tied to agreed, verifiable benchmarks, while recognising that some fixed dates may still be politically necessary.",
+        ],
+      },
     ],
   },
   {
@@ -394,6 +458,14 @@ export const COMMENTARY: Division[] = [
           "Read through the Vinculum Continuum, the settlement illustrates both the value of elite agreement in halting violence and the doctrine's warning against the Elite-Pact Mirage: durable peace depended on addressing communal, institutional, and intergenerational bonds that the leaders' pact could not repair by itself.",
         ],
       },
+      {
+        id: "colonial-boundaries",
+        q: "How does the doctrine read the enduring friction around post-colonial boundaries?",
+        a: [
+          "Many boundaries drawn in the colonial period cut across kinship networks, trade routes, and seasonal pastoral movement. The resulting jurisdictions were formally clear but often disregarded the relationships through which people actually lived.",
+          "The doctrine reads lasting border stability as depending on more than demarcation and enforcement. Cross-border arrangements that respect established livelihoods and community ties are treated as part of the settlement's relational foundation.",
+        ],
+      },
     ],
   },
   {
@@ -439,6 +511,14 @@ export const COMMENTARY: Division[] = [
         a: [
           "The public doctrine, its comparative analysis, and the published papers may be read, taught, and discussed in academic and professional settings, provided the work is properly attributed using the canonical citation and the terms of the applicable licence are respected.",
           "Where content is published under CC BY-NC-ND 4.0, it may be shared non-commercially and without modification. Adaptation, commercial use, and operational deployment of the doctrine's instruments are reserved to the author, and enquiries can be made through the institutional correspondence channel listed on the site.",
+        ],
+      },
+      {
+        id: "ip-and-open-scholarship",
+        q: "How does Vinculum Security balance protection of its work with open scholarly inquiry?",
+        a: [
+          "The public doctrine, published papers, and comparative frameworks are shared under the Creative Commons BY-NC-ND 4.0 licence, so they may be read, cited, and taught with attribution for non-commercial purposes.",
+          "The operational instruments and dashboard remain the protected work of the author, formally registered under statutory copyright law with all rights reserved. Enquiries about uses beyond the licence are welcomed through the institutional correspondence channel.",
         ],
       },
     ],
