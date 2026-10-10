@@ -319,7 +319,7 @@ export default function Home() {
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-              Consult the 46-inquiry authoritative repository for exhaustive doctrinal commentary,
+              Consult the 56-inquiry authoritative repository for exhaustive doctrinal commentary,
               mathematical formulations, and statutory determinations.
             </p>
           </div>
