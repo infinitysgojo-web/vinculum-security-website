@@ -236,7 +236,7 @@ export default function Home() {
             description: item.description,
             url: `${SITE_URL}${item.to}`,
           })),
-        }
+        }]}
       />
 
       {/* Hero */}
