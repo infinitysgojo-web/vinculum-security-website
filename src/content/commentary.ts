@@ -57,6 +57,24 @@ export const COMMENTARY: Division[] = [
           "The mirage is dangerous because conventional indicators reward it: signatures, ceremonies, and international recognition all register as success. Vinculum Security treats a large gap between elite alignment and community reconciliation as a warning sign rather than an achievement, and the historical record of agreements that unravelled after signature is read through exactly this lens.",
         ],
       },
+      {
+        id: "relational-entropy",
+        q: "What is Relational Entropy, and why is peace not self-sustaining?",
+        a: [
+          "Relational Entropy names the tendency of bonds to weaken when they are not deliberately maintained. Political turnover, economic strain, displacement, and the simple passing of time all wear at the trust and shared expectation on which an agreement depends.",
+          "The doctrine therefore treats peace as a maintained condition rather than a completed event. A settlement that is signed and then left unattended is expected to decay, and the absence of visible conflict is not taken as proof that its bonds remain sound.",
+          "The practical consequence is that monitoring, renewal, and re-verification are part of the settlement itself, continuing long after the signing ceremony has passed.",
+        ],
+      },
+      {
+        id: "galtung",
+        q: "How does Vinculum Security relate to Johan Galtung's negative and positive peace?",
+        a: [
+          "Galtung distinguished negative peace, the absence of direct violence, from positive peace, the removal of structural violence embedded in institutions and social arrangements. The distinction remains foundational in peace studies.",
+          "Vinculum Security builds on rather than replaces it. Its contribution is to locate both forms of peace in the relational bonds that make structures workable: a just institution still fails if the communities it serves do not trust it, and the absence of violence is fragile if it rests on a single bond.",
+          "Read in this way, relational peace is positive peace made measurable at the level of the bond, with explicit attention to the interpersonal, communal, institutional, and intergenerational ties that structural analysis can pass over.",
+        ],
+      },
     ],
   },
   {
@@ -113,6 +131,24 @@ export const COMMENTARY: Division[] = [
           "Because the method is deterministic and its inputs are recorded, each case reading can be checked, disputed, and re-scored by others. A framework that cannot be wrong cannot be tested; this one states the conditions under which it would be.",
         ],
       },
+      {
+        id: "liberal-peacebuilding",
+        q: "Why did post-Cold War liberal peacebuilding so often see conflict relapse?",
+        a: [
+          "Much post-Cold War peacebuilding followed a common sequence: rapid elections, market liberalisation, and the transfer of institutional templates. Scholarly assessments of this period have repeatedly noted that the sequence often ran ahead of the trust needed to sustain it.",
+          "Through the lens of the Liebig Relational Minimum, the explanation is structural. Elections held while communal bonds are at failure levels can turn electoral competition into communal mobilisation, and institutions built before they are trusted carry little weight when tested.",
+          "The doctrine does not reject elections or institutions. It argues for sequencing that verifies the weakest bonds before placing heavy load on them.",
+        ],
+      },
+      {
+        id: "customary-justice",
+        q: "How does the doctrine engage customary African and Indigenous dispute resolution?",
+        a: [
+          "Many customary systems, among them Rwanda's gacaca courts, community baraza in Kenya, and the Acholi practice of mato oput, act directly on relationships: they seek acknowledgement, restoration, and the return of a person or group into the community, not only the assignment of punishment.",
+          "Vinculum Security treats such mechanisms as serious sources of relational jurisprudence rather than informal supplements to statutory law. They carry knowledge about how bonds are repaired that formal systems often lack.",
+          "This engagement is analytical, not uncritical. Customary processes are also assessed for who they include and exclude, including women and youth, since a mechanism that repairs one bond while breaking another does not meet the doctrine's standard.",
+        ],
+      },
     ],
   },
   {
@@ -151,6 +187,23 @@ export const COMMENTARY: Division[] = [
         a: [
           "A bond scored as Fragile and improving is in a very different position from one scored as Fragile and deteriorating. The method therefore records trajectory alongside level, and a deteriorating trend raises the assessed risk of rupture even where the present score looks tolerable.",
           "This guards against the most common analytic error in post-agreement settings: mistaking a temporary plateau for stability.",
+        ],
+      },
+      {
+        id: "relational-contagion",
+        q: "What is Relational Contagion, and how does failure at one level spread to others?",
+        a: [
+          "Relational Contagion describes the way a breach at one level of the Vinculum Continuum transmits pressure to the others. A collapse of trust among leaders can be read by communities as permission to mobilise; communal division can in turn paralyse the institutions expected to manage it.",
+          "Because the levels are coupled, the diagnostic method does not read them in isolation. It looks for the pathways along which a local failure is likely to travel, so that attention can be directed to the bond whose failure would spread furthest.",
+        ],
+      },
+      {
+        id: "capacity-vs-alienation",
+        q: "How can a state appear institutionally strong while its relational foundations are failing?",
+        a: [
+          "A state may have functioning courts, a working legislature, and capable security services while large parts of its population, often young people or marginalised communities, regard those institutions as distant or illegitimate.",
+          "Capacity indices tend to read such a state as stable because they measure the institutions, not the bonds between institutions and citizens. The Continuum separates these readings, making visible a gap that conventional indicators can conceal until it is tested.",
+          "The doctrine treats that gap, high institutional capacity alongside low communal or intergenerational trust, as a distinct and early form of fragility.",
         ],
       },
     ],
@@ -201,6 +254,23 @@ export const COMMENTARY: Division[] = [
           "This removes a familiar source of diplomatic error: a briefing note that quotes figures from an earlier draft of the analysis.",
         ],
       },
+      {
+        id: "browser-local",
+        q: "Why does the Vinculum Dashboard keep working data in the user's own browser?",
+        a: [
+          "The Dashboard is designed so that the readings an analyst enters stay in that analyst's own browser session. Its desks pass readings to one another locally, in a single fixed sequence, rather than sending working material to a shared online store.",
+          "The rationale is discretion and control. Diplomatic and mediation work often involves material that should remain with the person handling it, and keeping working data local means the analyst decides what, if anything, leaves their device.",
+          "This is a design principle about where data lives, not a claim of absolute security; the analyst remains responsible for the device and for anything they choose to export or share.",
+        ],
+      },
+      {
+        id: "audit-trail",
+        q: "How are Dashboard readings made traceable and reviewable?",
+        a: [
+          "Because the Dashboard is deterministic, the same inputs always produce the same outputs. Any reading can therefore be reproduced by re-entering its inputs, and a reviewer can check how a conclusion followed from the evidence recorded.",
+          "This traceability is intended to support careful internal review and transparent reasoning. Whether any output is admissible or persuasive in a particular forum is a matter for that forum and its rules; the doctrine's claim is reproducibility, not automatic evidentiary standing.",
+        ],
+      },
     ],
   },
   {
@@ -247,6 +317,24 @@ export const COMMENTARY: Division[] = [
         a: [
           "Draft clauses are read for asymmetric obligations: duties that fall heavily on one party or one community, commitments without corresponding protections, and provisions that quietly depend on a single bond already known to be weak.",
           "The aim is not to rewrite the parties' agreement but to make its relational consequences visible before it is signed, while correction is still possible.",
+        ],
+      },
+      {
+        id: "guarantor-dilemma",
+        q: "What is the Third-Party Guarantor Dilemma?",
+        a: [
+          "When an agreement relies chiefly on an external power, donor, or organisation to enforce it, the parties may never build the direct bonds that would let the agreement stand on its own. The guarantor supplies the stability the relationship does not yet have.",
+          "The dilemma appears when the guarantor's priorities change. If its commitment weakens or ends, an agreement that depended on it can lose its main support all at once.",
+          "Vinculum Diplomacy therefore treats external guarantees as scaffolding: useful and sometimes essential, but paired with deliberate measures to grow the parties' own communal and institutional bonds so that the agreement can outlast the guarantee.",
+        ],
+      },
+      {
+        id: "transitional-justice",
+        q: "How should transitional justice balance accountability with communal repair?",
+        a: [
+          "Accountability matters; impunity corrodes trust in any settlement. Yet processes that are purely retributive, without any path to reintegration, can harden divisions by fixing communities into permanent roles of victim and perpetrator.",
+          "The doctrine's approach is to assess transitional justice provisions by their effect on bonds: whether they acknowledge harm, whether affected communities see them as legitimate, and whether they leave a credible route back into shared civic life.",
+          "In practice this favours combinations of mechanisms, such as truth-telling, reparation, and accountability, designed together and sequenced with the condition of the weakest bonds in mind.",
         ],
       },
     ],
@@ -297,6 +385,15 @@ export const COMMENTARY: Division[] = [
           "Its consistent finding is that physical disarmament and security operations do not hold unless the communal covenants that govern access, grazing, and restitution are renewed alongside them.",
         ],
       },
+      {
+        id: "kenya-2008",
+        q: "How does the doctrine read Kenya's 2008 National Accord and Agenda Item Four?",
+        a: [
+          "The 2008 National Accord, mediated by a panel led by Kofi Annan after the post-election violence, ended the immediate crisis and created a power-sharing arrangement between the principal political leaders.",
+          "Its negotiators also recognised that a leaders' agreement alone would not be enough. Agenda Item Four set out long-term issues, including constitutional and institutional reform, land, inequality, youth unemployment, and national cohesion, which later fed into the reform process that produced the 2010 Constitution.",
+          "Read through the Vinculum Continuum, the settlement illustrates both the value of elite agreement in halting violence and the doctrine's warning against the Elite-Pact Mirage: durable peace depended on addressing communal, institutional, and intergenerational bonds that the leaders' pact could not repair by itself.",
+        ],
+      },
     ],
   },
   {
@@ -334,6 +431,14 @@ export const COMMENTARY: Division[] = [
         a: [
           "This website, vinculumsecurity.kidnexus.or.ke, is the canonical primary source maintained by the author. Zenodo (DOI 10.5281/zenodo.21615991), OSF, Harvard Dataverse, SSRN, and other repositories hold secondary archival deposits.",
           "Canonical citation: Ndua, J. W. (2026). Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition. Nairobi: Vinculum Security.",
+        ],
+      },
+      {
+        id: "teaching",
+        q: "How can universities and diplomatic academies study or teach Vinculum Security?",
+        a: [
+          "The public doctrine, its comparative analysis, and the published papers may be read, taught, and discussed in academic and professional settings, provided the work is properly attributed using the canonical citation and the terms of the applicable licence are respected.",
+          "Where content is published under CC BY-NC-ND 4.0, it may be shared non-commercially and without modification. Adaptation, commercial use, and operational deployment of the doctrine's instruments are reserved to the author, and enquiries can be made through the institutional correspondence channel listed on the site.",
         ],
       },
     ],
