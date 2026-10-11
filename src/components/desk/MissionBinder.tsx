@@ -3,7 +3,6 @@ import { useMission } from "./mission";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { telemetryLines, useEngine } from "./engine";
 import DeskOutput, { BinderContext, field, label, panel, todayStamp, type BinderEntry } from "./DeskOutput";
-import { generateMasterDepositionPdf } from "./MasterDepositionPdf";
 
 /**
  * Consolidated Mission Binder. Compiles documents added from any desk into one
@@ -25,25 +24,6 @@ export default function MissionBinder({
   useEffect(() => setTheatre(profile.theatre), [profile.theatre]);
   useEffect(() => setEnvoy(profile.officer || "Office of the Special Envoy"), [profile.officer]);
   const { signals } = useEngine();
-
-  const [exportingDeposition, setExportingDeposition] = useState(false);
-
-  const handleExportDeposition = async () => {
-    try {
-      setExportingDeposition(true);
-      const blob = await generateMasterDepositionPdf(theatre || "Global Sovereign Archive");
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Vinculum-Master-Deposition-${new Date().toISOString().slice(0, 10)}.pdf`;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
-    } catch (err) {
-      console.error("Deposition export failed:", err);
-    } finally {
-      setExportingDeposition(false);
-    }
-  };
 
   const text = useMemo(() => {
     const bar = "=".repeat(64);
@@ -99,33 +79,7 @@ export default function MissionBinder({
               </ol>
             )}
           </div>
-
-          {/* Master Deposition Export Card */}
-          <div className="border border-border/80 bg-background/60 p-4 space-y-3">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-accent block">
-                  Master Chancellery Deposition
-                </span>
-                <p className="text-sm font-serif text-foreground/90 mt-1">
-                  Unified System Treaty &amp; Architectural Monograph
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Complete 6-Volume deposition: Doctrine, Mathematical Engine, 18 Desks, 20 Stage-Gates, and Verification Seal.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handleExportDeposition}
-                disabled={exportingDeposition}
-                className="shrink-0 px-3 py-2 text-xs font-mono uppercase tracking-wider border border-border bg-background hover:bg-muted text-foreground transition-colors disabled:opacity-50"
-              >
-                {exportingDeposition ? "Compiling..." : "Export PDF"}
-              </button>
-            </div>
-          </div>
         </div>
-
         <BinderContext.Provider value={null}>
           <DeskOutput text={text} fileName="Vinculum-Mission-Binder" />
         </BinderContext.Provider>
