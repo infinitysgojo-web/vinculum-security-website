@@ -105,44 +105,6 @@ export const personLd = {
   sameAs: SAME_AS,
 };
 
-export const orgLd = {
-  "@context": "https://schema.org",
-  "@type": "ResearchOrganization",
-  "@id": ORG_ID,
-  name: "Vinculum Security",
-  alternateName: [
-    "The Vinculum",
-    "A Doctrine of Relational Security",
-    "The Vinculum Unified Operational Nervous System",
-  ],
-  url: `${SITE_URL}/`,
-  logo: `${SITE_URL}/favicon.ico`,
-  image: `${SITE_URL}/og-image.jpg`,
-  description:
-    "Vinculum Security is an original doctrine and operational nervous system originating the principle that the bond is the unit of security analysis.",
-  founder: personLd,
-  foundingDate: "2026",
-  foundingLocation: {
-    "@type": "Place",
-    name: "Nairobi, Kenya",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Nairobi",
-      addressCountry: "KE",
-    },
-  },
-  slogan: "Pro Omni Humanitate",
-  knowsAbout: [
-    "Relational Security",
-    "Bond-Integrity Analysis",
-    "Deterministic Relational Dynamics",
-    "Vinculum Diplomacy",
-    "Human Security",
-    "Peace and Conflict Studies",
-  ],
-  sameAs: SAME_AS,
-};
-
 /** A ScholarlyArticle node for a doctrine section page. */
 export function sectionLd(opts: {
   path: string;
