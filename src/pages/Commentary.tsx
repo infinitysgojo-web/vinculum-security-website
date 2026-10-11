@@ -79,7 +79,7 @@ export default function Commentary() {
         title="Doctrinal Commentary & Interpretive Inquiries | Vinculum Security"
         description={`Authoritative doctrinal commentary, analytical laws, and systemic determinations by James Wesley Ndua. ${COMMENTARY_COUNT} canonical inquiries across 7 analytical divisions.`}
         path="/commentary"
-        structuredData={buildCommentarySchema()}
+        jsonLd={buildCommentarySchema()}
       />
 
       <div className="container max-w-4xl">
