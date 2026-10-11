@@ -6,6 +6,7 @@ import { usePublish, bondBand, clampScore, mathReading, MAX_DISTANCE } from "@/c
 import DeskOutput, { todayStamp } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import BondMathPanel from "@/components/desk/BondMathPanel";
+import RelationalDynamicsPanel from "@/components/desk/RelationalDynamicsPanel";
 
 /**
  * Interactive Relational Bond Diagnostic Bench.
@@ -530,6 +531,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
           </div>
 
           <BondMathPanel scores={values} />
+          <RelationalDynamicsPanel scores={values} />
 
           <div className="bg-navy-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
             <p className="eyebrow">Most exposed bond</p>

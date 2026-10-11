@@ -434,7 +434,7 @@ export function alerts(s: Signals): Alert[] {
         directive: "Carry the matching counter-measure into the drafting and governance divisions.",
       });
 
-  return out;
+  return out.concat(dynamicsAlerts(s));
 }
 
 /** Engine locks: fixed doctrinal conditions read from the upstream divisions. */
@@ -455,6 +455,11 @@ export function engineLocks(s: Signals): Lock[] {
     out.push({ name: `Treaty survival under stress at ${s.survivalScore}%`, held: s.survivalScore >= 55, remedy: "Close the first failing provision in the Succession Simulator until survival reaches 55%." });
   if ((s.shocks?.length ?? 0) >= 2)
     out.push({ name: `${s.shocks!.length} compound shocks active`, held: (s.covenants?.length ?? 0) >= 2, remedy: "Carry at least two covenants to absorb concurrent shocks." });
+  const dyn = relationalDynamics(s);
+  if (dyn?.character === "Systemic")
+    out.push({ name: `Systemic decay (Ω ${dyn.omega.toFixed(2)})`, held: (s.covenants?.length ?? 0) >= 2 && continuity, remedy: "Carry two or more covenants, one of them an office-continuity provision, before clearance." });
+  if (dyn && dyn.contagion >= 75)
+    out.push({ name: `Contagion coefficient ${dyn.contagion}%`, held: s.verifierSeated === true && (s.covenants?.length ?? 0) > 0, remedy: "Seat the independent verifier and draft a firebreak covenant on the limiting bond." });
   return out;
 }
 
@@ -476,6 +481,13 @@ export function telemetryLines(s: Signals): string[] {
     L.push(`  Track synchronisation: Track I phase ${s.trackI}, Track II phase ${s.trackII}, gap ${s.trackGap}${s.trackTolerance !== undefined ? `, tolerated lead ${s.trackTolerance}` : ""}.`);
   if (s.covenants?.length) L.push(`  Covenants drafted upstream: ${s.covenants.join("; ")}.`);
   if (s.survivalScore !== undefined) L.push(`  Treaty survival under stress: ${s.survivalScore} per cent.`);
+  const dyn = relationalDynamics(s);
+  if (dyn) {
+    L.push(`  Relational deficit: Δrel ${dyn.deficit.toFixed(1)} of 8 (${dyn.deficitPct}%), ${dyn.bondsInDeficit} bond(s) below the Viable floor.`);
+    L.push(`  Relational contagion: ${dyn.contagion}% spread coefficient.`);
+    L.push(`  Relational entropy: H ${dyn.entropy.toFixed(2)}, entropy index ${dyn.entropyIndex.toFixed(3)}.`);
+    L.push(`  Decay character: ${dyn.character} (Ω ${dyn.omega.toFixed(2)}).`);
+  }
   const a = alerts(s);
   if (a.length) {
     L.push("", "STANDING ALERTS");
@@ -483,4 +495,122 @@ export function telemetryLines(s: Signals): string[] {
   }
   L.push("");
   return L;
+}
+
+/* ------------------------------------------------------------------ */
+/* Relational dynamics: deficit, contagion, entropy, decay character   */
+/* ------------------------------------------------------------------ */
+
+/** Viability threshold: a bond at or below 3.0 sits outside the Viable band. */
+export const VIABLE_FLOOR = 3.0;
+
+export type DecayCharacter = "None" | "Acute" | "Mixed" | "Systemic";
+
+export type RelationalDynamics = {
+  /** Per-bond deficit d_i = max(0, 3.0 - B_i). */
+  deficits: [number, number, number, number];
+  /** Δ_rel = Σ d_i, range 0 to 8. */
+  deficit: number;
+  /** Δ_rel ÷ 8 × 100. */
+  deficitPct: number;
+  bondsInDeficit: number;
+  /** Normalised Shannon entropy of the deficit distribution, 0 to 1. */
+  entropy: number;
+  /** S_rel = H × trend multiplier × (Δ_rel ÷ 8): disorder weighted by depth and direction. */
+  entropyIndex: number;
+  /** Contagion coefficient C_rel in per cent. */
+  contagion: number;
+  contagionTerms: { label: string; value: number }[];
+  /** Ω = H × (k ÷ 4), the systemic share of decay, 0 to 1. */
+  omega: number;
+  character: DecayCharacter;
+};
+
+/**
+ * Relational dynamics, read from the bus. Undefined until the bond vector is published.
+ *
+ *   d_i     = max(0, 3.0 − B_i)              Δ_rel = Σ d_i          (Relational Deficit)
+ *   p_i     = d_i ÷ Δ_rel                    H = −Σ p_i ln p_i ÷ ln 4
+ *   S_rel   = H × τ × Δ_rel ÷ 8              (Relational Entropy; τ = trend multiplier)
+ *   C_rel   = 100 × (σ_B ÷ 2) × (1 + 0.15 n_shock) × (1 + 0.10 n_friction) × (1 + R ÷ 100) ÷ 4.6, capped 100
+ *   Ω       = H × k ÷ 4                      (k = bonds in deficit)
+ *   Character: None if Δ_rel = 0; Systemic if k ≥ 3 or Ω ≥ 0.5; Acute if k = 1; otherwise Mixed.
+ */
+export function relationalDynamics(s: Signals): RelationalDynamics | undefined {
+  if (!s.bonds) return undefined;
+  const b = s.bonds;
+  const v = [b.interpersonal, b.communal, b.intergenerational, b.institutional];
+  const deficits = v.map((x) => round1(Math.max(0, VIABLE_FLOOR - x))) as [number, number, number, number];
+  const deficit = deficits.reduce((a, x) => a + x, 0);
+  const k = deficits.filter((x) => x > 0).length;
+  let entropy = 0;
+  if (deficit > 0)
+    for (const d of deficits) if (d > 0) { const p = d / deficit; entropy -= p * Math.log(p); }
+  entropy = entropy / Math.log(4);
+  const tau = s.trendMultiplier ?? 1;
+  const entropyIndex = entropy * tau * (deficit / 8);
+  const mean = v.reduce((a, x) => a + x, 0) / 4;
+  const sigma = Math.sqrt(v.reduce((a, x) => a + (x - mean) ** 2, 0) / 4);
+  const nShock = s.shocks?.length ?? 0;
+  const nFric = s.frictionPairs?.length ?? 0;
+  const R = s.rupture ?? 0;
+  const terms = [
+    { label: "σB ÷ 2 (asymmetry carrier)", value: sigma / 2 },
+    { label: "1 + 0.15 × shocks", value: 1 + 0.15 * nShock },
+    { label: "1 + 0.10 × friction pairs", value: 1 + 0.1 * nFric },
+    { label: "1 + R ÷ 100 (rupture load)", value: 1 + R / 100 },
+  ];
+  const product = terms.reduce((a, t) => a * t.value, 1);
+  const contagion = Math.min(100, round1((100 * product) / 4.6 * (1 + deficit / 8)));
+  const omega = entropy * (k / 4);
+  const character: DecayCharacter =
+    deficit === 0 ? "None" : k >= 3 || omega >= 0.5 ? "Systemic" : k === 1 ? "Acute" : "Mixed";
+  return {
+    deficits,
+    deficit: round1(deficit),
+    deficitPct: round1((deficit / 8) * 100),
+    bondsInDeficit: k,
+    entropy,
+    entropyIndex,
+    contagion,
+    contagionTerms: terms,
+    omega,
+    character,
+  };
+}
+
+/** Alerts raised by relational dynamics, appended to the standing set. */
+export function dynamicsAlerts(s: Signals): Alert[] {
+  const d = relationalDynamics(s);
+  if (!d) return [];
+  const out: Alert[] = [];
+  if (d.deficitPct >= 25)
+    out.push({
+      level: d.deficitPct >= 50 ? "critical" : "elevated",
+      name: "Relational deficit",
+      reading: `Δrel = ${d.deficit.toFixed(1)} (${d.deficitPct}% of the maximum) across ${d.bondsInDeficit} bond${d.bondsInDeficit === 1 ? "" : "s"} below the Viable floor of 3.0.`,
+      directive: "Retire the deficit bond by bond, largest gap first, before the settlement is asked to carry new obligations.",
+    });
+  if (d.contagion >= 50)
+    out.push({
+      level: d.contagion >= 75 ? "critical" : "elevated",
+      name: "Relational contagion",
+      reading: `Contagion coefficient reads ${d.contagion}%: rupture in the weakest bond is positioned to spread to the others.`,
+      directive: "Ring-fence the limiting bond with a firebreak provision and sequence shock responses so no two run at once.",
+    });
+  if (d.character === "Systemic")
+    out.push({
+      level: "critical",
+      name: "Systemic decay",
+      reading: `Decay is diffused (H = ${d.entropy.toFixed(2)}, Ω = ${d.omega.toFixed(2)}, entropy index ${d.entropyIndex.toFixed(3)}); this is not a single flashpoint.`,
+      directive: "Treat as structural: carry at least two covenants including office continuity, and do not close the file on incident response alone.",
+    });
+  else if (d.character === "Acute")
+    out.push({
+      level: "note",
+      name: "Acute decay",
+      reading: `Decay is concentrated in one bond (Ω = ${d.omega.toFixed(2)}).`,
+      directive: "Targeted remedy on the single affected bond is proportionate; monitor for diffusion.",
+    });
+  return out;
 }
