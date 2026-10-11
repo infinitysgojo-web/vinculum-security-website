@@ -46,14 +46,6 @@ export const SAME_AS = [
   "https://medium.com/@jamesndua",
 ];
 
-/**
- * Profiles for the organization entity (Knowledge Panel).
- * Same as SAME_AS but without the author's personal ORCID profile.
- * Add your Wikidata URL here once you have one, e.g.
- * "https://www.wikidata.org/wiki/Q000000000"
- */
-export const ORG_SAME_AS = SAME_AS.filter((url) => url !== ORCID_URL);
-
 export const PERSON_ID = `${SITE_URL}/about#person`;
 export const ORG_ID = `${SITE_URL}/#organization`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
@@ -102,7 +94,7 @@ export const personLd = {
     "Diplomatic Security",
     "Peace and Security",
     "Youth, Peace and Security",
-    "Statutory Copyright Protected Works",
+        "Statutory Copyright Protected Works",
   ],
   identifier: {
     "@type": "PropertyValue",
@@ -113,15 +105,6 @@ export const personLd = {
   sameAs: SAME_AS,
 };
 
-/**
- * Organization entity, the basis for the Google Knowledge Panel.
- * Render this in the homepage <head> as JSON-LD:
- *
- *   <script
- *     type="application/ld+json"
- *     dangerouslySetInnerHTML={{ __html: JSON.stringify(orgLd) }}
- *   />
- */
 export const orgLd = {
   "@context": "https://schema.org",
   "@type": "ResearchOrganization",
@@ -133,8 +116,7 @@ export const orgLd = {
     "The Vinculum Unified Operational Nervous System",
   ],
   url: `${SITE_URL}/`,
-  // Upload a real logo (PNG/JPG/SVG, at least 112x112 px) to /public/logo.png
-  logo: `${SITE_URL}/logo.png`,
+  logo: `${SITE_URL}/favicon.ico`,
   image: `${SITE_URL}/og-image.jpg`,
   description:
     "Vinculum Security is an original doctrine and operational nervous system originating the principle that the bond is the unit of security analysis.",
@@ -158,7 +140,7 @@ export const orgLd = {
     "Human Security",
     "Peace and Conflict Studies",
   ],
-  sameAs: ORG_SAME_AS,
+  sameAs: SAME_AS,
 };
 
 /** A ScholarlyArticle node for a doctrine section page. */
@@ -213,7 +195,7 @@ export function sectionLd(opts: {
     },
     citation: DOI_URL,
     disambiguatingDescription: DISAMBIGUATION,
-    about: [
+        about: [
       { "@type": "Thing", name: "Vinculum Security" },
       { "@type": "Thing", name: "Deterministic Relational Law" },
       { "@type": "Thing", name: "The Vinculum Dashboard" },
@@ -234,7 +216,6 @@ export const CITATION = {
   language: "en",
   license: LICENSE_URL,
 };
-
 /**
  * Geographic anchoring for the eight documented case studies. Used to give
  * search engines and AI crawlers an explicit place for each case page.
@@ -252,7 +233,6 @@ export const CASE_PLACES: Record<
   "south-africa": { name: "South Africa", iso: ["ZA"], lat: -29, lon: 25 },
   "tuvalu-kiribati": { name: "Tuvalu and Kiribati", iso: ["TV", "KI"], lat: -4, lon: 176 },
 };
-
 /** Schema.org Place nodes for a case study slug. */
 export function casePlaceLd(slug: string) {
   const p = CASE_PLACES[slug];
