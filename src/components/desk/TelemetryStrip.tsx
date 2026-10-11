@@ -1,8 +1,8 @@
-import { alerts, hasSignal, type Signals } from "./engine";
+import { alerts, hasSignal, relationalDynamics, type Signals } from "./engine";
 import { Lex } from "./Lexicon";
 
 /** Telemetry labels that carry a lexicon definition. */
-const LEX_FOR: Record<string, string> = { "Limiting bond": "liebig", "Rupture index": "rupture", "Track gap": "track-divergence" };
+const LEX_FOR: Record<string, string> = { "Limiting bond": "liebig", "Rupture index": "rupture", "Track gap": "track-divergence", "Relational deficit": "deficit", "Contagion": "contagion", "Entropy": "entropy", "Decay": "decay" };
 
 /** The standing readout carried across the top of every desk. */
 export default function TelemetryStrip({ signals }: { signals: Signals }) {
@@ -18,6 +18,13 @@ export default function TelemetryStrip({ signals }: { signals: Signals }) {
   if (signals.trackGap !== undefined) cells.push({ k: "Track gap", v: `${signals.trackGap}${signals.trackTolerance !== undefined ? ` (tolerance ${signals.trackTolerance})` : ""}` });
   if (signals.shocks?.length) cells.push({ k: "Shocks active", v: String(signals.shocks.length) });
   if (signals.covenants?.length) cells.push({ k: "Covenants", v: String(signals.covenants.length) });
+  const dyn = relationalDynamics(signals);
+  if (dyn) {
+    cells.push({ k: "Relational deficit", v: `${dyn.deficit.toFixed(1)} · ${dyn.deficitPct}%` });
+    cells.push({ k: "Contagion", v: `${dyn.contagion}%` });
+    cells.push({ k: "Entropy", v: `H ${dyn.entropy.toFixed(2)}` });
+    cells.push({ k: "Decay", v: `${dyn.character} · Ω ${dyn.omega.toFixed(2)}` });
+  }
   cells.push({ k: "Alerts", v: critical ? `${critical} critical` : elevated ? `${elevated} elevated` : "none standing" });
 
   return (

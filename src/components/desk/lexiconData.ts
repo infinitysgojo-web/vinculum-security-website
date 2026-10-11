@@ -7,6 +7,10 @@ export type LexEntry = { id: string; term: string; short: string; source: string
  * thresholds the MissionEngine applies, followed by the public Glossary.
  */
 const OPERATIONAL: LexEntry[] = [
+  { id: "deficit", term: "Relational Deficit", short: "Δrel: the summed shortfall of each bond below the Viable floor of 3.0, from 0 to 8. Shows how much relational capital must be rebuilt before the settlement can bear weight.", source: "Mission engine · Δrel = Σ max(0, 3.0 − Bᵢ)" },
+  { id: "contagion", term: "Relational Contagion", short: "The coefficient at which rupture in one bond spreads to the others, driven by bond asymmetry, concurrent shocks, party friction and the rupture index. 50 per cent is elevated; 75 per cent is critical.", source: "Mission engine · C = σ/2 × shock × friction × rupture loads" },
+  { id: "entropy", term: "Relational Entropy", short: "How diffused the deficit is across the four bonds (normalised Shannon entropy H), weighted by depth and trend into the entropy index S = H × τ × Δrel ÷ 8.", source: "Mission engine · H = −Σ pᵢ ln pᵢ ÷ ln 4" },
+  { id: "decay", term: "Acute vs Systemic Decay", short: "Ω = H × k ÷ 4. Acute decay sits in one bond and takes a targeted remedy; Systemic decay (three or more bonds in deficit, or Ω ≥ 0.5) is structural and locks clearance until continuity covenants are in place.", source: "Mission engine · decay discriminator" },
   { id: "liebig", term: "Liebig Limiting Factor", short: "The weakest of the four bonds. A settlement holds only as well as its lowest bond, so remedial effort goes there first.", source: "Dashboard mathematics · minimum of the bond vector" },
   { id: "elite-pact", term: "Elite-Pact Mirage", short: "The principals' track running ahead of the communal track by more than the communal tolerance allows: agreement at the top that the community has not carried.", source: "Track Sequencing · gap above tolerance" },
   { id: "tolerance", term: "Communal Tolerance", short: "How many phases Track I may lead Track II: none when the communal bond is Failing, one when Fragile, two when Viable or Fortified.", source: "Track Sequencing · communal-bond rule" },
