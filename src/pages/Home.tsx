@@ -10,6 +10,7 @@ import {
   PUBLISHED,
   SITE_URL,
   WORK_TITLE,
+  orgLd,
   personLd,
 } from "@/lib/seo-entities";
 import NavCard from "@/components/NavCard";
@@ -183,7 +184,9 @@ export default function Home() {
         type="website"
         keywords="Vinculum Security, relational security, a doctrine of relational security, relational security doctrine, bond integrity, Vinculum Continuum, Vinculum Diplomacy, James Wesley Ndua, operational security doctrine, case-tested peace doctrine, Rwanda Colombia South Africa peace processes"
         scholarly
-        jsonLd={[{
+        jsonLd={[
+        orgLd, // Google reads this node for the Knowledge Panel
+        {
           "@context": "https://schema.org",
           "@type": "WebPage",
           "@id": `${SITE_URL}/#webpage`,
