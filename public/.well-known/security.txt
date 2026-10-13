@@ -1,3 +1,4 @@
+Contact: mailto:vinculumsecurity@gmail.com
 Contact: https://www.vinculumsecurity.kidnexus.or.ke/about
 Canonical: https://www.vinculumsecurity.kidnexus.or.ke/.well-known/security.txt
 Preferred-Languages: en, sw
