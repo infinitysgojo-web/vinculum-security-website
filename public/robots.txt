@@ -125,10 +125,23 @@ Allow: /
 Disallow: /dashboard
 Disallow: /login
 
+# Aggressive scrapers, content rippers and bulk data miners (no search value)
 User-agent: Bytespider
-Allow: /
-Disallow: /dashboard
-Disallow: /login
+User-agent: PetalBot
+User-agent: SemrushBot
+User-agent: AhrefsBot
+User-agent: MJ12bot
+User-agent: DotBot
+User-agent: DataForSeoBot
+User-agent: BLEXBot
+User-agent: Scrapy
+User-agent: HTTrack
+User-agent: SeekportBot
+User-agent: ImagesiftBot
+User-agent: Omgilibot
+User-agent: magpie-crawler
+User-agent: img2dataset
+Disallow: /
 
 User-agent: Amazonbot
 Allow: /

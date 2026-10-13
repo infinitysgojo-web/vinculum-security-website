@@ -3,6 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <script>
+      // Anti-clickjacking / anti-phishing: refuse to render inside a foreign frame,
+      // and warn visitors if this page is served from an unofficial domain.
+      (function () {
+        var h = location.hostname;
+        var ok = /(^|\.)vinculumsecurity\.kidnexus\.or\.ke$/.test(h) || /\.lovable\.app$/.test(h) || /\.lovableproject\.com$/.test(h) || h === "localhost" || h === "127.0.0.1";
+        try {
+          if (window.top !== window.self && !/\.lovable(project)?\.(app|com)$/.test(document.referrer.split("/")[2] || "")) {
+            window.top.location = window.self.location.href;
+          }
+        } catch (e) { document.documentElement.style.display = "none"; }
+        if (!ok) {
+          document.addEventListener("DOMContentLoaded", function () {
+            var b = document.createElement("div");
+            b.setAttribute("role", "alert");
+            b.style.cssText = "position:fixed;inset:0 0 auto 0;z-index:2147483647;padding:14px;background:#7a1f12;color:#fff;font:600 14px/1.4 system-ui;text-align:center";
+            b.textContent = "Warning: this is not the official Vinculum Security website. The only official address is www.vinculumsecurity.kidnexus.or.ke — do not enter any information here.";
+            document.body.appendChild(b);
+          });
+        }
+      })();
+    </script>
     <title>Vinculum Security: A Doctrine of Relational Security</title>
     <meta name="description" content="Vinculum Security holds that security is the presence and integrity of the relational bonds that make protection, dignity, and peace possible. A complete, copyrighted doctrine by James Wesley Ndua, tested against peace processes in Rwanda, Colombia, and South Africa." data-rh="true" />
     <meta name="author" content="James Wesley Ndua" data-rh="true" />
