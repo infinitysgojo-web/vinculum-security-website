@@ -1,0 +1,7 @@
+Contact: https://www.vinculumsecurity.kidnexus.or.ke/about
+Canonical: https://www.vinculumsecurity.kidnexus.or.ke/.well-known/security.txt
+Preferred-Languages: en, sw
+Policy: https://www.vinculumsecurity.kidnexus.or.ke/about
+Expires: 2027-10-13T00:00:00.000Z
+# The only official domain is www.vinculumsecurity.kidnexus.or.ke.
+# Any copy served elsewhere is unauthorised and should be reported.
