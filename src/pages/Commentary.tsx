@@ -117,8 +117,8 @@ export default function Commentary() {
             <section key={div.id} className="scroll-mt-24">
               <FadeIn>
                 <div className="border-b border-brass/40 pb-4 mb-6">
-                  <div className="flex items-baseline gap-3">
-                    <span className="font-serif text-accent text-lg font-semibold">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                    <span className="font-serif text-accent text-lg font-semibold whitespace-nowrap">
                       Division {div.numeral}
                     </span>
                     <h2 className="font-serif text-2xl text-primary font-medium tracking-tight">

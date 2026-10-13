@@ -12,8 +12,10 @@ export default function LoadingScreen({ onDone }: { onDone?: () => void }) {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const hold = reduce ? 200 : 1600;
-    const fade = reduce ? 0 : 450;
+    let seen = false;
+    try { seen = sessionStorage.getItem("vinculum_intro_seen") === "1"; sessionStorage.setItem("vinculum_intro_seen", "1"); } catch {}
+    const hold = seen ? 0 : reduce ? 200 : 1600;
+    const fade = seen || reduce ? 0 : 450;
 
     const fadeTimer = setTimeout(() => setFading(true), hold);
     const doneTimer = setTimeout(() => {

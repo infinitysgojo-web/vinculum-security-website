@@ -258,7 +258,7 @@ export default function Home() {
         </span>
 
         <FadeIn>
-          <div className="flex gap-2 flex-wrap mb-6">
+          <div className="flex gap-2 flex-wrap justify-center sm:justify-start mt-4 sm:mt-0 mb-6">
             <DiplomatBadge variant="doctrine-core">Doctrine Core</DiplomatBadge>
             <DiplomatBadge variant="briefing-ready">Briefing Ready</DiplomatBadge>
             <DiplomatBadge variant="field-notes">Field-Tested</DiplomatBadge>
