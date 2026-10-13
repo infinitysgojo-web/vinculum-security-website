@@ -572,3 +572,6 @@
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 }
+
+/* Keep floating consent badge from covering last content on mobile */
+@media (max-width: 640px) { main { padding-bottom: 4.5rem; } }
