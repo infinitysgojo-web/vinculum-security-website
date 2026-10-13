@@ -44,7 +44,6 @@ export const SAME_AS = [
   "https://www.instagram.com/vinculumsecurity/",
   "https://jamesndua.kidnexus.or.ke/",
   "https://medium.com/@jamesndua",
-  "https://www.wikidata.org/wiki/Q141694828",
 ];
 
 export const PERSON_ID = `${SITE_URL}/about#person`;
