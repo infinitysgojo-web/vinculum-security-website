@@ -6,6 +6,8 @@ import GoldRule from "@/components/GoldRule";
 import { AUTHOR_NAME, SITE_URL, personLd, ORG_ID } from "@/lib/seo-entities";
 import { supabase } from "@/integrations/supabase/client";
 
+const DISPATCH_CACHE = "vs:dispatches-cache";
+
 interface Article {
   id: string;
   title: string;
@@ -114,21 +116,41 @@ export default function Dispatches() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [savedCopy, setSavedCopy] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
+    // Show the last saved copy at once, then refresh from the network.
+    let cached: Article[] = [];
+    try {
+      cached = JSON.parse(localStorage.getItem(DISPATCH_CACHE) || "[]");
+    } catch {
+      cached = [];
+    }
+    if (cached.length) {
+      setArticles(cached);
+      setLoading(false);
+    }
     (async () => {
       try {
         const { data, error: fnError } = await supabase.functions.invoke("medium-feed");
         if (fnError) throw fnError;
+        const fresh: Article[] = data?.articles ?? [];
         if (!cancelled) {
-          setArticles(data.articles ?? []);
+          setArticles(fresh);
+          setSavedCopy(false);
           setLoading(false);
+        }
+        try {
+          localStorage.setItem(DISPATCH_CACHE, JSON.stringify(fresh));
+        } catch {
+          // storage full: the live list still shows
         }
       } catch (e) {
-        if (!cancelled) {
-          setError(String(e));
-          setLoading(false);
-        }
+        if (cancelled) return;
+        if (cached.length) setSavedCopy(true);
+        else setError(String(e));
+        setLoading(false);
       }
     })();
     return () => {
@@ -212,6 +234,11 @@ export default function Dispatches() {
 
         {!loading && !error && articles.length > 0 && (
           <>
+            {savedCopy && (
+              <p className="mb-8 text-center text-[10px] uppercase tracking-[0.22em] font-semibold text-muted-foreground" role="status">
+                Offline · showing your last saved dispatches. Opening an article needs a connection.
+              </p>
+            )}
             <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {articles.map((article, i) => (
                 <ArticleCard key={article.id} article={article} index={i} />
