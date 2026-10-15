@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Correct and visually verify headers, footers and pagination in both reference charts, all case PDFs and the shared desk PDF export.
+
 - [x] Audit and strengthen the readiness statement across index.html, llms.txt, seo-entities.ts, and page SEO blocks
 - [x] Cases page: prominent "Open the full case study" cue on every card plus an intro hint line
 - [x] News/Dispatches section — cancelled by user (full publisher dashboard)
