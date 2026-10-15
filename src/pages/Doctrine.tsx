@@ -84,7 +84,7 @@ export default function Doctrine() {
     <>
       <SEO
         title="The Doctrine"
-        description="Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum."
+        description="The canonical definition of Vinculum Security: security is the integrity of the bonds between persons, communities, and generations, read across the four-level Vinculum Continuum."
         path="/doctrine"
         image="/og/doctrine.jpg"
         keywords="Vinculum Security doctrine, a doctrine of relational security, relational security doctrine, Vinculum Continuum, bond integrity, James Wesley Ndua"

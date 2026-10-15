@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getOfflineSession, clearOfflineSession } from "@/lib/offlineAuth";
 import type { Session } from "@supabase/supabase-js";
 import SEO from "@/components/SEO";
 import Logo from "@/components/Logo";
@@ -257,20 +258,35 @@ export default function Dashboard() {
     });
 
   useEffect(() => {
+    // Offline field session: unlocked on this device by the cached credential.
+    const offlineSession = (): Session | null => {
+      const o = getOfflineSession();
+      return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
+    };
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      setSession(s);
-      if (!s) navigate("/login", { replace: true });
+      const next = s ?? offlineSession();
+      setSession(next);
+      if (!next) navigate("/login", { replace: true });
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setReady(true);
-      if (!data.session) navigate("/login", { replace: true });
-    });
+    supabase.auth
+      .getSession()
+      .catch(() => ({ data: { session: null } }))
+      .then(({ data }) => {
+        const next = data.session ?? offlineSession();
+        setSession(next);
+        setReady(true);
+        if (!next) navigate("/login", { replace: true });
+      });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    clearOfflineSession();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Offline: the local session is cleared regardless.
+    }
     navigate("/login", { replace: true });
   }, [navigate]);
 

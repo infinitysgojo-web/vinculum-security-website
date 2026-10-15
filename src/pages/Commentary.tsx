@@ -76,8 +76,8 @@ export default function Commentary() {
   return (
     <>
       <SEO
-        title="Doctrinal Commentary & Interpretive Inquiries | Vinculum Security"
-        description={`Authoritative doctrinal commentary, analytical laws, and systemic determinations by James Wesley Ndua. ${COMMENTARY_COUNT} canonical inquiries across 7 analytical divisions.`}
+        title="Doctrinal Commentary"
+        description={`${COMMENTARY_COUNT} answered questions on Vinculum Security by James Wesley Ndua, across seven divisions: claims, method, mathematics, and practice.`}
         path="/commentary"
         jsonLd={buildCommentarySchema()}
       />
