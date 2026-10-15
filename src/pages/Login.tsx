@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import SEO from "@/components/SEO";
+import { rememberCredential, verifyOffline, hasOfflineCredential, clearOfflineSession, isNetworkFailure } from "@/lib/offlineAuth";
 
 const MAX_ATTEMPTS = 3;
 const LOCK_SECONDS = 60;
@@ -44,13 +45,7 @@ export default function Login() {
 
     setBusy(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    });
-    setBusy(false);
-
-    if (error) {
+    const fail = () => {
       const next = attempts + 1;
       setAttempts(next);
       if (next >= MAX_ATTEMPTS) {
@@ -60,9 +55,49 @@ export default function Login() {
       } else {
         setError("Those credentials were not recognised. Please check and try again.");
       }
+    };
+    const offlineEntry = async () => {
+      const ok = await verifyOffline(email, password);
+      setBusy(false);
+      if (!ok) {
+        if (!hasOfflineCredential()) {
+          setError("No connection. Sign in once while online to enable offline access on this device.");
+          return;
+        }
+        fail();
+        return;
+      }
+      setAttempts(0);
+      navigate("/dashboard", { replace: true });
+    };
+
+    if (!navigator.onLine) {
+      await offlineEntry();
       return;
     }
 
+    let result: Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>;
+    try {
+      result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    } catch (err) {
+      await offlineEntry();
+      return;
+    }
+    const { data, error } = result;
+
+    if (error) {
+      if (isNetworkFailure(error.message)) {
+        await offlineEntry();
+        return;
+      }
+      setBusy(false);
+      fail();
+      return;
+    }
+
+    if (data.user) await rememberCredential(email, password, data.user.id);
+    clearOfflineSession();
+    setBusy(false);
     setAttempts(0);
     navigate("/dashboard", { replace: true });
   };
