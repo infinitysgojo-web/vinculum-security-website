@@ -210,7 +210,7 @@ export default function About() {
             </p>
           </div>
           <a
-            href="/commentary"
+            href="/commentary#authorship"
             className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
           >
             Read Commentary →

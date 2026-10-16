@@ -312,7 +312,7 @@ export default function Doctrine() {
             </p>
           </div>
           <a
-            href="/commentary"
+            href="/commentary#ontology"
             className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
           >
             Read Commentary →
