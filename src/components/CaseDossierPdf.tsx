@@ -168,7 +168,7 @@ const s = StyleSheet.create({
   },
   mastheadName: { fontSize: 11, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase" },
   mastheadMotto: { fontSize: 7.5, fontStyle: "italic", color: MUTED },
-  mastheadRight: { alignItems: "flex-end" },
+  mastheadRight: { width: "35%", alignItems: "flex-end" },
   mastheadMeta: {
     fontFamily: "InterDoc",
     fontSize: 5.8,
@@ -179,15 +179,20 @@ const s = StyleSheet.create({
   footer: {
     position: "absolute",
     top: 782,
+    height: 36,
     left: 58,
     right: 58,
     flexDirection: "row",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     borderTopWidth: 0.5,
     borderTopColor: RULE,
     paddingTop: 6,
   },
-  footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.2, color: MUTED },
+  footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 0.6, color: MUTED, lineHeight: 1.4 },
+  footerLeft: { width: "80%", paddingRight: 12 },
+  footerPage: { width: "20%", height: 14 },
+  statutoryNotice: { fontSize: 8.2, color: MUTED, lineHeight: 1.5, marginTop: 6 },
 
   // Opening block
   docTitle: { fontSize: 22, color: NAVY, marginBottom: 8, lineHeight: 1.25 },
@@ -338,12 +343,11 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
 
   const Footer = () => (
     <View style={s.footer} fixed>
-      <Text style={s.footerText}>Unrestricted · Public Record · Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</Text>
+      <Text style={[s.footerText, s.footerLeft]}>Vinculum Security · Unrestricted · Public record</Text>
       <Text
-        style={s.footerText}
-        fixed
+        style={[s.footerText, s.footerPage]}
         render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`}
-      />
+      >Page</Text>
     </View>
   );
 
@@ -400,13 +404,14 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
               </View>
               <View style={s.coverFootCell}>
                 <Text style={s.coverFootLabel}>Registration</Text>
-                <Text style={s.coverFootValue}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</Text>
+                <Text style={s.coverFootValue}>Statutorily protected works</Text>
               </View>
               <View style={s.coverFootCell}>
                 <Text style={s.coverFootLabel}>Classification</Text>
                 <Text style={s.coverFootValue}>Unrestricted · Public Record</Text>
               </View>
             </View>
+            <Text style={s.statutoryNotice}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.</Text>
           </View>
         </View>
       </Page>
@@ -433,7 +438,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
           ]}
         />
 
-        <Text style={s.h2}>I. Executive Overview</Text>
+        <Text style={s.h2} minPresenceAhead={36}>I. Executive Overview</Text>
         <Text style={s.abstract}>{c.summary}</Text>
         {c.narrative.map((p, i) => (
           <Text key={i} style={s.body}>
@@ -449,7 +454,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
           ]}
         />
 
-        <Text style={s.h2}>II. The Four-Bond Continuum Matrix</Text>
+        <Text style={s.h2} minPresenceAhead={60}>II. The Four-Bond Continuum Matrix</Text>
         <View style={s.table}>
           <View style={[s.row, { borderBottomWidth: 0.8, borderBottomColor: NAVY }]}>
             <Text style={[s.th, { width: "24%" }]}>Bond domain</Text>
@@ -477,7 +482,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
           </Text>
         </View>
 
-        <Text style={s.h2}>III. Doctrinal Findings</Text>
+        <Text style={s.h2} minPresenceAhead={36}>III. Doctrinal Findings</Text>
         {c.finding.map((p, i) => (
           <View key={i} style={s.listItem}>
             <Text style={s.listNum}>{String(i + 1).padStart(2, "0")}</Text>
@@ -489,13 +494,13 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
           {c.pattern}
         </Text>
 
-        <Text style={s.h2}>IV. Applied Protocols for Envoys</Text>
+        <Text style={s.h2} minPresenceAhead={36}>IV. Applied Protocols for Envoys</Text>
         <Text style={s.h3}>Handbook § 12 · What a Vinculum diplomat does</Text>
         <Text style={s.body}>{c.practice}</Text>
         <Text style={s.h3}>Transferable directive</Text>
         <Text style={s.body}>{c.takeaway}</Text>
 
-        <Text style={s.h2}>V. Sources of Record</Text>
+        <Text style={s.h2} minPresenceAhead={36}>V. Sources of Record</Text>
         {c.sources.map((src, i) => (
           <View key={i} style={s.listItem}>
             <Text style={s.listNum}>{String(i + 1).padStart(2, "0")}</Text>
@@ -525,7 +530,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
 
           <View style={s.colophon}>
             <Text>
-              © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
+              {AUTHOR_NAME}. All statutory rights reserved.
             </Text>
             <Text>
               Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved. Released under

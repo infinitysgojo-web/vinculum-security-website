@@ -86,8 +86,8 @@ const s = StyleSheet.create({
   ledgerVal: { fontSize: 9.5, color: INK, flex: 1 },
 
   page: {
-    paddingTop: 84,
-    paddingBottom: 60,
+    paddingTop: 104,
+    paddingBottom: 80,
     paddingHorizontal: 58,
     fontFamily: "Cormorant",
     fontSize: 10.5,
@@ -100,8 +100,7 @@ const s = StyleSheet.create({
     top: 38,
     left: 58,
     right: 58,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: "column",
     borderBottomWidth: 0.5,
     borderBottomColor: RULE,
     paddingBottom: 7,
@@ -109,16 +108,24 @@ const s = StyleSheet.create({
   runText: {
     fontFamily: "InterDoc",
     fontSize: 6.4,
-    letterSpacing: 1.7,
+    letterSpacing: 0.8,
     color: MUTED,
     textTransform: "uppercase",
+    lineHeight: 1.5,
   },
+  runHeadMeta: { flexDirection: "row", justifyContent: "space-between", marginTop: 4 },
+  runHeadLabel: { width: "60%", paddingRight: 12 },
+  runHeadClass: { width: "40%", textAlign: "right" },
+  runFootRef: { width: "75%", paddingRight: 12 },
+  runFootPage: { width: "25%", height: 14 },
   runFoot: {
     position: "absolute",
     top: 785,
+    height: 36,
     left: 58,
     right: 58,
     flexDirection: "row",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     paddingTop: 7,
   },
@@ -162,7 +169,7 @@ function Body({ text }: { text: string }) {
         // cleared and open states are spelled out instead.
         const l = raw.replace(/\s+$/, "").replace(/\[x\]/gi, "[CLEARED]").replace(/\[ \]/g, "[OPEN]");
         if (!l.trim()) return <View key={i} style={s.gap} />;
-        if (isHeading(l)) return <Text key={i} style={s.h}>{l.trim()}</Text>;
+        if (isHeading(l)) return <Text key={i} style={s.h} minPresenceAhead={28}>{l.trim()}</Text>;
         if (isKv(l)) return <Text key={i} style={s.kv}>{l.trim()}</Text>;
         const lead = l.length - l.trimStart().length;
         return (
@@ -238,13 +245,16 @@ export async function buildDeskDossier({
 
       <Page size="A4" style={s.page}>
         <View style={s.runHead} fixed>
-          <Text style={s.runText}>Vinculum Security · {eyebrow}</Text>
-          <Text style={s.runText}>{classification}</Text>
+          <Text style={s.runText}>Vinculum Security · Chancellery document</Text>
+          <View style={s.runHeadMeta}>
+            <Text style={[s.runText, s.runHeadLabel]}>{eyebrow.length > 65 ? `${eyebrow.slice(0, 62)}…` : eyebrow}</Text>
+            <Text style={[s.runText, s.runHeadClass]}>{classification.length > 55 ? `${classification.slice(0, 52)}…` : classification}</Text>
+          </View>
         </View>
         <View style={s.runFoot} fixed>
           <View style={s.runFootRule} />
-          <Text style={s.runText}>{reference}</Text>
-          <Text style={s.runText} render={({ pageNumber }) => `Page ${pageNumber}`} />
+          <Text style={[s.runText, s.runFootRef]}>{reference}</Text>
+          <Text style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`}>Page</Text>
         </View>
         <Text style={s.docTitle}>{deskTitle}</Text>
         <View style={s.gap} />
@@ -265,7 +275,7 @@ export async function buildDeskDossier({
               practitioner's own browser. Nothing entered was stored or transmitted.
             </Text>
             <Text style={s.backLead}>
-              {"\u00A9"} {new Date().getFullYear()} {AUTHOR_NAME}. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.
+              {AUTHOR_NAME}. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.
               CC BY-NC-SA 4.0.
             </Text>
           </View>

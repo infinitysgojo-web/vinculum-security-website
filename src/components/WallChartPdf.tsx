@@ -107,12 +107,13 @@ const s = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   frame: { borderWidth: 0.9, borderColor: NAVY, flexGrow: 1, padding: 16 },
-  head: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  emblem: { width: 34, height: 34, objectFit: "contain", marginRight: 12 },
+  head: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
+  headBrand: { flex: 1, minWidth: 0, paddingRight: 16 },
+  emblem: { width: 34, height: 34, flexShrink: 0, objectFit: "contain", marginRight: 12 },
   wordmark: { fontSize: 17, letterSpacing: 4.5, color: NAVY, textTransform: "uppercase" },
   headSub: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 2.2, color: MUTED, textTransform: "uppercase", marginTop: 3 },
-  headRight: { marginLeft: "auto", alignItems: "flex-end" },
-  headRightLine: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase" },
+  headRight: { width: 180, flexShrink: 0, alignItems: "flex-end" },
+  headRightLine: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", textAlign: "right", lineHeight: 1.5 },
   brassRule: { height: 1.6, backgroundColor: BRASS, marginBottom: 10 },
 
   definition: { borderWidth: 0.6, borderColor: RULE, backgroundColor: CREAM, padding: 10, marginBottom: 10 },
@@ -151,8 +152,10 @@ const s = StyleSheet.create({
   trapRead: { fontSize: 7.3, color: INK, lineHeight: 1.3 },
   trapCounter: { fontSize: 7.3, color: MUTED, lineHeight: 1.3, fontStyle: "italic" },
 
-  foot: { marginTop: "auto", borderTopWidth: 0.6, borderTopColor: RULE, paddingTop: 7, flexDirection: "row", justifyContent: "space-between" },
-  footText: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 1, color: MUTED, textTransform: "uppercase" },
+  foot: { marginTop: "auto", borderTopWidth: 0.6, borderTopColor: RULE, paddingTop: 7 },
+  footNotice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginBottom: 7 },
+  footRow: { flexDirection: "row", justifyContent: "space-between" },
+  footText: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 0.6, color: MUTED, textTransform: "uppercase" },
 });
 
 function Bonds() {
@@ -245,20 +248,18 @@ function Guards() {
 }
 
 function Chart({ landscape }: { landscape: boolean }) {
-  const year = new Date().getFullYear();
   return (
-    <Page size={landscape ? "A3" : "A3"} orientation={landscape ? "landscape" : "portrait"} style={s.page}>
+    <Page size="A3" orientation={landscape ? "landscape" : "portrait"} style={s.page}>
       <View style={s.frame}>
         <View style={s.head}>
           <Image src={mark} style={s.emblem} />
-          <View>
+          <View style={s.headBrand}>
             <Text style={s.wordmark}>Vinculum Security</Text>
             <Text style={s.headSub}>A Doctrine of Relational Security  ·  Pro Omni Humanitate</Text>
           </View>
           <View style={s.headRight}>
             <Text style={s.headRightLine}>Doctrinal Reference Chart</Text>
             <Text style={s.headRightLine}>{AUTHOR_NAME}</Text>
-            <Text style={s.headRightLine}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</Text>
           </View>
         </View>
         <View style={s.brassRule} />
@@ -303,9 +304,12 @@ function Chart({ landscape }: { landscape: boolean }) {
         )}
 
         <View style={s.foot}>
-          <Text style={s.footText}>© {year} {AUTHOR_NAME}  ·  CC BY-NC-ND 4.0</Text>
-          <Text style={s.footText}>{SITE_URL.replace(/^https?:\/\//, "")}/doctrine</Text>
-          <Text style={s.footText}>Unrestricted · Public record</Text>
+          <Text style={s.footNotice}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.</Text>
+          <View style={s.footRow}>
+            <Text style={s.footText}>{AUTHOR_NAME} · CC BY-NC-ND 4.0</Text>
+            <Text style={s.footText}>{SITE_URL.replace(/^https?:\/\//, "")}/doctrine</Text>
+            <Text style={s.footText}>Unrestricted · Public record</Text>
+          </View>
         </View>
       </View>
     </Page>
