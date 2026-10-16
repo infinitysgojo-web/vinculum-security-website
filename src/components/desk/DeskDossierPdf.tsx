@@ -117,7 +117,7 @@ const s = StyleSheet.create({
   runHeadLabel: { width: "60%", paddingRight: 12 },
   runHeadClass: { width: "40%", textAlign: "right" },
   runFootRef: { width: "75%", paddingRight: 12 },
-  runFootPage: { width: "25%", height: 14 },
+  runFootPage: { position: "absolute", top: 792, left: 480, width: 58, height: 14 },
   runFoot: {
     position: "absolute",
     top: 785,
@@ -254,8 +254,8 @@ export async function buildDeskDossier({
         <View style={s.runFoot} fixed>
           <View style={s.runFootRule} />
           <Text style={[s.runText, s.runFootRef]}>{reference}</Text>
-          <Text style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`}>Page</Text>
         </View>
+        <Text fixed style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`}>Page</Text>
         <Text style={s.docTitle}>{deskTitle}</Text>
         <View style={s.gap} />
         <Body text={text} />
