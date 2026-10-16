@@ -247,7 +247,9 @@
     color: #000;
     text-align: left;
   }
-  .dossier * { break-inside: avoid-page; }
+  .dossier h1, .dossier h2, .dossier h3,
+  .dossier tr, .dossier-cover-foot, .dossier-masthead { break-inside: avoid-page; }
+  .dossier table, .dossier article { break-inside: auto; }
   .dossier p, .dossier li { orphans: 4; widows: 4; break-inside: auto; }
 
   .dossier-runner { display: none !important; }
