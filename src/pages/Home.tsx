@@ -21,6 +21,7 @@ import Cite from "@/components/Cite";
 import Logo from "@/components/Logo";
 import { useParallax } from "@/hooks/useParallax";
 import { Link } from "react-router-dom";
+import { COMMENTARY_COUNT } from "@/content/commentary";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 
@@ -359,7 +360,7 @@ export default function Home() {
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-              Consult the 56-inquiry authoritative repository for exhaustive doctrinal commentary,
+              Consult the {COMMENTARY_COUNT}-inquiry authoritative repository for exhaustive doctrinal commentary,
               mathematical formulations, and statutory determinations.
             </p>
           </div>

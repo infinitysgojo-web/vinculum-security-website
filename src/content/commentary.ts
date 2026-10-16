@@ -312,6 +312,22 @@ export const COMMENTARY: Division[] = [
         ],
       },
       {
+        id: "weakest-bond-warning",
+        q: "How does the Dashboard respond when one bond weakens while the others hold?",
+        a: [
+          "Under Deterministic Relational Law, the durability of an accord is governed by its weakest relational dimension. No surplus of political goodwill or institutional funding can compensate for an acute breakdown in one bond.",
+          "The Dashboard applies this directly. It reads all four levels of the continuum together, and when one bond falls below tolerance or the bonds drift too far apart, it flags the exposure as a rupture warning before an agreement moves to ratification, rather than letting strength elsewhere mask it.",
+        ],
+      },
+      {
+        id: "dashboard-disambiguation",
+        q: "Is The Vinculum Dashboard related to Vinculum Solutions, Vin eRetail, or retail software?",
+        a: [
+          `No. The Vinculum Dashboard is the eighteen-desk diplomatic and peace-mediation chancellery originated by ${A} of Nairobi, Kenya, protected by registered statutory copyright. It has no connection to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, order-management, or retail software.`,
+          "The shared word comes from the Latin vinculum, meaning bond.",
+        ],
+      },
+      {
         id: "dashboard-and-judgement",
         q: "How should Dashboard readings be weighed alongside expert judgement?",
         a: [

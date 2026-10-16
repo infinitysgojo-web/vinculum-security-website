@@ -1,4 +1,5 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
 import SEO from "@/components/SEO";
 import FadeIn from "@/components/FadeIn";
@@ -50,6 +51,23 @@ export default function Commentary() {
   const [query, setQuery] = useState("");
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
+  const { hash } = useLocation();
+
+  // Deep links: /commentary#<division-id> scrolls to a division;
+  // /commentary#q-<inquiry-id> scrolls to that inquiry and opens it.
+  useEffect(() => {
+    if (!hash) return;
+    const target = decodeURIComponent(hash.slice(1));
+    if (target.startsWith("q-")) {
+      const itemId = target.slice(2);
+      setOpenItems((prev) => ({ ...prev, [itemId]: true }));
+    }
+    const t = window.setTimeout(() => {
+      document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => window.clearTimeout(t);
+  }, [hash]);
+
   const toggleItem = (id: string) => {
     setOpenItems((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -86,7 +104,7 @@ export default function Commentary() {
         <PageHeader
           eyebrow="Canonical Interpretation"
           title="Doctrinal Commentary & Interpretive Inquiries"
-          lede="Fifty-six authoritative determinations across seven analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security."
+          lede={`${COMMENTARY_COUNT} authoritative determinations across ${COMMENTARY.length} analytical divisions. Rigorous doctrinal commentary, mathematical axioms, and operational protocols governing Vinculum Security.`}
         />
 
         <div className="py-8">
@@ -107,14 +125,14 @@ export default function Commentary() {
             <span>
               Showing {totalFilteredCount} of {COMMENTARY_COUNT} Canonical Inquiries
             </span>
-            <span>7 Analytical Divisions</span>
+            <span>{COMMENTARY.length} Analytical Divisions</span>
           </div>
         </div>
 
         {/* Divisions & Accordions */}
         <div className="space-y-16">
           {filteredDivisions.map((div: Division) => (
-            <section key={div.id} className="scroll-mt-24">
+            <section key={div.id} id={div.id} className="scroll-mt-24">
               <FadeIn>
                 <div className="border-b border-brass/40 pb-4 mb-6">
                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
@@ -136,7 +154,8 @@ export default function Commentary() {
                     return (
                       <div
                         key={item.id}
-                        className="border border-border/70 bg-card/40 transition-colors hover:border-accent/40"
+                        id={`q-${item.id}`}
+                        className="scroll-mt-24 border border-border/70 bg-card/40 transition-colors hover:border-accent/40"
                       >
                         <button
                           type="button"

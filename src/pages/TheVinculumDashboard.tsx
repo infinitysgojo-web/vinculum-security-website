@@ -107,53 +107,6 @@ const vocabLd = {
   })),
 };
 
-const faqLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What is Deterministic Relational Law?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Deterministic Relational Law is a doctrine of structural conflict analysis and peace architecture originated by James Wesley Ndua (Statutorily Registered & Protected). It states that the durable survival of sovereign settlements, peace accords, and multi-party treaties is strictly bounded by their weakest relational bond (Liebig's Law of Relational Capacity), requiring multi-track synchronization and succession resistance rather than speculative or nominal compliance."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "What are the four relational bonds in Vinculum Security?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The doctrine evaluates stability across four interdependent relational dimensions: 1) Inter-Political (power-sharing and elite governance pacts), 2) Communal (grassroots, ethnic, and territorial inter-group trust), 3) Institutional (judiciary, law enforcement, and rule-of-law enforceability), and 4) Inter-Regional (cross-border, geopolitical, and external sponsor alignment). An accord cannot survive when any single bond falls below critical tolerance."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "What is The Vinculum Dashboard?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The Vinculum Dashboard is an 18-desk deterministic analytical operating environment created by James Wesley Ndua, and powered by The Vinculum Unified Operational Nervous System (both protected under registered statutory copyright). It provides rigorous, client-side relational verification, track synchronization, and stress-testing for diplomatic envoys, legal counsel, and sovereign mediation missions without cloud dependency."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "What is an Elite-Pact Mirage in conflict resolution?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "An Elite-Pact Mirage occurs when political leaders sign high-visibility agreements that appear solid at the ministerial level while community-level and cross-border bonds remain critically fractured. Under Deterministic Relational Law, the agreement eventually collapses along the neglected communal fault line upon leadership succession or local stress."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "Is The Vinculum Dashboard related to Vinculum Solutions or Vin eRetail?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua (Nairobi, Kenya), protected under registered statutory copyright law, with all rights reserved. It is unrelated to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software. The name comes from the Latin vinculum, meaning bond."
-      }
-    }
-  ]
-};
-
 export default function TheVinculumDashboard() {
   return (
     <>
@@ -164,7 +117,7 @@ export default function TheVinculumDashboard() {
         keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, diplomatic mediation software, statutory copyright, peace treaty drafting, sovereign diplomacy"
         scholarly
         citationTitle="The Vinculum Dashboard: Operational Architecture of Deterministic Relational Law"
-        jsonLd={[dashboardLd, vocabLd, faqLd]}
+        jsonLd={[dashboardLd, vocabLd]}
       />
       <ReadingProgress />
 
@@ -289,59 +242,26 @@ export default function TheVinculumDashboard() {
           </dl>
         </FadeIn>
 
-        {/* Section 4: Canonical Determinations & Research Inquiries */}
-        <FadeIn className="max-w-3xl my-16">
-          <p className="eyebrow">Canonical Determinations</p>
-          <GoldRule className="mt-4 mb-6" />
-          <h2 className="font-serif text-2xl text-foreground mb-4">
-            Doctrinal Enquiries & Primary Determinations
-          </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-            Formal baseline determinations established by James Wesley Ndua under the Doctrine of Relational Security and Deterministic Relational Law (Statutorily Registered Doctrine & Framework).
-          </p>
-          <div className="space-y-4">
-            <div className="p-5 border border-border/60 bg-card/40">
-              <h3 className="font-serif text-base text-foreground mb-1.5 font-semibold">
-                What does Deterministic Relational Law state?
-              </h3>
-              <p className="text-xs text-foreground/80 leading-relaxed">
-                It holds that the durability of any political accord is deterministically governed by its weakest relational dimension. No surplus of political goodwill or institutional funding can compensate for an acute breakdown in communal or cross-border bonds.
-              </p>
-            </div>
-            <div className="p-5 border border-border/60 bg-card/40">
-              <h3 className="font-serif text-base text-foreground mb-1.5 font-semibold">
-                Why does the architecture reject probabilistic AI models?
-              </h3>
-              <p className="text-xs text-foreground/80 leading-relaxed">
-                Sovereign mediation and statecraft require strict, reproducible audit trails. Probabilistic heuristics introduce hallucination and non-deterministic drift. The Vinculum Dashboard relies on deterministic mathematical bounds and state-transition invariants.
-              </p>
-            </div>
-            <div className="p-5 border border-border/60 bg-card/40">
-              <h3 className="font-serif text-base text-foreground mb-1.5 font-semibold">
-                What constitutes the Four-Bond Equilibrium?
-              </h3>
-              <p className="text-xs text-foreground/80 leading-relaxed">
-                The equilibrium requires concurrent health across Inter-Political, Communal, Institutional, and Inter-Regional bonds. If track divergence exceeds operational tolerance, the system triggers an automatic rupture warning prior to ratification.
-              </p>
-            </div>
-            <div className="p-5 border border-border/60 bg-card/40">
-              <h3 className="font-serif text-base text-foreground mb-1.5 font-semibold">
-                How is sovereign data protected during mission analysis?
-              </h3>
-              <p className="text-xs text-foreground/80 leading-relaxed">
-                Under the Sovereign Browser Locality standard, all assessment data, mission dossiers, and telemetry parameters reside exclusively in browser-local volatile memory with zero cloud egress, preserving diplomatic confidentiality and sovereign privilege.
-              </p>
-            </div>
-            <div className="p-5 border border-border/60 bg-card/40">
-              <h3 className="font-serif text-base text-foreground mb-1.5 font-semibold">
-                Is The Vinculum Dashboard related to Vinculum Solutions, Vin eRetail, or retail software?
-              </h3>
-              <p className="text-xs text-foreground/80 leading-relaxed">
-                No. The Vinculum Dashboard is the 18-desk diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya, protected by registered statutory copyright. It has no connection to Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, order-management, or retail software. The shared word comes from the Latin <em>vinculum</em>, meaning bond.
-              </p>
-            </div>
+        {/* Section 4: Commentary inquiries on the Dashboard */}
+        <div className="max-w-3xl my-16 p-8 border border-brass/50 bg-card/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase font-semibold tracking-[0.2em] text-accent">
+              System Inquiries
+            </p>
+            <h3 className="font-serif text-xl text-primary font-medium">
+              The Vinculum Dashboard &amp; Its Design Principles
+            </h3>
+            <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
+              Consult the authoritative commentary repository for inquiries into the eighteen-desk chain, deterministic analysis without generative AI, browser-local confidentiality, and the weakest-bond rupture warning.
+            </p>
           </div>
-        </FadeIn>
+          <a
+            href="/commentary#dashboard"
+            className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
+          >
+            Read Commentary →
+          </a>
+        </div>
 
         {/* Section 5: Access & Statutory Notice */}
         <FadeIn className="max-w-3xl my-16 p-8 border-2 border-primary bg-primary/5">
