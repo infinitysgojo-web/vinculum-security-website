@@ -117,11 +117,12 @@ const s = StyleSheet.create({
   runHeadLabel: { width: "60%", paddingRight: 12 },
   runHeadClass: { width: "40%", textAlign: "right" },
   runFootRef: { width: "75%", paddingRight: 12 },
-  runFootPage: { position: "absolute", top: 792, left: 480, width: 58, height: 32 },
+  runFootPage: { width: "25%", textAlign: "right" },
   runFoot: {
     position: "absolute",
     top: 785,
-    height: 36,
+    // minHeight, not height: a fixed-height parent stops @react-pdf v4 painting render-prop page numbers.
+    minHeight: 36,
     left: 58,
     right: 58,
     flexDirection: "row",
@@ -247,15 +248,15 @@ export async function buildDeskDossier({
         <View style={s.runHead} fixed>
           <Text style={s.runText}>Vinculum Security · Chancellery document</Text>
           <View style={s.runHeadMeta}>
-            <Text style={[s.runText, s.runHeadLabel]}>{eyebrow.length > 65 ? `${eyebrow.slice(0, 62)}…` : eyebrow}</Text>
-            <Text style={[s.runText, s.runHeadClass]}>{classification.length > 55 ? `${classification.slice(0, 52)}…` : classification}</Text>
+            <Text style={[s.runText, s.runHeadLabel]}>{eyebrow.length > 48 ? `${eyebrow.slice(0, 46).trimEnd()}…` : eyebrow}</Text>
+            <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
           </View>
         </View>
         <View style={s.runFoot} fixed>
           <View style={s.runFootRule} />
           <Text style={[s.runText, s.runFootRef]}>{reference}</Text>
+          <Text style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
         </View>
-        <Text fixed style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`}>Page</Text>
         <Text style={s.docTitle}>{deskTitle}</Text>
         <View style={s.gap} />
         <Body text={text} />

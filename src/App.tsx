@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { Toaster } from "@/components/ui/sonner";
+import RouteErrorBoundary from "./components/RouteErrorBoundary";
 
 const SCROLL_KEY = "vs:scroll";
 
@@ -72,6 +73,8 @@ function ScrollMemory() {
     // Defer to next frame so route content is mounted
     requestAnimationFrame(() => {
       window.scrollTo(0, typeof y === "number" ? y : 0);
+      // Nudge IntersectionObservers (FadeIn) after the programmatic jump
+      requestAnimationFrame(() => window.dispatchEvent(new Event("scroll")));
     });
   }, [pathname, hash]);
 
@@ -89,6 +92,7 @@ export default function App() {
       <ScrollMemory />
       {!portal && <SiteHeader />}
       <main className="flex-1" role="main">
+        <RouteErrorBoundary resetKey={pathname}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/doctrine" element={<Doctrine />} />
@@ -106,6 +110,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </RouteErrorBoundary>
       </main>
       {!portal && <SiteFooter />}
       <Toaster position="bottom-right" />
