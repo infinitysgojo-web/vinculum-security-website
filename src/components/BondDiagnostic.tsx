@@ -391,7 +391,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
         </p>
       </FadeIn>
 
-      <FadeIn className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-5 items-start w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-5 items-start w-full min-w-0 [&>*]:min-w-0">
         {/* ---- input column ---- */}
         <div className="bg-navy-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
           <label htmlFor="bench-context" className="eyebrow block">
@@ -576,7 +576,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
 
           <DeskOutput text={summary} fileName="Vinculum-Bond-Diagnostic" />
         </div>
-      </FadeIn>
+      </div>
     </section>
   );
 }
