@@ -191,7 +191,7 @@ const s = StyleSheet.create({
   },
   footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 0.6, color: MUTED, lineHeight: 1.4 },
   footerLeft: { width: "80%", paddingRight: 12 },
-  footerPage: { position: "absolute", top: 789, left: 480, width: 58, height: 14 },
+  footerPage: { position: "absolute", top: 789, left: 480, width: 58, height: 32 },
   statutoryNotice: { fontSize: 8.2, color: MUTED, lineHeight: 1.5, marginTop: 6 },
 
   // Opening block
