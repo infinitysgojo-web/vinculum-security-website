@@ -190,25 +190,31 @@ export function deskDossierTitle(text: string) {
 export type Attestation = {
   ref: string;
   digest: string;
-  gates: { name: string; passed: boolean }[];
+  /** The twenty statutory clearances, four under each canonical stage gate. */
+  clearances: { id: string; gate: string; name: string; passed: boolean; binding: boolean }[];
+  gatesPassed: number;
+  gatesTotal: number;
   floorValidated: boolean;
 };
 
 const at = StyleSheet.create({
-  title: { fontSize: 18, color: NAVY, textAlign: "center", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 4 },
-  latin: { fontSize: 10.5, fontStyle: "italic", color: MUTED, textAlign: "center", marginBottom: 18 },
-  mono: { fontFamily: "Courier", fontSize: 8.2, color: INK, lineHeight: 1.5 },
-  box: { borderWidth: 0.8, borderColor: NAVY, padding: 10, marginBottom: 16 },
+  title: { fontSize: 17, color: NAVY, textAlign: "center", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 2, lineHeight: 1.2 },
+  latin: { fontSize: 10, fontStyle: "italic", color: MUTED, textAlign: "center", marginBottom: 8, lineHeight: 1.2 },
+  mono: { fontFamily: "Courier", fontSize: 8, color: INK, lineHeight: 1.35 },
+  box: { borderWidth: 0.8, borderColor: NAVY, padding: 8, marginBottom: 10 },
   label: { fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginBottom: 6 },
-  gateRow: { flexDirection: "row", borderBottomWidth: 0.4, borderBottomColor: RULE, paddingVertical: 4 },
-  gateMark: { width: 22, fontFamily: "Courier", fontSize: 9, color: NAVY },
-  gateName: { flex: 1, fontSize: 10.5, color: INK },
-  gateState: { width: 80, fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.2, textAlign: "right", color: MUTED, textTransform: "uppercase" },
-  para: { fontSize: 10.5, color: INK, marginTop: 14, lineHeight: 1.55 },
-  sigs: { flexDirection: "row", justifyContent: "space-between", marginTop: 34 },
+  gateHead: { flexDirection: "row", marginTop: 4, paddingBottom: 1, borderBottomWidth: 0.6, borderBottomColor: NAVY },
+  gateHeadName: { flex: 1, fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.3, color: NAVY, textTransform: "uppercase", lineHeight: 1.2 },
+  gateRow: { flexDirection: "row", alignItems: "center", borderBottomWidth: 0.4, borderBottomColor: RULE, paddingVertical: 0.6 },
+  gateMark: { width: 22, fontFamily: "Courier", fontSize: 8.5, color: NAVY, lineHeight: 1.2 },
+  gateId: { width: 24, fontFamily: "Courier", fontSize: 8.5, color: MUTED, lineHeight: 1.2 },
+  gateName: { flex: 1, fontSize: 9.4, color: INK, lineHeight: 1.2 },
+  gateState: { width: 92, fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.2, textAlign: "right", color: MUTED, textTransform: "uppercase", lineHeight: 1.2 },
+  para: { fontSize: 9.6, color: INK, marginTop: 8, lineHeight: 1.35 },
+  sigs: { flexDirection: "row", justifyContent: "space-between", marginTop: 8 },
   sigCol: { width: "46%" },
-  sigLine: { borderBottomWidth: 0.6, borderBottomColor: INK, height: 34 },
-  sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", height: 86, alignItems: "center", justifyContent: "center" },
+  sigLine: { borderBottomWidth: 0.6, borderBottomColor: INK, height: 22 },
+  sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", height: 50, alignItems: "center", justifyContent: "center" },
   sigCap: { fontFamily: "InterDoc", fontSize: 7.2, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase", marginTop: 5 },
 });
 
@@ -304,30 +310,43 @@ export async function buildDeskDossier({
             <Text style={at.label}>Protocol registry</Text>
             <Text style={at.mono}>REF NO  : {attestation.ref}</Text>
             <Text style={at.mono}>DIGEST  : {attestation.digest.slice(0, 32)}</Text>
-            <Text style={at.mono}>          {attestation.digest.slice(32)}</Text>
+            <Text style={at.mono}>{"\u00A0".repeat(10)}{attestation.digest.slice(32)}</Text>
             <Text style={at.mono}>
-              STATUS  : {attestation.gates.filter((g) => g.passed).length}/{attestation.gates.length} GATES CLEARED // VIABLE FLOOR {attestation.floorValidated ? "VALIDATED" : "BREACHED"}
+              STATUS  : {attestation.clearances.filter((c) => c.passed).length}/{attestation.clearances.length} STATUTORY CLEARANCES // {attestation.gatesPassed}/{attestation.gatesTotal} GATES
             </Text>
+            <Text style={at.mono}>FLOOR   : VIABLE FLOOR 3.0 {attestation.floorValidated ? "VALIDATED" : "BREACHED"}</Text>
           </View>
-          <Text style={at.label}>Statutory clearance gates</Text>
-          <View wrap={false}>
-            {attestation.gates.map((g) => (
-              <View key={g.name} style={at.gateRow}>
-                <Text style={at.gateMark}>{g.passed ? "[X]" : "[ ]"}</Text>
-                <Text style={at.gateName}>{g.name}</Text>
-                <Text style={at.gateState}>{g.passed ? "Cleared" : "Locked"}</Text>
+          <Text style={at.label}>Schedule of statutory clearances</Text>
+          {[...new Set(attestation.clearances.map((c) => c.gate))].map((gate) => {
+            const rows = attestation.clearances.filter((c) => c.gate === gate);
+            const locked = rows.some((c) => c.binding && !c.passed);
+            return (
+              <View key={gate} wrap={false}>
+                <View style={at.gateHead}>
+                  <Text style={at.gateHeadName}>{gate}</Text>
+                  <Text style={[at.gateState, { color: NAVY }]}>{locked ? "Gate locked" : "Gate cleared"}</Text>
+                </View>
+                {rows.map((c) => (
+                  <View key={c.id} style={at.gateRow}>
+                    <Text style={at.gateMark}>{c.passed ? "[X]" : "[ ]"}</Text>
+                    <Text style={at.gateId}>{c.id}</Text>
+                    <Text style={at.gateName}>{c.name}</Text>
+                    <Text style={at.gateState}>{c.binding ? (c.passed ? "Satisfied" : "Open") : c.passed ? "Advisory · met" : "Advisory"}</Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
+            );
+          })}
           <Text style={at.para}>
             The Chancellery attests that the annexed document for {profile.theatre.trim() || "the theatre under review"} was compiled from the mission state bearing the
             digest above, computed in the practitioner's own browser, and that any alteration of that state yields a different digest.
+            Binding clearances decide each gate; advisory clearances are recorded for the file and do not lock the mission.
           </Text>
           <View style={at.sigs} wrap={false}>
             <View style={at.sigCol}>
               <View style={at.sigLine} />
               <Text style={at.sigCap}>Plenipotentiary · signature</Text>
-              <View style={[at.sigLine, { height: 26 }]} />
+              <View style={[at.sigLine, { height: 18 }]} />
               <Text style={at.sigCap}>Name and office</Text>
             </View>
             <View style={at.sigCol}>

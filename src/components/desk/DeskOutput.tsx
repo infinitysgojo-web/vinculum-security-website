@@ -3,7 +3,7 @@ import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck, Radio } from 
 import { toast } from "sonner";
 import { MissionContext } from "./mission";
 import { sha256, sealText, shortHash } from "./integrity";
-import { stageGateAudit, useEngine } from "./engine";
+import { statutoryClearances, useEngine } from "./engine";
 import { apostille, mintDispatch } from "./registry";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
@@ -140,7 +140,7 @@ export default function DeskOutput({ text, fileName, cable = false }: { text: st
       const { stamped } = await sealText(text);
       const d = await mintDispatch(signals, "dossier");
       const blob = await buildDeskDossier({
-        attestation: { ref: d.ref, digest: d.digest, gates: stageGateAudit(signals).gates.map((g) => ({ name: g.name, passed: g.passed })), floorValidated: d.floorValidated },
+        attestation: { ref: d.ref, digest: d.digest, clearances: statutoryClearances(signals), gatesPassed: d.gatesPassed, gatesTotal: d.gatesTotal, floorValidated: d.floorValidated },
         text: stamped,
         deskTitle: meta.title,
         eyebrow: meta.eyebrow,

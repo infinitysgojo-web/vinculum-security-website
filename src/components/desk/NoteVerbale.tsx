@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Stamp } from "lucide-react";
 import { toast } from "sonner";
-import { bondBand, stageGateAudit, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
+import { bondBand, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
 import { apostille, mintDispatch, type Dispatch } from "./registry";
 import { seal } from "@/lib/chancelleryHaptics";
 
@@ -40,7 +40,9 @@ export function draftTransmittal(s: Signals, mode: Mode): string {
   const covenantLine = covs.length
     ? `Accordingly, the annexed covenants of continuity (${list(covs)}) are deposited herewith under official seal.`
     : "No covenant of continuity has yet been deposited; the Chancellery reserves the drafting of such instruments pending the Legal Architecture desk.";
-  const gateLine = `Of the ${audit.gates.length} statutory clearance gates, ${passed} stand cleared${audit.locked ? "; the mission remains locked pending the remainder" : "; the mission is cleared to proceed"}.`;
+  const sched = statutoryClearances(s);
+  const clr = sched.filter((c) => c.passed).length;
+  const gateLine = `Of the ${sched.length} statutory clearances, ${clr} stand satisfied, and ${passed} of the ${audit.gates.length} stage gates are cleared${audit.locked ? "; the mission remains locked pending the remainder" : "; the mission is cleared to proceed"}.`;
 
   if (mode === "note-verbale") {
     return [
@@ -82,7 +84,7 @@ export function draftTransmittal(s: Signals, mode: Mode): string {
     `Vector: ${vector}.`,
     `Limiting factor: ${limiting}${s.weakestScore !== undefined ? ` at ${s.weakestScore.toFixed(1)}` : ""}.`,
     `Floor: ${breached.length ? `${breached.length} bond${breached.length === 1 ? "" : "s"} below ${VIABLE_FLOOR.toFixed(1)}` : `held at ${VIABLE_FLOOR.toFixed(1)}`}.`,
-    `Gates: ${passed} of ${audit.gates.length} cleared.`,
+    `Clearances: ${clr} of ${sched.length} satisfied; stage gates ${passed} of ${audit.gates.length} cleared.`,
     `Covenants deposited: ${covs.length ? list(covs) : "none"}.`,
     s.rupture !== undefined ? `Rupture index: ${s.rupture}%${s.ruptureBand ? ` (${s.ruptureBand})` : ""}.` : "Rupture index: not yet measured.",
   ].join("\n");

@@ -10,7 +10,7 @@
  * UTC instant enters the hash only and is never displayed.
  */
 import { useEffect, useState } from "react";
-import { stageGateAudit, VIABLE_FLOOR, type Signals } from "./engine";
+import { stageGateAudit, statutoryClearances, VIABLE_FLOOR, type Signals } from "./engine";
 
 export type DispatchKind = "note-verbale" | "demarche" | "aide-memoire" | "cable" | "dossier" | "attestation" | "text";
 
@@ -23,6 +23,8 @@ export type Dispatch = {
   kind: DispatchKind;
   gatesPassed: number;
   gatesTotal: number;
+  clearancesPassed: number;
+  clearancesTotal: number;
   floorValidated: boolean;
 };
 
@@ -75,11 +77,10 @@ function nextSeq(): number {
 /** The mission state the digest covers, without nonce or instant. Stable key order. */
 export function stateSnapshot(s: Signals) {
   const b = s.bonds;
-  const audit = stageGateAudit(s);
   return {
     vector: b ? [b.interpersonal, b.communal, b.intergenerational, b.institutional] : [],
     activeCase: (s.theatre ?? "").trim(),
-    gateClearances: audit.gates.map((g) => `${g.name}:${g.passed ? 1 : 0}`),
+    gateClearances: statutoryClearances(s).map((c) => `${c.id}:${c.passed ? 1 : 0}`),
     covenants: [...(s.covenants ?? [])],
   };
 }
@@ -107,6 +108,8 @@ export async function mintDispatch(s: Signals, kind: DispatchKind): Promise<Disp
   const revision = prior > 0 ? String.fromCharCode(65 + Math.min(prior, 25)) : null;
   const audit = stageGateAudit(s);
   const gatesPassed = audit.gates.filter((g) => g.passed).length;
+  const clearances = statutoryClearances(s);
+  const clearancesPassed = clearances.filter((c) => c.passed).length;
   const floorValidated = s.weakestScore !== undefined && s.weakestScore >= VIABLE_FLOOR;
   const sigil = theatreSigil(s.theatre);
 
@@ -119,7 +122,7 @@ export async function mintDispatch(s: Signals, kind: DispatchKind): Promise<Disp
     if (issuedRefs.has(ref) || issuedDigests.has(digest)) continue;
     issuedRefs.add(ref);
     issuedDigests.add(digest);
-    const d: Dispatch = { ref, digest, nonce, seq, revision, kind, gatesPassed, gatesTotal: audit.gates.length, floorValidated };
+    const d: Dispatch = { ref, digest, nonce, seq, revision, kind, gatesPassed, gatesTotal: audit.gates.length, clearancesPassed, clearancesTotal: clearances.length, floorValidated };
     listeners.forEach((fn) => fn(d));
     return d;
   }
@@ -147,7 +150,8 @@ export function apostille(d: Dispatch): string {
     top,
     `REF NO  : ${d.ref}`,
     `DIGEST  : ${d.digest}`,
-    `STATUS  : ${d.gatesPassed}/${d.gatesTotal} GATES CLEARED // VIABLE FLOOR ${d.floorValidated ? "VALIDATED" : "BREACHED"}`,
+    `STATUS  : ${d.clearancesPassed}/${d.clearancesTotal} STATUTORY CLEARANCES // ${d.gatesPassed}/${d.gatesTotal} GATES`,
+    `FLOOR   : VIABLE FLOOR ${VIABLE_FLOOR.toFixed(1)} ${d.floorValidated ? "VALIDATED" : "BREACHED"}`,
     `SEAL    : EXEQUATUR CANONICALIS // UNALTERABLE RECORD`,
     bottom,
   ].join("\n");
