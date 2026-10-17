@@ -5,6 +5,7 @@ import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import { useEngine, hasSignal, telemetryLines } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
 import DeskOutput from "@/components/desk/DeskOutput";
+import NoteVerbale from "@/components/desk/NoteVerbale";
 
 /**
  * §12B, the Operational Briefing Desk.
@@ -482,6 +483,10 @@ END OF ${cab.tag}`;
           {cab.tag} · {c.shortTitle} · {DOMAINS[bi]}
         </p>
         <DeskOutput cable text={memo} fileName={`Vinculum-Briefing-${cab.tag.replace(/\s+/g, "-")}`} />
+      </div>
+
+      <div className="mt-8 min-w-0">
+        <NoteVerbale />
       </div>
     </div>
   );
