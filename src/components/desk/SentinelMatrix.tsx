@@ -256,7 +256,7 @@ export default function SentinelMatrix() {
               {weakestIdx >= 0 && (
                 <button type="button" onClick={() => setOn((p) => Array.from(new Set([...p, ...SIGNS.flatMap((s, i) => (s.bond === weakestIdx ? [i] : []))])))} className={quickCls}>Mark weakest-bond tripwires</button>
               )}
-              <button type="button" onClick={() => setOn((p) => Array.from(new Set([...p, ...SIGNS.flatMap((s, i) => (s.w === 3 ? [i] : []))])))} className={quickCls}>Mark all severe (W3)</button>
+              <button type="button" onClick={() => setOn((p) => Array.from(new Set([...p, ...SIGNS.flatMap((s, i) => (s.w === 3 ? [i] : []))])))} className={quickCls}>Mark all Critical (W3) tripwires</button>
               <button type="button" onClick={() => { setOn([]); setCOn([]); }} className={quickCls}>Clear all</button>
             </div>
           </div>
@@ -345,11 +345,17 @@ export default function SentinelMatrix() {
               <div className={`h-3 transition-all ${bandTone(r.b.name).bg}`} style={{ width: `${r.pct}%` }} />
               {[15, 35, 60].map((t) => <span key={t} className="absolute top-0 h-3 w-px bg-primary/50" style={{ left: `${t}%` }} />)}
             </div>
-            <div className="mt-1 grid grid-cols-4 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
-              <span>Stable</span><span>Guarded 15</span><span>Elevated 35</span><span className="text-right">Critical 60</span>
+            {/* Labels sit under their own tick marks (15 / 35 / 60), not on an even grid. */}
+            <div className="relative mt-1 h-3 text-[9px] uppercase tracking-[0.14em] text-muted-foreground" aria-hidden>
+              <span className="absolute left-0">Stable</span>
+              <span className="absolute hidden sm:inline" style={{ left: "15%" }}>Guarded 15</span>
+              <span className="absolute sm:hidden" style={{ left: "15%" }}>15</span>
+              <span className="absolute hidden sm:inline" style={{ left: "35%" }}>Elevated 35</span>
+              <span className="absolute sm:hidden" style={{ left: "35%" }}>35</span>
+              <span className="absolute" style={{ left: "60%" }}>Critical 60</span>
             </div>
             <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-accent">
-              Velocity ×{TREND[trend].mult.toFixed(2)} · {TREND[trend].id === "deteriorating" ? "rising" : TREND[trend].id === "improving" ? "falling" : "flat"}
+              Velocity ×{TREND[trend].mult.toFixed(2)} · {TREND[trend].id === "deteriorating" ? "rising" : TREND[trend].id === "improving" ? "falling" : "stable"}
             </p>
             <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
             <p className="text-xs text-foreground/85 mt-2">{r.b.advice}</p>

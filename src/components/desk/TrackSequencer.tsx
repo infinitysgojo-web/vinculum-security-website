@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import { usePublish, useEngine, hasSignal, telemetryLines, communalTolerance } from "./engine";
 import SyncPanel from "./SyncPanel";
@@ -35,6 +35,9 @@ export default function TrackSequencer() {
   const live = linked && hasSignal(signals);
   const [done, setDone] = useState<string[]>([]);
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  // Set when the envoy tries to advance Track I past the communal tolerance; cleared by any change to the sequence.
+  const [mirageAttempt, setMirageAttempt] = useState(false);
+  useEffect(() => setMirageAttempt(false), [done]);
 
   // Communal-bond tolerance: Failing = Track I may not lead, Fragile = one phase,
   // Viable or Fortified = two phases. With no live communal reading, the
@@ -137,13 +140,13 @@ export default function TrackSequencer() {
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Sequence presets">
             {[1, 2, 3].map((n) => (
               <button key={n} type="button" onClick={() => setDone(STEPS.filter((s) => PHASES.indexOf(s.phase) < n).map((s) => s.id))} className="min-h-9 px-2.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent">
-                Both tracks to phase {n}
+                Both tracks to Phase {n}
               </button>
             ))}
             <button type="button" onClick={() => setDone(STEPS.filter((s) => s.track === "II" && PHASES.indexOf(s.phase) < 2).map((s) => s.id))} className="min-h-9 px-2.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent">
               Track II leads by two
             </button>
-            <button type="button" onClick={() => setDone([])} className="min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-accent">Clear</button>
+            <button type="button" onClick={() => setDone([])} className="min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-accent">Reset sequence</button>
           </div>
           {PHASES.map((ph) => (
             <div key={ph}>
@@ -153,7 +156,7 @@ export default function TrackSequencer() {
                   const blocked = blockedStep(s);
                   return (
                     <label key={s.id} className={`flex gap-3 items-start border border-border bg-background p-3 text-sm ${blocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}>
-                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(s.id)} disabled={blocked} onChange={() => toggle(s.id)} />
+                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(s.id)} aria-disabled={blocked} onChange={() => (blocked ? setMirageAttempt(true) : toggle(s.id))} />
                       <span>
                         <span className="block text-[10px] uppercase tracking-[0.18em] text-accent mb-1">
                           Track {s.track}{blocked ? " · Blocked by communal tolerance" : ""}
@@ -168,6 +171,17 @@ export default function TrackSequencer() {
           ))}
         </div>
         <div className="space-y-4">
+          {(r.gap > tolerance || mirageAttempt) && (
+            <div role="alert" className="border-2 border-destructive bg-destructive/10 p-4">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-destructive">CRITICAL ALERT: ELITE-PACT MIRAGE DETECTED</p>
+              <p className="mt-2 text-sm text-foreground/90">
+                {communal !== undefined && communal <= 2.0
+                  ? `The communal bond is ${communal.toFixed(1)} of 5 (Failing), so Track I may not lead Track II by any phase.`
+                  : `Track I leads Track II beyond the ${tolerance}-phase communal tolerance.`}{" "}
+                Hold Track I and advance the communal track first.
+              </p>
+            </div>
+          )}
           <div className="border border-border bg-background p-4">
             <p className={label}>Synchronisation</p>
             <p className="font-serif text-3xl text-primary">Track I {r.a} · Track II {r.b}</p>

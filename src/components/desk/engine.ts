@@ -463,6 +463,83 @@ export function engineLocks(s: Signals): Lock[] {
   return out;
 }
 
+/** The five chancellery stage-gates read from the bus. Any failed gate locks the mission disposition. */
+export type StageGate = { name: string; passed: boolean; reading: string; directive: string };
+export function stageGateAudit(s: Signals): { gates: StageGate[]; locked: boolean } {
+  const cov = (s.covenants ?? []).join(" ").toLowerCase();
+  const continuity = /personal|continuity|office|atrophy/.test(cov);
+  const nCov = s.covenants?.length ?? 0;
+  const gates: StageGate[] = [];
+
+  // 1. Vector Integrity: all four bonds scored, none in the Failing band.
+  if (!s.bonds) {
+    gates.push({ name: "Vector Integrity", passed: false, reading: "No bond vector on the bus.", directive: "Score all four bonds on the Assessment Bench (Desk 1)." });
+  } else {
+    const v = [s.bonds.interpersonal, s.bonds.communal, s.bonds.intergenerational, s.bonds.institutional];
+    const failing = v.filter((x) => bondBand(x) === "Failing").length;
+    const deficit = round1(v.reduce((n, x) => n + Math.max(0, VIABLE_FLOOR - x), 0));
+    gates.push({
+      name: "Vector Integrity",
+      passed: failing === 0,
+      reading: `${failing} bond${failing === 1 ? "" : "s"} Failing; relational deficit Δ ${deficit.toFixed(1)} against the ${VIABLE_FLOOR.toFixed(1)} viable floor.`,
+      directive: "Lift every Failing bond above 2.0 through targeted repair before the mission proceeds.",
+    });
+  }
+
+  // 2. Rupture Containment: rupture measured; Elevated or worse requires a seated verifier.
+  if (s.rupture === undefined) {
+    gates.push({ name: "Rupture Containment", passed: false, reading: "Rupture index not yet measured.", directive: "Record tripwires in the Sentinel Matrix (Desk 2)." });
+  } else {
+    const ok = s.rupture < 35 || s.verifierSeated === true;
+    gates.push({
+      name: "Rupture Containment",
+      passed: ok,
+      reading: `Rupture index ${s.rupture}%${s.ruptureBand ? ` (${s.ruptureBand})` : ""}${s.rupture >= 35 ? `; verifier ${s.verifierSeated ? "seated" : "not seated"}` : ""}.`,
+      directive: "Seat an independent verifier in the Verification Ledger while the rupture index is 35% or higher.",
+    });
+  }
+
+  // 3. Track Synchronization: Track I within the communal tolerance.
+  if (s.trackGap === undefined) {
+    gates.push({ name: "Track Synchronization", passed: false, reading: "Track sequence not yet recorded.", directive: "Record both tracks in the Kinematic Track Sequencer (Desk 8)." });
+  } else {
+    const tol = s.trackTolerance ?? 1;
+    gates.push({
+      name: "Track Synchronization",
+      passed: !s.elitePactAlert && s.trackGap <= tol,
+      reading: `Track I ${s.trackI ?? 0} · Track II ${s.trackII ?? 0}; lead ${s.trackGap} against a tolerance of ${tol}.`,
+      directive: "Hold Track I and advance the communal track until the lead is within tolerance.",
+    });
+  }
+
+  // 4. Structural Covenants: at least one covenant; two under compound shock or a Failing bond; continuity when rupture is Elevated.
+  const weakFailing = s.weakestScore !== undefined && bondBand(s.weakestScore) === "Failing";
+  const needed = (s.shocks?.length ?? 0) >= 2 || weakFailing ? 2 : 1;
+  const needContinuity = s.rupture !== undefined && s.rupture >= 35;
+  gates.push({
+    name: "Structural Covenants",
+    passed: nCov >= needed && (!needContinuity || continuity),
+    reading: `${nCov} covenant${nCov === 1 ? "" : "s"} drafted; ${needed} required${needContinuity ? ", including an office-continuity provision" : ""}.`,
+    directive: needContinuity && !continuity
+      ? "Draft an office-continuity provision in the Clause Architect."
+      : `Draft at least ${needed} covenant${needed === 1 ? "" : "s"} in the Clause Architect.`,
+  });
+
+  // 5. Succession Durability: treaty survival at or above the succession trap.
+  if (s.survivalScore === undefined) {
+    gates.push({ name: "Succession Durability", passed: false, reading: "Succession not yet stress-tested.", directive: "Run the Succession Simulator." });
+  } else {
+    gates.push({
+      name: "Succession Durability",
+      passed: s.survivalScore >= SUCCESSION_TRAP,
+      reading: `Survival under succession stress ${s.survivalScore}% (trap below ${SUCCESSION_TRAP}%).`,
+      directive: `Close failing provisions in the Succession Simulator until survival reaches ${SUCCESSION_TRAP}%.`,
+    });
+  }
+
+  return { gates, locked: gates.some((g) => !g.passed) };
+}
+
 /** The telemetry block appended to every downstream chancellery document. */
 export function telemetryLines(s: Signals): string[] {
   if (!hasSignal(s)) return [];

@@ -14,7 +14,8 @@ export const ORCID_URL = "https://orcid.org/0009-0005-9861-8849";
 export const DOI = "10.5281/zenodo.21615991";
 export const DOI_URL = `https://doi.org/${DOI}`;
 export const LICENSE_URL = "https://creativecommons.org/licenses/by-nc-nd/4.0/";
-export const PUBLISHED = "2026-01-01";
+// Year only: the exact publication date is deliberately not published.
+export const PUBLISHED = "2026";
 export const WORK_TITLE =
   "Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition";
 
@@ -52,6 +53,31 @@ export const WEBSITE_ID = `${SITE_URL}/#website`;
 export const BOOK_ID = `${SITE_URL}/#book`;
 
 export const personRef = { "@id": PERSON_ID } as const;
+
+/**
+ * Canonical WebSite node. Google reads `name` (and `alternateName`) on the
+ * homepage's WebSite node to choose the site name shown in search results,
+ * so the result reads "Vinculum Security" rather than the domain.
+ * Same @id as the WebSite node in index.html, so the two merge.
+ */
+export const websiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: `${SITE_URL}/`,
+  name: "Vinculum Security",
+  alternateName: [
+    "The Vinculum",
+    "Vinculum Security Doctrine",
+    "A Doctrine of Relational Security",
+  ],
+  publisher: {
+    "@type": "ResearchOrganization",
+    "@id": `${SITE_URL}/#organization`,
+    name: "Vinculum Security",
+  },
+  inLanguage: "en",
+};
 export const orgRef = { "@id": ORG_ID } as const;
 export const bookRef = { "@id": BOOK_ID } as const;
 

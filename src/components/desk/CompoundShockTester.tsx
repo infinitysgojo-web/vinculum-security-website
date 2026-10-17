@@ -97,8 +97,8 @@ const AMPLIFY = 1.25;
 /** One-tap shock packages drawn from the registered shock list. */
 const SHOCK_PACKAGES: { label: string; ids: string[] }[] = [
   { label: "Succession crisis", ids: ["principal", "election"] },
-  { label: "External abandonment", ids: ["donor", "guarantor", "attention"] },
-  { label: "Communal resource shock", ids: ["displacement", "currency", "theatre"] },
+  { label: "External abandonment", ids: ["donor", "guarantor"] },
+  { label: "Communal resource shock", ids: ["displacement", "currency"] },
   { label: "Capture and youth revolt", ids: ["capture", "youth"] },
 ];
 

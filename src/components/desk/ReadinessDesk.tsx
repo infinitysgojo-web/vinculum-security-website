@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
 import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, usePublish, engineLocks } from "./engine";
+import { telemetryLines, useEngine, usePublish, engineLocks, stageGateAudit } from "./engine";
 
 /** Mission lifecycle clearance across four stages. Deterministic; nothing stored. */
 type Gate = { id: string; group: string; text: string; critical: boolean; remedy: string };
@@ -72,21 +72,23 @@ export default function ReadinessDesk() {
   const [linked, setLinked] = useState(true);
   const locks = linked ? engineLocks(signals) : [];
   const openLocks = locks.filter((l) => !l.held);
+  const audit = linked ? stageGateAudit(signals) : null;
+  const auditLocked = audit?.locked ?? false;
 
   const r = useMemo(() => {
     const gates = stage.gates;
     const missingCritical = gates.filter((g) => g.critical && !done.includes(g.id));
     const met = gates.filter((g) => done.includes(g.id)).length;
     const pct = Math.round((met / gates.length) * 100);
-    const verdict = missingCritical.length || openLocks.length ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
+    const verdict = missingCritical.length || openLocks.length || auditLocked ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
     const lifecycle = STAGES.map((s) => {
       const mc = s.gates.filter((g) => g.critical && !done.includes(g.id)).length;
       const m = s.gates.filter((g) => done.includes(g.id)).length;
-      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 };
+      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked };
     });
     return { missingCritical, pct, verdict, met, lifecycle };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done, stage, JSON.stringify(openLocks)]);
+  }, [done, stage, JSON.stringify(openLocks), auditLocked]);
 
   usePublish("readiness", { gatesCleared: `${r.lifecycle.filter((x) => x.cleared).length}/${r.lifecycle.length}` });
 
@@ -99,6 +101,7 @@ export default function ReadinessDesk() {
       `MISSION: ${mission.trim() || "Unnamed mission"}`,
       `DATE: ${todayStamp()}`,
       `VERDICT: ${r.verdict}`,
+      ...(audit ? [`DISPOSITION: ${audit.locked ? "LOCKED" : "CLEARED"}`] : []),
       `GATES MET AT THIS STAGE: ${r.met} of ${stage.gates.length} (${r.pct}%)`,
       "",
     ];
@@ -115,6 +118,14 @@ export default function ReadinessDesk() {
         L.push(`    Directive: ${x.remedy}`);
       });
       L.push("", "This stage must not be certified until every critical gate is met.");
+      L.push("");
+    }
+    if (audit) {
+      L.push("STAGE-GATE AUDIT");
+      audit.gates.forEach((g) => {
+        L.push(`  [${g.passed ? "PASSED" : "FAILED"}] ${g.name}: ${g.reading}`);
+        if (!g.passed) L.push(`    Directive: ${g.directive}`);
+      });
       L.push("");
     }
     if (locks.length) {
@@ -173,6 +184,24 @@ export default function ReadinessDesk() {
         </div>
         <div className="space-y-4 min-w-0">
           <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${locks.length - openLocks.length} of ${locks.length} engine conditions satisfied; ${openLocks.length} still locked.`] : ["No upstream condition currently locks clearance."]} />
+          {audit && (
+            <div className={`border-2 p-4 space-y-2 ${audit.locked ? "border-destructive bg-destructive/5" : "border-primary/50 bg-background"}`}>
+              <p className={label}>Stage-gate audit</p>
+              <p className={`font-serif text-2xl ${audit.locked ? "text-destructive" : "text-primary"}`}>
+                DISPOSITION: {audit.locked ? "LOCKED" : "CLEARED"}
+              </p>
+              {audit.gates.map((g, i) => (
+                <div key={g.name} className={`border-l-2 pl-3 ${g.passed ? "border-primary/40" : "border-destructive"}`}>
+                  <p className="text-xs font-semibold text-foreground/90">
+                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${g.passed ? "border-primary/50 text-primary" : "border-destructive/60 text-destructive"}`}>{g.passed ? "✓ Passed" : "Failed"}</span>
+                    Gate {i + 1} · {g.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{g.reading}</p>
+                  {!g.passed && <p className="text-xs text-foreground/85 mt-0.5">Directive: {g.directive}</p>}
+                </div>
+              ))}
+            </div>
+          )}
           {locks.length > 0 && (
             <div className="border border-brass/40 bg-background p-4 space-y-2">
               <p className={label}>Engine locks</p>
