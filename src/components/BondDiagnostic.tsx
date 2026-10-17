@@ -30,6 +30,13 @@ const DEFAULT_SCORES: BondScores = {
   intergenerational: 3.0,
   institutional: 3.0,
 };
+
+/** Calibrated working theatres used in test missions (bonds only; illustrative, not field findings). */
+const SEEDS: { label: string; scores: BondScores }[] = [
+  { label: "Great Lakes test mission", scores: { interpersonal: 2.8, communal: 1.4, intergenerational: 1.8, institutional: 2.2 } },
+  { label: "Northern Rift test mission", scores: { interpersonal: 2.6, communal: 1.6, intergenerational: 2.1, institutional: 2.5 } },
+  { label: "Flat 3.0 baseline", scores: DEFAULT_SCORES },
+];
 const LEVELS: {
   key: LevelKey;
   ref: string;
@@ -405,6 +412,23 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
             placeholder="Cross-border grazing dispute, second round"
             className="mt-3 w-full bg-background border border-border px-4 py-3 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:border-accent transition-colors"
           />
+
+          <div className="mt-6">
+            <p className="eyebrow">Seed the bench</p>
+            <p className="mt-1 text-xs text-muted-foreground">Start from a calibrated profile instead of the flat 3.0 baseline, then adjust.</p>
+            <div className="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Seed bond scores from a profile">
+              {SEEDS.map((s) => (
+                <button key={s.label} type="button" onClick={() => setScores(() => s.scores)} className="min-h-9 px-2.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent transition-colors">
+                  {s.label}
+                </button>
+              ))}
+              {CASES.map((c) => (
+                <button key={c.slug} type="button" onClick={() => setScores(() => ({ interpersonal: c.scores[0], communal: c.scores[1], intergenerational: c.scores[2], institutional: c.scores[3] }))} className="min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-primary/80 hover:border-accent hover:text-accent transition-colors">
+                  {c.shortTitle}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <hr className="gold-rule gold-rule-short mt-8 mb-7" />
 

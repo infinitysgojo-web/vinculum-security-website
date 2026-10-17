@@ -94,6 +94,14 @@ const SHOCKS: Shock[] = [
 
 const AMPLIFY = 1.25;
 
+/** One-tap shock packages drawn from the registered shock list. */
+const SHOCK_PACKAGES: { label: string; ids: string[] }[] = [
+  { label: "Succession crisis", ids: ["principal", "election"] },
+  { label: "External abandonment", ids: ["donor", "guarantor", "attention"] },
+  { label: "Communal resource shock", ids: ["displacement", "currency", "theatre"] },
+  { label: "Capture and youth revolt", ids: ["capture", "youth"] },
+];
+
 /** Format a severity or index to one decimal place, dropping a trailing ".0". */
 const fmt = (n: number) => (Number.isInteger(round1(n)) ? String(round1(n)) : round1(n).toFixed(1));
 
@@ -263,7 +271,16 @@ export default function CompoundShockTester() {
           {!theatreOverride.trim() && mission.theatre.trim() && (
             <p className="mt-1.5 text-[11px] text-muted-foreground">Inherited from the active mission. Type to override on this desk.</p>
           )}
-          <p className={`${label} mt-5`}>Apply shocks simultaneously</p>
+          <p className={`${label} mt-5`}>Shock packages</p>
+          <div className="flex flex-wrap gap-1.5 mb-4" role="group" aria-label="Shock package presets">
+            {SHOCK_PACKAGES.map((p) => (
+              <button key={p.label} type="button" onClick={() => setOn(p.ids)} className="min-h-9 px-2.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent transition-colors">
+                {p.label}
+              </button>
+            ))}
+            <button type="button" onClick={() => setOn([])} className="min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-accent">Clear</button>
+          </div>
+          <p className={label}>Apply shocks simultaneously</p>
           <div className="space-y-2">
             {ALL.map((s) => (
               <label key={s.id} className="flex items-start gap-3 text-sm cursor-pointer">
