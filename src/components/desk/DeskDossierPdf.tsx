@@ -117,7 +117,7 @@ const s = StyleSheet.create({
   runHeadLabel: { width: "60%", paddingRight: 12 },
   runHeadClass: { width: "40%", textAlign: "right" },
   runFootRef: { width: "75%", paddingRight: 12 },
-  runFootPage: { width: "25%", textAlign: "right" },
+  runFootPage: { width: "25%", textAlign: "right", minHeight: 14 },
   runFoot: {
     position: "absolute",
     top: 785,

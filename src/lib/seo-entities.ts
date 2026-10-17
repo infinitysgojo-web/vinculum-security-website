@@ -52,6 +52,31 @@ export const WEBSITE_ID = `${SITE_URL}/#website`;
 export const BOOK_ID = `${SITE_URL}/#book`;
 
 export const personRef = { "@id": PERSON_ID } as const;
+
+/**
+ * Canonical WebSite node. Google reads `name` (and `alternateName`) on the
+ * homepage's WebSite node to choose the site name shown in search results,
+ * so the result reads "Vinculum Security" rather than the domain.
+ * Same @id as the WebSite node in index.html, so the two merge.
+ */
+export const websiteLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: `${SITE_URL}/`,
+  name: "Vinculum Security",
+  alternateName: [
+    "The Vinculum",
+    "Vinculum Security Doctrine",
+    "A Doctrine of Relational Security",
+  ],
+  publisher: {
+    "@type": "ResearchOrganization",
+    "@id": `${SITE_URL}/#organization`,
+    name: "Vinculum Security",
+  },
+  inLanguage: "en",
+};
 export const orgRef = { "@id": ORG_ID } as const;
 export const bookRef = { "@id": BOOK_ID } as const;
 

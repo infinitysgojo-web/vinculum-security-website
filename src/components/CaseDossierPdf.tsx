@@ -51,7 +51,7 @@ const MUTED = "#5F6470";
 const s = StyleSheet.create({
   page: {
     paddingTop: 92,
-    paddingBottom: 66,
+    paddingBottom: 80,
     paddingHorizontal: 58,
     fontFamily: "Cormorant",
     fontSize: 10.5,
@@ -192,7 +192,7 @@ const s = StyleSheet.create({
   },
   footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 0.6, color: MUTED, lineHeight: 1.4 },
   footerLeft: { width: "80%", paddingRight: 12 },
-  footerPage: { width: "20%", textAlign: "right" },
+  footerPage: { width: "20%", textAlign: "right", minHeight: 14 },
   statutoryNotice: { fontSize: 8.2, color: MUTED, lineHeight: 1.5, marginTop: 6 },
 
   // Opening block
