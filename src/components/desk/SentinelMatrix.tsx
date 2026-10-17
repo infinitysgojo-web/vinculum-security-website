@@ -54,6 +54,15 @@ function band(pct: number) {
 
 type Custom = { id: string; bond: number; text: string; w: number };
 
+const quickCls = "min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent transition-colors";
+
+function bandTone(name: string) {
+  if (name === "Critical") return { text: "text-terracotta", bg: "bg-terracotta" };
+  if (name === "Elevated") return { text: "text-brass", bg: "bg-brass" };
+  if (name === "Guarded") return { text: "text-accent", bg: "bg-accent" };
+  return { text: "text-primary", bg: "bg-primary" };
+}
+
 export default function SentinelMatrix() {
   // The theatre is inherited from the active mission; typing here overrides it for this desk only.
   const mission = useMission();
@@ -66,6 +75,8 @@ export default function SentinelMatrix() {
   const [trend, setTrend] = useState(1);
   const [on, setOn] = useState<number[]>([]);
   const toggle = (i: number) => setOn((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
+  // -1 all, -2 weakest live bond only, 0-3 a single bond.
+  const [filter, setFilter] = useState(-1);
 
   // Custom field mode: indicators the practitioner defines for their own theater.
   const [custom, setCustom] = useState<Custom[]>([]);
@@ -187,6 +198,17 @@ export default function SentinelMatrix() {
   const alignedCount = weakestIdx >= 0 ? SIGNS.filter((x) => x.bond === weakestIdx).length : 0;
   const alignedOn = weakestIdx >= 0 ? SIGNS.reduce((n, x, i) => n + (x.bond === weakestIdx && on.includes(i) ? 1 : 0), 0) : 0;
 
+  // Proximity of each latent trap to its trigger, using the same thresholds as the trap rules above.
+  const [ip, cm, ig, inst] = r.byBond;
+  const counterOf = (n: string) => r.traps.find((t) => t.name === n)?.counter;
+  const proximity = [
+    { name: "The Elite-Pact Mirage", status: `Communal ${cm}% / Intergenerational ${ig}% (need ≥50 each), Interpersonal ${ip}% (need <50)` },
+    { name: "The Generational Cliff", status: `Intergenerational ${ig}% of the 60% trigger` },
+    { name: "Unanchored Repair", status: `Institutional ${inst}% (need ≥60), Communal ${cm}% (need <50)` },
+    { name: "Bond Theater", status: "Engaged by unresolved grievances or youth input that alters nothing" },
+    { name: "Systemic Bond Collapse", status: `${r.byBond.filter((x) => x >= 50).length} of 4 bonds at ≥50% strain` },
+  ].map((t) => ({ ...t, active: !!counterOf(t.name), counter: counterOf(t.name) }));
+
   return (
     <section className={panel}>
       <div className="mb-6">
@@ -218,25 +240,54 @@ export default function SentinelMatrix() {
               </select>
             </div>
           </div>
-          {DOMAINS.map((d, b) => (
-            <div key={d}>
-              <div className="flex justify-between items-baseline gap-3">
-                <span className={label}>
-                  {d}
-                  {b === weakestIdx && (
-                    <span className="ml-2 inline-block border border-terracotta/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-terracotta">
-                      Weakest live bond{signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}
-                    </span>
-                  )}
-                </span>
-                <span className="text-xs text-muted-foreground">{r.byBond[b]}%</span>
-              </div>
-              <div className="h-1 bg-border mb-3"><div className="h-1 bg-accent transition-all" style={{ width: `${r.byBond[b]}%` }} /></div>
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter tripwires">
+              {[
+                { id: -1, l: `All (${SIGNS.length + custom.length})` },
+                ...(weakestIdx >= 0 ? [{ id: -2, l: "Weakest bond only" }] : []),
+                ...DOMAINS.map((d, i) => ({ id: i, l: d })),
+              ].map((f) => (
+                <button key={f.id} type="button" aria-pressed={filter === f.id} onClick={() => setFilter(f.id)} className={`min-h-9 px-2.5 border text-[10px] font-semibold uppercase tracking-[0.12em] transition-colors ${filter === f.id ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent hover:text-accent"}`}>
+                  {f.l}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Quick actions">
+              {weakestIdx >= 0 && (
+                <button type="button" onClick={() => setOn((p) => Array.from(new Set([...p, ...SIGNS.flatMap((s, i) => (s.bond === weakestIdx ? [i] : []))])))} className={quickCls}>Mark weakest-bond tripwires</button>
+              )}
+              <button type="button" onClick={() => setOn((p) => Array.from(new Set([...p, ...SIGNS.flatMap((s, i) => (s.w === 3 ? [i] : []))])))} className={quickCls}>Mark all severe (W3)</button>
+              <button type="button" onClick={() => { setOn([]); setCOn([]); }} className={quickCls}>Clear all</button>
+            </div>
+          </div>
+          {DOMAINS.map((d, b) => (filter === -1 || filter === b || (filter === -2 && b === weakestIdx)) && (
+            <div key={d} className={b === weakestIdx ? "border-l-2 border-terracotta pl-3" : ""}>
+              <button type="button" onClick={() => setFilter(filter === b ? -1 : b)} className="w-full text-left" aria-label={`Show only ${d} tripwires`}>
+                <div className="flex justify-between items-baseline gap-3">
+                  <span className={label}>
+                    {d}
+                    {b === weakestIdx && (
+                      <span className="ml-2 inline-block border border-terracotta/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-terracotta">
+                        Weakest live bond{signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-xs text-muted-foreground">{r.byBond[b]}%</span>
+                </div>
+                <div className="relative h-1.5 bg-border mb-3">
+                  <div className={`h-1.5 transition-all ${r.byBond[b] >= 60 ? "bg-terracotta" : r.byBond[b] >= 50 ? "bg-brass" : "bg-accent"}`} style={{ width: `${r.byBond[b]}%` }} />
+                  <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "50%" }} />
+                  <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "60%" }} />
+                </div>
+              </button>
               <div className="space-y-1.5">
                 {SIGNS.map((s, i) => s.bond === b && (
                   <label key={i} className="flex gap-3 items-start text-sm cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={on.includes(i)} onChange={() => toggle(i)} />
                     <span className="text-foreground/85">
+                      <span className={`mr-2 inline-block border px-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] align-middle ${s.w === 3 ? "border-terracotta/60 text-terracotta" : s.w === 2 ? "border-brass/60 text-brass" : "border-border text-muted-foreground"}`}>
+                        W{s.w} · {s.w === 3 ? "Acute" : s.w === 2 ? "Material" : "Signal"}
+                      </span>
                       {s.text}
                       {s.bond === weakestIdx && (
                         <span className="ml-2 text-[9px] uppercase tracking-[0.14em] font-semibold text-terracotta whitespace-nowrap">· Aligned with weakest bond</span>
@@ -289,21 +340,34 @@ export default function SentinelMatrix() {
         <div className="space-y-4">
           <div className="border border-border bg-background p-4">
             <p className={label}>Relational rupture index</p>
-            <p className="font-serif text-4xl text-primary">{r.pct}% <span className="text-lg text-accent">{r.b.name}</span></p>
-            <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
-
-          </div>
-          {r.traps.length > 0 && (
-            <div className="border border-brass/40 bg-background p-4 space-y-3">
-              <p className={label}>Latent traps indicated</p>
-              {r.traps.map((t) => (
-                <div key={t.name}>
-                  <p className="font-serif text-lg text-primary leading-tight">{t.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{t.counter}</p>
-                </div>
-              ))}
+            <p className="font-serif text-4xl text-primary">{r.pct}% <span className={`text-lg ${bandTone(r.b.name).text}`}>{r.b.name}</span></p>
+            <div className="relative mt-3 h-3 bg-border" aria-hidden>
+              <div className={`h-3 transition-all ${bandTone(r.b.name).bg}`} style={{ width: `${r.pct}%` }} />
+              {[15, 35, 60].map((t) => <span key={t} className="absolute top-0 h-3 w-px bg-primary/50" style={{ left: `${t}%` }} />)}
             </div>
-          )}
+            <div className="mt-1 grid grid-cols-4 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span>Stable</span><span>Guarded 15</span><span>Elevated 35</span><span className="text-right">Critical 60</span>
+            </div>
+            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-accent">
+              Velocity ×{TREND[trend].mult.toFixed(2)} · {TREND[trend].id === "deteriorating" ? "rising" : TREND[trend].id === "improving" ? "falling" : "flat"}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
+            <p className="text-xs text-foreground/85 mt-2">{r.b.advice}</p>
+          </div>
+          <div className="border border-brass/40 bg-background p-4 space-y-3">
+            <p className={label}>Latent trap proximity</p>
+            {proximity.map((t) => (
+              <div key={t.name} className={`border-l-2 pl-3 ${t.active ? "border-terracotta" : "border-border"}`}>
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <p className="font-serif text-base text-primary leading-tight">{t.name}</p>
+                  <span className={`text-[9px] uppercase tracking-[0.14em] font-semibold ${t.active ? "text-terracotta" : "text-muted-foreground"}`}>{t.active ? "Engaged" : "Not engaged"}</span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-1">{t.status}</p>
+                {t.active && t.counter && <p className="text-xs text-foreground/85 mt-1">Counter: {t.counter}</p>}
+              </div>
+            ))}
+            {r.compound && <p className="text-xs text-terracotta">{r.compound}</p>}
+          </div>
           <DeskOutput text={text} fileName="Vinculum-Sentinel-Reading" />
         </div>
       </div>
