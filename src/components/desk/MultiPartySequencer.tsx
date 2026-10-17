@@ -145,6 +145,106 @@ const FRICTION: { a: string; b: string; text: string }[] = [
 
 const PHASES = ["Opening", "Probing", "Commitment", "Close"] as const;
 
+type Fric = { a: string; b: string; text: string };
+
+/**
+ * Circular negotiation table: seated delegations on an orbit, with a chord
+ * between every pair. Friction pairs glow as dashed terracotta cords carrying
+ * the engine's friction multiplier (1 + 0.10 x friction pairs, from C_rel).
+ */
+function NegotiationTable({
+  seated,
+  frictions,
+  multiplier,
+  focusPair,
+  onPick,
+}: {
+  seated: Actor[];
+  frictions: Fric[];
+  multiplier: number;
+  focusPair: [string, string] | null;
+  onPick: (pair: [string, string] | null) => void;
+}) {
+  const S = 280;
+  const c = S / 2;
+  const r = 92;
+  const pos = seated.map((a, i) => {
+    const ang = (Math.PI * 2 * i) / Math.max(1, seated.length) - Math.PI / 2;
+    return { a, x: c + r * Math.cos(ang), y: c + r * Math.sin(ang) };
+  });
+  const isFric = (x: string, y: string) => frictions.some((f) => (f.a === x && f.b === y) || (f.a === y && f.b === x));
+  const pairs: { p: (typeof pos)[number]; q: (typeof pos)[number] }[] = [];
+  pos.forEach((p, i) => pos.slice(i + 1).forEach((q) => pairs.push({ p, q })));
+  const isFocus = (x: string, y: string) => !!focusPair && focusPair.includes(x) && focusPair.includes(y);
+  const short = (s: string) => (s.length > 18 ? `${s.slice(0, 17)}…` : s);
+  return (
+    <div className="border border-brass/40 bg-background p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className={`${label} mb-0`}>Negotiation table · tension web</p>
+        {focusPair && (
+          <button type="button" onClick={() => onPick(null)} className="text-[10px] uppercase tracking-[0.16em] font-semibold text-accent hover:underline">
+            Show all pairs
+          </button>
+        )}
+      </div>
+      <svg viewBox={`0 0 ${S} ${S}`} className="mx-auto mt-2 w-full max-w-[300px] h-auto" role="group" aria-label="Seated delegations and the cords between them">
+        <circle cx={c} cy={c} r={r} fill="hsl(var(--navy-tint) / 0.5)" stroke="hsl(var(--brass) / 0.6)" strokeDasharray="2 4" />
+        {pairs.map(({ p, q }) => {
+          const fric = isFric(p.a.id, q.a.id);
+          const dim = focusPair && !isFocus(p.a.id, q.a.id);
+          const mx = (p.x + q.x) / 2;
+          const my = (p.y + q.y) / 2;
+          return (
+            <g
+              key={`${p.a.id}-${q.a.id}`}
+              role="button"
+              tabIndex={0}
+              aria-label={`${p.a.label} and ${q.a.label}${fric ? ", friction pair" : ", synchronised"}`}
+              onClick={() => onPick(isFocus(p.a.id, q.a.id) ? null : [p.a.id, q.a.id])}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onPick(isFocus(p.a.id, q.a.id) ? null : [p.a.id, q.a.id]);
+                }
+              }}
+              className="cursor-pointer outline-none"
+              style={{ opacity: dim ? 0.25 : 1, transition: "opacity 200ms" }}
+            >
+              <line x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke="transparent" strokeWidth="14" />
+              <line
+                x1={p.x} y1={p.y} x2={q.x} y2={q.y}
+                stroke={fric ? "hsl(var(--terracotta))" : "hsl(var(--brass))"}
+                strokeWidth={fric ? 2.4 : 1.6}
+                strokeDasharray={fric ? "6 4" : undefined}
+                style={fric ? { filter: "drop-shadow(0 0 3px hsl(var(--terracotta) / 0.8))" } : undefined}
+              />
+              {fric && (
+                <text x={mx} y={my - 4} textAnchor="middle" className="fill-terracotta" style={{ fontSize: 9, fontWeight: 700 }}>
+                  ×{multiplier.toFixed(2)}
+                </text>
+              )}
+            </g>
+          );
+        })}
+        {pos.map(({ a, x, y }) => (
+          <g key={a.id}>
+            <circle cx={x} cy={y} r="13" fill="hsl(var(--primary))" stroke="hsl(var(--brass))" strokeWidth="2" />
+            <text x={x} y={y + 3.5} textAnchor="middle" className="fill-primary-foreground" style={{ fontSize: 9, fontWeight: 700 }}>
+              {a.label.charAt(0).toUpperCase()}
+            </text>
+            <text x={x} y={y > c ? y + 26 : y - 19} textAnchor="middle" className="fill-primary" style={{ fontSize: 8.5, fontWeight: 600 }}>
+              {short(a.label)}
+            </text>
+          </g>
+        ))}
+      </svg>
+      <p className="mt-2 text-[10px] text-muted-foreground">
+        Brass cords are synchronised pairs; dashed terracotta cords are friction pairs, marked with the engine's friction multiplier. Select a cord to read the de-confliction script for that pair.
+      </p>
+    </div>
+  );
+}
+
 export default function MultiPartySequencer() {
   const [own, setOwn] = useState<Actor[]>([]);
   const [ownFric, setOwnFric] = useState<{ a: string; b: string; text: string }[]>([]);
@@ -186,6 +286,11 @@ export default function MultiPartySequencer() {
 
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
+  const [focusPair, setFocusPair] = useState<[string, string] | null>(null);
+  const pairOk = focusPair && picked.includes(focusPair[0]) && picked.includes(focusPair[1]) ? focusPair : null;
+  const shownFrictions = pairOk ? frictions.filter((f) => pairOk.includes(f.a) && pairOk.includes(f.b)) : frictions;
+  // Friction term of the engine's contagion coefficient: 1 + 0.10 per friction pair on the bus.
+  const fricMultiplier = 1 + 0.1 * (linked ? signals.frictionPairs?.length ?? frictions.length : frictions.length);
   usePublish("multiparty", {
     seatedParties: seated.length,
     frictionPairs: frictions.map((f) => `${ACTORS.find((a) => a.id === f.a)?.label} and ${ACTORS.find((a) => a.id === f.b)?.label}`),
@@ -301,15 +406,41 @@ export default function MultiPartySequencer() {
           </div>
         </div>
 
+        {seated.length >= 2 && (
+          <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
+        )}
+        {pairOk && (
+          <div className="border border-accent/50 bg-background p-5">
+            <p className={label}>De-confliction script · {pairOk.map((id) => ACTORS.find((x) => x.id === id)?.label).join(" / ")}</p>
+            {PHASES.map((ph, pi) => (
+              <div key={ph} className="mt-3">
+                <p className="text-[10px] uppercase tracking-[0.16em] font-semibold text-accent">Phase {pi + 1} · {ph}</p>
+                {pairOk.map((id) => {
+                  const a = ACTORS.find((x) => x.id === id);
+                  if (!a) return null;
+                  return (
+                    <p key={id} className="mt-1 text-xs text-foreground/85 [overflow-wrap:anywhere]">
+                      <span className="font-semibold text-primary">{a.label}:</span> “{[a.opening, a.probing, a.commitment, a.close][pi]}”
+                    </p>
+                  );
+                })}
+              </div>
+            ))}
+            {shownFrictions.length === 0 && (
+              <p className="mt-3 text-xs text-muted-foreground">No recorded friction between this pair; the cord is synchronised.</p>
+            )}
+          </div>
+        )}
+
         <div className="border border-brass/40 p-5">
-          <p className={label}>Friction detected</p>
-          {frictions.length === 0 ? (
+          <p className={label}>Friction detected{pairOk ? " · selected pair" : ""}</p>
+          {shownFrictions.length === 0 ? (
             <p className="text-xs text-muted-foreground">
               No recorded friction between these parties. Seat another party to test the table further.
             </p>
           ) : (
             <ul className="space-y-3">
-              {frictions.map((f, i) => (
+              {shownFrictions.map((f, i) => (
                 <li key={i} className="text-xs leading-relaxed">
                   <span className="text-accent font-semibold uppercase tracking-[0.16em] text-[10px] block mb-1">
                     {ACTORS.find((x) => x.id === f.a)!.label} / {ACTORS.find((x) => x.id === f.b)!.label}

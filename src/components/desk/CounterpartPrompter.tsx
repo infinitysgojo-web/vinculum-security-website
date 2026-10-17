@@ -189,7 +189,7 @@ export default function CounterpartPrompter() {
               return n;
             }}
           />
-          <DeskOutput text={text} fileName="Vinculum-Counterpart-Script" />
+          <DeskOutput cable text={text} fileName="Vinculum-Counterpart-Script" />
         </div>
       </div>
     </section>

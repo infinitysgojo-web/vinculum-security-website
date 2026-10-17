@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck } from "lucide-react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { MissionContext } from "./mission";
 import { sha256, sealText, shortHash } from "./integrity";
@@ -12,7 +12,7 @@ export function todayStamp() {
   return new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
 }
 
-export type BinderEntry = { id: string; title: string; text: string };
+export type BinderEntry = { id: string; title: string; text: string; /** Desk the excerpt was staged from. */ desk?: string };
 /** In-memory Mission Binder shared across desks. Cleared on sign-out or refresh. */
 export const BinderContext = createContext<{ add: (e: BinderEntry) => void } | null>(null);
 
@@ -29,19 +29,70 @@ function reference(fileName: string) {
   return `VS-${tag || "DOC"}-${serial}`;
 }
 
+/** Telegram spacing: upper case, fixed 64-column lines, four-space indent, STOP between paragraphs. */
+export function toCable(text: string, ref: string): string {
+  const WIDTH = 64;
+  const wrap = (line: string) => {
+    const words = line.trim().split(/\s+/).filter(Boolean);
+    const out: string[] = [];
+    let cur = "";
+    for (const w of words) {
+      if ((cur + " " + w).trim().length > WIDTH - 4) {
+        out.push(cur);
+        cur = w;
+      } else cur = (cur + " " + w).trim();
+    }
+    if (cur) out.push(cur);
+    return out.map((l) => `    ${l}`);
+  };
+  const body: string[] = [];
+  for (const raw of text.split("\n")) {
+    const line = raw.replace(/[─-]{8,}/g, "").trim();
+    if (!line) {
+      if (body.length && body[body.length - 1] !== "    STOP") body.push("    STOP");
+      continue;
+    }
+    body.push(...wrap(line.toUpperCase()));
+  }
+  const rule = "=".repeat(WIDTH);
+  return [
+    rule,
+    "ORIGIN: CHANCELLERY NAIROBI",
+    `REF: VS-DIP-${ref.split("-").pop()}`,
+    "CLASSIFICATION: CONFIDENTIAL RELATIONAL AUDIT",
+    rule,
+    "",
+    ...body,
+    "",
+    "    ENDS",
+    rule,
+  ].join("\n");
+}
+
 /**
  * Shared chancellery document view for every dashboard desk. Presents the
  * compiled text on a formal dossier sheet and exports it as plain text or as
  * a publication-grade PDF in the same house style as the case dossiers.
  * Every export carries a SHA-256 integrity stamp computed on this device.
  */
-export default function DeskOutput({ text, fileName }: { text: string; fileName: string }) {
+export default function DeskOutput({ text, fileName, cable = false }: { text: string; fileName: string; /** Offer the Telegram / Cable Mode view. */ cable?: boolean }) {
   const binder = useContext(BinderContext);
   const profile = useContext(MissionContext);
   const meta = useContext(DeskMetaContext);
   const [busy, setBusy] = useState(false);
   const [hash, setHash] = useState("");
-  const ref = reference(fileName);
+  // Stable for the life of the view, so the screen, the PDF and the cable carry one reference.
+  const ref = useMemo(() => reference(fileName), [fileName]);
+  const [cableMode, setCableMode] = useState(false);
+  const cableText = useMemo(() => (cable ? toCable(text, ref) : ""), [cable, text, ref]);
+  const copyCable = async () => {
+    try {
+      await navigator.clipboard.writeText(cableText);
+      toast.success("Diplomatic cable copied");
+    } catch {
+      toast.error("Copy failed. Select the text and copy manually.");
+    }
+  };
 
   // Live fingerprint of the document on screen, recomputed whenever the text changes.
   useEffect(() => {
@@ -122,7 +173,37 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
         {binder && (
           <button type="button" onClick={addToBinder} className={btn}><BookPlus size={13} /> Add to binder</button>
         )}
+        {cable && (
+          <button
+            type="button"
+            onClick={() => setCableMode((m) => !m)}
+            aria-pressed={cableMode}
+            className={`${btn} ${cableMode ? "border-accent text-accent" : ""}`}
+          >
+            <Radio size={13} /> Telegram / Cable Mode
+          </button>
+        )}
       </div>
+
+      {cable && cableMode && (
+        <div className="relative mb-4 border-2 border-double border-primary/60 bg-background p-4 sm:p-6">
+          <span aria-hidden className="absolute left-1.5 top-1.5 h-4 w-4 border-l-2 border-t-2 border-accent" />
+          <span aria-hidden className="absolute right-1.5 top-1.5 h-4 w-4 border-r-2 border-t-2 border-accent" />
+          <span aria-hidden className="absolute bottom-1.5 left-1.5 h-4 w-4 border-b-2 border-l-2 border-accent" />
+          <span aria-hidden className="absolute bottom-1.5 right-1.5 h-4 w-4 border-b-2 border-r-2 border-accent" />
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <span className="inline-block -rotate-2 border-2 border-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.24em] text-accent">
+              Chancellery cable
+            </span>
+            <button type="button" onClick={copyCable} className={btn}>
+              <Copy size={13} /> Copy Diplomatic Cable
+            </button>
+          </div>
+          <pre className="font-mono text-xs leading-relaxed text-foreground/90 whitespace-pre max-h-[34rem] overflow-auto">
+            {cableText}
+          </pre>
+        </div>
+      )}
 
       <div className="border border-brass/50 bg-background shadow-sm">
         <div className="border-b border-brass/40 px-4 sm:px-6 py-4">

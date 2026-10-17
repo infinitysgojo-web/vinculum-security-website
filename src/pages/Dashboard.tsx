@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ChevronDown, Maximize2, Minimize2, Volume2, VolumeX } from "lucide-react";
+import { toast } from "sonner";
+import { tick, seal, soundEnabled, setSoundEnabled, onSoundChange } from "@/lib/chancelleryHaptics";
 import { supabase } from "@/integrations/supabase/client";
 import { getOfflineSession, clearOfflineSession } from "@/lib/offlineAuth";
 import type { Session } from "@supabase/supabase-js";
@@ -12,10 +15,10 @@ import DeskOutput, { BinderContext, DeskMetaContext, type BinderEntry } from "@/
 import { useMission } from "@/components/desk/mission";
 import { PAIRINGS } from "@/content/pairings";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, useEngine, usePublish, bondBand, mathReading, type Signals } from "@/components/desk/engine";
+import { EngineContext, useEngine, usePublish, bondBand, mathReading, stageGateAudit, type Signals } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
-import MissionChain from "@/components/desk/MissionChain";
+import MissionChain, { deskIsLive } from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SaveSession from "@/components/desk/SaveSession";
 import DeskFinder from "@/components/desk/DeskFinder";
@@ -247,6 +250,29 @@ export default function Dashboard() {
   const addToBinder = useCallback((e: BinderEntry) => {
     setBinder((prev) => (prev.some((x) => x.id === e.id) ? prev.map((x) => (x.id === e.id ? e : x)) : [...prev, e]));
   }, []);
+  // Desk-tagged binder adds, so the navigation rail can show which desks have staged excerpts.
+  const deskRef = useRef<string>("diagnostics");
+  useEffect(() => {
+    deskRef.current = desk;
+  }, [desk]);
+  const addFromDesk = useCallback((e: BinderEntry) => addToBinder({ ...e, desk: e.desk ?? deskRef.current }), [addToBinder]);
+
+  // Chancellery Focus view and discrete tactile audio (muted by default).
+  const [focus, setFocus] = useState(false);
+  const [sound, setSound] = useState(false);
+  useEffect(() => {
+    setSound(soundEnabled());
+    return onSoundChange(setSound);
+  }, []);
+
+  // A stage-gate audit that clears (every gate passing) sounds the seal chime once.
+  const gatesLocked = stageGateAudit(signals).locked;
+  const wasLocked = useRef(gatesLocked);
+  useEffect(() => {
+    if (wasLocked.current && !gatesLocked) seal();
+    wasLocked.current = gatesLocked;
+  }, [gatesLocked]);
+
   const moveEntry = (id: string, dir: -1 | 1) =>
     setBinder((prev) => {
       const i = prev.findIndex((x) => x.id === id);
@@ -338,7 +364,51 @@ export default function Dashboard() {
       JSON.stringify({ profile, binder, signals, division, desk, savedAt: stamp }),
     );
     setSavedAt(stamp);
+    seal();
   }, [saveKey, profile, binder, signals, division, desk]);
+
+  // Power-user shortcuts. Ignored while typing in a field, except Ctrl/Cmd+S.
+  useEffect(() => {
+    const typing = (el: EventTarget | null) => {
+      const t = el as HTMLElement | null;
+      if (!t) return false;
+      return t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName);
+    };
+    const step = (dir: -1 | 1) => {
+      const i = DESKS.findIndex((d) => d.id === deskRef.current);
+      const n = DESKS[i + dir];
+      if (!n) return;
+      setDivision(n.division);
+      setDesk(n.id);
+      tick();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        saveSession();
+        toast.success("Mission state saved to browser storage");
+        return;
+      }
+      if (typing(e.target)) return;
+      if (e.key === "Escape") {
+        // Radix closes its own dialogs and drawers; with none open, Escape leaves Focus view.
+        if (!document.querySelector('[role="dialog"][data-state="open"]')) setFocus(false);
+        return;
+      }
+      if (mod) return;
+      if (e.key === "[" || (e.altKey && e.key === "ArrowLeft")) {
+        e.preventDefault();
+        step(-1);
+      } else if (e.key === "]" || (e.altKey && e.key === "ArrowRight")) {
+        e.preventDefault();
+        step(1);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [saveSession]);
 
   if (!ready || !session) return null;
 
@@ -362,7 +432,48 @@ export default function Dashboard() {
         path="/dashboard"
         noIndex
       />
-      <div className="border-b-2 border-primary bg-background">
+      {focus && (
+        <div className="sticky top-0 z-40 h-10 border-b border-brass/60 bg-background/95 backdrop-blur">
+          <div className="container flex h-10 items-center gap-2 sm:gap-3 overflow-hidden text-[9px] sm:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.18em] font-semibold text-primary">
+            <span className="hidden md:inline shrink-0 text-primary/70">Vinculum Chancellery</span>
+            <span className="hidden md:inline text-brass" aria-hidden>·</span>
+            <span className="min-w-0 truncate">
+              Desk {String(position + 1).padStart(2, "0")}: <span className="text-accent">{active.label}</span>
+            </span>
+            <span className="hidden sm:inline shrink-0 text-muted-foreground">
+              <span className="normal-case">μ</span>B: <span className="text-primary">{signals.bondMean !== undefined ? signals.bondMean.toFixed(2) : "—"}</span>
+            </span>
+            <span className="hidden sm:inline shrink-0 text-muted-foreground">
+              Rupture: <span className={(signals.rupture ?? 0) >= 60 ? "text-destructive" : "text-primary"}>{signals.rupture !== undefined ? `${signals.rupture}%` : "—"}</span>
+            </span>
+            <label className="relative ml-auto shrink-0 inline-flex items-center">
+              <span className="sr-only">Select desk</span>
+              <select
+                value={desk}
+                onChange={(e) => {
+                  const d = DESKS.find((x) => x.id === e.target.value);
+                  if (d) goTo(d);
+                }}
+                className="h-7 max-w-[9rem] sm:max-w-[13rem] appearance-none border border-brass/50 bg-background pl-2 pr-6 text-[10px] uppercase tracking-[0.12em] text-primary"
+              >
+                {DESKS.map((d, i) => (
+                  <option key={d.id} value={d.id}>{String(i + 1).padStart(2, "0")} · {d.label}</option>
+                ))}
+              </select>
+              <ChevronDown size={12} className="pointer-events-none absolute right-1.5 text-primary/70" />
+            </label>
+            <button
+              type="button"
+              onClick={() => setFocus(false)}
+              className="shrink-0 inline-flex items-center gap-1 text-accent hover:underline"
+              title="Exit Focus view (Esc)"
+            >
+              <Minimize2 size={12} /> <span className="hidden sm:inline">Exit focus</span>
+            </button>
+          </div>
+        </div>
+      )}
+      <div className={`border-b-2 border-primary bg-background ${focus ? "hidden" : ""}`}>
         <div className="container flex flex-wrap items-center justify-between gap-x-3 gap-y-2 py-3 sm:py-4">
           <div className="flex items-center gap-2.5 min-w-0">
             <Logo size={24} />
@@ -388,18 +499,42 @@ export default function Dashboard() {
               }}
             />
             <SaveSession onSave={saveSession} savedAt={savedAt} />
+            <button
+              type="button"
+              onClick={() => setFocus(true)}
+              className="inline-flex items-center gap-1.5 text-primary hover:text-accent transition-colors"
+              title="Focus view: collapse the masthead to a slim status bar"
+              aria-label="Enter Focus view"
+            >
+              <Maximize2 size={13} />
+              <span className="hidden sm:inline">Focus</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const on = !sound;
+                setSoundEnabled(on);
+                if (on) tick();
+              }}
+              aria-pressed={sound}
+              className="inline-flex items-center text-primary hover:text-accent transition-colors"
+              title={sound ? "Mute tactile audio" : "Enable tactile audio"}
+              aria-label={sound ? "Mute tactile audio" : "Enable tactile audio"}
+            >
+              {sound ? <Volume2 size={14} /> : <VolumeX size={14} />}
+            </button>
             <Link to="/" className="text-primary hover:text-accent transition-colors">Site</Link>
             <button onClick={signOut} className="text-accent hover:underline">Sign out</button>
           </div>
         </div>
       </div>
 
-      <div className="container py-6 sm:py-8">
-        <div className="mb-6 sm:mb-8">
+      <div className={`container ${focus ? "py-4" : "py-6 sm:py-8"}`}>
+        <div className={`mb-6 sm:mb-8 ${focus ? "hidden" : ""}`}>
           <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
         </div>
 
-        <div className="mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40 scrollbar-none [webkit-overflow-scrolling:touch]">
+        <div className={`mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40 scrollbar-none [webkit-overflow-scrolling:touch] ${focus ? "hidden" : ""}`}>
           <div className="flex w-max min-w-full gap-5 sm:gap-6 pb-3">
             {DIVISIONS.map((dv) => {
               const on = division === dv.id;
@@ -425,8 +560,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 sm:mb-10 w-full min-w-0">
-          {deskList.map((d) => (
+        <div className={focus ? "hidden" : "grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 sm:mb-10 w-full min-w-0"}>
+          {deskList.map((d) => {
+            const liveDesk = deskIsLive(d.id, signals);
+            const staged = binder.filter((x) => x.desk === d.id).length;
+            return (
             <button
               key={d.id}
               type="button"
@@ -438,13 +576,36 @@ export default function Dashboard() {
                   : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
               }`}
             >
-              {d.label}
-              {d.id === "binder" && binder.length > 0 ? ` (${binder.length})` : ""}
+              <span>
+                {liveDesk && (
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full inline-block mr-1.5 align-middle ${
+                      desk === d.id ? "bg-accent-foreground" : "bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.8)]"
+                    }`}
+                    title="Live telemetry on the mission bus"
+                    aria-label="Live telemetry"
+                  />
+                )}
+                {d.label}
+                {d.id === "binder" && binder.length > 0 ? ` (${binder.length})` : ""}
+                {staged > 0 && d.id !== "binder" && (
+                  <span
+                    className={`ml-1.5 inline-flex min-w-4 h-4 items-center justify-center border px-1 align-middle text-[9px] tracking-normal ${
+                      desk === d.id ? "border-accent-foreground/70" : "border-brass/70 text-primary/80"
+                    }`}
+                    title={`${staged} excerpt${staged === 1 ? "" : "s"} staged in the Mission Binder`}
+                    aria-label={`${staged} staged in binder`}
+                  >
+                    {staged}
+                  </span>
+                )}
+              </span>
             </button>
-          ))}
+            );
+          })}
         </div>
 
-        <div className="mb-7 max-w-3xl">
+        <div className={`mb-7 max-w-3xl ${focus ? "hidden" : ""}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <p className="eyebrow">{active.eyebrow}</p>
             <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -463,13 +624,28 @@ export default function Dashboard() {
         </div>
 
         <TelemetryStrip signals={signals} />
-        <MissionChain deskId={desk} signals={signals} />
+        <MissionChain
+          deskId={desk}
+          signals={signals}
+          onNavigate={(id) => {
+            const d = DESKS.find((x) => x.id === id);
+            if (d) goTo(d);
+          }}
+        />
 
         <EngineContext.Provider value={{ signals, publish }}>
         <MissionContext.Provider value={profile}>
         <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow }}>
-        <BinderContext.Provider value={{ add: addToBinder }}>
-        <div className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden">
+        <BinderContext.Provider value={{ add: addFromDesk }}>
+        <div
+          className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden"
+          onInputCapture={(e) => {
+            if ((e.target as HTMLInputElement).type === "range") tick();
+          }}
+          onClickCapture={(e) => {
+            if ((e.target as HTMLElement).closest('input[type="checkbox"], input[type="radio"], button[aria-pressed]')) tick();
+          }}
+        >
           <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
             {desk === "briefing" && <CableComposer />}
             {desk === "diagnostics" && (

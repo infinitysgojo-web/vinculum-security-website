@@ -481,7 +481,7 @@ END OF ${cab.tag}`;
         <p className="mb-3 text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70">
           {cab.tag} · {c.shortTitle} · {DOMAINS[bi]}
         </p>
-        <DeskOutput text={memo} fileName={`Vinculum-Briefing-${cab.tag.replace(/\s+/g, "-")}`} />
+        <DeskOutput cable text={memo} fileName={`Vinculum-Briefing-${cab.tag.replace(/\s+/g, "-")}`} />
       </div>
     </div>
   );

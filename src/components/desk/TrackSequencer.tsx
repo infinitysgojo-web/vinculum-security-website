@@ -28,6 +28,65 @@ const STEPS: Step[] = [
 
 const PHASES = Array.from(new Set(STEPS.map((s) => s.phase)));
 
+/**
+ * Kinematic shear: Track I (state principals) on the upper rail, Track II
+ * (communal assemblies) on the lower, with the shear line joining the two depths.
+ */
+function DualRail({ a, b, tolerance }: { a: number; b: number; tolerance: number }) {
+  const W = 340;
+  const x = (d: number) => 34 + d * ((W - 58) / PHASES.length);
+  const top = 30;
+  const bot = 92;
+  const shear = a - b > tolerance;
+  return (
+    <div className="border border-border bg-background p-3 sm:p-4">
+      <p className={label}>Kinematic shear · dual-rail</p>
+      <svg viewBox={`0 0 ${W} 124`} className="w-full h-auto" role="img" aria-label={`Track I at phase ${a}, Track II at phase ${b}, tolerance ${tolerance}`}>
+        <defs>
+          <pattern id="vs-shear-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="7" height="7" fill="hsl(var(--destructive) / 0.08)" />
+            <line x1="0" y1="0" x2="0" y2="7" stroke="hsl(var(--destructive) / 0.7)" strokeWidth="2.5" />
+          </pattern>
+        </defs>
+        {shear && (
+          <rect x={x(b + tolerance)} y={top} width={Math.max(0, x(a) - x(b + tolerance))} height={bot - top} fill="url(#vs-shear-hatch)" stroke="hsl(var(--destructive) / 0.6)" strokeWidth="1" />
+        )}
+        {[top, bot].map((y, r) => (
+          <g key={y}>
+            <line x1={x(0)} y1={y} x2={x(PHASES.length)} y2={y} stroke="hsl(var(--brass))" strokeWidth="1.5" />
+            <line x1={x(0)} y1={y} x2={x(r === 0 ? a : b)} y2={y} stroke={r === 0 ? "hsl(var(--primary))" : "hsl(var(--accent))"} strokeWidth="4" style={{ transition: "all 400ms ease" }} />
+            {Array.from({ length: PHASES.length + 1 }, (_, i) => (
+              <g key={i}>
+                <circle cx={x(i)} cy={y} r={i === 0 ? 2 : 3.2} fill={i <= (r === 0 ? a : b) ? (r === 0 ? "hsl(var(--primary))" : "hsl(var(--accent))") : "hsl(var(--background))"} stroke="hsl(var(--brass))" strokeWidth="1" />
+                {i > 0 && (
+                  <text x={x(i)} y={r === 0 ? y - 8 : y + 15} textAnchor="middle" className="fill-muted-foreground" style={{ fontSize: 8 }}>{i}</text>
+                )}
+              </g>
+            ))}
+            <text x={2} y={y + 3} className="fill-primary" style={{ fontSize: 8, fontWeight: 600, letterSpacing: "0.08em" }}>{r === 0 ? "TR I" : "TR II"}</text>
+          </g>
+        ))}
+        <line
+          x1={x(a)} y1={top} x2={x(b)} y2={bot}
+          stroke={shear ? "hsl(var(--destructive))" : "hsl(var(--primary) / 0.6)"}
+          strokeWidth={shear ? 2.2 : 1.5}
+          strokeDasharray={shear ? undefined : "4 3"}
+          style={{ transition: "all 400ms ease" }}
+        />
+      </svg>
+      <div className="mt-1 flex flex-wrap justify-between gap-x-3 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+        <span>Upper · Track I, state principals</span>
+        <span>Lower · Track II, communal assemblies</span>
+      </div>
+      {shear && (
+        <p role="status" className="mt-2 border border-destructive/50 bg-destructive/10 px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-destructive [overflow-wrap:anywhere]">
+          ⚠ Elite-Pact Shear Zone: Lead exceeds communal tolerance ({tolerance} phase{tolerance === 1 ? "" : "s"})
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function TrackSequencer() {
   const [process, setProcess] = useState("");
   const [linked, setLinked] = useState(true);
@@ -181,6 +240,7 @@ export default function TrackSequencer() {
               </p>
             </div>
           )}
+          <DualRail a={r.a} b={r.b} tolerance={tolerance} />
           <div className="border border-border bg-background p-4">
             <p className={label}>Synchronisation</p>
             <p className="font-serif text-3xl text-primary">Track I {r.a} · Track II {r.b}</p>
