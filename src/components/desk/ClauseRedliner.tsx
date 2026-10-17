@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 
 type Rule = {
   id: string;
@@ -151,7 +151,6 @@ export default function ClauseRedliner() {
     L.push("Vinculum Security, Legal Architecture Division");
     L.push("");
     L.push(`INSTRUMENT: ${t}`);
-    L.push(`DATE OF AUDIT: ${todayStamp()}`);
     L.push(`RULES APPLIED: ${RULES.length}`);
     L.push(`FINDINGS RAISED: ${findings.length}`);
     L.push("");

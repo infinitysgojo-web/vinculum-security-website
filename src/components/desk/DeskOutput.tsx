@@ -24,9 +24,9 @@ export const DeskMetaContext = createContext<{ title: string; eyebrow: string }>
 
 function reference(fileName: string) {
   const tag = fileName.replace(/^Vinculum-/, "").replace(/[^A-Za-z0-9]+/g, "").toUpperCase().slice(0, 10);
-  const d = new Date();
-  const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
-  return `VS-${tag || "DOC"}-${stamp}`;
+  // Undated serial: unique per export, but carries no calendar date.
+  const serial = Math.floor(Math.random() * 0xfffff).toString(36).toUpperCase().padStart(4, "0");
+  return `VS-${tag || "DOC"}-${serial}`;
 }
 
 /**
@@ -138,7 +138,6 @@ export default function DeskOutput({ text, fileName }: { text: string; fileName:
           <div className="mt-2 h-px w-24 bg-brass/70" />
           <div className="mt-3 grid gap-x-6 gap-y-1 sm:grid-cols-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
             <p>Reference · <span className="text-primary/80">{ref}</span></p>
-            <p>Issued · <span className="text-primary/80">{todayStamp()}</span></p>
             <p className="truncate">Mission · <span className="text-primary/80">{profile.theatre.trim() || "Not named"}</span></p>
                         <p>Registry · <span className="text-primary/80">Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</span></p>
             <p className="sm:col-span-2 flex min-w-0 flex-wrap items-center gap-x-1.5">

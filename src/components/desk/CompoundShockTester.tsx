@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import BondRadar from "./BondRadar";
 import { usePublish, useEngine, round1, bondBand } from "./engine";
@@ -185,7 +185,6 @@ export default function CompoundShockTester() {
     L.push("Vinculum Security, Assessment and Early Warning Division");
     L.push("");
     L.push(`THEATRE: ${theatre.trim() || "Unnamed theatre"}`);
-    L.push(`DATE: ${todayStamp()}`);
     L.push(`SHOCKS APPLIED: ${active.length} of ${ALL.length}`);
     L.push("");
     L.push("I. COMPOUND STRAIN READING");

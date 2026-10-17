@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import { usePublish, useEngine, TREND_MULT } from "./engine";
 import SyncPanel from "./SyncPanel";
@@ -169,7 +169,6 @@ export default function SentinelMatrix() {
       "Compiled under Handbook Section 15 (failure modes)",
       "",
       `THEATER: ${theater.trim() || "Unnamed theater"}`,
-      `DATE: ${todayStamp()}`,
       `OBSERVATION TREND: ${TREND[trend].label} (multiplier ×${TREND[trend].mult.toFixed(2)})`,
       `RELATIONAL RUPTURE INDEX: ${r.pct}% (${r.b.name.toUpperCase()})`,
       `SIGNS RECORDED: ${on.length + cOn.length} of ${SIGNS.length + custom.length}`,

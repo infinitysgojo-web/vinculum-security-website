@@ -227,7 +227,6 @@ ${cab.tag}
 PRECEDENCE: ${PRECEDENCE[prec]}
 HANDLING CAVEAT: ${CAVEATS[cav].line}
 REFERENCE: ${ref}
-DATE: ${stamp(today)}
 ORIGINATING DESK: Vinculum Security, Applied Case Engagement, Section ${c.ref}
 DRAFTING OFFICER: ${drafter.trim() || "Not stated"}
 RECIPIENT: ${r.office}

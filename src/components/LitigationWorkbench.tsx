@@ -138,10 +138,6 @@ const BOND_RELIEF = [
   "An independent verification mandate, with reporting to the forum at fixed intervals and liberty to apply on default.",
 ] as const;
 
-function todayStamp() {
-  return new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
-}
-
 export default function LitigationWorkbench() {
   const [matter, setMatter] = useState("");
   const [facts, setFacts] = useState("");
@@ -174,7 +170,6 @@ export default function LitigationWorkbench() {
     lines.push(`POSTURE: ${p.label}`);
     lines.push(`PRIMARY STRAINED BOND: ${b}`);
     lines.push(`COUNTERPART POSTURE: ${t.label}`);
-    lines.push(`DATE: ${todayStamp()}`);
     lines.push("");
     lines.push("I. STATEMENT OF THE MATTER");
     lines.push(facts.trim() || "No facts entered.");

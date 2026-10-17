@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, successionDurability, SUCCESSION_TRAP } from "./engine";
 import SyncPanel from "./SyncPanel";
 import { AlertTriangle, ShieldCheck } from "lucide-react";
@@ -148,7 +148,6 @@ export default function SuccessionSimulator() {
       "Compiled under Vinculum Diplomacy: The Practitioner Handbook, Section 12C",
       "",
       `INSTRUMENT: ${title.trim() || "Unnamed instrument"}`,
-      `DATE: ${todayStamp()}`,
       canon
         ? `SUCCESSION DURABILITY S%: ${canon.percent.toFixed(1)} of 100 (${bandOf(canon.percent).name.toUpperCase()}${canon.trap ? "; TERMINAL SUCCESSION TRAP ENGAGED" : ""})`
         : "SUCCESSION DURABILITY S%: not computed (override engaged or no bond vector on the bus)",

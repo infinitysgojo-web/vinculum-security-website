@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { telemetryLines, useEngine } from "./engine";
-import DeskOutput, { BinderContext, field, label, panel, todayStamp, type BinderEntry } from "./DeskOutput";
+import DeskOutput, { BinderContext, field, label, panel, type BinderEntry } from "./DeskOutput";
 
 /**
  * Consolidated Mission Binder. Compiles documents added from any desk into one
@@ -33,7 +33,6 @@ export default function MissionBinder({
       "",
       `THEATRE: ${theatre.trim() || "Unspecified"}`,
       `PREPARED FOR: ${envoy.trim() || "Receiving office"}`,
-      `DATE: ${todayStamp()}`,
       `CONTENTS: ${entries.length} document${entries.length === 1 ? "" : "s"}`,
       "",
       ...(telemetryLines(signals).length ? ["SITUATION SYNOPSIS", ...telemetryLines(signals).slice(1)] : []),

@@ -1,6 +1,6 @@
 import { Link, useParams, Navigate } from "react-router-dom";
 import SEO from "@/components/SEO";
-import { sectionLd, SITE_URL, personLd, AUTHOR_NAME, PUBLISHED, LICENSE_URL, casePlaceLd } from "@/lib/seo-entities";
+import { sectionLd, SITE_URL, personLd, AUTHOR_NAME, LICENSE_URL, casePlaceLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import FadeIn from "@/components/FadeIn";
 import GoldRule from "@/components/GoldRule";
@@ -37,7 +37,6 @@ export default function CaseDetail() {
     mainEntityOfPage: `${SITE_URL}${path}`,
     author: personLd,
     inLanguage: "en",
-    datePublished: PUBLISHED,
     license: LICENSE_URL,
     isAccessibleForFree: true,
     articleSection: `Section VII ${c.ref}`,

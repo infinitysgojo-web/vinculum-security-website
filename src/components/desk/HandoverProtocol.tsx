@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
 import { telemetryLines, useEngine, usePublish, bondBand, type Signals } from "./engine";
@@ -103,7 +103,6 @@ export default function HandoverProtocol() {
     L.push(`MANDATE: ${mandate.trim() || `${mission.theatre.trim() || "Mission"} Durability Mandate`}`);
     L.push(`SUCCESSOR OFFICE: ${successor.trim() || "Not named"}`);
     L.push(`MISSION: ${mission.theatre.trim() || "No active mission named"}`);
-    L.push(`DATE: ${todayStamp()}`);
     L.push("");
     L.push("I. DURABILITY READING");
     L.push("");

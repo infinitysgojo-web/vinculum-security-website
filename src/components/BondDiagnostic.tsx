@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
 import { usePublish, bondBand, clampScore, mathReading, MAX_DISTANCE } from "@/components/desk/engine";
-import DeskOutput, { todayStamp } from "@/components/desk/DeskOutput";
+import DeskOutput from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import BondMathPanel from "@/components/desk/BondMathPanel";
 import RelationalDynamicsPanel from "@/components/desk/RelationalDynamicsPanel";
@@ -335,7 +335,6 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
       `THEATRE: ${theatre}`,
       `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
       `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
-      `DATE: ${todayStamp()}`,
       "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.",
       "",
       bar,

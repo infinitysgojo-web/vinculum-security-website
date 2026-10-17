@@ -8,7 +8,7 @@ import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import { CASES, DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
-import DeskOutput, { BinderContext, DeskMetaContext, todayStamp, type BinderEntry } from "@/components/desk/DeskOutput";
+import DeskOutput, { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import { PAIRINGS } from "@/content/pairings";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
@@ -579,7 +579,6 @@ function MirrorDesk() {
       `THEATRE: ${mission.theatre.trim() || "Unnamed theatre"}`,
       `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
       `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
-      `DATE: ${todayStamp()}`,
       "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.",
       "",
       bar,
