@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { seal as sealChime } from "@/lib/chancelleryHaptics";
 import { Archive, BookmarkCheck, RotateCcw, ShieldCheck, Trash2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
@@ -124,7 +125,10 @@ export default function MissionVault({
     };
     const exists = slots.some((s) => s.id === id);
     const updated = exists ? slots.map((s) => (s.id === id ? slot : s)) : [slot, ...slots];
-    if (persistSlots(updated)) toast.success(`${exists ? "Updated" : "Saved"} “${name}” in the theatre library`);
+    if (persistSlots(updated)) {
+      sealChime();
+      toast.success(`${exists ? "Updated" : "Saved"} “${name}” in the theatre library`);
+    }
   };
 
   const loadSlot = (slot: SavedTheatreSlot) => {
@@ -158,6 +162,7 @@ export default function MissionVault({
     a.download = `vinculum-${slug}.vinculum`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
+    sealChime();
     toast.success("Mission archive saved with SHA-256 seal");
   };
 

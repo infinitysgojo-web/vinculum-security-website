@@ -1,4 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
+import { Wand2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
@@ -10,6 +12,8 @@ type Rule = {
   finding: string;
   substitute: string;
   anchor: string;
+  /** Raised by the absence of wording across the whole text, not by a phrase. */
+  absence?: boolean;
 };
 
 /**
@@ -66,6 +70,7 @@ const RULES: Rule[] = [
     substitute:
       "Representatives of the successor generation shall hold seats with voting rights, not observer status, in every body established under this Agreement.",
     anchor: "Weighting principle, Section III.F; Generational Cliff",
+    absence: true,
   },
   {
     id: "termination",
@@ -86,8 +91,62 @@ const RULES: Rule[] = [
     substitute:
       "Any breach shall be referred to the verifying body within thirty days, published in the compliance record, and shall suspend the breaching party's entitlements under Articles [ ] until cured.",
     anchor: "Unanchored Repair trap",
+    absence: true,
   },
 ];
+
+type Mark = { start: number; end: number; name: string; anchor: string };
+type OwnRule = { phrase: string; why: string; sub: string };
+
+/** Every flagged phrase in the text, in order, without overlaps. */
+function flaggedSpans(body: string, own: OwnRule[]): Mark[] {
+  const marks: Mark[] = [];
+  for (const r of RULES) {
+    if (r.absence) continue;
+    const g = new RegExp(r.test.source, "gi");
+    let m: RegExpExecArray | null;
+    while ((m = g.exec(body))) {
+      if (!m[0]) { g.lastIndex++; continue; }
+      marks.push({ start: m.index, end: m.index + m[0].length, name: r.name, anchor: r.anchor });
+    }
+  }
+  const lower = body.toLowerCase();
+  for (const o of own) {
+    const ph = o.phrase.toLowerCase();
+    if (!ph) continue;
+    for (let i = lower.indexOf(ph); i >= 0; i = lower.indexOf(ph, i + ph.length))
+      marks.push({ start: i, end: i + ph.length, name: o.why || "Analyst rule", anchor: "Analyst's own rule" });
+  }
+  marks.sort((a, b) => a.start - b.start || b.end - a.end);
+  const out: Mark[] = [];
+  for (const m of marks) if (!out.length || m.start >= out[out.length - 1].end) out.push(m);
+  return out;
+}
+
+/**
+ * Replace every flagged loophole with the canonical binding wording: a sentence
+ * carrying a flagged phrase gives way to that rule's substitute (each substitute
+ * once), analyst phrases take their own substitute, and wording the text lacks
+ * altogether (successor generation, consequence on breach) is appended.
+ */
+function sanitize(body: string, own: OwnRule[]): string {
+  const used = new Set<string>();
+  const sentences = body.trim().split(/(?<=[.;!?])\s+/);
+  const kept: string[] = [];
+  for (const sentence of sentences) {
+    const hit = RULES.find((r) => !r.absence && r.test.test(sentence));
+    if (!hit) { kept.push(sentence); continue; }
+    if (!used.has(hit.id)) kept.push(hit.substitute);
+    used.add(hit.id);
+  }
+  let next = kept.join(" ");
+  for (const o of own) {
+    if (!o.phrase || !o.sub) continue;
+    next = next.replace(new RegExp(o.phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), o.sub);
+  }
+  for (const r of RULES) if (r.absence && r.test.test(next)) next = `${next} ${r.substitute}`;
+  return next;
+}
 
 /** Deliberately flawed sample clauses, so the linter can be seen working. Fictional text. */
 const PRESETS: { id: string; chip: string; title: string; body: string }[] = [
@@ -123,7 +182,7 @@ export default function ClauseRedliner() {
     [body]
   );
 
-  const [own, setOwn] = useState<{ phrase: string; why: string; sub: string }[]>([]);
+  const [own, setOwn] = useState<OwnRule[]>([]);
   const [op, setOp] = useState(""); const [ow, setOw] = useState(""); const [os, setOs] = useState("");
   const ownHits = body.trim().length >= 20 ? own.filter((r) => body.toLowerCase().includes(r.phrase.toLowerCase())) : [];
   const { signals } = useEngine();
@@ -143,6 +202,8 @@ export default function ClauseRedliner() {
       live.push(`The rupture index reads ${signals.rupture} per cent, yet the draft names no independent verifier. Add one with defined reporting intervals.`);
   }
   const clean = body.trim().length >= 20 && findings.length === 0;
+  const spans = useMemo(() => (body.trim().length >= 20 ? flaggedSpans(body, own) : []), [body, own]);
+  const canSanitize = findings.length > 0 || ownHits.some((o) => o.sub);
 
   const text = useMemo(() => {
     const L: string[] = [];
@@ -283,6 +344,58 @@ export default function ClauseRedliner() {
       </div>
 
       <div className="space-y-4 min-w-0">
+        {body.trim().length >= 20 && (
+          <div className="border border-brass/40 bg-background p-4 sm:p-5">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <p className={`${label} mb-0`}>Interactive redline</p>
+              <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+                {spans.length} phrase{spans.length === 1 ? "" : "s"} flagged · {findings.length} finding{findings.length === 1 ? "" : "s"}
+              </span>
+            </div>
+            <p className="text-sm leading-relaxed text-foreground/90 whitespace-pre-wrap [overflow-wrap:anywhere]">
+              {(() => {
+                const parts: ReactNode[] = [];
+                let at = 0;
+                spans.forEach((m, i) => {
+                  if (m.start > at) parts.push(body.slice(at, m.start));
+                  parts.push(
+                    <Popover key={i}>
+                      <PopoverTrigger asChild>
+                        <button
+                          type="button"
+                          className="bg-destructive/15 text-destructive line-through decoration-destructive/60 px-1 py-0.5 rounded cursor-help"
+                          aria-label={`Flagged: ${m.name}`}
+                        >
+                          {body.slice(m.start, m.end)}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-72 text-xs">
+                        <p className="text-[10px] uppercase tracking-[0.16em] font-semibold text-destructive">{m.name}</p>
+                        <p className="mt-1 text-muted-foreground">Doctrinal anchor: {m.anchor}</p>
+                      </PopoverContent>
+                    </Popover>,
+                  );
+                  at = m.end;
+                });
+                if (at < body.length) parts.push(body.slice(at));
+                return parts;
+              })()}
+            </p>
+            {findings.filter((f) => f.absence).length > 0 && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Missing altogether: {findings.filter((f) => f.absence).map((f) => f.name).join("; ")}.
+              </p>
+            )}
+            <button
+              type="button"
+              disabled={!canSanitize}
+              onClick={() => setBody(sanitize(body, ownHits))}
+              className="mt-4 inline-flex w-full sm:w-auto min-h-11 items-center justify-center gap-2 bg-primary px-4 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary-foreground hover:bg-accent transition-colors disabled:opacity-40"
+            >
+              <Wand2 size={13} /> Apply Chancellery Substitutions
+            </button>
+          </div>
+        )}
         <SyncPanel linked={linked} onToggle={setLinked} summary={() => live.length ? live : ["The live reading raises no extra finding against this wording."]} />
         <DeskOutput text={text} fileName="Vinculum-Clause-Redline" />
       </div>

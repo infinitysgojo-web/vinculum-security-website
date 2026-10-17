@@ -39,11 +39,51 @@ const FLOW: Record<string, Flow> = {
   binder: { reads: [BOND, RUPT, SHOCK, GAP, COV, SURV, VER, GATES], publishes: [] },
 };
 
+/** Canonical desk id for each upstream source named in the chain. */
+export const DESK_FOR_SOURCE: Record<string, string> = {
+  Diagnostics: "diagnostics",
+  "Sentinel Matrix": "sentinel",
+  "Compound Shock": "compound",
+  "Track Sequencing": "tracks",
+  "Clause Architect": "clauses",
+  "Succession Simulator": "succession",
+  "Verification Ledger": "verification",
+  "Mission Readiness": "readiness",
+  "De-confliction Bench": "multiparty",
+};
+
+/** Whether a desk currently has its own telemetry live on the mission bus. */
+const PUBLISHES: Record<string, (s: Signals) => boolean> = {
+  diagnostics: (s) => s.bonds !== undefined,
+  sentinel: (s) => s.rupture !== undefined,
+  compound: (s) => (s.shocks?.length ?? 0) > 0,
+  mirror: (s) => (s.mirrors?.length ?? 0) > 0,
+  multiparty: (s) => (s.seatedParties ?? 0) > 0,
+  tracks: (s) => s.trackGap !== undefined,
+  clauses: (s) => (s.covenants?.length ?? 0) > 0,
+  redliner: (s) => s.redlineFlags !== undefined,
+  succession: (s) => s.survivalScore !== undefined,
+  readiness: (s) => s.gatesCleared !== undefined,
+  verification: (s) => s.verifierSeated !== undefined,
+  handover: (s) => s.handoverViability !== undefined,
+};
+export function deskIsLive(deskId: string, s: Signals) {
+  return PUBLISHES[deskId]?.(s) ?? false;
+}
+
 /**
  * Shows, for the active desk, which upstream readings it consumes (and whether
  * each is currently live on the bus) and what it publishes downstream.
  */
-export default function MissionChain({ deskId, signals }: { deskId: string; signals: Signals }) {
+export default function MissionChain({
+  deskId,
+  signals,
+  onNavigate,
+}: {
+  deskId: string;
+  signals: Signals;
+  onNavigate?: (deskId: string) => void;
+}) {
   const flow = FLOW[deskId];
   if (!flow || (!flow.reads.length && !flow.publishes.length)) return null;
   return (
@@ -64,7 +104,20 @@ export default function MissionChain({ deskId, signals }: { deskId: string; sign
                   <span className="min-w-0 [overflow-wrap:anywhere]">
                     <span className="text-foreground/90">{r.label}</span>{" "}
                     <span className="text-muted-foreground">
-                      · {r.from} · {on ? "live" : "not yet set"}
+                      ·{" "}
+                      {onNavigate && DESK_FOR_SOURCE[r.from] ? (
+                        <button
+                          type="button"
+                          onClick={() => onNavigate(DESK_FOR_SOURCE[r.from])}
+                          className="font-medium underline decoration-brass/60 underline-offset-2 hover:text-accent transition-colors"
+                          title={on ? `Open ${r.from}` : `Calibrate ${r.from}`}
+                        >
+                          {r.from}
+                        </button>
+                      ) : (
+                        r.from
+                      )}{" "}
+                      · {on ? "live" : "not yet set"}
                     </span>
                   </span>
                 </li>

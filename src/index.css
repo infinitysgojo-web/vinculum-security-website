@@ -25,6 +25,9 @@
   --brass: 38 61% 56%;              /* #D4A24C brass */
   --navy-tint: 37 45% 88%;          /* #EFE4D0 warm cream card surface */
   --gold-tint: 37 65% 86%;          /* #F3E3C6 alt row / quote surface */
+  --terracotta: 11 61% 49%;         /* same hue as accent, named for alert states */
+  --ochre: 33 72% 45%;              /* fragile band */
+  --emerald: 152 45% 32%;           /* durable band */
 
   --destructive: 0 70% 45%;
   --destructive-foreground: 32 62% 91%;

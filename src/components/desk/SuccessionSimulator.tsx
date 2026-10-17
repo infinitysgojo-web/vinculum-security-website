@@ -51,6 +51,64 @@ function bandOf(q: number) {
 
 type Shock = { id: string; label: string; sev: number };
 
+/** Semi-circular durability dial for the treaty stress survival score S%. */
+function DurabilityDial({ score }: { score: number }) {
+  const cx = 130;
+  const cy = 122;
+  const R = 100;
+  const clamp = Math.max(0, Math.min(100, score));
+  const pt = (p: number, r = R) => {
+    const a = (Math.PI * p) / 100;
+    return [cx - r * Math.cos(a), cy - r * Math.sin(a)] as const;
+  };
+  const arc = (p0: number, p1: number) => {
+    const [x0, y0] = pt(p0);
+    const [x1, y1] = pt(p1);
+    return `M ${x0} ${y0} A ${R} ${R} 0 0 1 ${x1} ${y1}`;
+  };
+  const zones = [
+    { from: 0, to: 35, stroke: "hsl(var(--destructive))", name: "Non-survivable" },
+    { from: 35, to: 55, stroke: "hsl(var(--ochre))", name: "Fragile" },
+    { from: 55, to: 75, stroke: "hsl(var(--brass))", name: "Resilient" },
+    { from: 75, to: 100, stroke: "hsl(var(--emerald))", name: "Durable" },
+  ];
+  const [nx0, ny0] = pt(SUCCESSION_TRAP, R - 14);
+  const [nx1, ny1] = pt(SUCCESSION_TRAP, R + 10);
+  const [tx, ty] = pt(SUCCESSION_TRAP, R + 20);
+  const band = bandOf(clamp);
+  return (
+    <div className="border border-brass/40 bg-background p-4">
+      <p className={label}>Treaty stress survival · S%</p>
+      <svg viewBox="0 -14 260 154" className="mx-auto w-full max-w-[320px] h-auto" role="img" aria-label={`Survival score ${clamp.toFixed(1)} per cent, ${band.name}`}>
+        {zones.map((z) => (
+          <path key={z.name} d={arc(z.from, z.to)} fill="none" stroke={z.stroke} strokeWidth="14" strokeOpacity="0.85" />
+        ))}
+        <line x1={nx0} y1={ny0} x2={nx1} y2={ny1} stroke="hsl(var(--foreground))" strokeWidth="2.2" />
+        <text x={tx} y={ty} textAnchor="middle" className="fill-foreground" style={{ fontSize: 8, fontWeight: 700 }}>
+          {SUCCESSION_TRAP.toFixed(1)}
+        </text>
+        <g style={{ transform: `rotate(${-90 + (180 * clamp) / 100}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: "transform 700ms cubic-bezier(.2,.8,.2,1)" }}>
+          <polygon points={`${cx - 3.5},${cy} ${cx + 3.5},${cy} ${cx},${cy - (R - 6)}`} fill="hsl(var(--primary))" />
+        </g>
+        <circle cx={cx} cy={cy} r="6" fill="hsl(var(--primary))" stroke="hsl(var(--brass))" strokeWidth="2" />
+        <text x={cx - R} y={cy + 14} textAnchor="middle" className="fill-muted-foreground" style={{ fontSize: 8 }}>0</text>
+        <text x={cx + R} y={cy + 14} textAnchor="middle" className="fill-muted-foreground" style={{ fontSize: 8 }}>100</text>
+      </svg>
+      <p className="mt-1 text-center font-serif text-3xl font-bold text-primary tabular-nums">
+        {clamp.toFixed(1)}<span className="text-base text-muted-foreground">%</span>
+      </p>
+      <p className="text-center text-[10px] uppercase tracking-[0.18em] font-semibold text-accent">{band.name}</p>
+      <p className="mt-2 text-center text-xs text-foreground/85">{band.advice}</p>
+      <div className="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="inline-flex items-center gap-1"><span className="h-2 w-2 bg-destructive" aria-hidden /> 0–34</span>
+        <span className="inline-flex items-center gap-1"><span className="h-2 w-2 bg-ochre" aria-hidden /> 35–54</span>
+        <span className="inline-flex items-center gap-1"><span className="h-2 w-2 bg-brass" aria-hidden /> 55–74</span>
+        <span className="inline-flex items-center gap-1"><span className="h-2 w-2 bg-emerald" aria-hidden /> 75–100</span>
+      </div>
+    </div>
+  );
+}
+
 export default function SuccessionSimulator() {
   const [title, setTitle] = useState("");
   // Linked: the canonical durability formula reads the live mission bus. Override: the drafted-text quotient alone.
@@ -296,6 +354,7 @@ export default function SuccessionSimulator() {
           </div>
         </div>
         <div className="space-y-4 min-w-0">
+          <DurabilityDial score={signals.survivalScore ?? (canon ? canon.percent : r.q)} />
           {canon && (
             <div className={`border bg-background p-4 ${canon.trap ? "border-terracotta/60" : "border-brass/40"}`}>
               <p className={label}>Succession durability S% · Section 4.5</p>

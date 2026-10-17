@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
-import { usePublish, bondBand, clampScore, mathReading, MAX_DISTANCE } from "@/components/desk/engine";
+import { usePublish, useEngine, bondBand, clampScore, mathReading, relationalDynamics, stageGateAudit, MAX_DISTANCE } from "@/components/desk/engine";
 import DeskOutput from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import BondMathPanel from "@/components/desk/BondMathPanel";
@@ -292,6 +292,31 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
     analogue: analogue.shortTitle,
   });
 
+  // Ghost target projection: a what-if remediation drawn beside the live vector.
+  // It reads the live bus (shocks, friction, rupture, trend) and changes nothing until applied.
+  const { signals: bus } = useEngine();
+  const [simulate, setSimulate] = useState(false);
+  const [targetKey, setTargetKey] = useState<LevelKey | null>(null);
+  const [lift, setLift] = useState(1.0);
+  const tKey = targetKey ?? weakest.key;
+  const target: BondScores = { ...scores, [tKey]: clampScore(scores[tKey] + lift) };
+  const projection = useMemo(() => {
+    if (!simulate) return null;
+    const asBonds = (b: BondScores) => ({ interpersonal: b.interpersonal, communal: b.communal, intergenerational: b.intergenerational, institutional: b.institutional });
+    const base = relationalDynamics({ ...bus, bonds: asBonds(scores) });
+    const next = relationalDynamics({ ...bus, bonds: asBonds(target) });
+    const gateNow = stageGateAudit({ ...bus, bonds: asBonds(scores) }).gates[0];
+    const gateNext = stageGateAudit({ ...bus, bonds: asBonds(target) }).gates[0];
+    return {
+      contagion: base && next ? Math.round((next.contagion - base.contagion) * 10) / 10 : 0,
+      deficit: base && next ? Math.round((next.deficit - base.deficit) * 10) / 10 : 0,
+      gateNow: gateNow.passed,
+      gateNext: gateNext.passed,
+      applied: Math.round((target[tKey] - scores[tKey]) * 10) / 10,
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [simulate, bus, scores, tKey, lift]);
+
   /** Doctrinal band labels used in the dossier (Failing <2.0, Fragile 2.0-2.9, Viable 3.0-3.9, Fortified 4.0-5.0). */
   const dossierBand = (v: number) => (v < 2 ? "Failing" : v < 3 ? "Fragile" : v < 4 ? "Viable" : "Fortified");
 
@@ -527,6 +552,16 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
                 strokeWidth={1.8}
                 style={{ transition: "all 400ms ease" }}
               />
+              {simulate && (
+                <polygon
+                  points={LEVELS.map((l, i) => point(i, target[l.key]).join(",")).join(" ")}
+                  fill="hsl(var(--accent) / 0.06)"
+                  stroke="hsl(var(--accent))"
+                  strokeWidth={1.6}
+                  strokeDasharray="5 4"
+                  style={{ transition: "all 400ms ease" }}
+                />
+              )}
               {LEVELS.map((l, i) => {
                 const [x, y] = point(i, scores[l.key]);
                 return <circle key={l.key} cx={x} cy={y} r={3.4} fill="hsl(var(--accent))" />;
@@ -549,6 +584,47 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
                 );
               })}
             </svg>
+
+            <div className="mt-4 border-t border-brass/30 pt-4">
+              <label className="flex min-h-11 cursor-pointer items-center gap-3 text-xs text-foreground/85">
+                <input type="checkbox" checked={simulate} onChange={(e) => setSimulate(e.target.checked)} className="accent-[hsl(var(--accent))]" />
+                <span className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">Simulate remediation</span>
+              </label>
+              {simulate && projection && (
+                <div className="mt-2 space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <select
+                      value={tKey}
+                      onChange={(e) => setTargetKey(e.target.value as LevelKey)}
+                      className="w-full border border-input bg-background px-3 py-2 text-sm min-h-11"
+                      aria-label="Bond to remediate"
+                    >
+                      {LEVELS.map((l) => (
+                        <option key={l.key} value={l.key}>{l.name === "Institutional-Relational" ? "Institutional" : l.name}</option>
+                      ))}
+                    </select>
+                    <label className="flex items-center gap-2 text-xs text-muted-foreground min-h-11">
+                      <span className="shrink-0">Lift +{lift.toFixed(1)}</span>
+                      <input type="range" min={0} max={3} step={0.1} value={lift} onChange={(e) => setLift(Number(e.target.value))} className="w-full accent-[hsl(var(--accent))]" aria-label="Remediation lift" />
+                    </label>
+                  </div>
+                  <p className="font-mono text-[11px] leading-relaxed text-primary [overflow-wrap:anywhere]">
+                    Target {LEVELS.find((l) => l.key === tKey)!.name.replace("-Relational", "")} {projection.applied >= 0 ? "+" : ""}{projection.applied.toFixed(1)} → Contagion {projection.contagion > 0 ? "+" : ""}{projection.contagion.toFixed(1)}% · Deficit {projection.deficit > 0 ? "+" : ""}{projection.deficit.toFixed(1)} ·{" "}
+                    <span className={projection.gateNext ? "text-emerald" : "text-destructive"}>
+                      {projection.gateNow ? "Gate 1 already clear" : projection.gateNext ? "Clears Gate 1" : "Gate 1 still locked"}
+                    </span>
+                  </p>
+                  <button
+                    type="button"
+                    disabled={projection.applied === 0}
+                    onClick={() => setScores(() => target)}
+                    className="min-h-11 w-full border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40"
+                  >
+                    Apply projected target to the mission
+                  </button>
+                </div>
+              )}
+            </div>
 
             <p className="mt-5 text-sm leading-relaxed text-foreground/80">{standing.note}</p>
           </div>
