@@ -168,8 +168,9 @@ export default function HandoverProtocol() {
   }, [mandate, successor, mission, cleared, deps, r, engineLines, linked, signals]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 w-full min-w-0 [&>*]:min-w-0">
-      <div className="space-y-6">
+    <div className="w-full min-w-0">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+      <div className="space-y-6 min-w-0">
         <div className={panel}>
           <label className={label} htmlFor="hp-m">Mandate under handover</label>
           <input
@@ -213,6 +214,11 @@ export default function HandoverProtocol() {
           ))}
         </div>
 
+      </div>
+
+      <div className="space-y-6 min-w-0">
+        <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()) : ["The upstream reading raises no handover condition."]} />
+
         <div className="border border-brass/40 p-4 sm:p-5">
           <div className="flex items-baseline justify-between mb-3">
             <p className={label}>Durability quotient</p>
@@ -237,11 +243,13 @@ export default function HandoverProtocol() {
             ))}
           </div>
         </div>
+
       </div>
+    </div>
 
-      <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()) : ["The upstream reading raises no handover condition."]} />
-
-      <DeskOutput text={text} fileName="Vinculum-Handover-Protocol" />
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Handover-Protocol" />
+      </div>
     </div>
   );
 }

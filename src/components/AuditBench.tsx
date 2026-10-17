@@ -10,16 +10,25 @@ import { cn } from "@/lib/utils";
 type Party = readonly string[];
 const CHECKS = ["Relevant evidence reviewed", "Affected party heard directly", "Independent verification recorded"];
 
-export default function AuditBench({ parties }: { parties: readonly Party[] }) {
+export default function AuditBench({ parties: base }: { parties: readonly Party[] }) {
   const [active, setActive] = useState(0);
   const { signals } = useEngine();
+  // Sovereign Custom Mode: inscribed frontline actors join the audit loop as full parties.
+  const parties: readonly Party[] = [
+    ...base,
+    ...(signals.customParties ?? []).map((p) => [
+      p.name,
+      `${p.constituency || "Inscribed actor"} · leverage ${p.leverage.toFixed(1)} of 5, vulnerability ${p.vulnerability.toFixed(1)} of 5`,
+      `Sovereign inscription. Spoiler risk ${p.spoilerRisk.toLowerCase()}${p.vetoPower ? "; holds a veto, so retaliation safeguards must be confirmed before any assessment that touches its interests is released" : ""}. Confirm the actor was heard directly and that no finding exposes it to retaliation.`,
+    ]),
+  ];
   // Linked: the audit prompts follow the live mission reading. Override: the bench works standalone.
   const [linked, setLinked] = useState(true);
   const sg: Signals = linked ? signals : {};
   const [checked, setChecked] = useState<Record<string, boolean[]>>({});
   const complete = parties.filter(([name]) => (checked[name] ?? []).filter(Boolean).length === CHECKS.length).length;
   usePublish("audit", { safeguardCoverage: parties.length ? Math.round((complete / parties.length) * 100) : 0 });
-  const party = parties[active];
+  const party = parties[active] ?? parties[0];
   if (!party) return null;
   const state = checked[party[0]] ?? CHECKS.map(() => false);
   const update = (index: number) => setChecked((current) => ({
@@ -96,7 +105,7 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
           </div>
         </div>
       </div>
-      <div className="mt-10 min-w-0">
+      <div className="mt-8 w-full min-w-0">
         <DeskOutput text={record} fileName="Vinculum-Field-Audit" />
       </div>
     </section>

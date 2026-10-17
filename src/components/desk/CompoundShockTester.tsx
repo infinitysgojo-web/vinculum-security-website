@@ -258,7 +258,7 @@ export default function CompoundShockTester() {
         until then this desk tests against a 5.0 baseline.
       </p>
     )}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full min-w-0 [&>*]:min-w-0">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="cs-theatre">Theatre under test</label>
@@ -384,8 +384,10 @@ export default function CompoundShockTester() {
         <BondRadar scores={bondScores} caption={useLive ? "Live continuum after the applied shocks" : "Continuum after the applied shocks"} />
       </div>
 
-      <DeskOutput text={text} fileName="Vinculum-Compound-Stress-Test" />
     </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Compound-Stress-Test" />
+      </div>
     </div>
   );
 }

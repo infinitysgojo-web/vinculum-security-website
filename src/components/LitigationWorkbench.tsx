@@ -144,9 +144,23 @@ export default function LitigationWorkbench() {
   const [posture, setPosture] = useState(0);
   const [bond, setBond] = useState(0);
   const [tactic, setTactic] = useState(0);
-  usePublish("legal", { litigationForum: FORUMS[forum]?.label ?? "" });
-
   const { signals } = useEngine();
+  // Sovereign Custom Mode: inscribed tribunals and traditional assemblies become selectable forums.
+  const forums = useMemo(
+    () => [
+      ...FORUMS,
+      ...(signals.customNotes ?? []).filter((n) => n.desk === "legal").map((n) => ({
+        id: `sov-${n.id}`,
+        label: `Sovereign tribunal: ${n.title}`,
+        note: n.body || "Customary forum inscribed by the drafting officer.",
+        authority: "Customary procedure, evidentiary burdens and oaths of record as inscribed.",
+      })),
+    ],
+    [signals.customNotes],
+  );
+  const activeForum = forums[forum] ?? FORUMS[0];
+  usePublish("legal", { litigationForum: activeForum.label });
+
   const [linked, setLinked] = useState(true);
   useEffect(() => {
     if (!linked || !signals.weakestBond) return;
@@ -154,7 +168,7 @@ export default function LitigationWorkbench() {
     if (i >= 0) setBond(i);
   }, [linked, signals.weakestBond]);
   const text = useMemo(() => {
-    const f = FORUMS[forum];
+    const f = activeForum;
     const p = POSTURES[posture];
     const t = COUNTERPART[tactic];
     const b = DOMAINS[bond];
@@ -205,7 +219,7 @@ export default function LitigationWorkbench() {
     lines.push("Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     lines.push("END OF CHECKLIST.");
     return lines.join("\n");
-  }, [matter, facts, forum, posture, bond, tactic, linked, signals]);
+  }, [matter, facts, activeForum, posture, bond, tactic, linked, signals]);
 
   // Binder id follows the matter, so each matter keeps its own binder entry.
   const fileName = `Vinculum-Litigation-Checklist-${(matter.trim() || "matter").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").slice(0, 40)}`;
@@ -231,7 +245,7 @@ export default function LitigationWorkbench() {
         or transmitted, and no model is involved.
       </p>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="lit-matter">Matter or caption</label>
@@ -258,7 +272,7 @@ export default function LitigationWorkbench() {
             <div>
               <label className={label} htmlFor="lit-forum">Forum</label>
               <select id="lit-forum" className={field} value={forum} onChange={(e) => setForum(Number(e.target.value))}>
-                {FORUMS.map((f, i) => <option key={f.id} value={i}>{f.label}</option>)}
+                {forums.map((f, i) => <option key={f.id} value={i}>{f.label}</option>)}
               </select>
             </div>
             <div>
@@ -288,8 +302,10 @@ export default function LitigationWorkbench() {
               <RotateCcw size={13} /> Reset
             </button>
           </div>
-          <DeskOutput text={text} fileName={fileName} />
         </div>
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName={fileName} />
       </div>
     </section>
   );

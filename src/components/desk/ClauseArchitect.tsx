@@ -215,7 +215,7 @@ export default function ClauseArchitect() {
 
   return (
     <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="ca-title">Instrument title (optional)</label>
@@ -314,7 +314,6 @@ export default function ClauseArchitect() {
               return n;
             }}
           />
-          <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
         </div>
       </div>
           <div className="mt-10">
@@ -340,6 +339,9 @@ export default function ClauseArchitect() {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Continuity-Provisions" />
       </div>
     </section>
   );

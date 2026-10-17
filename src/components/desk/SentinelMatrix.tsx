@@ -117,7 +117,12 @@ export default function SentinelMatrix() {
     const score =
       SIGNS.reduce((s, x, i) => s + (on.includes(i) ? x.w : 0), 0) +
       custom.reduce((s, c) => s + (cOn.includes(c.id) ? c.w : 0), 0);
-    const raw = (score / totalMax) * 100;
+    // Sovereign inscriptions: every point of negative bond delta from an inscribed shock adds
+    // five points of load, every active inscribed trap adds six, capped at thirty in total.
+    const shockMag = (signals.customShocks ?? []).reduce((n, x) => n + Object.values(x.deltas).reduce((a, d) => a + Math.max(0, -d), 0), 0);
+    const trapN = (signals.customTraps ?? []).filter((t) => t.active).length;
+    const inscribed = Math.min(30, Math.round(shockMag * 5 + trapN * 6));
+    const raw = (score / totalMax) * 100 + inscribed;
     const pct = Math.min(100, Math.round(raw * TREND[trend].mult));
 
     const traps: { name: string; reading: string; counter: string }[] = [];
@@ -156,8 +161,8 @@ export default function SentinelMatrix() {
       traps.length >= 2
         ? `Compound exposure: ${traps.map((t) => t.name).join(" together with ")}. Traps in combination fail faster than the sum of their parts; sequence the counter-measures rather than running them in parallel.`
         : "";
-    return { byBond, pct, b: band(pct), traps, compound };
-  }, [on, trend, custom, cOn]);
+    return { byBond, pct, b: band(pct), traps, compound, inscribed };
+  }, [on, trend, custom, cOn, signals.customShocks, signals.customTraps]);
 
   usePublish("sentinel", {
     rupture: r.pct,
@@ -176,6 +181,7 @@ export default function SentinelMatrix() {
       `THEATER: ${theater.trim() || "Unnamed theater"}`,
       `OBSERVATION TREND: ${TREND[trend].label} (multiplier ×${TREND[trend].mult.toFixed(2)})`,
       `RELATIONAL RUPTURE INDEX: ${r.pct}% (${r.b.name.toUpperCase()})`,
+      ...(r.inscribed ? [`Inscribed shock and trap load: +${r.inscribed} points before the trend multiplier.`] : []),
       `SIGNS RECORDED: ${on.length + cOn.length} of ${SIGNS.length + custom.length}`,
       `CUSTOM INDICATORS DEFINED: ${custom.length}`,
       "",
@@ -229,7 +235,7 @@ export default function SentinelMatrix() {
           }
         />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
@@ -345,6 +351,7 @@ export default function SentinelMatrix() {
           <div className="border border-border bg-background p-4">
             <p className={label}>Relational rupture index</p>
             <p className="font-serif text-4xl text-primary">{r.pct}% <span className={`text-lg ${bandTone(r.b.name).text}`}>{r.b.name}</span></p>
+            {r.inscribed > 0 && <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-accent">Includes +{r.inscribed} inscribed shock and trap load</p>}
             <div className="relative mt-3 h-3 bg-border" aria-hidden>
               <div className={`h-3 transition-all ${bandTone(r.b.name).bg}`} style={{ width: `${r.pct}%` }} />
               {[15, 35, 60].map((t) => <span key={t} className="absolute top-0 h-3 w-px bg-primary/50" style={{ left: `${t}%` }} />)}
@@ -364,22 +371,37 @@ export default function SentinelMatrix() {
             <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
             <p className="text-xs text-foreground/85 mt-2">{r.b.advice}</p>
           </div>
-          <div className="border border-brass/40 bg-background p-4 space-y-3">
-            <p className={label}>Latent trap proximity</p>
-            {proximity.map((t) => (
-              <div key={t.name} className={`border-l-2 pl-3 ${t.active ? "border-destructive" : "border-border"}`}>
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-serif text-base text-primary leading-tight">{t.name}</p>
-                  <span className={`text-[9px] uppercase tracking-[0.14em] font-semibold ${t.active ? "text-destructive" : "text-muted-foreground"}`}>{t.active ? "Engaged" : "Not engaged"}</span>
-                </div>
-                <p className="text-[11px] text-muted-foreground mt-1">{t.status}</p>
-                {t.active && t.counter && <p className="text-xs text-foreground/85 mt-1">Counter: {t.counter}</p>}
-              </div>
-            ))}
-            {r.compound && <p className="text-xs text-destructive">{r.compound}</p>}
-          </div>
-          <DeskOutput text={text} fileName="Vinculum-Sentinel-Reading" />
         </div>
+      </div>
+      {/* Tier 2: latent trap proximity, laid out across the full width. */}
+      <div className="mt-8 w-full min-w-0 border border-brass/40 bg-background p-4 sm:p-5">
+        <p className={label}>Latent trap proximity</p>
+        <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 [&>*]:min-w-0">
+          {proximity.map((t) => (
+            <div key={t.name} className={`border-l-2 pl-3 ${t.active ? "border-destructive" : "border-border"}`}>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="font-serif text-base text-primary leading-tight">{t.name}</p>
+                <span className={`text-[9px] uppercase tracking-[0.14em] font-semibold ${t.active ? "text-destructive" : "text-muted-foreground"}`}>{t.active ? "Engaged" : "Not engaged"}</span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-1">{t.status}</p>
+              {t.active && t.counter && <p className="text-xs text-foreground/85 mt-1">Counter: {t.counter}</p>}
+            </div>
+          ))}
+          {(signals.customTraps ?? []).map((t) => (
+            <div key={t.id} className={`border-l-2 pl-3 ${t.active ? "border-destructive" : "border-border"}`}>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="font-serif text-base text-primary leading-tight [overflow-wrap:anywhere]">{t.name}</p>
+                <span className={`text-[9px] uppercase tracking-[0.14em] font-semibold ${t.active ? "text-destructive" : "text-muted-foreground"}`}>{t.active ? "Engaged · inscribed" : "Dormant · inscribed"}</span>
+              </div>
+              {t.warningSymptom && <p className="text-[11px] text-muted-foreground mt-1">Warning: {t.warningSymptom}</p>}
+              {t.active && t.countermeasure && <p className="text-xs text-foreground/85 mt-1">Counter: {t.countermeasure}</p>}
+            </div>
+          ))}
+        </div>
+        {r.compound && <p className="mt-3 text-xs text-destructive">{r.compound}</p>}
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Sentinel-Reading" />
       </div>
     </section>
   );

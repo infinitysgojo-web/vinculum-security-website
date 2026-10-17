@@ -3,7 +3,7 @@ import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck, Radio, Stamp 
 import { toast } from "sonner";
 import { MissionContext } from "./mission";
 import { sha256, sealText, shortHash } from "./integrity";
-import { statutoryClearances, useEngine } from "./engine";
+import { inscriptionLines, statutoryClearances, useEngine } from "./engine";
 import { apostille, ledgerSize, mintDispatch, type Dispatch } from "./registry";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
@@ -77,17 +77,23 @@ export function toCable(text: string, ref: string): string {
  * a publication-grade PDF in the same house style as the case dossiers.
  * Every export carries a SHA-256 integrity stamp computed on this device.
  */
-export default function DeskOutput({ text, fileName, cable = false }: { text: string; fileName: string; /** Offer the Telegram / Cable Mode view. */ cable?: boolean }) {
+export default function DeskOutput({ text: body, fileName, cable = false }: { text: string; fileName: string; /** Offer the Telegram / Cable Mode view. */ cable?: boolean }) {
   const binder = useContext(BinderContext);
   const profile = useContext(MissionContext);
   const meta = useContext(DeskMetaContext);
   const [busy, setBusy] = useState(false);
   const [hash, setHash] = useState("");
   // Stable for the life of the view, so the screen, the PDF and the cable carry one reference.
+  const { signals } = useEngine();
+  // Every transmittal carries the Sovereign Inscriptions schedule, unless the desk already printed it.
+  const text = useMemo(() => {
+    if (body.includes("SOVEREIGN INSCRIPTIONS")) return body;
+    const ins = inscriptionLines(signals);
+    return ins.length ? `${body}\n\n${ins.join("\n").trimEnd()}` : body;
+  }, [body, signals]);
   const ref = useMemo(() => reference(fileName), [fileName]);
   const [cableMode, setCableMode] = useState(false);
   const cableText = useMemo(() => (cable ? toCable(text, ref) : ""), [cable, text, ref]);
-  const { signals } = useEngine();
   const copyCable = async () => {
     try {
       // Every cable that leaves the desk carries its own registry reference and digest.

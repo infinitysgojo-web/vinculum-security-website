@@ -62,6 +62,27 @@ function diff(prev: Signals, next: Signals): { cls: WireClass; text: string }[] 
     out.push({ cls: "VECTOR_SHIFT", text: `LITIGATION FORUM // ${next.litigationForum.toUpperCase()}` });
   if (prev.counterpart !== next.counterpart && next.counterpart && prev.counterpart)
     out.push({ cls: "VECTOR_SHIFT", text: `COUNTERPART // ${next.counterpart.toUpperCase()}` });
+  // Sovereign Custom Mode: every new inscription is announced on the wire by kind and name.
+  const INS: [keyof Signals, string, (x: never) => string][] = [
+    ["customRules", "BOUNDARY RULE", (x: string) => x],
+    ["customParties", "PARTY", (x: { name: string }) => x.name],
+    ["customTraps", "LATENT TRAP", (x: { name: string }) => x.name],
+    ["customShocks", "COMPOUND SHOCK", (x: { name: string }) => x.name],
+    ["customCovenants", "COVENANT", (x: { title: string }) => x.title],
+    ["customGates", "READINESS GATE", (x: { label: string }) => x.label],
+    ["customTracks", "TRACK III", (x: { name: string }) => x.name],
+    ["customPrecedents", "PRECEDENT", (x: { name: string }) => x.name],
+    ["customPhrases", "PROHIBITED PHRASE", (x: { phrase: string }) => x.phrase],
+    ["customNotes", "NOTE", (x: { kind: string; title: string }) => `${x.kind}: ${x.title}`],
+  ];
+  for (const [k, label, name] of INS) {
+    const before = new Set(((prev[k] as unknown[] | undefined) ?? []).map((x) => JSON.stringify(x)));
+    for (const x of (next[k] as unknown[] | undefined) ?? [])
+      if (!before.has(JSON.stringify(x)) && !(k === "customNotes" || k === "customTraps" || k === "customGates" || k === "customTracks"
+        ? ((prev[k] as { id: string }[] | undefined) ?? []).some((p) => p.id === (x as { id: string }).id)
+        : false))
+        out.push({ cls: "VECTOR_SHIFT", text: `SOVEREIGN INSCRIPTION // ${label} // ${name(x as never).toUpperCase()}` });
+  }
   const ga = stageGateAudit(prev).gates;
   const gb = stageGateAudit(next).gates;
   gb.forEach((g) => {

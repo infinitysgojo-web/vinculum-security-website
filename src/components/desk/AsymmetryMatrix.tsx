@@ -6,10 +6,10 @@ const SHORT = ["Inter.", "Comm.", "Gen.", "Inst."];
 /** Largest possible distance between two four-bond tolerance vectors on the 1.0 to 5.0 scale. */
 const MAX_DIST = Math.sqrt(4 * 16);
 
-type Party = { id: string; label: string; bond: number };
+type Party = { id: string; label: string; bond: number; /** Fixed tolerance vector for inscribed parties. */ tol?: number[]; custom?: boolean };
 
 /** Default tolerance: the 3.0 viable floor on every bond, with the party holding out at 4.0 on its own focus bond. */
-const defaultTol = (p: Party) => BONDS.map((_, i) => (i === p.bond ? 4.0 : VIABLE_FLOOR));
+const defaultTol = (p: Party) => p.tol ?? BONDS.map((_, i) => (i === p.bond ? 4.0 : VIABLE_FLOOR));
 
 /**
  * Multi-party asymmetry and leverage matrix. Each delegation carries a four-bond

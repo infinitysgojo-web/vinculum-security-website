@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Stamp } from "lucide-react";
 import { toast } from "sonner";
-import { bondBand, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
+import { bondBand, inscriptionLines, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
 import { apostille, mintDispatch, type Dispatch } from "./registry";
 import { seal } from "@/lib/chancelleryHaptics";
 
@@ -21,6 +21,12 @@ const NAMES: [keyof NonNullable<Signals["bonds"]>, string][] = [
 
 /** Formal third-person protocol grammar drawn from the live four-bond vector. */
 export function draftTransmittal(s: Signals, mode: Mode): string {
+  const ins = inscriptionLines(s);
+  const core = draftCore(s, mode);
+  return ins.length ? `${core}\n\n${ins.join("\n").trimEnd()}` : core;
+}
+
+function draftCore(s: Signals, mode: Mode): string {
   if (!s.bonds) return "";
   const b = s.bonds;
   const rows = NAMES.map(([k, n]) => ({ n, v: b[k], band: bondBand(b[k]) }));

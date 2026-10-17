@@ -279,7 +279,7 @@ export default function SuccessionSimulator() {
           </p>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="ss-t">Instrument under test</label>
@@ -445,8 +445,10 @@ export default function SuccessionSimulator() {
               <p className="text-xs text-muted-foreground mt-1">{r.first.breaks}</p>
             </div>
           )}
-          <DeskOutput text={text} fileName="Vinculum-Succession-Simulation" />
         </div>
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Succession-Simulation" />
       </div>
     </section>
   );

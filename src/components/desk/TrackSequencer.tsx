@@ -191,7 +191,7 @@ export default function TrackSequencer() {
 
   return (
     <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="tk-p">Process</label>
@@ -275,8 +275,36 @@ export default function TrackSequencer() {
               return n;
             }}
           />
-          <DeskOutput text={text} fileName="Vinculum-Track-Sequencing" />
         </div>
+      </div>
+      {(signals.customTracks?.length ?? 0) > 0 && (
+        <div className="mt-8 w-full min-w-0 border border-brass/40 bg-background p-4 sm:p-5">
+          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-3">Track III · inscribed civil society and communal tracks</p>
+          <ul className="space-y-3">
+            {signals.customTracks!.map((t) => {
+              const lead = r.a - t.phase;
+              const shear = lead > tolerance;
+              return (
+                <li key={t.id} className="min-w-0">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs">
+                    <span className="font-semibold text-primary [overflow-wrap:anywhere]">{t.name}</span>
+                    <span className={shear ? "text-destructive" : "text-emerald"}>
+                      Phase {t.phase} · Track I lead {lead} of {tolerance} tolerated{shear ? " · shear" : ""}
+                    </span>
+                  </div>
+                  <div className="relative mt-2 h-2 bg-border" aria-hidden>
+                    <div className="absolute inset-y-0 left-0 bg-accent" style={{ width: `${(Math.min(6, t.phase) / 6) * 100}%` }} />
+                    <span className="absolute top-[-3px] h-3.5 w-0.5 bg-primary" style={{ left: `${(Math.min(6, r.a) / 6) * 100}%` }} />
+                  </div>
+                  {t.description && <p className="mt-1 text-xs text-muted-foreground">{t.description}</p>}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Track-Sequencing" />
       </div>
     </section>
   );
