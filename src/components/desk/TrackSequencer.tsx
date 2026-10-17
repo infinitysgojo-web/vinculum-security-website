@@ -134,6 +134,17 @@ export default function TrackSequencer() {
             <label className={label} htmlFor="tk-p">Process</label>
             <input id="tk-p" className={`${field} text-base sm:text-sm min-h-11`} value={process} onChange={(e) => setProcess(e.target.value)} placeholder="e.g. Lake Region talks, second round" />
           </div>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Sequence presets">
+            {[1, 2, 3].map((n) => (
+              <button key={n} type="button" onClick={() => setDone(STEPS.filter((s) => PHASES.indexOf(s.phase) < n).map((s) => s.id))} className="min-h-9 px-2.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent">
+                Both tracks to phase {n}
+              </button>
+            ))}
+            <button type="button" onClick={() => setDone(STEPS.filter((s) => s.track === "II" && PHASES.indexOf(s.phase) < 2).map((s) => s.id))} className="min-h-9 px-2.5 border border-brass/50 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent">
+              Track II leads by two
+            </button>
+            <button type="button" onClick={() => setDone([])} className="min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-accent">Clear</button>
+          </div>
           {PHASES.map((ph) => (
             <div key={ph}>
               <p className={label}>{ph}</p>
