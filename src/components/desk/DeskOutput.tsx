@@ -3,6 +3,8 @@ import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck, Radio } from 
 import { toast } from "sonner";
 import { MissionContext } from "./mission";
 import { sha256, sealText, shortHash } from "./integrity";
+import { stageGateAudit, useEngine } from "./engine";
+import { apostille, mintDispatch } from "./registry";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 export const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
@@ -58,7 +60,7 @@ export function toCable(text: string, ref: string): string {
   return [
     rule,
     "ORIGIN: CHANCELLERY NAIROBI",
-    `REF: VS-DIP-${ref.split("-").pop()}`,
+    `REF: ${ref.startsWith("NV/") ? ref : `VS-DIP-${ref.split("-").pop()}`}`,
     "CLASSIFICATION: CONFIDENTIAL RELATIONAL AUDIT",
     rule,
     "",
@@ -85,9 +87,12 @@ export default function DeskOutput({ text, fileName, cable = false }: { text: st
   const ref = useMemo(() => reference(fileName), [fileName]);
   const [cableMode, setCableMode] = useState(false);
   const cableText = useMemo(() => (cable ? toCable(text, ref) : ""), [cable, text, ref]);
+  const { signals } = useEngine();
   const copyCable = async () => {
     try {
-      await navigator.clipboard.writeText(cableText);
+      // Every cable that leaves the desk carries its own registry reference and digest.
+      const d = await mintDispatch(signals, "cable");
+      await navigator.clipboard.writeText(`${apostille(d)}\n\n${toCable(text, d.ref)}`);
       toast.success("Diplomatic cable copied");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");
@@ -118,7 +123,8 @@ export default function DeskOutput({ text, fileName, cable = false }: { text: st
 
   const downloadText = async () => {
     const { stamped } = await sealText(text);
-    const url = URL.createObjectURL(new Blob([stamped], { type: "text/plain;charset=utf-8" }));
+    const d = await mintDispatch(signals, "text");
+    const url = URL.createObjectURL(new Blob([`${apostille(d)}\n\n${stamped}`], { type: "text/plain;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = `${fileName}.txt`;
@@ -132,7 +138,9 @@ export default function DeskOutput({ text, fileName, cable = false }: { text: st
     try {
       const { buildDeskDossier } = await import("./DeskDossierPdf");
       const { stamped } = await sealText(text);
+      const d = await mintDispatch(signals, "dossier");
       const blob = await buildDeskDossier({
+        attestation: { ref: d.ref, digest: d.digest, gates: stageGateAudit(signals).gates.map((g) => ({ name: g.name, passed: g.passed })), floorValidated: d.floorValidated },
         text: stamped,
         deskTitle: meta.title,
         eyebrow: meta.eyebrow,

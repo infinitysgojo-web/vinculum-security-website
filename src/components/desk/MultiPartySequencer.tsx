@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
+import AsymmetryMatrix from "./AsymmetryMatrix";
 
 type Actor = {
   id: string;
@@ -409,6 +410,7 @@ export default function MultiPartySequencer() {
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
+        <AsymmetryMatrix parties={seated.map((a) => ({ id: a.id, label: a.label, bond: a.bond }))} />
         {pairOk && (
           <div className="border border-accent/50 bg-background p-5">
             <p className={label}>De-confliction script · {pairOk.map((id) => ACTORS.find((x) => x.id === id)?.label).join(" / ")}</p>

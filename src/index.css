@@ -580,3 +580,36 @@
 
 /* Keep floating consent badge from covering last content on mobile */
 @media (max-width: 640px) { main { padding-bottom: 4.5rem; } }
+
+/* SCIF / Amber Field terminal mode: the same semantic tokens, re-pointed to an
+   amber-phosphor palette on deep charcoal. Toggled by the .scif class on <html>. */
+html.scif {
+  --background: 240 10% 4%;         /* deep void charcoal */
+  --foreground: 38 92% 62%;         /* warm amber text */
+  --card: 240 8% 7%;
+  --card-foreground: 38 92% 62%;
+  --popover: 240 8% 7%;
+  --popover-foreground: 38 92% 62%;
+  --primary: 38 92% 50%;            /* amber-brass */
+  --primary-foreground: 240 10% 4%;
+  --secondary: 240 8% 9%;
+  --secondary-foreground: 38 92% 56%;
+  --muted: 240 8% 10%;
+  --muted-foreground: 36 45% 52%;
+  --accent: 32 95% 44%;             /* deeper amber for accents */
+  --accent-foreground: 240 10% 4%;
+  --brass: 36 80% 30%;              /* hairline amber rules */
+  --navy-tint: 240 8% 8%;
+  --gold-tint: 240 8% 9%;
+  --terracotta: 16 85% 52%;
+  --ochre: 33 90% 48%;
+  --emerald: 85 55% 45%;
+  --destructive: 4 85% 56%;
+  --destructive-foreground: 240 10% 4%;
+  --border: 36 70% 22%;
+  --input: 36 70% 22%;
+  --ring: 38 92% 50%;
+  color-scheme: dark;
+}
+html.scif body { background: hsl(var(--background)); }
+html.scif [class*="tracking-["] { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
