@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import EngineBrief from "@/components/desk/EngineBrief";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, type Signals } from "@/components/desk/engine";
-import DeskOutput, { todayStamp } from "@/components/desk/DeskOutput";
+import DeskOutput from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import { PANELS, VERDICT_LABEL, type Verdict } from "@/content/adversarial";
 
@@ -47,7 +47,6 @@ export default function AdversarialChamber() {
     L.push("Vinculum Security, Legal Architecture Division");
     L.push("");
     L.push(`MISSION: ${mission.theatre.trim() || "Unnamed mission"}`);
-    L.push(`DATE: ${todayStamp()}`);
     L.push(`SCOPE: ${filter === "all" ? "Every question" : VERDICT_LABEL[filter]}, ${visiblePanels.length} panel(s)`);
     L.push(`TALLY (ALL PANELS): ${counts.answered} answered, ${counts.conceded} conceded, ${counts.open} held open of ${counts.all}`);
     L.push("");

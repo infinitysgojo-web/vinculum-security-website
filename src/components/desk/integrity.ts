@@ -9,7 +9,7 @@ const STAMP_HEAD = "INTEGRITY STAMP (TAMPER-EVIDENT AUDIT RECORD)";
 
 /** The integrity footer appended to every exported chancellery text. */
 export const integrityFooter = (hash: string, stamp: string) =>
-  `\n\n${BAR}\n${STAMP_HEAD}\n  SHA-256 Digest : ${hash}\n  Timestamp      : ${stamp}\n  Platform       : Vinculum Security Client-Side Cryptographic Seal\n  Re-hash the document text above this delimiter to verify chain of custody.\n${BAR}`;
+  `\n\n${BAR}\n${STAMP_HEAD}\n  SHA-256 Digest : ${hash}\n  Platform       : Vinculum Security Client-Side Cryptographic Seal\n  Re-hash the document text above this delimiter to verify chain of custody.\n${BAR}`;
 
 /** Short form for on-screen display. */
 export const shortHash = (h: string) => (h ? `${h.slice(0, 10)}…${h.slice(-8)}` : "computing…");

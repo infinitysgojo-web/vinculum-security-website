@@ -200,11 +200,6 @@ export async function buildDeskDossier({
   reference: string;
   profile: MissionProfile;
 }) {
-  const issued = new Date().toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
   const classification = profile.classification.trim() || "Unrestricted, working draft";
   const theatre = profile.theatre.trim() || "No active mission named";
 
@@ -231,7 +226,6 @@ export async function buildDeskDossier({
               ["Mission or theatre", theatre],
               ["Parties of record", profile.parties.trim() || "Not recorded"],
               ["Drafting officer", profile.officer.trim() || "Not recorded"],
-              ["Date of issue", issued],
               ["Registered works", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved"],
               ["Classification", classification],
             ].map(([k, v]) => (
@@ -284,10 +278,6 @@ export async function buildDeskDossier({
             <View style={s.ledgerRow}>
               <Text style={s.ledgerKey}>Record</Text>
               <Text style={s.ledgerVal}>{SITE_URL}</Text>
-            </View>
-            <View style={s.ledgerRow}>
-              <Text style={s.ledgerKey}>Issued</Text>
-              <Text style={s.ledgerVal}>{issued}</Text>
             </View>
             <View style={s.ledgerRow}>
               <Text style={s.ledgerKey}>Classification</Text>

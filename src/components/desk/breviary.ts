@@ -116,7 +116,6 @@ function breviaryText(r: BreviaryReading, profile: MissionProfile, now: Date, an
     `PRINCIPALS     : ${profile.parties.trim() || "Not recorded"}`,
     `OFFICER        : ${profile.officer.trim() || "Not recorded"}`,
     `CLASSIFICATION : ${profile.classification.trim() || "Unrestricted, working draft"}`,
-    `DATE           : ${now.toISOString().slice(0, 10)}`,
     "",
     `1. BOND VECTOR AND DISPERSION (${source})`,
     ...bondLines,

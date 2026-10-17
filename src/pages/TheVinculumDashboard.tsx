@@ -86,9 +86,8 @@ const dashboardLd = {
   isPartOf: { "@id": `${SITE_URL}/#website` },
   author: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   copyrightHolder: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
-  copyrightYear: 2026,
   copyrightNotice:
-    "Copyright © 2026 James Wesley Ndua. All Statutory Rights Reserved. Formally registered under statutory copyright law. Private, restricted-access software.",
+    "Copyright © James Wesley Ndua. All Statutory Rights Reserved. Formally registered under statutory copyright law. Private, restricted-access software.",
 };
 
 const VOCAB = GLOSSARY.filter((g) => g.category === "field" || g.id === "liebig-relational-capacity" || g.id === "deterministic-relational-law");
@@ -287,7 +286,7 @@ export default function TheVinculumDashboard() {
               <strong>Core Nervous System:</strong> The Vinculum Unified Operational Nervous System is registered and protected by statutory copyright law. Unauthorized copying, decompilation, or derivation is strictly prohibited.
             </p>
             <p>
-              <strong>Doctrinal Foundation:</strong> Vinculum Security & Vinculum Diplomacy are protected under registered statutory copyright. Copyright © 2026 James Wesley Ndua.
+              <strong>Doctrinal Foundation:</strong> Vinculum Security & Vinculum Diplomacy are protected under registered statutory copyright. Copyright © James Wesley Ndua.
             </p>
           </div>
 

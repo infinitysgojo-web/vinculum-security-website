@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
 import { telemetryLines, useEngine, usePublish, type Signals } from "./engine";
@@ -136,7 +136,6 @@ export default function VerificationLedger() {
     L.push("");
     L.push(`INSTRUMENT: ${instrument.trim() || `${mission.theatre.trim() || "Mission"} Verification Protocol`}`);
     L.push(`MISSION: ${mission.theatre.trim() || "No active mission named"}`);
-    L.push(`DATE: ${todayStamp()}`);
     L.push(`REPORTING INTERVAL: ${INTERVALS.find((i) => i.id === interval)!.label}`);
     L.push("");
     L.push("I. VERIFIERS SEATED");

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import SyncPanel from "./SyncPanel";
 import { telemetryLines, useEngine, usePublish, engineLocks, stageGateAudit } from "./engine";
 
@@ -99,7 +99,6 @@ export default function ReadinessDesk() {
       `Compiled under the ${stage.anchor}`,
       "",
       `MISSION: ${mission.trim() || "Unnamed mission"}`,
-      `DATE: ${todayStamp()}`,
       `VERDICT: ${r.verdict}`,
       ...(audit ? [`DISPOSITION: ${audit.locked ? "LOCKED" : "CLEARED"}`] : []),
       `GATES MET AT THIS STAGE: ${r.met} of ${stage.gates.length} (${r.pct}%)`,

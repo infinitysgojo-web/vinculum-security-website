@@ -9,11 +9,6 @@ import mark from "@/assets/vinculum-mark.png";
  */
 export default function CaseDossier({ c }: { c: CaseStudy }) {
   const url = `${SITE_URL}/cases/${c.slug}`;
-  const issued = new Date().toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
   const docRef = `VS-CE-${c.ref.replace("VII.", "VII-")}`;
 
   return (
@@ -50,10 +45,6 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
             <strong>{AUTHOR_NAME}</strong>
           </div>
           <div>
-            <span>Date of issue</span>
-            <strong>{issued}</strong>
-          </div>
-          <div>
             <span>Registration</span>
             <strong>Protected by Statutory Copyright</strong>
           </div>
@@ -87,9 +78,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
         <tbody>
           <tr>
             <th>Document reference</th>
-            <td>{docRef}</td>
-            <th>Date of issue</th>
-            <td>{issued}</td>
+            <td colSpan={3}>{docRef}</td>
           </tr>
           <tr>
             <th>Prepared by</th>
@@ -213,7 +202,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
 
         <div className="dossier-colophon">
           <p>
-            © {new Date().getFullYear()} {AUTHOR_NAME}. All rights reserved.
+            © {AUTHOR_NAME}. All rights reserved.
           </p>
           <p>
             Protected by Statutory Copyright. Released under
@@ -221,7 +210,7 @@ export default function CaseDossier({ c }: { c: CaseStudy }) {
             4.0).
           </p>
           <p>
-            Document reference {docRef} · Issued {issued} · Unrestricted public record.
+            Document reference {docRef} · Unrestricted public record.
           </p>
           <p>Canonical record: {url}</p>
         </div>

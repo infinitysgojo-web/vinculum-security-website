@@ -322,11 +322,6 @@ function Rows({ rows }: { rows: { label: string; value: string }[] }) {
 
 export function DossierDocument({ c }: { c: CaseStudy }) {
   const url = `${SITE_URL}/cases/${c.slug}`;
-  const issued = new Date().toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
   const docRef = `VS-CE-${c.ref.replace("VII.", "VII-")}`;
 
   const Masthead = () => (
@@ -400,10 +395,6 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
             </View>
             <View style={s.coverFootRow}>
               <View style={s.coverFootCell}>
-                <Text style={s.coverFootLabel}>Date of issue</Text>
-                <Text style={s.coverFootValue}>{issued}</Text>
-              </View>
-              <View style={s.coverFootCell}>
                 <Text style={s.coverFootLabel}>Registration</Text>
                 <Text style={s.coverFootValue}>Statutorily protected works</Text>
               </View>
@@ -430,7 +421,6 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
         <Rows
           rows={[
             { label: "Document reference", value: docRef },
-            { label: "Date of issue", value: issued },
             { label: "Prepared by", value: AUTHOR_NAME },
             { label: "Registration", value: "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved" },
             { label: "Theater", value: c.region },
@@ -539,7 +529,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
               4.0).
             </Text>
             <Text>
-              Document reference {docRef} · Issued {issued} · Unrestricted public record.
+              Document reference {docRef} · Unrestricted public record.
             </Text>
             <Text>{url}</Text>
           </View>

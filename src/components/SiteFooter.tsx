@@ -8,7 +8,7 @@ export default function SiteFooter() {
       <div className="container py-10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-4 gap-y-2 text-[10px] uppercase font-semibold tracking-[0.2em] text-primary text-center md:text-left">
           <span className="whitespace-nowrap">
-            Copyright © 2026{" "}
+            Copyright ©{" "}
             <a
               href="https://jamesndua.kidnexus.or.ke/"
               target="_blank"

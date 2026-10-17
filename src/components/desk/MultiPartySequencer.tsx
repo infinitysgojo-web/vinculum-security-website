@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 
 type Actor = {
   id: string;
@@ -200,7 +200,6 @@ export default function MultiPartySequencer() {
     L.push("Vinculum Security, Diplomatic Engagement Division");
     L.push("");
     L.push(`TABLE: ${theatre.trim() || "Unnamed table"}`);
-    L.push(`DATE: ${todayStamp()}`);
     L.push(`PARTIES SEATED: ${seated.length}`);
     L.push("");
     L.push("I. SEATING AND STANDING CAUTIONS");

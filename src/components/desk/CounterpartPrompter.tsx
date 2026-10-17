@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useEngine, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 
@@ -96,7 +96,7 @@ export default function CounterpartPrompter() {
   );
 
   const text = useMemo(() => {
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, `DATE: ${todayStamp()}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
+    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
     PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${questions[i]}"`, ""));
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");

@@ -4,7 +4,6 @@ import {
   CITATION,
   LICENSE_URL,
   ORCID_URL,
-  PUBLISHED,
   SITE_NAME,
   SITE_URL,
 } from "@/lib/seo-entities";
@@ -109,9 +108,6 @@ export default function SEO({
         <meta property="article:author" content={AUTHOR_NAME} />
       )}
       {type === "article" && (
-        <meta property="article:published_time" content={PUBLISHED} />
-      )}
-      {type === "article" && (
         <meta property="article:section" content="Security Studies" />
       )}
 
@@ -132,7 +128,6 @@ export default function SEO({
       <meta name="dcterms.title" content={citationTitle ?? full} />
       <meta name="dcterms.creator" content={AUTHOR_NAME} />
       <meta name="dcterms.publisher" content={SITE_NAME} />
-      <meta name="dcterms.date" content={PUBLISHED} />
       <meta name="dcterms.language" content="en" />
       <meta name="dcterms.type" content="Text" />
       <meta name="dcterms.identifier" content={canonical} />
@@ -150,9 +145,6 @@ export default function SEO({
       )}
       {scholarly && (
         <meta name="citation_author_institution" content="Nairobi, Kenya" />
-      )}
-      {scholarly && (
-        <meta name="citation_publication_date" content={CITATION.date} />
       )}
       {scholarly && <meta name="citation_publisher" content={SITE_NAME} />}
       {scholarly && <meta name="citation_doi" content={CITATION.doi} />}

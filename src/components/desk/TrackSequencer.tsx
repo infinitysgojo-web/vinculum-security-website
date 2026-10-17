@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, hasSignal, telemetryLines, communalTolerance } from "./engine";
 import SyncPanel from "./SyncPanel";
 
@@ -108,7 +108,6 @@ export default function TrackSequencer() {
       "Compiled under Vinculum Diplomacy: The Practitioner Handbook, Section 9B",
       "",
       `PROCESS: ${process.trim() || "Unnamed process"}`,
-      `DATE: ${todayStamp()}`,
       `TRACK I DEPTH: Phase ${r.a} of ${PHASES.length}`,
       `TRACK II DEPTH: Phase ${r.b} of ${PHASES.length}`,
       `SYNCHRONISATION GAP: ${r.gap > 0 ? `+${r.gap} (Track I ahead)` : r.gap < 0 ? `${r.gap} (Track II ahead)` : "0 (in step)"}`,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import DeskOutput, { field, label, panel, todayStamp } from "./DeskOutput";
+import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 
@@ -165,7 +165,6 @@ export default function ClauseArchitect() {
     L.push(`PARTIES: ${partyName}`);
     L.push(`VERIFYING BODY: ${verifier}`);
     L.push(`ENFORCEMENT POSTURE: ${RIGOUR[rig].label}`);
-    L.push(`DATE: ${todayStamp()}`);
     L.push("");
     if (live) L.push(...telemetryLines(signals));
     if (mandated.length)
