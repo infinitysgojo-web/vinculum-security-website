@@ -314,30 +314,40 @@ export default function ClauseArchitect() {
               return n;
             }}
           />
-        </div>
-      </div>
-          <div className="mt-10">
-        <span className={label}>Westphalian and relational clauses compared</span>
-        <p className="text-xs text-muted-foreground mb-3">Counter-positions for when an opposing delegation proposes a fragile clause.</p>
-        <div className="w-full max-w-full min-w-0 overflow-x-auto border border-border bg-background">
-          <table className="w-full min-w-[40rem] text-sm">
-            <thead>
-              <tr className="border-b border-brass/40 text-left">
-                <th className="p-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Conventional clause</th>
-                <th className="p-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">Relational counter-clause</th>
-                <th className="p-3 text-[10px] uppercase tracking-[0.18em] font-semibold text-accent">Record</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div className="border border-brass/40 bg-background p-4">
+            <span className={label}>Part C · operative preview</span>
+            {picked.length + own.length === 0 ? (
+              <p className="text-xs text-muted-foreground">Select a fragility or add your own article and its operative wording compiles here.</p>
+            ) : (
+              <ol className="space-y-3">
+                {picked.map((i, n) => (
+                  <li key={FRAGILITIES[i].id} className="text-xs leading-relaxed">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-accent">Article C.{n + 1} · {FRAGILITIES[i].label}</span>
+                    <span className="text-foreground/85 line-clamp-3">{FRAGILITIES[i].clause}</span>
+                  </li>
+                ))}
+                {own.map((o, n) => (
+                  <li key={o.id} className="text-xs leading-relaxed">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-accent">Article C.{picked.length + n + 1} · {o.label}</span>
+                    <span className="text-foreground/85 line-clamp-3">{o.clause || "Drafted on the continuity rule: the office is bound, not the officeholder."}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+          <div className="border border-border bg-background p-4">
+            <span className={label}>Westphalian and relational clauses compared</span>
+            <p className="text-xs text-muted-foreground mb-3">Counter-positions for when an opposing delegation proposes a fragile clause.</p>
+            <ul className="divide-y divide-border">
               {MATRIX.map(([a, b, c]) => (
-                <tr key={a} className="border-b border-border last:border-0 align-top">
-                  <td className="p-3 text-foreground/70">{a}</td>
-                  <td className="p-3 font-serif text-base text-primary leading-snug">{b}</td>
-                  <td className="p-3 text-xs text-muted-foreground">{c}</td>
-                </tr>
+                <li key={a} className="py-3 first:pt-0 last:pb-0">
+                  <p className="text-xs text-foreground/60 line-through decoration-muted-foreground/40">{a}</p>
+                  <p className="mt-1 font-serif text-base text-primary leading-snug">{b}</p>
+                  <p className="mt-1 text-[11px] text-muted-foreground">{c}</p>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          </div>
         </div>
       </div>
       <div className="mt-8 w-full min-w-0">

@@ -270,55 +270,32 @@ export default function SentinelMatrix() {
               <button type="button" onClick={() => { setOn([]); setCOn([]); }} className={quickCls}>Clear all</button>
             </div>
           </div>
-          {DOMAINS.map((d, b) => (filter === -1 || filter === b || (filter === -2 && b === weakestIdx)) && (
-            <div key={d} className={b === weakestIdx ? "border-l-2 border-destructive pl-3" : ""}>
-              <button type="button" onClick={() => setFilter(filter === b ? -1 : b)} className="w-full text-left" aria-label={`Show only ${d} tripwires`}>
-                <div className="flex justify-between items-baseline gap-3">
-                  <span className={label}>
-                    {d}
-                    {b === weakestIdx && (
-                      <span className="ml-2 inline-block border border-destructive/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-destructive">
-                        Weakest live bond{signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}
-                      </span>
-                    )}
-                  </span>
-                  <span className="text-xs text-muted-foreground">{r.byBond[b]}%</span>
-                </div>
-                <div className="relative h-1.5 bg-border mb-3">
-                  <div className={`h-1.5 transition-all ${r.byBond[b] >= 60 ? "bg-destructive" : r.byBond[b] >= 50 ? "bg-brass" : "bg-accent"}`} style={{ width: `${r.byBond[b]}%` }} />
-                  <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "50%" }} />
-                  <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "60%" }} />
-                </div>
-              </button>
-              <div className="space-y-1.5">
-                {SIGNS.map((s, i) => s.bond === b && (
-                  <label key={i} className="flex gap-3 items-start text-sm cursor-pointer">
-                    <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={on.includes(i)} onChange={() => toggle(i)} />
-                    <span className="text-foreground/85">
-                      <span className={`mr-2 inline-block border px-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] align-middle ${s.w === 3 ? "border-destructive/60 text-destructive" : s.w === 2 ? "border-brass/60 text-brass" : "border-border text-muted-foreground"}`}>
-                        W{s.w} · {s.w === 3 ? "Acute" : s.w === 2 ? "Material" : "Signal"}
-                      </span>
-                      {s.text}
-                      {s.bond === weakestIdx && (
-                        <span className="ml-2 text-[9px] uppercase tracking-[0.14em] font-semibold text-destructive whitespace-nowrap">· Aligned with weakest bond</span>
-                      )}
-                    </span>
-                  </label>
-                ))}
-                {custom.filter((c) => c.bond === b).map((c) => (
-                  <div key={c.id} className="flex gap-3 items-start text-sm">
-                    <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={cOn.includes(c.id)} onChange={() => toggleCustom(c.id)} />
-                    <span className="text-foreground/85 flex-1">
-                      {c.text}
-                      <span className="text-[10px] uppercase tracking-[0.18em] text-accent ml-2">own · w{c.w}</span>
-                    </span>
-                    <button type="button" onClick={() => dropCustom(c.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
 
+        </div>
+        <div className="space-y-4">
+          <div className="border border-border bg-background p-4">
+            <p className={label}>Relational rupture index</p>
+            <p className="font-serif text-4xl text-primary">{r.pct}% <span className={`text-lg ${bandTone(r.b.name).text}`}>{r.b.name}</span></p>
+            {r.inscribed > 0 && <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-accent">Includes +{r.inscribed} inscribed shock and trap load</p>}
+            <div className="relative mt-3 h-3 bg-border" aria-hidden>
+              <div className={`h-3 transition-all ${bandTone(r.b.name).bg}`} style={{ width: `${r.pct}%` }} />
+              {[15, 35, 60].map((t) => <span key={t} className="absolute top-0 h-3 w-px bg-primary/50" style={{ left: `${t}%` }} />)}
+            </div>
+            {/* Labels sit under their own tick marks (15 / 35 / 60), not on an even grid. */}
+            <div className="relative mt-1 h-3 text-[9px] uppercase tracking-[0.14em] text-muted-foreground" aria-hidden>
+              <span className="absolute left-0">Stable</span>
+              <span className="absolute hidden sm:inline" style={{ left: "15%" }}>Guarded 15</span>
+              <span className="absolute sm:hidden" style={{ left: "15%" }}>15</span>
+              <span className="absolute hidden sm:inline" style={{ left: "35%" }}>Elevated 35</span>
+              <span className="absolute sm:hidden" style={{ left: "35%" }}>35</span>
+              <span className="absolute" style={{ left: "60%" }}>Critical 60</span>
+            </div>
+            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-accent">
+              Velocity ×{TREND[trend].mult.toFixed(2)} · {TREND[trend].id === "deteriorating" ? "rising" : TREND[trend].id === "improving" ? "falling" : "stable"}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
+            <p className="text-xs text-foreground/85 mt-2">{r.b.advice}</p>
+          </div>
           <div className="border border-brass/40 bg-background p-4">
             <span className={label}>Add your own warning indicator</span>
             <p className="text-xs text-muted-foreground mb-3">
@@ -347,31 +324,57 @@ export default function SentinelMatrix() {
             </div>
           </div>
         </div>
-        <div className="space-y-4">
-          <div className="border border-border bg-background p-4">
-            <p className={label}>Relational rupture index</p>
-            <p className="font-serif text-4xl text-primary">{r.pct}% <span className={`text-lg ${bandTone(r.b.name).text}`}>{r.b.name}</span></p>
-            {r.inscribed > 0 && <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-accent">Includes +{r.inscribed} inscribed shock and trap load</p>}
-            <div className="relative mt-3 h-3 bg-border" aria-hidden>
-              <div className={`h-3 transition-all ${bandTone(r.b.name).bg}`} style={{ width: `${r.pct}%` }} />
-              {[15, 35, 60].map((t) => <span key={t} className="absolute top-0 h-3 w-px bg-primary/50" style={{ left: `${t}%` }} />)}
-            </div>
-            {/* Labels sit under their own tick marks (15 / 35 / 60), not on an even grid. */}
-            <div className="relative mt-1 h-3 text-[9px] uppercase tracking-[0.14em] text-muted-foreground" aria-hidden>
-              <span className="absolute left-0">Stable</span>
-              <span className="absolute hidden sm:inline" style={{ left: "15%" }}>Guarded 15</span>
-              <span className="absolute sm:hidden" style={{ left: "15%" }}>15</span>
-              <span className="absolute hidden sm:inline" style={{ left: "35%" }}>Elevated 35</span>
-              <span className="absolute sm:hidden" style={{ left: "35%" }}>35</span>
-              <span className="absolute" style={{ left: "60%" }}>Critical 60</span>
-            </div>
-            <p className="mt-3 text-[10px] uppercase tracking-[0.16em] text-accent">
-              Velocity ×{TREND[trend].mult.toFixed(2)} · {TREND[trend].id === "deteriorating" ? "rising" : TREND[trend].id === "improving" ? "falling" : "stable"}
-            </p>
-            <p className="text-xs text-muted-foreground mt-2">{on.length + cOn.length} of {SIGNS.length + custom.length} tripwires recorded. {TREND[trend].note}</p>
-            <p className="text-xs text-foreground/85 mt-2">{r.b.advice}</p>
-          </div>
-        </div>
+      </div>
+      {/* Tier 2a: the twenty-four tripwires, one quadrant per bond, across both halves. */}
+      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
+            {DOMAINS.map((d, b) => (filter === -1 || filter === b || (filter === -2 && b === weakestIdx)) && (
+              <div key={d} className={b === weakestIdx ? "border-l-2 border-destructive pl-3" : ""}>
+                <button type="button" onClick={() => setFilter(filter === b ? -1 : b)} className="w-full text-left" aria-label={`Show only ${d} tripwires`}>
+                  <div className="flex justify-between items-baseline gap-3">
+                    <span className={label}>
+                      {d}
+                      {b === weakestIdx && (
+                        <span className="ml-2 inline-block border border-destructive/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-destructive">
+                          Weakest live bond{signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{r.byBond[b]}%</span>
+                  </div>
+                  <div className="relative h-1.5 bg-border mb-3">
+                    <div className={`h-1.5 transition-all ${r.byBond[b] >= 60 ? "bg-destructive" : r.byBond[b] >= 50 ? "bg-brass" : "bg-accent"}`} style={{ width: `${r.byBond[b]}%` }} />
+                    <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "50%" }} />
+                    <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "60%" }} />
+                  </div>
+                </button>
+                <div className="space-y-1.5">
+                  {SIGNS.map((s, i) => s.bond === b && (
+                    <label key={i} className="flex gap-3 items-start text-sm cursor-pointer">
+                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={on.includes(i)} onChange={() => toggle(i)} />
+                      <span className="text-foreground/85">
+                        <span className={`mr-2 inline-block border px-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] align-middle ${s.w === 3 ? "border-destructive/60 text-destructive" : s.w === 2 ? "border-brass/60 text-brass" : "border-border text-muted-foreground"}`}>
+                          W{s.w} · {s.w === 3 ? "Acute" : s.w === 2 ? "Material" : "Signal"}
+                        </span>
+                        {s.text}
+                        {s.bond === weakestIdx && (
+                          <span className="ml-2 text-[9px] uppercase tracking-[0.14em] font-semibold text-destructive whitespace-nowrap">· Aligned with weakest bond</span>
+                        )}
+                      </span>
+                    </label>
+                  ))}
+                  {custom.filter((c) => c.bond === b).map((c) => (
+                    <div key={c.id} className="flex gap-3 items-start text-sm">
+                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={cOn.includes(c.id)} onChange={() => toggleCustom(c.id)} />
+                      <span className="text-foreground/85 flex-1">
+                        {c.text}
+                        <span className="text-[10px] uppercase tracking-[0.18em] text-accent ml-2">own · w{c.w}</span>
+                      </span>
+                      <button type="button" onClick={() => dropCustom(c.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
       </div>
       {/* Tier 2: latent trap proximity, laid out across the full width. */}
       <div className="mt-8 w-full min-w-0 border border-brass/40 bg-background p-4 sm:p-5">
