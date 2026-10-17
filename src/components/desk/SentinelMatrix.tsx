@@ -57,7 +57,7 @@ type Custom = { id: string; bond: number; text: string; w: number };
 const quickCls = "min-h-9 px-2.5 border border-border text-[10px] font-semibold uppercase tracking-[0.12em] text-primary hover:border-accent hover:text-accent transition-colors";
 
 function bandTone(name: string) {
-  if (name === "Critical") return { text: "text-terracotta", bg: "bg-terracotta" };
+  if (name === "Critical") return { text: "text-destructive", bg: "bg-destructive" };
   if (name === "Elevated") return { text: "text-brass", bg: "bg-brass" };
   if (name === "Guarded") return { text: "text-accent", bg: "bg-accent" };
   return { text: "text-primary", bg: "bg-primary" };
@@ -261,13 +261,13 @@ export default function SentinelMatrix() {
             </div>
           </div>
           {DOMAINS.map((d, b) => (filter === -1 || filter === b || (filter === -2 && b === weakestIdx)) && (
-            <div key={d} className={b === weakestIdx ? "border-l-2 border-terracotta pl-3" : ""}>
+            <div key={d} className={b === weakestIdx ? "border-l-2 border-destructive pl-3" : ""}>
               <button type="button" onClick={() => setFilter(filter === b ? -1 : b)} className="w-full text-left" aria-label={`Show only ${d} tripwires`}>
                 <div className="flex justify-between items-baseline gap-3">
                   <span className={label}>
                     {d}
                     {b === weakestIdx && (
-                      <span className="ml-2 inline-block border border-terracotta/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-terracotta">
+                      <span className="ml-2 inline-block border border-destructive/60 px-1.5 py-0.5 align-middle text-[9px] normal-case tracking-[0.1em] font-semibold text-destructive">
                         Weakest live bond{signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}
                       </span>
                     )}
@@ -275,7 +275,7 @@ export default function SentinelMatrix() {
                   <span className="text-xs text-muted-foreground">{r.byBond[b]}%</span>
                 </div>
                 <div className="relative h-1.5 bg-border mb-3">
-                  <div className={`h-1.5 transition-all ${r.byBond[b] >= 60 ? "bg-terracotta" : r.byBond[b] >= 50 ? "bg-brass" : "bg-accent"}`} style={{ width: `${r.byBond[b]}%` }} />
+                  <div className={`h-1.5 transition-all ${r.byBond[b] >= 60 ? "bg-destructive" : r.byBond[b] >= 50 ? "bg-brass" : "bg-accent"}`} style={{ width: `${r.byBond[b]}%` }} />
                   <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "50%" }} />
                   <span className="absolute -top-0.5 h-2.5 w-px bg-primary/60" style={{ left: "60%" }} />
                 </div>
@@ -285,12 +285,12 @@ export default function SentinelMatrix() {
                   <label key={i} className="flex gap-3 items-start text-sm cursor-pointer">
                     <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={on.includes(i)} onChange={() => toggle(i)} />
                     <span className="text-foreground/85">
-                      <span className={`mr-2 inline-block border px-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] align-middle ${s.w === 3 ? "border-terracotta/60 text-terracotta" : s.w === 2 ? "border-brass/60 text-brass" : "border-border text-muted-foreground"}`}>
+                      <span className={`mr-2 inline-block border px-1.5 text-[9px] font-semibold uppercase tracking-[0.1em] align-middle ${s.w === 3 ? "border-destructive/60 text-destructive" : s.w === 2 ? "border-brass/60 text-brass" : "border-border text-muted-foreground"}`}>
                         W{s.w} · {s.w === 3 ? "Acute" : s.w === 2 ? "Material" : "Signal"}
                       </span>
                       {s.text}
                       {s.bond === weakestIdx && (
-                        <span className="ml-2 text-[9px] uppercase tracking-[0.14em] font-semibold text-terracotta whitespace-nowrap">· Aligned with weakest bond</span>
+                        <span className="ml-2 text-[9px] uppercase tracking-[0.14em] font-semibold text-destructive whitespace-nowrap">· Aligned with weakest bond</span>
                       )}
                     </span>
                   </label>
@@ -357,16 +357,16 @@ export default function SentinelMatrix() {
           <div className="border border-brass/40 bg-background p-4 space-y-3">
             <p className={label}>Latent trap proximity</p>
             {proximity.map((t) => (
-              <div key={t.name} className={`border-l-2 pl-3 ${t.active ? "border-terracotta" : "border-border"}`}>
+              <div key={t.name} className={`border-l-2 pl-3 ${t.active ? "border-destructive" : "border-border"}`}>
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-serif text-base text-primary leading-tight">{t.name}</p>
-                  <span className={`text-[9px] uppercase tracking-[0.14em] font-semibold ${t.active ? "text-terracotta" : "text-muted-foreground"}`}>{t.active ? "Engaged" : "Not engaged"}</span>
+                  <span className={`text-[9px] uppercase tracking-[0.14em] font-semibold ${t.active ? "text-destructive" : "text-muted-foreground"}`}>{t.active ? "Engaged" : "Not engaged"}</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-1">{t.status}</p>
                 {t.active && t.counter && <p className="text-xs text-foreground/85 mt-1">Counter: {t.counter}</p>}
               </div>
             ))}
-            {r.compound && <p className="text-xs text-terracotta">{r.compound}</p>}
+            {r.compound && <p className="text-xs text-destructive">{r.compound}</p>}
           </div>
           <DeskOutput text={text} fileName="Vinculum-Sentinel-Reading" />
         </div>
