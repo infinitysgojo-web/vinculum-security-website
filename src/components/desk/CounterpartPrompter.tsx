@@ -110,7 +110,7 @@ export default function CounterpartPrompter() {
 
   return (
     <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
@@ -190,8 +190,10 @@ export default function CounterpartPrompter() {
               return n;
             }}
           />
-          <DeskOutput cable text={text} fileName="Vinculum-Counterpart-Script" />
         </div>
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput cable text={text} fileName="Vinculum-Counterpart-Script" />
       </div>
     </section>
   );

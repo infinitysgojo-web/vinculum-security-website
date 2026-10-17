@@ -14,11 +14,12 @@ import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import { CASES, DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
+import SovereignInscriptionTray from "@/components/desk/SovereignInscriptionTray";
 import DeskOutput, { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import { PAIRINGS } from "@/content/pairings";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, useEngine, usePublish, bondBand, mathReading, stageGateAudit, type Signals } from "@/components/desk/engine";
+import { EngineContext, useEngine, usePublish, applyInscriptions, bondBand, mathReading, stageGateAudit, type Signals } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain, { deskIsLive } from "@/components/desk/MissionChain";
@@ -232,6 +233,9 @@ export default function Dashboard() {
       return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
     });
   }, []);
+  // The effective state every desk reads: raw publications with Sovereign inscriptions applied.
+  const effective = useMemo(() => applyInscriptions(signals), [signals]);
+  const engineValue = useMemo(() => ({ signals: effective, publish }), [effective, publish]);
   // The bond scores live on the mission profile, so presets, archives and saved
   // sessions reach the bond bench. Bond Diagnostic runs controlled from here.
   const bonds = profile.bonds ?? DEFAULT_BONDS;
@@ -314,7 +318,7 @@ export default function Dashboard() {
   }, []);
 
   // A stage-gate audit that clears (every gate passing) sounds the seal chime once.
-  const gatesLocked = stageGateAudit(signals).locked;
+  const gatesLocked = stageGateAudit(effective).locked;
   const wasLocked = useRef(gatesLocked);
   useEffect(() => {
     if (wasLocked.current && !gatesLocked) seal();
@@ -489,10 +493,10 @@ export default function Dashboard() {
               Desk {String(position + 1).padStart(2, "0")}: <span className="text-accent">{active.label}</span>
             </span>
             <span className="hidden sm:inline shrink-0 text-muted-foreground">
-              <span className="normal-case">μ</span>B: <span className="text-primary">{signals.bondMean !== undefined ? signals.bondMean.toFixed(2) : "—"}</span>
+              <span className="normal-case">μ</span>B: <span className="text-primary">{effective.bondMean !== undefined ? effective.bondMean.toFixed(2) : "—"}</span>
             </span>
             <span className="hidden sm:inline shrink-0 text-muted-foreground">
-              Rupture: <span className={(signals.rupture ?? 0) >= 60 ? "text-destructive" : "text-primary"}>{signals.rupture !== undefined ? `${signals.rupture}%` : "—"}</span>
+              Rupture: <span className={(effective.rupture ?? 0) >= 60 ? "text-destructive" : "text-primary"}>{effective.rupture !== undefined ? `${effective.rupture}%` : "—"}</span>
             </span>
             <label className="relative ml-auto shrink-0 inline-flex items-center">
               <span className="sr-only">Select desk</span>
@@ -536,7 +540,7 @@ export default function Dashboard() {
             <span className="hidden md:inline text-muted-foreground normal-case tracking-normal text-xs">
               {session.user.email}
             </span>
-            <ChancelleryBreviary signals={signals} profile={profile} onAddToBinder={addToBinder} />
+            <ChancelleryBreviary signals={effective} profile={profile} onAddToBinder={addToBinder} />
             <LexiconDrawer />
             <DeskFinder
               desks={DESKS}
@@ -653,7 +657,7 @@ export default function Dashboard() {
 
         <div className={focus ? "hidden" : "-mx-4 px-4 sm:mx-0 sm:px-0 flex overflow-x-auto scrollbar-none sm:overflow-visible sm:flex-wrap gap-2 mb-6 sm:mb-8 w-auto sm:w-full min-w-0 pb-1 sm:pb-0"}>
           {deskList.map((d) => {
-            const liveDesk = deskIsLive(d.id, signals);
+            const liveDesk = deskIsLive(d.id, effective);
             const staged = binder.filter((x) => x.desk === d.id).length;
             return (
             <button
@@ -715,20 +719,20 @@ export default function Dashboard() {
           )}
         </div>
 
-        <EngineContext.Provider value={{ signals, publish }}>
+        <EngineContext.Provider value={engineValue}>
           <StatutoryClearanceBar deskId={desk} />
         </EngineContext.Provider>
-        <TelemetryStrip signals={signals} />
+        <TelemetryStrip signals={effective} />
         <MissionChain
           deskId={desk}
-          signals={signals}
+          signals={effective}
           onNavigate={(id) => {
             const d = DESKS.find((x) => x.id === id);
             if (d) goTo(d);
           }}
         />
 
-        <EngineContext.Provider value={{ signals, publish }}>
+        <EngineContext.Provider value={engineValue}>
         <MissionContext.Provider value={profile}>
         <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow, id: active.id }}>
         <BinderContext.Provider value={{ add: addFromDesk }}>
@@ -744,14 +748,16 @@ export default function Dashboard() {
           <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
-                <div key={id} hidden={desk !== id}>
+                <div key={id} hidden={desk !== id} className="w-full min-w-0">
+                  <SovereignInscriptionTray deskId={id} onApplyVector={id === "diagnostics" ? setBonds : undefined} />
                   {id === "briefing" && <CableComposer />}
                   {id === "diagnostics" && (
-                    <div className="space-y-12">
-                      <BondDiagnostic scores={bonds} onScoresChange={setBonds} />
-                      <DeltaSimulator baseline={bonds} onApply={(sim) => setBonds(sim)} />
-                      <PatternMatcher />
-                    </div>
+                    <BondDiagnostic
+                      scores={bonds}
+                      onScoresChange={setBonds}
+                      simulator={<DeltaSimulator baseline={bonds} onApply={(sim) => setBonds(sim)} />}
+                      stress={<PatternMatcher />}
+                    />
                   )}
                   {id === "audit" && <AuditBench parties={PARTIES} />}
                   {id === "mirror" && <MirrorDesk />}
@@ -810,7 +816,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-      <ChancelleryWire signals={signals} />
+      <ChancelleryWire signals={effective} />
     </>
   );
 }
@@ -960,8 +966,40 @@ function MirrorDesk() {
           })}
         </div>
       </div>
-      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={showLive ? liveVector : null} />
-      {selected.length >= 2 && <DeskOutput text={mirrorText} fileName="Vinculum-Comparative-Mirror" />}
+      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={showLive ? liveVector : null} custom={signals.customPrecedents ?? []} />
+      {(signals.customPrecedents?.length ?? 0) > 0 && (
+        <div className="w-full min-w-0 overflow-x-auto border border-brass/40 bg-background p-4">
+          <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">Inscribed precedents against the live vector</p>
+          <table className="w-full min-w-[420px] border-collapse text-xs">
+            <thead>
+              <tr className="border-b border-border text-left text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <th className="py-2 pr-3 whitespace-nowrap">Precedent</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Vector</th>
+                <th className="py-2 pr-3 whitespace-nowrap">Distance</th>
+                <th className="py-2 whitespace-nowrap">Resonance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {signals.customPrecedents!.map((p) => {
+                const d = liveVector ? Math.sqrt(p.scores.reduce((a, v, i) => a + (v - liveVector[i]) ** 2, 0)) : null;
+                return (
+                  <tr key={p.id} className="border-b border-border/60">
+                    <td className="py-2 pr-3 text-primary">{p.name}</td>
+                    <td className="py-2 pr-3 font-mono">({p.scores.map((x) => x.toFixed(1)).join(", ")})</td>
+                    <td className="py-2 pr-3 font-mono">{d === null ? "not linked" : d.toFixed(2)}</td>
+                    <td className="py-2 font-mono">{d === null ? "not linked" : `${Math.round((1 - d / 8) * 100)}%`}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {selected.length >= 2 && (
+        <div className="w-full min-w-0">
+          <DeskOutput text={mirrorText} fileName="Vinculum-Comparative-Mirror" />
+        </div>
+      )}
     </div>
   );
 }

@@ -247,6 +247,39 @@ export function successionDurability(s: Signals): SuccessionReading | undefined 
   };
 }
 
+/* ------------------------------------------------------------------ */
+/* Sovereign Custom Mode: analyst-inscribed entities on the bus        */
+/* ------------------------------------------------------------------ */
+
+export type SpoilerRisk = "Low" | "Medium" | "High" | "Critical";
+export type CustomParty = {
+  id: string;
+  name: string;
+  constituency: string;
+  /** 1 to 5. */
+  vulnerability: number;
+  /** 1 to 5. */
+  leverage: number;
+  spoilerRisk: SpoilerRisk;
+  vetoPower: boolean;
+};
+export type CustomTrap = { id: string; name: string; condition: string; warningSymptom: string; countermeasure: string; active: boolean };
+export type CustomShock = { id: string; name: string; description: string; deltas: BondVector };
+export const ENFORCEMENT_MECHANISMS = ["Automatic Jurisdiction", "Independent Trustee", "Sunset Audit", "Communal Quorum"] as const;
+export type CustomCovenant = {
+  id: string;
+  title: string;
+  obligation: string;
+  enforcementMechanism: (typeof ENFORCEMENT_MECHANISMS)[number];
+  mandatedArticleRef?: string;
+};
+export type CustomGate = { id: string; label: string; verified: boolean };
+export type CustomTrack = { id: string; name: string; phase: number; description: string };
+export type CustomPrecedent = { id: string; name: string; scores: [number, number, number, number]; lesson: string };
+export type CustomPhrase = { id: string; phrase: string; replacement: string; rationale: string };
+/** Free inscriptions recorded by a desk (tribunal, hostile posture, tactic, protocol, seal, annex). */
+export type CustomNote = { id: string; desk: string; kind: string; title: string; body: string };
+
 export type Signals = {
   /** Division I, bond diagnostic. */
   bonds?: BondVector;
@@ -306,6 +339,17 @@ export type Signals = {
   litigationForum?: string;
   /** Counterpart desk: the archetype being prepared for. */
   counterpart?: string;
+  /** Sovereign Custom Mode inscriptions. Every list rides the bus, the digest and the manifest. */
+  customRules?: string[];
+  customParties?: CustomParty[];
+  customTraps?: CustomTrap[];
+  customShocks?: CustomShock[];
+  customCovenants?: CustomCovenant[];
+  customGates?: CustomGate[];
+  customTracks?: CustomTrack[];
+  customPrecedents?: CustomPrecedent[];
+  customPhrases?: CustomPhrase[];
+  customNotes?: CustomNote[];
 };
 
 const SIGNAL_NUMBERS = [
@@ -318,7 +362,7 @@ const SIGNAL_STRINGS = [
   "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder", "presetId", "litigationForum", "counterpart",
 ] as const;
 const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated"] as const;
-const SIGNAL_STRING_LISTS = ["traps", "shocks", "frictionPairs", "covenants", "mirrors"] as const;
+const SIGNAL_STRING_LISTS = ["traps", "shocks", "frictionPairs", "covenants", "mirrors", "customRules"] as const;
 
 /**
  * Coerce anything read from a mission archive into a valid Signals object.
@@ -333,6 +377,7 @@ export function sanitizeSignals(raw: unknown): Signals {
   for (const k of SIGNAL_BOOLEANS) if (typeof src[k] === "boolean") out[k] = src[k];
   for (const k of SIGNAL_STRING_LISTS)
     if (Array.isArray(src[k])) out[k] = (src[k] as unknown[]).filter((x): x is string => typeof x === "string");
+  Object.assign(out, sanitizeInscriptions(src));
   if (Array.isArray(src.bondStrain))
     out.bondStrain = (src.bondStrain as unknown[]).filter((x): x is number => typeof x === "number" && Number.isFinite(x));
   const b = src.bonds as Record<string, unknown> | undefined;
@@ -350,6 +395,139 @@ export function sanitizeSignals(raw: unknown): Signals {
     if (Object.values(bonds).every((x) => x !== undefined)) out.bonds = bonds as BondVector;
   }
   return out as Signals;
+}
+
+/* Sanitisers for the inscription lists read back from an archive. */
+const str = (x: unknown, max = 600) => (typeof x === "string" ? x.slice(0, max) : "");
+const num = (x: unknown, lo: number, hi: number, d: number) => {
+  const n = Number(x);
+  return Number.isFinite(n) ? Math.min(hi, Math.max(lo, round1(n))) : d;
+};
+const objs = (x: unknown) => (Array.isArray(x) ? x.filter((o): o is Record<string, unknown> => !!o && typeof o === "object").slice(0, 40) : undefined);
+const delta = (x: unknown) => num(x, -4, 4, 0);
+
+function sanitizeInscriptions(src: Record<string, unknown>): Partial<Signals> {
+  const out: Partial<Signals> = {};
+  const id = (o: Record<string, unknown>) => str(o.id, 40) || Math.random().toString(36).slice(2, 10);
+  const parties = objs(src.customParties);
+  if (parties)
+    out.customParties = parties.map((o) => ({
+      id: id(o), name: str(o.name, 120), constituency: str(o.constituency, 200),
+      vulnerability: num(o.vulnerability, 1, 5, 3), leverage: num(o.leverage, 1, 5, 3),
+      spoilerRisk: (["Low", "Medium", "High", "Critical"] as const).find((r) => r === o.spoilerRisk) ?? "Low",
+      vetoPower: o.vetoPower === true,
+    })).filter((p) => p.name);
+  const traps = objs(src.customTraps);
+  if (traps)
+    out.customTraps = traps.map((o) => ({ id: id(o), name: str(o.name, 120), condition: str(o.condition), warningSymptom: str(o.warningSymptom), countermeasure: str(o.countermeasure), active: o.active !== false })).filter((t) => t.name);
+  const shocks = objs(src.customShocks);
+  if (shocks)
+    out.customShocks = shocks.map((o) => {
+      const d = (o.deltas ?? {}) as Record<string, unknown>;
+      return { id: id(o), name: str(o.name, 120), description: str(o.description), deltas: { interpersonal: delta(d.interpersonal), communal: delta(d.communal), intergenerational: delta(d.intergenerational), institutional: delta(d.institutional) } };
+    }).filter((x) => x.name);
+  const covs = objs(src.customCovenants);
+  if (covs)
+    out.customCovenants = covs.map((o) => ({
+      id: id(o), title: str(o.title, 160), obligation: str(o.obligation),
+      enforcementMechanism: ENFORCEMENT_MECHANISMS.find((m) => m === o.enforcementMechanism) ?? "Independent Trustee",
+      mandatedArticleRef: str(o.mandatedArticleRef, 20) || undefined,
+    })).filter((c) => c.title);
+  const gates = objs(src.customGates);
+  if (gates) out.customGates = gates.map((o) => ({ id: id(o), label: str(o.label, 160), verified: o.verified === true })).filter((g) => g.label);
+  const tracks = objs(src.customTracks);
+  if (tracks) out.customTracks = tracks.map((o) => ({ id: id(o), name: str(o.name, 120), phase: Math.round(num(o.phase, 0, 6, 0)), description: str(o.description) })).filter((t) => t.name);
+  const precs = objs(src.customPrecedents);
+  if (precs)
+    out.customPrecedents = precs.map((o) => {
+      const sc = Array.isArray(o.scores) ? o.scores : [];
+      return { id: id(o), name: str(o.name, 120), scores: [0, 1, 2, 3].map((i) => num(sc[i], 1, 5, 3)) as [number, number, number, number], lesson: str(o.lesson) };
+    }).filter((p) => p.name);
+  const phrases = objs(src.customPhrases);
+  if (phrases) out.customPhrases = phrases.map((o) => ({ id: id(o), phrase: str(o.phrase, 160), replacement: str(o.replacement, 300), rationale: str(o.rationale) })).filter((p) => p.phrase.trim());
+  const notes = objs(src.customNotes);
+  if (notes) out.customNotes = notes.map((o) => ({ id: id(o), desk: str(o.desk, 40), kind: str(o.kind, 60), title: str(o.title, 160), body: str(o.body, 2000) })).filter((n) => n.title);
+  return out;
+}
+
+/**
+ * The effective mission state every desk reads. Inscribed compound shocks depress
+ * the published bond vector (clamped to the 1.0 to 5.0 scale), and the limiting bond,
+ * communal band and Track I tolerance are re-derived from the stressed vector. Active
+ * inscribed traps join the latent trap list, inscribed covenants join the covenant
+ * register, and inscribed shocks join the shock list. Raw inputs stay untouched on the
+ * bus, so removing an inscription restores the reading exactly.
+ */
+export function applyInscriptions(s: Signals): Signals {
+  const shocks = s.customShocks ?? [];
+  const traps = (s.customTraps ?? []).filter((t) => t.active);
+  const covs = s.customCovenants ?? [];
+  if (!shocks.length && !traps.length && !covs.length) return s;
+  const out: Signals = { ...s };
+  if (shocks.length && s.bonds) {
+    const d = inscribedShockDelta(s);
+    const b: BondVector = {
+      interpersonal: clampScore(s.bonds.interpersonal + d.interpersonal),
+      communal: clampScore(s.bonds.communal + d.communal),
+      intergenerational: clampScore(s.bonds.intergenerational + d.intergenerational),
+      institutional: clampScore(s.bonds.institutional + d.institutional),
+    };
+    const v: [number, number, number, number] = [b.interpersonal, b.communal, b.intergenerational, b.institutional];
+    let w = 0;
+    v.forEach((x, i) => { if (x < v[w]) w = i; });
+    const m = mathReading(v);
+    out.bonds = b;
+    out.bondMean = Math.round(m.mean * 100) / 100;
+    out.bondVariance = m.variance;
+    out.weakestBond = BOND_NAMES[w];
+    out.weakestScore = v[w];
+    out.weakestBand = bondBand(v[w]);
+    out.communalBand = bondBand(b.communal);
+    out.trackTolerance = communalTolerance(b.communal).phases;
+    if (s.trackGap !== undefined) out.elitePactAlert = s.trackGap > out.trackTolerance;
+  }
+  if (shocks.length) out.shocks = [...(s.shocks ?? []), ...shocks.map((x) => x.name)];
+  if (traps.length) out.traps = [...(s.traps ?? []), ...traps.map((t) => t.name)];
+  if (covs.length) out.covenants = [...(s.covenants ?? []), ...covs.map((c) => `${c.title} (${c.enforcementMechanism})`)];
+  return out;
+}
+
+/** Summed bond deltas of every inscribed shock. */
+export function inscribedShockDelta(s: Signals): BondVector {
+  const z: BondVector = { interpersonal: 0, communal: 0, intergenerational: 0, institutional: 0 };
+  for (const x of s.customShocks ?? []) {
+    z.interpersonal = round1(z.interpersonal + x.deltas.interpersonal);
+    z.communal = round1(z.communal + x.deltas.communal);
+    z.intergenerational = round1(z.intergenerational + x.deltas.intergenerational);
+    z.institutional = round1(z.institutional + x.deltas.institutional);
+  }
+  return z;
+}
+
+/** Count of every inscription on the bus. */
+export function inscriptionCount(s: Signals): number {
+  return (s.customRules?.length ?? 0) + (s.customParties?.length ?? 0) + (s.customTraps?.length ?? 0) + (s.customShocks?.length ?? 0) +
+    (s.customCovenants?.length ?? 0) + (s.customGates?.length ?? 0) + (s.customTracks?.length ?? 0) + (s.customPrecedents?.length ?? 0) +
+    (s.customPhrases?.length ?? 0) + (s.customNotes?.length ?? 0);
+}
+
+/** The Sovereign Inscriptions schedule printed in every transmittal manifest. */
+export function inscriptionLines(s: Signals): string[] {
+  if (!inscriptionCount(s)) return [];
+  const L: string[] = ["SOVEREIGN INSCRIPTIONS (custom mode, entered by the drafting officer)"];
+  const f = (n: number) => (n > 0 ? `+${n.toFixed(1)}` : n.toFixed(1));
+  s.customRules?.forEach((r) => L.push(`  Boundary rule: ${r}`));
+  s.customParties?.forEach((p) => L.push(`  Party: ${p.name}${p.constituency ? ` (${p.constituency})` : ""}; leverage ${p.leverage.toFixed(1)}, vulnerability ${p.vulnerability.toFixed(1)}, spoiler risk ${p.spoilerRisk}${p.vetoPower ? ", holds a veto" : ""}.`));
+  s.customShocks?.forEach((x) => L.push(`  Compound shock: ${x.name}; deltas ${f(x.deltas.interpersonal)} / ${f(x.deltas.communal)} / ${f(x.deltas.intergenerational)} / ${f(x.deltas.institutional)}${x.description ? `. ${x.description}` : ""}`));
+  s.customTraps?.forEach((t) => L.push(`  Latent trap (${t.active ? "active" : "dormant"}): ${t.name}${t.condition ? `. Trigger: ${t.condition}` : ""}${t.warningSymptom ? `. Warning: ${t.warningSymptom}` : ""}${t.countermeasure ? `. Counter-measure: ${t.countermeasure}` : ""}`));
+  s.customCovenants?.forEach((c) => L.push(`  Covenant: ${c.title}; ${c.obligation} Enforcement: ${c.enforcementMechanism}${c.mandatedArticleRef ? `; article ${c.mandatedArticleRef}` : ""}.`));
+  s.customGates?.forEach((g) => L.push(`  Readiness gate: ${g.label} (${g.verified ? "attested" : "awaiting attestation"}).`));
+  s.customTracks?.forEach((t) => L.push(`  Track III: ${t.name} at phase ${t.phase}${t.description ? `. ${t.description}` : ""}`));
+  s.customPrecedents?.forEach((p) => L.push(`  Precedent: ${p.name} (${p.scores.map((x) => x.toFixed(1)).join(", ")})${p.lesson ? `. ${p.lesson}` : ""}`));
+  s.customPhrases?.forEach((p) => L.push(`  Prohibited phrase: "${p.phrase}" to read "${p.replacement}"${p.rationale ? `. ${p.rationale}` : ""}`));
+  s.customNotes?.forEach((n) => L.push(`  ${n.kind}: ${n.title}${n.body ? `. ${n.body}` : ""}`));
+  L.push("");
+  return L;
 }
 
 export type Engine = {
@@ -384,7 +562,8 @@ export function hasSignal(s: Signals) {
     s.rupture !== undefined ||
     (s.shocks?.length ?? 0) > 0 ||
     s.trackGap !== undefined ||
-    (s.covenants?.length ?? 0) > 0
+    (s.covenants?.length ?? 0) > 0 ||
+    inscriptionCount(s) > 0
   );
 }
 
@@ -456,6 +635,28 @@ export function alerts(s: Signals): Alert[] {
         reading: "A latent trap pattern is active on the early-warning matrix.",
         directive: "Carry the matching counter-measure into the drafting and governance divisions.",
       });
+
+  if (s.trackI !== undefined)
+    for (const t of s.customTracks ?? []) {
+      const lead = s.trackI - t.phase;
+      const tol = s.trackTolerance ?? 1;
+      if (lead > tol)
+        out.push({
+          level: "elevated",
+          name: `Track III shear: ${t.name}`,
+          reading: `Track I leads the inscribed ${t.name} track by ${lead} phases, against a tolerance of ${tol}.`,
+          directive: "Advance the civil society or communal assembly track before Track I tables its next step.",
+        });
+    }
+
+  const pending = (s.customGates ?? []).filter((g) => !g.verified);
+  if (pending.length)
+    out.push({
+      level: "note",
+      name: "Sovereign readiness gates awaiting attestation",
+      reading: `${pending.length} inscribed gate${pending.length === 1 ? "" : "s"} not yet attested: ${pending.map((g) => g.label).join("; ")}.`,
+      directive: "Attest each inscribed gate on the Mission Readiness Bench before certification.",
+    });
 
   return out.concat(dynamicsAlerts(s));
 }
@@ -646,6 +847,8 @@ export function telemetryLines(s: Signals): string[] {
     L.push(`  Relational entropy: H ${dyn.entropy.toFixed(2)}, entropy index ${dyn.entropyIndex.toFixed(3)}.`);
     L.push(`  Decay character: ${dyn.character} (Ω ${dyn.omega.toFixed(2)}).`);
   }
+  const ins = inscriptionLines(s);
+  if (ins.length) L.push("", ...ins.slice(0, -1));
   const a = alerts(s);
   if (a.length) {
     L.push("", "STANDING ALERTS");

@@ -52,7 +52,9 @@ function highest(c: CaseStudy) {
 /** The live theatre vector is drawn as a dashed ink polygon with diamond markers, distinct from the case series. */
 const LIVE_STROKE = "hsl(var(--foreground))";
 
-function Radar({ cases, live }: { cases: CaseStudy[]; live?: readonly number[] | null }) {
+type CustomOverlay = { id: string; name: string; scores: readonly number[] };
+
+function Radar({ cases, live, custom = [] }: { cases: CaseStudy[]; live?: readonly number[] | null; custom?: CustomOverlay[] }) {
   const rings = [1, 2, 3, 4, 5];
   return (
     <svg
@@ -93,6 +95,18 @@ function Radar({ cases, live }: { cases: CaseStudy[]; live?: readonly number[] |
           return <circle key={`${c.slug}-${i}`} cx={x} cy={y} r={3} fill={SERIES[n % 3].stroke} />;
         })
       )}
+      {custom.map((c) => (
+        <polygon
+          key={`custom-${c.id}`}
+          points={polygon(c.scores)}
+          fill="none"
+          stroke="hsl(var(--accent))"
+          strokeWidth={1.8}
+          strokeDasharray="3 3"
+        >
+          <title>{`${c.name} (inscribed precedent)`}</title>
+        </polygon>
+      ))}
       {live && (
         <>
           <polygon
@@ -185,9 +199,12 @@ export default function DiagnosticMirror({
   cases,
   onSelectPairing,
   live,
+  custom,
 }: {
   cases: CaseStudy[];
   onSelectPairing: (slugs: string[]) => void;
+  /** Inscribed precedents (Sovereign Custom Mode), drawn as dashed accent outlines. */
+  custom?: CustomOverlay[];
   /** Optional live theatre vector (four bond scores) plotted over the selected cases. */
   live?: readonly number[] | null;
 }) {
@@ -219,7 +236,7 @@ export default function DiagnosticMirror({
       )}
 
       <div className="grid gap-6 md:grid-cols-[320px_1fr] items-start border border-brass/40 bg-gold-tint/40 p-5">
-        <Radar cases={cases} live={live} />
+        <Radar cases={cases} live={live} custom={custom} />
         <div className="space-y-4">
           {cases.map((c, i) => (
             <div key={c.slug}>

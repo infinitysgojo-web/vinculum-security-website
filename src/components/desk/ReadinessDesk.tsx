@@ -74,21 +74,23 @@ export default function ReadinessDesk() {
   const openLocks = locks.filter((l) => !l.held);
   const audit = linked ? stageGateAudit(signals) : null;
   const auditLocked = audit?.locked ?? false;
+  // Sovereign readiness gates: every inscribed gate must be attested before certification.
+  const sovereignOpen = (signals.customGates ?? []).filter((g) => !g.verified);
 
   const r = useMemo(() => {
     const gates = stage.gates;
     const missingCritical = gates.filter((g) => g.critical && !done.includes(g.id));
     const met = gates.filter((g) => done.includes(g.id)).length;
     const pct = Math.round((met / gates.length) * 100);
-    const verdict = missingCritical.length || openLocks.length || auditLocked ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
+    const verdict = missingCritical.length || openLocks.length || auditLocked || sovereignOpen.length ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
     const lifecycle = STAGES.map((s) => {
       const mc = s.gates.filter((g) => g.critical && !done.includes(g.id)).length;
       const m = s.gates.filter((g) => done.includes(g.id)).length;
-      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked };
+      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked && sovereignOpen.length === 0 };
     });
     return { missingCritical, pct, verdict, met, lifecycle };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done, stage, JSON.stringify(openLocks), auditLocked]);
+  }, [done, stage, JSON.stringify(openLocks), auditLocked, sovereignOpen.length]);
 
   usePublish("readiness", { gatesCleared: `${r.lifecycle.filter((x) => x.cleared).length}/${r.lifecycle.length}` });
 
@@ -145,7 +147,7 @@ export default function ReadinessDesk() {
   let group = "";
   return (
     <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-4">
           <div>
             <label className={label} htmlFor="rd-m">Mission</label>
@@ -219,6 +221,16 @@ export default function ReadinessDesk() {
             <p className={label}>{stage.label}</p>
             <p className={`font-serif text-3xl ${r.missingCritical.length ? "text-accent" : "text-primary"}`}>{r.verdict}</p>
             <p className="text-xs text-muted-foreground mt-1">{r.met} of {stage.gates.length} gates met at this stage</p>
+            {(signals.customGates?.length ?? 0) > 0 && (
+              <ul className="mt-3 space-y-1 border-t border-border pt-3">
+                {signals.customGates!.map((g) => (
+                  <li key={g.id} className="flex justify-between gap-3 text-xs">
+                    <span className="text-foreground/85 [overflow-wrap:anywhere]">Sovereign gate · {g.label}</span>
+                    <span className={g.verified ? "text-emerald shrink-0" : "text-destructive shrink-0"}>{g.verified ? "Attested" : "Awaiting"}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="border border-brass/40 bg-background p-4 space-y-2">
             <p className={label}>Lifecycle position</p>
@@ -229,8 +241,10 @@ export default function ReadinessDesk() {
               </div>
             ))}
           </div>
-          <DeskOutput text={text} fileName="Vinculum-Mission-Readiness" />
         </div>
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Mission-Readiness" />
       </div>
     </section>
   );

@@ -48,7 +48,7 @@ export default function MissionBinder({
 
   return (
     <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full min-w-0 [&>*]:min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="mb-t">Theatre</label>
@@ -80,8 +80,10 @@ export default function MissionBinder({
           </div>
         </div>
         <BinderContext.Provider value={null}>
-          <DeskOutput text={text} fileName="Vinculum-Mission-Binder" />
         </BinderContext.Provider>
+      </div>
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Mission-Binder" />
       </div>
     </section>
   );

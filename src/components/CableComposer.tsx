@@ -478,7 +478,7 @@ END OF ${cab.tag}`;
         </div>
       </div>
 
-      <div className="mt-6 min-w-0">
+      <div className="mt-8 w-full min-w-0">
         <p className="mb-3 text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70">
           {cab.tag} · {c.shortTitle} · {DOMAINS[bi]}
         </p>

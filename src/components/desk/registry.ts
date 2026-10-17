@@ -10,7 +10,7 @@
  * UTC instant enters the hash only and is never displayed.
  */
 import { useEffect, useState } from "react";
-import { stageGateAudit, statutoryClearances, VIABLE_FLOOR, type Signals } from "./engine";
+import { inscriptionLines, stageGateAudit, statutoryClearances, VIABLE_FLOOR, type Signals } from "./engine";
 import { theatreById } from "./theatres";
 
 export type DispatchKind = "note-verbale" | "demarche" | "aide-memoire" | "cable" | "dossier" | "attestation" | "text" | "minute";
@@ -85,6 +85,7 @@ export function stateSnapshot(s: Signals) {
     activeCase: (s.theatre ?? "").trim(),
     gateClearances: statutoryClearances(s).map((c) => `${c.id}:${c.passed ? 1 : 0}`),
     covenants: [...(s.covenants ?? [])],
+    inscriptions: inscriptionLines(s),
   };
 }
 

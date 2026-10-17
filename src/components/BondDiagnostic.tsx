@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
@@ -20,6 +20,10 @@ export type BondScores = Record<LevelKey, number>;
 
 /** Optional controlled mode: the dashboard owns the scores so presets and archives reach the bench. */
 interface BondDiagnosticProps {
+  /** Stress-testing modules rendered between the analysis tier and the transmittal console. */
+  stress?: ReactNode;
+  /** Delta simulator, seated in the analysis tier beside the boundary rules. */
+  simulator?: ReactNode;
   scores?: BondScores;
   onScoresChange?: (scores: BondScores) => void;
 }
@@ -235,7 +239,7 @@ function QuickScores({ name, value, onPick }: { name: string; value: number; onP
 
 /* ---------- component ---------- */
 
-export default function BondDiagnostic({ scores: controlled, onScoresChange }: BondDiagnosticProps = {}) {
+export default function BondDiagnostic({ scores: controlled, onScoresChange, stress, simulator }: BondDiagnosticProps = {}) {
   const mission = useMission();
   const [context, setContext] = useState(mission.theatre);
   // Follow the Mission Vault when the active theatre changes.
@@ -350,6 +354,13 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
     [values.join(",")],
   );
 
+  const customRules = useMemo(() => bus.customRules ?? [], [bus.customRules]);
+  // When inscribed shocks are active the bus carries a stressed vector; show it beside the raw bench.
+  const stressed =
+    (bus.customShocks?.length ?? 0) > 0 && bus.bonds
+      ? [bus.bonds.interpersonal, bus.bonds.communal, bus.bonds.intergenerational, bus.bonds.institutional].map((x) => x.toFixed(1))
+      : null;
+
   const summary = useMemo(() => {
     const bar = "-".repeat(64);
     const theatre = context.trim() || mission.theatre.trim() || "Unnamed theatre";
@@ -399,12 +410,14 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
       `  Diagnostic question for the limiting bond: ${weakest.question}`,
       `  Practice directive: ${weakest.guidance}`,
       ...BOUNDARY_RULES.map((r) => `  · ${r}`),
+      ...customRules.map((r) => `  · Sovereign inscription: ${r}`),
+      ...(stressed ? [`  Bus vector after inscribed shocks: (${stressed.join(", ")})`] : []),
       "",
       "Assessed against Vinculum Security, A Doctrine of Relational Security, by James Wesley Ndua.",
       "Pro Omni Humanitate.",
     ];
     return lines.join("\n");
-  }, [context, mission, scores, standing, mean, spread, weakest, reading, archetype, precedents, values]);
+  }, [context, mission, scores, standing, mean, spread, weakest, reading, archetype, precedents, values, customRules, stressed]);
 
   return (
     <section id="bench" className="scroll-mt-24">
@@ -422,7 +435,8 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
         </p>
       </FadeIn>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-5 items-start w-full min-w-0 [&>*]:min-w-0">
+      {/* Tier 1: working bench and primary gauge, balanced halves. */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         {/* ---- input column ---- */}
         <div className="bg-navy-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
           <label htmlFor="bench-context" className="eyebrow block">
@@ -507,7 +521,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
         </div>
 
         {/* ---- reading column ---- */}
-        <div className="space-y-5">
+        <div className="space-y-4 min-w-0">
           <div className="bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
             <p className="eyebrow">Reading</p>
             <h4 className="mt-3 font-serif text-primary text-2xl leading-tight">{standing.label}</h4>
@@ -627,10 +641,12 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
             </div>
 
             <p className="mt-5 text-sm leading-relaxed text-foreground/80">{standing.note}</p>
+            {stressed && (
+              <p className="mt-3 border-l-2 border-accent/60 pl-3 font-mono text-[11px] leading-relaxed text-accent [overflow-wrap:anywhere]">
+                Inscribed shocks active: the mission bus reads ({stressed.join(", ")}) for every downstream desk.
+              </p>
+            )}
           </div>
-
-          <BondMathPanel scores={values} />
-          <RelationalDynamicsPanel scores={values} />
 
           <div className="bg-navy-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
             <p className="eyebrow">Most exposed bond</p>
@@ -647,6 +663,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
             )}
           </div>
 
+          <RelationalDynamicsPanel scores={values} />
           <div className="bg-background border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
             <p className="eyebrow">Nearest documented case</p>
             <h4 className="mt-3 font-serif text-primary text-xl">{analogue.shortTitle}</h4>
@@ -660,21 +677,40 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange }: B
             </Link>
           </div>
 
+        </div>
+      </div>
+
+      {/* Tier 2: analytical deep dive, side by side. */}
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+        <div className="space-y-6 min-w-0">
+          <BondMathPanel scores={values} />
+        </div>
+        <div className="space-y-6 min-w-0">
           <div className="bg-gold-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
             <p className="eyebrow">Boundary rules in force</p>
             <hr className="gold-rule gold-rule-short mt-4 mb-4" />
             <ul className="space-y-3">
-              {BOUNDARY_RULES.map((r) => (
-                <li key={r} className="flex gap-3 text-sm leading-relaxed text-foreground/85">
+              {[...BOUNDARY_RULES, ...customRules].map((r, idx) => (
+                <li key={`${idx}-${r}`} className="flex gap-3 text-sm leading-relaxed text-foreground/85">
                   <span className="text-brass font-bold shrink-0">&middot;</span>
-                  <span>{r}</span>
+                  <span>
+                    {idx >= BOUNDARY_RULES.length && <span className="mr-2 text-[9px] font-semibold uppercase tracking-[0.16em] text-accent">Sovereign</span>}
+                    {r}
+                  </span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <DeskOutput text={summary} fileName="Vinculum-Bond-Diagnostic" />
+          {simulator}
         </div>
+      </div>
+
+      {stress && <div className="mt-8 grid grid-cols-1 gap-8 w-full min-w-0 [&>*]:min-w-0">{stress}</div>}
+
+      {/* Tier 3: sovereign transmittal console, full width. */}
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={summary} fileName="Vinculum-Bond-Diagnostic" />
       </div>
     </section>
   );

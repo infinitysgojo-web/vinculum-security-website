@@ -182,7 +182,13 @@ export default function ClauseRedliner() {
     [body]
   );
 
-  const [own, setOwn] = useState<OwnRule[]>([]);
+  const [localOwn, setOwn] = useState<OwnRule[]>([]);
+  // Sovereign inscriptions from the bus join the analyst's own rules.
+  const { signals: inscBus } = useEngine();
+  const own = useMemo<OwnRule[]>(
+    () => [...localOwn, ...(inscBus.customPhrases ?? []).map((p) => ({ phrase: p.phrase, why: p.rationale || "Sovereign inscription", sub: p.replacement }))],
+    [localOwn, inscBus.customPhrases],
+  );
   const [op, setOp] = useState(""); const [ow, setOw] = useState(""); const [os, setOs] = useState("");
   const ownHits = body.trim().length >= 20 ? own.filter((r) => body.toLowerCase().includes(r.phrase.toLowerCase())) : [];
   const { signals } = useEngine();
@@ -261,7 +267,8 @@ export default function ClauseRedliner() {
   }, [title, body, findings, clean, linked, signals, live.join("|"), ownHits]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
+    <div className="w-full min-w-0">
+    <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="rl-title">Instrument or article title</label>
@@ -397,6 +404,9 @@ export default function ClauseRedliner() {
           </div>
         )}
         <SyncPanel linked={linked} onToggle={setLinked} summary={() => live.length ? live : ["The live reading raises no extra finding against this wording."]} />
+      </div>
+    </div>
+      <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Clause-Redline" />
       </div>
     </div>

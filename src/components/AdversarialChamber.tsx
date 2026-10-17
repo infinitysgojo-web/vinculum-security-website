@@ -200,7 +200,7 @@ export default function AdversarialChamber() {
         </div>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-8 w-full min-w-0">
         <p className="eyebrow mb-3">Compiled audit</p>
         <p className="mb-4 max-w-3xl text-sm text-muted-foreground">
           The audit follows the filter above. Add it to the Mission Binder to carry the critics' questions into the dossier.

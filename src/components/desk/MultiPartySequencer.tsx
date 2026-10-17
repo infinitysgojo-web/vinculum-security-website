@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import SyncPanel from "@/components/desk/SyncPanel";
-import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
+import { telemetryLines, useEngine, usePublish, type Signals } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import AsymmetryMatrix from "./AsymmetryMatrix";
 import { useTheatreSeed } from "./theatres";
@@ -247,6 +247,21 @@ function NegotiationTable({
   );
 }
 
+/**
+ * Inscribed stakeholders enter the asymmetry matrix with a derived tolerance vector:
+ * every bond at 3.0 + 0.25 × (leverage − vulnerability), and a veto holder adds 1.0
+ * on the live limiting bond. Clamped to 1.0 to 5.0.
+ */
+function inscribedParties(s: Signals) {
+  const BN = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"];
+  const lim = Math.max(0, BN.indexOf(s.weakestBond ?? ""));
+  return (s.customParties ?? []).map((p) => {
+    const base = 3 + 0.25 * (p.leverage - p.vulnerability);
+    const tol = BN.map((_, i) => Math.min(5, Math.max(1, Math.round((base + (p.vetoPower && i === lim ? 1 : 0)) * 10) / 10)));
+    return { id: `custom-${p.id}`, label: p.name, bond: lim, tol, custom: true };
+  });
+}
+
 export default function MultiPartySequencer() {
   const [own, setOwn] = useState<Actor[]>([]);
   const [ownFric, setOwnFric] = useState<{ a: string; b: string; text: string }[]>([]);
@@ -358,8 +373,9 @@ export default function MultiPartySequencer() {
   }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
-      <div className="space-y-6">
+    <div className="w-full min-w-0">
+    <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
+      <div className="space-y-6 min-w-0">
         <div className={panel}>
           <label className={label} htmlFor="mp-theatre">Table or theatre</label>
           <input
@@ -409,10 +425,23 @@ export default function MultiPartySequencer() {
           </div>
         </div>
 
+      </div>
+
+      <div className="space-y-6 min-w-0">
+        <SyncPanel linked={linked} onToggle={setLinked} summary={() => [spoiler || `${frictions.length} friction pair(s) at the table; no spoiler coalition flagged by the live reading.`]} />
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
-        <AsymmetryMatrix parties={seated.map((a) => ({ id: a.id, label: a.label, bond: a.bond }))} />
+        <AsymmetryMatrix
+          parties={[
+            ...seated.map((a) => ({ id: a.id, label: a.label, bond: a.bond })),
+            ...inscribedParties(signals),
+          ]}
+        />
+      </div>
+    </div>
+
+      <div className="mt-8 grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
         {pairOk && (
           <div className="border border-accent/50 bg-background p-5">
             <p className={label}>De-confliction script · {pairOk.map((id) => ACTORS.find((x) => x.id === id)?.label).join(" / ")}</p>
@@ -457,8 +486,9 @@ export default function MultiPartySequencer() {
         </div>
       </div>
 
-      <SyncPanel linked={linked} onToggle={setLinked} summary={() => [spoiler || `${frictions.length} friction pair(s) at the table; no spoiler coalition flagged by the live reading.`]} />
-      <DeskOutput text={text} fileName="Vinculum-Multi-Party-Matrix" />
+      <div className="mt-8 w-full min-w-0">
+        <DeskOutput text={text} fileName="Vinculum-Multi-Party-Matrix" />
+      </div>
     </div>
   );
 }
