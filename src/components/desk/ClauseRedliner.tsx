@@ -312,20 +312,6 @@ export default function ClauseRedliner() {
           <p className="mt-3 text-xs text-muted-foreground">
             {RULES.length + own.length} tests applied. Everything runs in this browser; nothing is saved or sent.
           </p>
-          <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
-            <p className={label}>Custom mode: your own rule</p>
-            <input className={field} value={op} onChange={(e) => setOp(e.target.value)} placeholder="Phrase to flag, e.g. best endeavours" />
-            <input className={field} value={ow} onChange={(e) => setOw(e.target.value)} placeholder="Why it is a risk" />
-            <input className={field} value={os} onChange={(e) => setOs(e.target.value)} placeholder="Substitute wording (optional)" />
-            <button type="button" disabled={!op.trim()} onClick={() => { setOwn((p) => [...p, { phrase: op.trim(), why: ow.trim(), sub: os.trim() }]); setOp(""); setOw(""); setOs(""); }}
-              className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add rule</button>
-            {own.map((r, i) => (
-              <div key={i} className="flex items-center justify-between gap-2 text-xs border border-border p-2">
-                <span className="min-w-0 [overflow-wrap:anywhere]">"{r.phrase}"{ownHits.includes(r) && <span className="ml-2 text-accent">flagged</span>}</span>
-                <button type="button" className="text-muted-foreground hover:text-accent px-2" onClick={() => setOwn((p) => p.filter((_, j) => j !== i))}>Remove</button>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="border border-brass/40 p-5">
@@ -404,6 +390,20 @@ export default function ClauseRedliner() {
           </div>
         )}
         <SyncPanel linked={linked} onToggle={setLinked} summary={() => live.length ? live : ["The live reading raises no extra finding against this wording."]} />
+        <div className="border border-brass/40 bg-background p-4 sm:p-5 space-y-2">
+          <p className={label}>Custom mode: your own rule</p>
+          <input className={field} value={op} onChange={(e) => setOp(e.target.value)} placeholder="Phrase to flag, e.g. best endeavours" />
+          <input className={field} value={ow} onChange={(e) => setOw(e.target.value)} placeholder="Why it is a risk" />
+          <input className={field} value={os} onChange={(e) => setOs(e.target.value)} placeholder="Substitute wording (optional)" />
+          <button type="button" disabled={!op.trim()} onClick={() => { setOwn((p) => [...p, { phrase: op.trim(), why: ow.trim(), sub: os.trim() }]); setOp(""); setOw(""); setOs(""); }}
+            className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add rule</button>
+          {own.map((r, i) => (
+            <div key={i} className="flex items-center justify-between gap-2 text-xs border border-border p-2">
+              <span className="min-w-0 [overflow-wrap:anywhere]">"{r.phrase}"{ownHits.includes(r) && <span className="ml-2 text-accent">flagged</span>}</span>
+              <button type="button" className="text-muted-foreground hover:text-accent px-2" onClick={() => setOwn((p) => p.filter((_, j) => j !== i))}>Remove</button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
       <div className="mt-8 w-full min-w-0">

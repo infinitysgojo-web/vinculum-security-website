@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
-import { telemetryLines, useEngine } from "./engine";
-import DeskOutput, { BinderContext, field, label, panel, type BinderEntry } from "./DeskOutput";
+import { stageGateAudit, statutoryClearances, telemetryLines, useEngine } from "./engine";
+import DeskOutput, { field, label, panel, type BinderEntry } from "./DeskOutput";
 
 /**
  * Consolidated Mission Binder. Compiles documents added from any desk into one
@@ -24,6 +24,10 @@ export default function MissionBinder({
   useEffect(() => setTheatre(profile.theatre), [profile.theatre]);
   useEffect(() => setEnvoy(profile.officer || "Office of the Special Envoy"), [profile.officer]);
   const { signals } = useEngine();
+
+  const synopsis = useMemo(() => telemetryLines(signals).slice(1).map((l) => l.trim()).filter((l) => l && !/^STANDING ALERTS|^SOVEREIGN INSCRIPTIONS/.test(l)).slice(0, 10), [signals]);
+  const clearances = useMemo(() => statutoryClearances(signals), [signals]);
+  const gates = useMemo(() => stageGateAudit(signals).gates, [signals]);
 
   const text = useMemo(() => {
     const bar = "=".repeat(64);
@@ -78,9 +82,54 @@ export default function MissionBinder({
               </ol>
             )}
           </div>
+          <div className="border border-border bg-background p-4 sm:p-5">
+            <p className={label}>Clearance standing by gate</p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {gates.map((g) => (
+                <div key={g.name} className={`flex items-baseline justify-between gap-2 border-l-2 pl-3 text-xs ${g.passed ? "border-primary/40" : "border-destructive"}`}>
+                  <span className="text-foreground/85">{g.name}</span>
+                  <span className={g.passed ? "text-emerald shrink-0" : "text-destructive shrink-0"}>{g.passed ? "Cleared" : "Locked"}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <BinderContext.Provider value={null}>
-        </BinderContext.Provider>
+        {/* Right column: live master dossier, contents, synopsis and clearance standing. */}
+        <div className="space-y-5 min-w-0">
+          <div className="border border-brass/40 bg-background p-4 sm:p-5">
+            <p className={label}>Master dossier · table of contents</p>
+            <p className="font-serif text-lg text-primary leading-tight [overflow-wrap:anywhere]">{theatre.trim() || "Unspecified theatre"}</p>
+            <p className="mt-1 text-xs text-muted-foreground [overflow-wrap:anywhere]">Prepared for {envoy.trim() || "the receiving office"} · {entries.length} tab{entries.length === 1 ? "" : "s"}</p>
+            <ol className="mt-4 space-y-1.5 border-t border-border pt-3">
+              <li className="flex gap-3 text-xs"><span className="w-12 shrink-0 font-mono text-accent">Front</span><span className="text-foreground/85">Situation synopsis and standing alerts</span></li>
+              {entries.map((e, i) => (
+                <li key={e.id} className="flex gap-3 text-xs">
+                  <span className="w-12 shrink-0 font-mono text-accent">Tab {i + 1}</span>
+                  <span className="min-w-0 text-foreground/85 [overflow-wrap:anywhere]">{e.title}</span>
+                </li>
+              ))}
+              {(signals.customNotes ?? []).filter((n) => n.desk === "binder").map((n) => (
+                <li key={n.id} className="flex gap-3 text-xs">
+                  <span className="w-12 shrink-0 font-mono text-accent">Annex</span>
+                  <span className="min-w-0 text-foreground/85 [overflow-wrap:anywhere]">{n.title}</span>
+                </li>
+              ))}
+              <li className="flex gap-3 text-xs"><span className="w-12 shrink-0 font-mono text-accent">Sched.</span><span className="text-foreground/85">Twenty statutory clearances ({clearances.filter((c) => c.passed).length} of {clearances.length} satisfied)</span></li>
+            </ol>
+          </div>
+          <div className="border border-border bg-navy-tint/40 p-4 sm:p-5">
+            <p className={label}>Situation synopsis</p>
+            {synopsis.length ? (
+              <ul className="space-y-1.5">
+                {synopsis.map((l, i) => (
+                  <li key={i} className="text-xs leading-relaxed text-foreground/85 [overflow-wrap:anywhere]">{l}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-xs text-muted-foreground">No upstream reading yet. Score the bonds on the diagnostic bench and the synopsis compiles here.</p>
+            )}
+          </div>
+        </div>
       </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Mission-Binder" />

@@ -1,4 +1,5 @@
-import { Activity, Link2, Link2Off } from "lucide-react";
+import { useState } from "react";
+import { Activity, ChevronDown, Link2, Link2Off } from "lucide-react";
 import { alerts, hasSignal, useEngine, type Signals } from "./engine";
 
 const TONE: Record<string, string> = {
@@ -26,6 +27,11 @@ export default function SyncPanel({
   const live = hasSignal(signals);
   const list = live && linked ? alerts(signals) : [];
   const notes = live && linked && summary ? summary(signals) : [];
+  // Standing alerts repeat on every desk, so only the two most severe stay open by default.
+  const [open, setOpen] = useState(false);
+  const rank = { critical: 0, elevated: 1, note: 2 } as Record<string, number>;
+  const sorted = [...list].sort((a, b) => (rank[a.level] ?? 3) - (rank[b.level] ?? 3));
+  const shown = open ? sorted : sorted.slice(0, 2);
 
   return (
     <div className="border border-brass/40 bg-background/70 p-4 min-w-0">
@@ -63,13 +69,24 @@ export default function SyncPanel({
 
       {list.length > 0 && (
         <div className="mt-3 space-y-2">
-          {list.map((a) => (
+          {shown.map((a) => (
             <div key={a.name} className={`border-l-2 pl-3 ${TONE[a.level]}`}>
               <p className="text-[10px] uppercase tracking-[0.16em] font-semibold">{a.name}</p>
               <p className="text-xs text-foreground/80 mt-0.5">{a.reading}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{a.directive}</p>
             </div>
           ))}
+          {sorted.length > 2 && (
+            <button
+              type="button"
+              aria-expanded={open}
+              onClick={() => setOpen(!open)}
+              className="inline-flex min-h-10 items-center gap-1.5 text-[10px] uppercase tracking-[0.16em] font-semibold text-accent hover:text-primary"
+            >
+              <ChevronDown size={12} className={open ? "rotate-180 transition-transform" : "transition-transform"} />
+              {open ? "Show fewer standing alerts" : `Show ${sorted.length - 2} more standing alert${sorted.length - 2 === 1 ? "" : "s"}`}
+            </button>
+          )}
         </div>
       )}
     </div>
