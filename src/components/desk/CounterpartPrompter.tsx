@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
-import { useEngine, hasSignal, telemetryLines } from "./engine";
+import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
@@ -76,6 +76,7 @@ export default function CounterpartPrompter() {
   const [cCaution, setCCaution] = useState("");
   const [cPivot, setCPivot] = useState("");
   const [cQ, setCQ] = useState<[string, string, string, string]>(["", "", "", ""]);
+  usePublish("counterpart", { counterpart: customOn ? cLabel.trim() || "Custom counterpart" : COUNTERPARTS[cp]?.label ?? "" });
   const setQ = (i: number, v: string) =>
     setCQ((p) => p.map((x, j) => (j === i ? v : x)) as [string, string, string, string]);
 

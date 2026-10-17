@@ -24,14 +24,14 @@ const FLOW: Record<string, Flow> = {
   compound: { reads: [], publishes: ["Active shocks", "First provision to break", "Compound strain index"] },
   mirror: { reads: [ANALOGUE, BOND], publishes: ["Comparative precedent selection"] },
   briefing: { reads: [WEAK, RUPT], publishes: [] },
-  counterpart: { reads: [WEAK, RUPT, GAP], publishes: [] },
+  counterpart: { reads: [WEAK, RUPT, GAP], publishes: ["Counterpart archetype in preparation"] },
   multiparty: { reads: [RUPT, GAP], publishes: ["Seated parties", "Friction pairs"] },
   tracks: { reads: [COMMUNAL, RUPT], publishes: ["Track I and II phase depth", "Communal-bond tolerance (0 / 1 / 2 phases)", "Elite-Pact alert"] },
-  audit: { reads: [WEAK, RUPT, FRICTION], publishes: [] },
+  audit: { reads: [WEAK, RUPT, FRICTION], publishes: ["Stakeholder safeguard coverage"] },
   clauses: { reads: [WEAK, RUPT, SHOCK, GAP], publishes: ["Covenants drafted"] },
   redliner: { reads: [WEAK, RUPT, SHOCK], publishes: ["Redline flag count"] },
   succession: { reads: [BOND, RUPT, COV], publishes: ["Treaty survival under stress"] },
-  legal: { reads: [WEAK], publishes: [] },
+  legal: { reads: [WEAK], publishes: ["Litigation forum"] },
   adversarial: { reads: [WEAK, GAP, COV, SURV], publishes: [] },
   readiness: { reads: [RUPT, GAP, WEAK, SURV, SHOCK, COV, VER], publishes: ["Lifecycle stages cleared"] },
   verification: { reads: [WEAK, COV, SHOCK], publishes: ["Verifier seated (releases the independent-verifier lock)"] },
@@ -66,6 +66,9 @@ const PUBLISHES: Record<string, (s: Signals) => boolean> = {
   readiness: (s) => s.gatesCleared !== undefined,
   verification: (s) => s.verifierSeated !== undefined,
   handover: (s) => s.handoverViability !== undefined,
+  audit: (s) => s.safeguardCoverage !== undefined,
+  legal: (s) => !!s.litigationForum,
+  counterpart: (s) => !!s.counterpart,
 };
 export function deskIsLive(deskId: string, s: Signals) {
   return PUBLISHES[deskId]?.(s) ?? false;

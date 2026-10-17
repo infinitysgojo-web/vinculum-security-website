@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
@@ -103,6 +104,11 @@ export default function VerificationLedger() {
   const [seated, setSeated] = useState<string[]>(["civil", "youth"]);
   const [met, setMet] = useState<string[]>([]);
   const [interval, setInterval] = useState("90");
+  useTheatreSeed("verification", (s) => {
+    setSeated(s.seated);
+    setMet(s.met);
+    setInterval(s.interval);
+  });
   usePublish("verification", { verifierSeated: seated.length > 0 });
 
   const toggle = (set: string[], id: string, fn: (v: string[]) => void) =>

@@ -1,0 +1,73 @@
+import { stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR } from "./engine";
+
+/**
+ * Which articles of the twenty-clearance schedule each desk feeds. Desks that
+ * consolidate the whole mission (briefing, readiness, binder and the like) show
+ * the five gates instead of single articles.
+ */
+const DESK_ARTICLES: Record<string, string[]> = {
+  diagnostics: ["1.1", "1.2", "1.3", "1.4"],
+  mirror: ["1.1", "1.3", "1.4"],
+  sentinel: ["2.1", "2.2", "2.3", "2.4"],
+  compound: ["4.2", "5.2"],
+  multiparty: ["3.2", "3.3"],
+  tracks: ["3.1", "3.2", "3.3", "3.4"],
+  audit: ["2.2", "2.3"],
+  verification: ["2.2", "2.3"],
+  clauses: ["4.1", "4.2", "4.3"],
+  redliner: ["4.4"],
+  legal: ["4.1", "4.3"],
+  succession: ["5.1", "5.2"],
+  handover: ["5.3", "5.4"],
+};
+
+/** Statutory anchor shown under every desk header: the articles this desk bears on, read live from the bus. */
+export default function StatutoryClearanceBar({ deskId }: { deskId: string }) {
+  const { signals } = useEngine();
+  const all = statutoryClearances(signals);
+  const audit = stageGateAudit(signals);
+  const ids = DESK_ARTICLES[deskId];
+  const floorBreached = signals.weakestScore !== undefined && signals.weakestScore < VIABLE_FLOOR;
+  const cleared = all.filter((c) => c.passed).length;
+
+  const chip = "inline-flex items-center gap-1.5 border px-2 py-1 font-mono text-[10px] whitespace-nowrap";
+  const tone = (passed: boolean, binding: boolean) =>
+    passed
+      ? "border-emerald/60 bg-emerald/10 text-emerald"
+      : binding
+        ? "border-destructive/60 bg-destructive/10 text-destructive font-semibold"
+        : "border-border text-muted-foreground";
+
+  return (
+    <div className="mb-6 border border-border bg-card/60 px-3 sm:px-4 py-2.5" aria-label="Statutory clearance anchor">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">
+          Statutory anchor ·{" "}
+          <span className="text-foreground">{ids ? `Articles ${ids.join(", ")}` : "Five stage gates"}</span>
+        </p>
+        <p className={`font-mono text-[10px] uppercase tracking-[0.12em] ${floorBreached ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+          {cleared}/{all.length} clearances · {floorBreached ? `statutory rupture: floor ${VIABLE_FLOOR.toFixed(1)} breached` : `floor ${VIABLE_FLOOR.toFixed(1)} held`}
+        </p>
+      </div>
+      <div className="mt-2 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 scrollbar-none">
+        {ids
+          ? all
+              .filter((c) => ids.includes(c.id))
+              .map((c) => (
+                <span key={c.id} className={`${chip} ${tone(c.passed, c.binding)}`} title={c.name}>
+                  <span>{c.id}</span>
+                  <span className="text-[9px] uppercase tracking-wider">
+                    {c.passed ? "Cleared" : c.binding ? (floorBreached && c.gate === "Vector Integrity" ? "Lock active" : "Locked") : "Advisory"}
+                  </span>
+                </span>
+              ))
+          : audit.gates.map((g, i) => (
+              <span key={g.name} className={`${chip} ${tone(g.passed, true)}`} title={g.directive}>
+                <span>G{i + 1}</span>
+                <span className="text-[9px] uppercase tracking-wider">{g.passed ? "Cleared" : "Locked"}</span>
+              </span>
+            ))}
+      </div>
+    </div>
+  );
+}

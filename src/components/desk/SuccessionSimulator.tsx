@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, successionDurability, SUCCESSION_TRAP } from "./engine";
 import SyncPanel from "./SyncPanel";
@@ -116,6 +117,10 @@ export default function SuccessionSimulator() {
   const [linked, setLinked] = useState(true);
   const [inForce, setInForce] = useState<string[]>(["office", "verify", "outcome"]);
   const [shocks, setShocks] = useState<string[]>(["principal"]);
+  useTheatreSeed("succession", (s) => {
+    setInForce(s.inForce);
+    setShocks(s.shocks);
+  });
 
   // Custom mode: provisions and shocks the practitioner defines for their own instrument.
   const [ownProv, setOwnProv] = useState<Prov[]>([]);

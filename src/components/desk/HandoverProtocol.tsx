@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
@@ -61,6 +62,10 @@ export default function HandoverProtocol() {
   const [successor, setSuccessor] = useState("");
   const [cleared, setCleared] = useState<string[]>([]);
   const [deps, setDeps] = useState<string[]>([]);
+  useTheatreSeed("handover", (s) => {
+    setCleared(s.cleared);
+    setDeps(s.deps);
+  });
 
   const toggle = (set: string[], id: string, fn: (v: string[]) => void) =>
     fn(set.includes(id) ? set.filter((x) => x !== id) : [...set, id]);

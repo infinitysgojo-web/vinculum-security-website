@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
@@ -89,6 +90,7 @@ function scaffold(requirement: string, partyName: string, verifier: string) {
 export default function ClauseArchitect() {
   const [ag, setAg] = useState(0);
   const [picked, setPicked] = useState<number[]>([0, 3]);
+  useTheatreSeed("clauses", (s) => setPicked(s.picked));
   const [title, setTitle] = useState("");
   const [parties, setParties] = useState("");
   const [office, setOffice] = useState("");

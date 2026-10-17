@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTheatreSeed } from "./theatres";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
@@ -74,6 +75,10 @@ export default function SentinelMatrix() {
   const theater = theaterOverride.trim() || mission.theatre.trim();
   const [trend, setTrend] = useState(1);
   const [on, setOn] = useState<number[]>([]);
+  useTheatreSeed("sentinel", (s) => {
+    setOn(s.on);
+    setTrend(s.trend);
+  });
   const toggle = (i: number) => setOn((p) => (p.includes(i) ? p.filter((x) => x !== i) : [...p, i]));
   // -1 all, -2 weakest live bond only, 0-3 a single bond.
   const [filter, setFilter] = useState(-1);

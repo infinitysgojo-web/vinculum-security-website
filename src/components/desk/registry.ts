@@ -11,8 +11,9 @@
  */
 import { useEffect, useState } from "react";
 import { stageGateAudit, statutoryClearances, VIABLE_FLOOR, type Signals } from "./engine";
+import { theatreById } from "./theatres";
 
-export type DispatchKind = "note-verbale" | "demarche" | "aide-memoire" | "cable" | "dossier" | "attestation" | "text";
+export type DispatchKind = "note-verbale" | "demarche" | "aide-memoire" | "cable" | "dossier" | "attestation" | "text" | "minute";
 
 export type Dispatch = {
   ref: string;
@@ -21,6 +22,8 @@ export type Dispatch = {
   seq: number;
   revision: string | null;
   kind: DispatchKind;
+  /** Desk the dispatch was minted from, when known. */
+  desk?: string;
   gatesPassed: number;
   gatesTotal: number;
   clearancesPassed: number;
@@ -100,9 +103,9 @@ export function useStateDigest(s: Signals): string {
 }
 
 /** Mint a fresh, collision-proof dispatch for the current bus state. */
-export async function mintDispatch(s: Signals, kind: DispatchKind): Promise<Dispatch> {
+export async function mintDispatch(s: Signals, kind: DispatchKind, desk?: string): Promise<Dispatch> {
   const snap = stateSnapshot(s);
-  const stateKey = `${kind}|${JSON.stringify(snap)}`;
+  const stateKey = `${kind}|${desk ?? ""}|${JSON.stringify(snap)}`;
   const prior = revisions.get(stateKey) ?? 0;
   revisions.set(stateKey, prior + 1);
   const revision = prior > 0 ? String.fromCharCode(65 + Math.min(prior, 25)) : null;
@@ -111,18 +114,19 @@ export async function mintDispatch(s: Signals, kind: DispatchKind): Promise<Disp
   const clearances = statutoryClearances(s);
   const clearancesPassed = clearances.filter((c) => c.passed).length;
   const floorValidated = s.weakestScore !== undefined && s.weakestScore >= VIABLE_FLOOR;
-  const sigil = theatreSigil(s.theatre);
+  const preset = theatreById(s.presetId);
+  const sigil = preset && preset.name === (s.theatre ?? "").trim() ? preset.sigil : theatreSigil(s.theatre);
 
   for (;;) {
     const seq = nextSeq();
     const nonce = hex(crypto.getRandomValues(new Uint8Array(8)));
     const epochHex = (Math.floor(performance.timeOrigin + performance.now()) >>> 0).toString(16).toUpperCase().slice(-7).padStart(7, "0");
     const ref = `NV/VINC-${sigil}-${epochHex}-${String(seq % 10000).padStart(4, "0")}${revision ? `-REV.${revision}` : ""}`;
-    const digest = await sha256Hex(JSON.stringify({ ...snap, nonce, timestampUtc: new Date().toISOString(), kind, seq }));
+    const digest = await sha256Hex(JSON.stringify({ ...snap, desk: desk ?? null, nonce, timestampUtc: new Date().toISOString(), kind, seq }));
     if (issuedRefs.has(ref) || issuedDigests.has(digest)) continue;
     issuedRefs.add(ref);
     issuedDigests.add(digest);
-    const d: Dispatch = { ref, digest, nonce, seq, revision, kind, gatesPassed, gatesTotal: audit.gates.length, clearancesPassed, clearancesTotal: clearances.length, floorValidated };
+    const d: Dispatch = { ref, digest, nonce, seq, revision, kind, desk, gatesPassed, gatesTotal: audit.gates.length, clearancesPassed, clearancesTotal: clearances.length, floorValidated };
     listeners.forEach((fn) => fn(d));
     return d;
   }
