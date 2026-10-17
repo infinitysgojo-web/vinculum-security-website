@@ -187,13 +187,41 @@ export function deskDossierTitle(text: string) {
   return (text.split("\n")[0] || "Chancellery document").trim();
 }
 
+export type Attestation = {
+  ref: string;
+  digest: string;
+  gates: { name: string; passed: boolean }[];
+  floorValidated: boolean;
+};
+
+const at = StyleSheet.create({
+  title: { fontSize: 18, color: NAVY, textAlign: "center", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 4 },
+  latin: { fontSize: 10.5, fontStyle: "italic", color: MUTED, textAlign: "center", marginBottom: 18 },
+  mono: { fontFamily: "Courier", fontSize: 8.2, color: INK, lineHeight: 1.5 },
+  box: { borderWidth: 0.8, borderColor: NAVY, padding: 10, marginBottom: 16 },
+  label: { fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginBottom: 6 },
+  gateRow: { flexDirection: "row", borderBottomWidth: 0.4, borderBottomColor: RULE, paddingVertical: 4 },
+  gateMark: { width: 22, fontFamily: "Courier", fontSize: 9, color: NAVY },
+  gateName: { flex: 1, fontSize: 10.5, color: INK },
+  gateState: { width: 80, fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.2, textAlign: "right", color: MUTED, textTransform: "uppercase" },
+  para: { fontSize: 10.5, color: INK, marginTop: 14, lineHeight: 1.55 },
+  sigs: { flexDirection: "row", justifyContent: "space-between", marginTop: 34 },
+  sigCol: { width: "46%" },
+  sigLine: { borderBottomWidth: 0.6, borderBottomColor: INK, height: 34 },
+  sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", height: 86, alignItems: "center", justifyContent: "center" },
+  sigCap: { fontFamily: "InterDoc", fontSize: 7.2, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase", marginTop: 5 },
+});
+
 export async function buildDeskDossier({
+  attestation,
   text,
   deskTitle,
   eyebrow,
   reference,
   profile,
 }: {
+  /** Registry dispatch for this export; adds the Instrument of Attestation page. */
+  attestation?: Attestation;
   text: string;
   deskTitle: string;
   eyebrow: string;
@@ -255,6 +283,62 @@ export async function buildDeskDossier({
         <View style={s.gap} />
         <Body text={text} />
       </Page>
+
+      {attestation && (
+        <Page size="A4" style={s.page}>
+          <View style={s.runHead} fixed>
+            <Text style={s.runText}>Vinculum Security · Instrument of attestation</Text>
+            <View style={s.runHeadMeta}>
+              <Text style={[s.runText, s.runHeadLabel]}>Sigillum Cancellariae</Text>
+              <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
+            </View>
+          </View>
+          <View style={s.runFoot} fixed>
+            <View style={s.runFootRule} />
+            <Text style={[s.runText, s.runFootRef]}>{attestation.ref}</Text>
+            <Text style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
+          </View>
+          <Text style={at.title}>Instrument of Attestation</Text>
+          <Text style={at.latin}>Exequatur canonicalis · unalterable record</Text>
+          <View style={at.box} wrap={false}>
+            <Text style={at.label}>Protocol registry</Text>
+            <Text style={at.mono}>REF NO  : {attestation.ref}</Text>
+            <Text style={at.mono}>DIGEST  : {attestation.digest.slice(0, 32)}</Text>
+            <Text style={at.mono}>          {attestation.digest.slice(32)}</Text>
+            <Text style={at.mono}>
+              STATUS  : {attestation.gates.filter((g) => g.passed).length}/{attestation.gates.length} GATES CLEARED // VIABLE FLOOR {attestation.floorValidated ? "VALIDATED" : "BREACHED"}
+            </Text>
+          </View>
+          <Text style={at.label}>Statutory clearance gates</Text>
+          <View wrap={false}>
+            {attestation.gates.map((g) => (
+              <View key={g.name} style={at.gateRow}>
+                <Text style={at.gateMark}>{g.passed ? "[X]" : "[ ]"}</Text>
+                <Text style={at.gateName}>{g.name}</Text>
+                <Text style={at.gateState}>{g.passed ? "Cleared" : "Locked"}</Text>
+              </View>
+            ))}
+          </View>
+          <Text style={at.para}>
+            The Chancellery attests that the annexed document for {profile.theatre.trim() || "the theatre under review"} was compiled from the mission state bearing the
+            digest above, computed in the practitioner's own browser, and that any alteration of that state yields a different digest.
+          </Text>
+          <View style={at.sigs} wrap={false}>
+            <View style={at.sigCol}>
+              <View style={at.sigLine} />
+              <Text style={at.sigCap}>Plenipotentiary · signature</Text>
+              <View style={[at.sigLine, { height: 26 }]} />
+              <Text style={at.sigCap}>Name and office</Text>
+            </View>
+            <View style={at.sigCol}>
+              <View style={at.sealBox}>
+                <Text style={at.sigCap}>Great Seal</Text>
+              </View>
+              <Text style={at.sigCap}>Seal imprint</Text>
+            </View>
+          </View>
+        </Page>
+      )}
 
       <Page size="A4" style={s.cover}>
         <View style={s.coverFrame}>

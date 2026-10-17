@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, Maximize2, Minimize2, Volume2, VolumeX } from "lucide-react";
+import { ChevronDown, Maximize2, Minimize2, Monitor, Volume2, VolumeX } from "lucide-react";
+import ChancelleryWire from "@/components/desk/ChancelleryWire";
 import { toast } from "sonner";
 import { tick, seal, soundEnabled, setSoundEnabled, onSoundChange } from "@/lib/chancelleryHaptics";
 import { supabase } from "@/integrations/supabase/client";
@@ -257,6 +258,32 @@ export default function Dashboard() {
   }, [desk]);
   const addFromDesk = useCallback((e: BinderEntry) => addToBinder({ ...e, desk: e.desk ?? deskRef.current }), [addToBinder]);
 
+  // The theatre named in the mission profile rides the bus, so the registry sigil follows it.
+  useEffect(() => {
+    const t = profile.theatre.trim();
+    if ((signals.theatre ?? "") !== t) publish("mission", { theatre: t || undefined });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile.theatre, signals.theatre]);
+
+  // SCIF / Amber Field terminal mode: a token swap on the root, kept for this tab only.
+  const [scif, setScif] = useState(false);
+  useEffect(() => {
+    try {
+      setScif(sessionStorage.getItem("vs:scif") === "1");
+    } catch {
+      // sessionStorage unavailable: mode stays off.
+    }
+  }, []);
+  useEffect(() => {
+    document.documentElement.classList.toggle("scif", scif);
+    try {
+      sessionStorage.setItem("vs:scif", scif ? "1" : "0");
+    } catch {
+      // ignore
+    }
+    return () => document.documentElement.classList.remove("scif");
+  }, [scif]);
+
   // Chancellery Focus view and discrete tactile audio (muted by default).
   const [focus, setFocus] = useState(false);
   const [sound, setSound] = useState(false);
@@ -511,6 +538,17 @@ export default function Dashboard() {
             </button>
             <button
               type="button"
+              onClick={() => setScif((v) => !v)}
+              aria-pressed={scif}
+              className={`inline-flex items-center gap-1.5 transition-colors ${scif ? "text-accent" : "text-primary hover:text-accent"}`}
+              title={scif ? "Leave Amber Field terminal mode" : "Amber Field terminal mode"}
+              aria-label={scif ? "Leave Amber Field terminal mode" : "Enter Amber Field terminal mode"}
+            >
+              <Monitor size={13} />
+              <span className="hidden sm:inline">Amber</span>
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 const on = !sound;
                 setSoundEnabled(on);
@@ -680,7 +718,7 @@ export default function Dashboard() {
         </MissionContext.Provider>
         </EngineContext.Provider>
 
-        <div className="mb-20 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5">
+        <div className="mb-28 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5">
           {prev ? (
             <button
               type="button"
@@ -709,6 +747,7 @@ export default function Dashboard() {
           )}
         </div>
       </div>
+      <ChancelleryWire signals={signals} />
     </>
   );
 }

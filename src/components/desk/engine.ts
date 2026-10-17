@@ -292,16 +292,21 @@ export type Signals = {
   oversightBody?: string;
   /** Division I, comparative mirror: selected case slugs. */
   mirrors?: string[];
+  /** Active theatre named in the mission profile; feeds the registry sigil. */
+  theatre?: string;
+  /** Division II, asymmetry matrix: highest inter-party friction coefficient (0 to 1) and the veto holder on the limiting bond. */
+  partyFriction?: number;
+  vetoHolder?: string;
 };
 
 const SIGNAL_NUMBERS = [
   "bondMean", "weakestScore", "bondVariance", "trackTolerance", "rupture", "trendMultiplier",
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
-  "handoverViability",
+  "handoverViability", "partyFriction",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
-  "firstToBreak", "gatesCleared", "handoverBand", "oversightBody",
+  "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder",
 ] as const;
 const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated"] as const;
 const SIGNAL_STRING_LISTS = ["traps", "shocks", "frictionPairs", "covenants", "mirrors"] as const;
@@ -409,6 +414,15 @@ export function alerts(s: Signals): Alert[] {
           : "Rebuild this bond through a lower-stakes exchange before the table is asked to carry weight it cannot hold.",
     });
 
+  // Canonical 3.0 viable floor: a limiting bond below it trips a critical alert even before it reaches Failing.
+  if (s.weakestBond && s.weakestScore !== undefined && s.weakestScore < VIABLE_FLOOR && bondBand(s.weakestScore) !== "Failing")
+    out.push({
+      level: "critical",
+      name: "Viable floor breached",
+      reading: `The ${s.weakestBond.toLowerCase()} bond, the limiting factor, scores ${s.weakestScore.toFixed(1)} of 5, below the ${VIABLE_FLOOR.toFixed(1)} viable floor.`,
+      directive: "Lift the limiting bond to the viable floor through targeted repair before any further step is tabled.",
+    });
+
   if (s.elitePactAlert)
     out.push({
       level: "critical",
@@ -477,12 +491,13 @@ export function stageGateAudit(s: Signals): { gates: StageGate[]; locked: boolea
   } else {
     const v = [s.bonds.interpersonal, s.bonds.communal, s.bonds.intergenerational, s.bonds.institutional];
     const failing = v.filter((x) => bondBand(x) === "Failing").length;
+    const below = v.filter((x) => x < VIABLE_FLOOR).length;
     const deficit = round1(v.reduce((n, x) => n + Math.max(0, VIABLE_FLOOR - x), 0));
     gates.push({
       name: "Vector Integrity",
-      passed: failing === 0,
-      reading: `${failing} bond${failing === 1 ? "" : "s"} Failing; relational deficit Δ ${deficit.toFixed(1)} against the ${VIABLE_FLOOR.toFixed(1)} viable floor.`,
-      directive: "Lift every Failing bond above 2.0 through targeted repair before the mission proceeds.",
+      passed: below === 0,
+      reading: `${below} bond${below === 1 ? "" : "s"} below the ${VIABLE_FLOOR.toFixed(1)} viable floor (${failing} Failing); relational deficit Δ ${deficit.toFixed(1)}.`,
+      directive: `Lift every bond to the ${VIABLE_FLOOR.toFixed(1)} viable floor through targeted repair before the mission proceeds.`,
     });
   }
 
