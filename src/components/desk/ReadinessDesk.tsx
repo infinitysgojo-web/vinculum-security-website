@@ -164,59 +164,6 @@ export default function ReadinessDesk() {
               ))}
             </div>
           </div>
-          {stage.gates.map((x) => {
-            const head = x.group !== group;
-            group = x.group;
-            return (
-              <div key={x.id}>
-                {head && <p className={`${label} mt-4`}>{x.group}</p>}
-                <label className="flex gap-3 items-start text-sm cursor-pointer">
-                  <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(x.id)} onChange={() => toggle(x.id)} />
-                  <span className="text-foreground/85">
-                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] ${done.includes(x.id) ? "border-primary/50 text-primary bg-primary/5" : "border-terracotta/60 text-terracotta"}`}>
-                      {done.includes(x.id) ? "✓ Satisfied" : "🔒 Locked"}
-                    </span>
-                    {x.text}{x.critical && <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-accent">Critical</span>}
-                  </span>
-                </label>
-              </div>
-            );
-          })}
-        </div>
-        <div className="space-y-4 min-w-0">
-          <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${locks.length - openLocks.length} of ${locks.length} engine conditions satisfied; ${openLocks.length} still locked.`] : ["No upstream condition currently locks clearance."]} />
-          {audit && (
-            <div className={`border-2 p-4 space-y-2 ${audit.locked ? "border-destructive bg-destructive/5" : "border-primary/50 bg-background"}`}>
-              <p className={label}>Stage-gate audit</p>
-              <p className={`font-serif text-2xl ${audit.locked ? "text-destructive" : "text-primary"}`}>
-                DISPOSITION: {audit.locked ? "LOCKED" : "CLEARED"}
-              </p>
-              {audit.gates.map((g, i) => (
-                <div key={g.name} className={`border-l-2 pl-3 ${g.passed ? "border-primary/40" : "border-destructive"}`}>
-                  <p className="text-xs font-semibold text-foreground/90">
-                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${g.passed ? "border-primary/50 text-primary" : "border-destructive/60 text-destructive"}`}>{g.passed ? "✓ Passed" : "Failed"}</span>
-                    Gate {i + 1} · {g.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{g.reading}</p>
-                  {!g.passed && <p className="text-xs text-foreground/85 mt-0.5">Directive: {g.directive}</p>}
-                </div>
-              ))}
-            </div>
-          )}
-          {locks.length > 0 && (
-            <div className="border border-brass/40 bg-background p-4 space-y-2">
-              <p className={label}>Engine locks</p>
-              {locks.map((l) => (
-                <div key={l.name} className={`border-l-2 pl-3 ${l.held ? "border-primary/40" : "border-terracotta"}`}>
-                  <p className="text-xs font-semibold text-foreground/90">
-                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${l.held ? "border-primary/50 text-primary" : "border-terracotta/60 text-terracotta"}`}>{l.held ? "✓ Satisfied" : "🔒 Locked"}</span>
-                    {l.name}
-                  </p>
-                  {!l.held && <p className="text-xs text-muted-foreground mt-0.5">{l.remedy}</p>}
-                </div>
-              ))}
-            </div>
-          )}
           <div className="border border-border bg-background p-4">
             <p className={label}>{stage.label}</p>
             <p className={`font-serif text-3xl ${r.missingCritical.length ? "text-accent" : "text-primary"}`}>{r.verdict}</p>
@@ -241,6 +188,65 @@ export default function ReadinessDesk() {
               </div>
             ))}
           </div>
+          {locks.length > 0 && (
+            <div className="border border-brass/40 bg-background p-4 space-y-2">
+              <p className={label}>Engine locks</p>
+              {locks.map((l) => (
+                <div key={l.name} className={`border-l-2 pl-3 ${l.held ? "border-primary/40" : "border-terracotta"}`}>
+                  <p className="text-xs font-semibold text-foreground/90">
+                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${l.held ? "border-primary/50 text-primary" : "border-terracotta/60 text-terracotta"}`}>{l.held ? "✓ Satisfied" : "Locked"}</span>
+                    {l.name}
+                  </p>
+                  {!l.held && <p className="text-xs text-muted-foreground mt-0.5">{l.remedy}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="space-y-4 min-w-0">
+          <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${locks.length - openLocks.length} of ${locks.length} engine conditions satisfied; ${openLocks.length} still locked.`] : ["No upstream condition currently locks clearance."]} />
+          {audit && (
+            <div className={`border-2 p-4 space-y-2 ${audit.locked ? "border-destructive bg-destructive/5" : "border-primary/50 bg-background"}`}>
+              <p className={label}>Stage-gate audit</p>
+              <p className={`font-serif text-2xl ${audit.locked ? "text-destructive" : "text-primary"}`}>
+                DISPOSITION: {audit.locked ? "LOCKED" : "CLEARED"}
+              </p>
+              {audit.gates.map((g, i) => (
+                <div key={g.name} className={`border-l-2 pl-3 ${g.passed ? "border-primary/40" : "border-destructive"}`}>
+                  <p className="text-xs font-semibold text-foreground/90">
+                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] ${g.passed ? "border-primary/50 text-primary" : "border-destructive/60 text-destructive"}`}>{g.passed ? "✓ Passed" : "Failed"}</span>
+                    Gate {i + 1} · {g.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{g.reading}</p>
+                  {!g.passed && <p className="text-xs text-foreground/85 mt-0.5">Directive: {g.directive}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      {/* Tier 2: the stage checklist, laid across both halves. */}
+      <div className="mt-8 w-full min-w-0 border border-brass/40 bg-background p-4 sm:p-5">
+        <p className={label}>{stage.label} · gate checklist</p>
+        <div className="mt-2 gap-8 lg:columns-2">
+          {stage.gates.map((x) => {
+            const head = x.group !== group;
+            group = x.group;
+            return (
+              <div key={x.id} className="break-inside-avoid pb-2">
+                {head && <p className={`${label} mt-4`}>{x.group}</p>}
+                <label className="flex gap-3 items-start text-sm cursor-pointer">
+                  <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(x.id)} onChange={() => toggle(x.id)} />
+                  <span className="text-foreground/85">
+                    <span className={`mr-2 inline-block border px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.16em] ${done.includes(x.id) ? "border-primary/50 text-primary bg-primary/5" : "border-terracotta/60 text-terracotta"}`}>
+                      {done.includes(x.id) ? "Satisfied" : "Locked"}
+                    </span>
+                    {x.text}{x.critical && <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-accent">Critical</span>}
+                  </span>
+                </label>
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="mt-8 w-full min-w-0">

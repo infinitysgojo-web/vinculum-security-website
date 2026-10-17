@@ -294,13 +294,42 @@ export default function LitigationWorkbench() {
               </select>
             </div>
           </div>
+          <div className="border border-border bg-background p-4">
+            <p className={label}>Anticipated defence · {COUNTERPART[tactic].label}</p>
+            <p className="text-xs text-muted-foreground">{COUNTERPART[tactic].risk}</p>
+            <p className="mt-2 text-xs text-foreground/85">{COUNTERPART[tactic].counter}</p>
+          </div>
         </div>
 
-        <div className="flex flex-col min-w-0">
-          <div className="mb-3">
+        {/* Right column: live evidentiary ledger beside the intake form. */}
+        <div className="space-y-4 min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Evidentiary ledger · live preview</p>
             <button type="button" onClick={reset} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
               <RotateCcw size={13} /> Reset
             </button>
+          </div>
+          <div className="border border-brass/40 bg-background p-4">
+            <p className={label}>Forum and posture</p>
+            <p className="font-serif text-base text-primary leading-tight [overflow-wrap:anywhere]">{activeForum.label}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{activeForum.note}</p>
+            <p className="mt-2 text-xs text-foreground/85"><span className="font-semibold text-primary">{POSTURES[posture].label}.</span> {POSTURES[posture].focus}</p>
+          </div>
+          <div className="border border-border bg-background p-4">
+            <p className={label}>Evidence to secure · {DOMAINS[bond]} bond</p>
+            <ul className="space-y-1.5">
+              {BOND_EVIDENCE[bond].map((e) => (
+                <li key={e} className="flex gap-2 text-xs leading-relaxed text-foreground/85"><span className="text-brass font-bold shrink-0">&middot;</span><span>{e}</span></li>
+              ))}
+            </ul>
+          </div>
+          <div className="border border-border bg-navy-tint/40 p-4">
+            <p className={label}>§9A examination question</p>
+            <p className="font-serif italic text-sm text-primary/90">“{BOND_INQUIRY[bond]}”</p>
+          </div>
+          <div className="border border-brass/40 bg-gold-tint/40 p-4">
+            <p className={label}>Prayer for continuity relief</p>
+            <p className="text-xs leading-relaxed text-foreground/85">{BOND_RELIEF[bond]}</p>
           </div>
         </div>
       </div>

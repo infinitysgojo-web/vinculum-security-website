@@ -153,6 +153,43 @@ export default function CounterpartPrompter() {
             )}
           </div>
 
+          <div className="border border-border bg-navy-tint/40 p-4">
+            <p className={label}>Live mission posture</p>
+            <dl className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
+              <div><dt className="text-muted-foreground">Limiting bond</dt><dd className="text-primary">{signals.weakestBond ? `${signals.weakestBond}${signals.weakestScore !== undefined ? ` · ${signals.weakestScore.toFixed(1)}` : ""}` : "Not yet scored"}</dd></div>
+              <div><dt className="text-muted-foreground">Rupture index</dt><dd className={(signals.rupture ?? 0) >= 35 ? "text-destructive" : "text-primary"}>{signals.rupture !== undefined ? `${signals.rupture}%` : "Not yet read"}</dd></div>
+              <div><dt className="text-muted-foreground">Track alignment</dt><dd className={signals.elitePactAlert ? "text-destructive" : "text-primary"}>{signals.trackGap === undefined ? "Not recorded" : signals.elitePactAlert ? "Elite-Pact Mirage" : "Within tolerance"}</dd></div>
+              <div><dt className="text-muted-foreground">Covenants on the table</dt><dd className="text-primary">{signals.covenants?.length ?? 0}</dd></div>
+            </dl>
+          </div>
+          <div className="border border-border bg-background p-4">
+            <p className={label}>Full four-phase sequence</p>
+            <ol className="space-y-2">
+              {PHASES.map((p, k) => (
+                <li key={p} className="text-xs leading-relaxed">
+                  <button type="button" onClick={() => setPhase(k)} className={`text-left ${phase === k ? "text-accent" : "text-foreground/85 hover:text-accent"}`}>
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.14em]">{k + 1}. {p}</span>
+                    <span className="font-serif italic">“{questions[k]}”</span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div className="space-y-4 min-w-0">
+          <SyncPanel
+            linked={linked}
+            onToggle={setLinked}
+            summary={(s) => {
+              const n: string[] = [];
+              if (s.weakestBond) n.push(`The focus bond is set to ${s.weakestBond}, the most exposed reading from Division I.`);
+              if (s.rupture !== undefined && s.rupture >= 35)
+                n.push("Rupture is elevated, so hold the commitment phase until the verification question has been answered.");
+              if (s.elitePactAlert) n.push("An Elite-Pact Mirage is active: ask who in the community would dispute this answer.");
+              return n;
+            }}
+          />
           <div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1 mb-4">
               {PHASES.map((p, i) => (
@@ -175,21 +212,6 @@ export default function CounterpartPrompter() {
               <button type="button" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</button>
             </div>
           </div>
-        </div>
-
-        <div className="space-y-4 min-w-0">
-          <SyncPanel
-            linked={linked}
-            onToggle={setLinked}
-            summary={(s) => {
-              const n: string[] = [];
-              if (s.weakestBond) n.push(`The focus bond is set to ${s.weakestBond}, the most exposed reading from Division I.`);
-              if (s.rupture !== undefined && s.rupture >= 35)
-                n.push("Rupture is elevated, so hold the commitment phase until the verification question has been answered.");
-              if (s.elitePactAlert) n.push("An Elite-Pact Mirage is active: ask who in the community would dispute this answer.");
-              return n;
-            }}
-          />
         </div>
       </div>
       <div className="mt-8 w-full min-w-0">

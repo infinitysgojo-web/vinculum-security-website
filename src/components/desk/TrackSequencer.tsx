@@ -81,7 +81,7 @@ function DualRail({ a, b, tolerance }: { a: number; b: number; tolerance: number
       </div>
       {shear && (
         <p role="status" className="mt-2 border border-destructive/50 bg-destructive/10 px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-destructive [overflow-wrap:anywhere]">
-          ⚠ Elite-Pact Shear Zone: Lead exceeds communal tolerance ({tolerance} phase{tolerance === 1 ? "" : "s"})
+          Elite-Pact Shear Zone: Lead exceeds communal tolerance ({tolerance} phase{tolerance === 1 ? "" : "s"})
         </p>
       )}
     </div>

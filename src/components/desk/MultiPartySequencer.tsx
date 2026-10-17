@@ -432,6 +432,11 @@ export default function MultiPartySequencer() {
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
+      </div>
+    </div>
+
+      {/* Tier 2: the asymmetry and leverage matrix needs the full width to read. */}
+      <div className="mt-8 w-full min-w-0">
         <AsymmetryMatrix
           parties={[
             ...seated.map((a) => ({ id: a.id, label: a.label, bond: a.bond })),
@@ -439,7 +444,6 @@ export default function MultiPartySequencer() {
           ]}
         />
       </div>
-    </div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
         {pairOk && (

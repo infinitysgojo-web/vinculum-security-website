@@ -328,7 +328,9 @@ export default function CompoundShockTester() {
             ))}
           </div>
         </div>
-
+      </div>
+      {/* Right column: strain, the shocked vector and the continuum radar. */}
+      <div className="space-y-6 min-w-0">
         <div className="border border-brass/40 p-5">
           <div className="flex items-baseline justify-between mb-3">
             <p className={label}>Compound strain</p>
