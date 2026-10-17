@@ -14,7 +14,8 @@ export const ORCID_URL = "https://orcid.org/0009-0005-9861-8849";
 export const DOI = "10.5281/zenodo.21615991";
 export const DOI_URL = `https://doi.org/${DOI}`;
 export const LICENSE_URL = "https://creativecommons.org/licenses/by-nc-nd/4.0/";
-export const PUBLISHED = "2026-01-01";
+// Year only: the exact publication date is deliberately not published.
+export const PUBLISHED = "2026";
 export const WORK_TITLE =
   "Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition";
 
