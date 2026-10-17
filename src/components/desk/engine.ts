@@ -555,6 +555,60 @@ export function stageGateAudit(s: Signals): { gates: StageGate[]; locked: boolea
   return { gates, locked: gates.some((g) => !g.passed) };
 }
 
+export type Clearance = {
+  /** Article number within the schedule, 1.1 to 5.4. */
+  id: string;
+  /** The canonical stage gate this clearance belongs to. */
+  gate: string;
+  name: string;
+  passed: boolean;
+  /**
+   * Binding clearances decompose their gate exactly: a gate passes if and only if
+   * all of its binding clearances pass. Advisory clearances are recorded on the
+   * schedule and the attestation but never lock the mission.
+   */
+  binding: boolean;
+};
+
+/**
+ * Schedule of the twenty statutory clearances: four articles under each of the five
+ * canonical stage gates. stageGateAudit() stays the sole authority on locks; this
+ * schedule only itemises it, plus five advisory readings, deterministically from the bus.
+ */
+export function statutoryClearances(s: Signals): Clearance[] {
+  const v = s.bonds ? [s.bonds.interpersonal, s.bonds.communal, s.bonds.intergenerational, s.bonds.institutional] : [];
+  const cov = (s.covenants ?? []).join(" ").toLowerCase();
+  const nCov = s.covenants?.length ?? 0;
+  const weakFailing = s.weakestScore !== undefined && bondBand(s.weakestScore) === "Failing";
+  const needed = (s.shocks?.length ?? 0) >= 2 || weakFailing ? 2 : 1;
+  const needContinuity = s.rupture !== undefined && s.rupture >= 35;
+  const tol = s.trackTolerance ?? 1;
+  const C = (id: string, gate: string, name: string, passed: boolean, binding = true): Clearance => ({ id, gate, name, passed, binding });
+  const VI = "Vector Integrity", RC = "Rupture Containment", TS = "Track Synchronization", SC = "Structural Covenants", SD = "Succession Durability";
+  return [
+    C("1.1", VI, "Four-bond vector recorded", v.length === 4),
+    C("1.2", VI, "No bond in the Failing band", v.length === 4 && v.every((x) => bondBand(x) !== "Failing")),
+    C("1.3", VI, `Every bond at or above the ${VIABLE_FLOOR.toFixed(1)} viable floor`, v.length === 4 && v.every((x) => x >= VIABLE_FLOOR)),
+    C("1.4", VI, "Vector cohesion: spread within 1.5", v.length === 4 && Math.max(...v) - Math.min(...v) <= 1.5, false),
+    C("2.1", RC, "Rupture index measured", s.rupture !== undefined),
+    C("2.2", RC, "Below the 60% critical threshold, or verifier seated", s.rupture !== undefined && (s.rupture < 60 || s.verifierSeated === true)),
+    C("2.3", RC, "Below the 35% elevated threshold, or verifier seated", s.rupture !== undefined && (s.rupture < 35 || s.verifierSeated === true)),
+    C("2.4", RC, "No latent trap active", !(s.traps?.length), false),
+    C("3.1", TS, "Both tracks recorded", s.trackGap !== undefined),
+    C("3.2", TS, "No Elite-Pact Mirage alert", s.trackGap !== undefined && !s.elitePactAlert),
+    C("3.3", TS, "Track I lead within communal tolerance", s.trackGap !== undefined && s.trackGap <= tol),
+    C("3.4", TS, "Communal track opened", (s.trackII ?? 0) > 0, false),
+    C("4.1", SC, "At least one covenant drafted", nCov >= 1),
+    C("4.2", SC, "Second covenant under compound shock or a Failing bond", nCov >= needed),
+    C("4.3", SC, "Office-continuity provision while rupture is 35% or higher", !needContinuity || /personal|continuity|office|atrophy/.test(cov)),
+    C("4.4", SC, "No open redline flag", !s.redlineFlags, false),
+    C("5.1", SD, "Succession stress-tested", s.survivalScore !== undefined),
+    C("5.2", SD, `Survival at or above the ${SUCCESSION_TRAP}% succession trap`, s.survivalScore !== undefined && s.survivalScore >= SUCCESSION_TRAP),
+    C("5.3", SD, "Mandate handover viability 60% or higher", (s.handoverViability ?? 0) >= 60, false),
+    C("5.4", SD, "Oversight body named", !!s.oversightBody?.trim(), false),
+  ];
+}
+
 /** The telemetry block appended to every downstream chancellery document. */
 export function telemetryLines(s: Signals): string[] {
   if (!hasSignal(s)) return [];
