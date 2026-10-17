@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, hasSignal, telemetryLines, communalTolerance } from "./engine";
 import SyncPanel from "./SyncPanel";
@@ -93,6 +94,7 @@ export default function TrackSequencer() {
   const { signals } = useEngine();
   const live = linked && hasSignal(signals);
   const [done, setDone] = useState<string[]>([]);
+  useTheatreSeed("tracks", (s) => setDone(s.done));
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   // Set when the envoy tries to advance Track I past the communal tolerance; cleared by any change to the sequence.
   const [mirageAttempt, setMirageAttempt] = useState(false);

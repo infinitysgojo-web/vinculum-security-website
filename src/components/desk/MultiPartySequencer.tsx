@@ -3,6 +3,7 @@ import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import AsymmetryMatrix from "./AsymmetryMatrix";
+import { useTheatreSeed } from "./theatres";
 
 type Actor = {
   id: string;
@@ -269,6 +270,7 @@ export default function MultiPartySequencer() {
   };
   const [theatre, setTheatre] = useState("");
   const [picked, setPicked] = useState<string[]>(["state", "youth", "armed"]);
+  useTheatreSeed("multiparty", (x) => setPicked(x.picked));
 
   const toggle = (id: string) =>
     setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length >= 4 ? p : [...p, id]));

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Check, RotateCcw } from "lucide-react";
-import GoldRule from "./GoldRule";
 import EngineBrief from "@/components/desk/EngineBrief";
 import SyncPanel from "@/components/desk/SyncPanel";
 import DeskOutput from "@/components/desk/DeskOutput";
-import { useEngine, type Signals } from "@/components/desk/engine";
+import { useEngine, usePublish, type Signals } from "@/components/desk/engine";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +17,8 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
   const [linked, setLinked] = useState(true);
   const sg: Signals = linked ? signals : {};
   const [checked, setChecked] = useState<Record<string, boolean[]>>({});
+  const complete = parties.filter(([name]) => (checked[name] ?? []).filter(Boolean).length === CHECKS.length).length;
+  usePublish("audit", { safeguardCoverage: parties.length ? Math.round((complete / parties.length) * 100) : 0 });
   const party = parties[active];
   if (!party) return null;
   const state = checked[party[0]] ?? CHECKS.map(() => false);
@@ -47,9 +48,6 @@ export default function AuditBench({ parties }: { parties: readonly Party[] }) {
 
   return (
     <section id="audit-bench" className="scroll-mt-24 print:hidden">
-      <p className="eyebrow">VI.A · Stakeholder Safeguard</p>
-      <h2 className="mt-3 font-serif text-primary text-2xl md:text-3xl">Field audit bench</h2>
-      <GoldRule className="mt-4 mb-6" />
       <div className="mb-6">
         <SyncPanel
           linked={linked}

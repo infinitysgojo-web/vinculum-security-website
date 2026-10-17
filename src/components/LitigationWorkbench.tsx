@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { RotateCcw } from "lucide-react";
-import GoldRule from "./GoldRule";
 import SyncPanel from "@/components/desk/SyncPanel";
-import { telemetryLines, useEngine } from "@/components/desk/engine";
+import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
 import { useEffect } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput from "@/components/desk/DeskOutput";
@@ -145,6 +144,7 @@ export default function LitigationWorkbench() {
   const [posture, setPosture] = useState(0);
   const [bond, setBond] = useState(0);
   const [tactic, setTactic] = useState(0);
+  usePublish("legal", { litigationForum: FORUMS[forum]?.label ?? "" });
 
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
@@ -224,9 +224,6 @@ export default function LitigationWorkbench() {
 
   return (
     <section className="border border-brass/40 bg-navy-tint/40 p-5 md:p-7">
-      <p className="eyebrow">§14 · Legal and Litigation Desk</p>
-      <h2 className="mt-3 font-serif text-primary text-2xl md:text-3xl">Litigation preparation checklist</h2>
-      <GoldRule className="mt-4 mb-5" />
       <div className="mb-6"><SyncPanel linked={linked} onToggle={setLinked} summary={(x) => x.weakestBond ? [`Harmed bond set to ${x.weakestBond}, the most exposed bond on the diagnostic bench.`] : []} /></div>
       <p className="mb-7 max-w-3xl text-muted-foreground text-sm leading-relaxed">
         Enter the facts of a new matter and the desk compiles a preparation checklist from the doctrine's

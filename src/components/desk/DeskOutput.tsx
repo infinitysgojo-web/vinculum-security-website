@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck, Radio } from "lucide-react";
+import { Copy, Download, BookPlus, FileText, Loader2, ShieldCheck, Radio, Stamp } from "lucide-react";
 import { toast } from "sonner";
 import { MissionContext } from "./mission";
 import { sha256, sealText, shortHash } from "./integrity";
 import { statutoryClearances, useEngine } from "./engine";
-import { apostille, mintDispatch } from "./registry";
+import { apostille, ledgerSize, mintDispatch, type Dispatch } from "./registry";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 export const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
@@ -19,7 +19,7 @@ export type BinderEntry = { id: string; title: string; text: string; /** Desk th
 export const BinderContext = createContext<{ add: (e: BinderEntry) => void } | null>(null);
 
 /** Identity of the desk currently open, used on the chancellery document header. */
-export const DeskMetaContext = createContext<{ title: string; eyebrow: string }>({
+export const DeskMetaContext = createContext<{ title: string; eyebrow: string; id?: string }>({
   title: "Chancellery working document",
   eyebrow: "Operational desk",
 });
@@ -110,6 +110,24 @@ export default function DeskOutput({ text, fileName, cable = false }: { text: st
       active = false;
     };
   }, [text]);
+
+  // Chancellery minute: a registry dispatch minted from this desk, on demand.
+  const [minute, setMinute] = useState<Dispatch | null>(null);
+  const mintMinute = async () => {
+    const d = await mintDispatch(signals, "minute", meta.id);
+    setMinute(d);
+    toast.success(`Minute ${d.ref} entered in the registry`);
+  };
+  const copySeal = async () => {
+    const d = minute ?? (await mintDispatch(signals, "minute", meta.id));
+    if (!minute) setMinute(d);
+    try {
+      await navigator.clipboard.writeText(`${apostille(d)}\n\n${text}`);
+      toast.success("Sovereign seal and document copied");
+    } catch {
+      toast.error("Copy failed. Select the text and copy manually.");
+    }
+  };
 
   const copy = async () => {
     try {
@@ -245,6 +263,27 @@ export default function DeskOutput({ text, fileName, cable = false }: { text: st
             <span className="shrink-0 text-[9px] font-semibold uppercase tracking-widest text-accent">Local verified</span>
           </div>
         )}
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" onClick={mintMinute} className={`${btn} border-primary/60`}>
+            <Stamp size={13} /> Mint chancellery minute
+          </button>
+          <button type="button" onClick={copySeal} className={btn}>
+            <Copy size={13} /> Copy sovereign seal
+          </button>
+        </div>
+        <p className="min-w-0 font-mono text-[10px] text-muted-foreground [overflow-wrap:anywhere]">
+          {minute ? (
+            <>
+              REF <span className="text-primary">{minute.ref}</span> · SHA <span className="text-primary" title={minute.digest}>{minute.digest.slice(0, 12)}</span> ·{" "}
+              {minute.clearancesPassed}/{minute.clearancesTotal} clearances · {ledgerSize()} in registry
+            </>
+          ) : (
+            "No minute minted from this desk yet"
+          )}
+        </p>
       </div>
     </div>
   );

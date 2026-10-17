@@ -297,16 +297,25 @@ export type Signals = {
   /** Division II, asymmetry matrix: highest inter-party friction coefficient (0 to 1) and the veto holder on the limiting bond. */
   partyFriction?: number;
   vetoHolder?: string;
+  /** Omni-theatre preset: the active preset id and a counter bumped on every hydration, so desks re-seed. */
+  presetId?: string;
+  presetEpoch?: number;
+  /** Field Audit Bench: share of affected parties with all safeguards complete (0 to 100). */
+  safeguardCoverage?: number;
+  /** Litigation desk: the forum the matter is being prepared for. */
+  litigationForum?: string;
+  /** Counterpart desk: the archetype being prepared for. */
+  counterpart?: string;
 };
 
 const SIGNAL_NUMBERS = [
   "bondMean", "weakestScore", "bondVariance", "trackTolerance", "rupture", "trendMultiplier",
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
-  "handoverViability", "partyFriction",
+  "handoverViability", "partyFriction", "presetEpoch", "safeguardCoverage",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
-  "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder",
+  "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder", "presetId", "litigationForum", "counterpart",
 ] as const;
 const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated"] as const;
 const SIGNAL_STRING_LISTS = ["traps", "shocks", "frictionPairs", "covenants", "mirrors"] as const;
@@ -627,6 +636,9 @@ export function telemetryLines(s: Signals): string[] {
     L.push(`  Track synchronisation: Track I phase ${s.trackI}, Track II phase ${s.trackII}, gap ${s.trackGap}${s.trackTolerance !== undefined ? `, tolerated lead ${s.trackTolerance}` : ""}.`);
   if (s.covenants?.length) L.push(`  Covenants drafted upstream: ${s.covenants.join("; ")}.`);
   if (s.survivalScore !== undefined) L.push(`  Treaty survival under stress: ${s.survivalScore} per cent.`);
+  if (s.safeguardCoverage !== undefined) L.push(`  Stakeholder safeguards complete: ${s.safeguardCoverage} per cent of affected parties.`);
+  if (s.litigationForum) L.push(`  Litigation forum in preparation: ${s.litigationForum}.`);
+  if (s.counterpart) L.push(`  Counterpart being prepared for: ${s.counterpart}.`);
   const dyn = relationalDynamics(s);
   if (dyn) {
     L.push(`  Relational deficit: Δrel ${dyn.deficit.toFixed(1)} of 8 (${dyn.deficitPct}%), ${dyn.bondsInDeficit} bond(s) below the Viable floor.`);

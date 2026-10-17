@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } fro
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, Maximize2, Minimize2, Monitor, Volume2, VolumeX } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
+import StatutoryClearanceBar from "@/components/desk/StatutoryClearanceBar";
+import { THEATRES, type TheatreId } from "@/components/desk/theatres";
 import { toast } from "sonner";
 import { tick, seal, soundEnabled, setSoundEnabled, onSoundChange } from "@/lib/chancelleryHaptics";
 import { supabase } from "@/integrations/supabase/client";
@@ -213,6 +215,11 @@ export default function Dashboard() {
   const [ready, setReady] = useState(false);
   const [division, setDivision] = useState<(typeof DIVISIONS)[number]["id"]>("assess");
   const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("diagnostics");
+  // Desks stay mounted once opened, so their inputs survive switching and they keep publishing.
+  const [visited, setVisited] = useState<Set<string>>(() => new Set(["diagnostics"]));
+  useEffect(() => {
+    setVisited((v) => (v.has(desk) ? v : new Set(v).add(desk)));
+  }, [desk]);
   const navigate = useNavigate();
   const [binder, setBinder] = useState<BinderEntry[]>([]);
   const [profile, setProfile] = useState<MissionProfile>(EMPTY_PROFILE);
@@ -264,6 +271,20 @@ export default function Dashboard() {
     if ((signals.theatre ?? "") !== t) publish("mission", { theatre: t || undefined });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile.theatre, signals.theatre]);
+
+  // Omni-theatre hydration: write the preset profile and bond vector, then bump the
+  // preset epoch so every mounted desk re-seeds its own inputs and republishes.
+  // All desks are mounted (kept alive, hidden) so the whole chain moves at once.
+  const hydrateTheatre = (id: TheatreId | "") => {
+    const t = THEATRES.find((x) => x.id === id);
+    if (!t) {
+      publish("preset", { presetId: "" });
+      return;
+    }
+    setProfile((p) => ({ ...p, theatre: t.name, parties: t.parties, bonds: t.bonds }));
+    publish("preset", { presetId: t.id, presetEpoch: (signals.presetEpoch ?? 0) + 1 });
+    setVisited(new Set(DESKS.map((d) => d.id)));
+  };
 
   // SCIF / Amber Field terminal mode: a token swap on the root, kept for this tab only.
   const [scif, setScif] = useState(false);
@@ -572,6 +593,38 @@ export default function Dashboard() {
           <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
         </div>
 
+        <div className={`mb-6 border border-border bg-card/60 px-3 sm:px-4 py-3 ${focus ? "hidden" : ""}`}>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Theatre preset · hydrates all desks</p>
+            {signals.presetId && (
+              <button type="button" onClick={() => hydrateTheatre("")} className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
+                Detach preset
+              </button>
+            )}
+          </div>
+          <div className="mt-2 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 scrollbar-none" role="radiogroup" aria-label="Theatre preset">
+            {THEATRES.map((t) => {
+              const on = signals.presetId === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  onClick={() => hydrateTheatre(t.id)}
+                  title={t.description}
+                  className={`shrink-0 min-h-10 border px-3 py-1.5 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
+                    on ? "border-primary bg-primary text-primary-foreground" : "border-border text-primary hover:border-accent"
+                  }`}
+                >
+                  <span className={on ? "opacity-80" : "text-muted-foreground"}>{t.sigil}</span> {t.name}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-1 text-[10px] text-muted-foreground">Training scenarios with illustrative readings, not field measurements.</p>
+        </div>
+
         <div className={`mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40 scrollbar-none [webkit-overflow-scrolling:touch] ${focus ? "hidden" : ""}`}>
           <div className="flex w-max min-w-full gap-5 sm:gap-6 pb-3">
             {DIVISIONS.map((dv) => {
@@ -598,7 +651,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className={focus ? "hidden" : "grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 sm:mb-10 w-full min-w-0"}>
+        <div className={focus ? "hidden" : "-mx-4 px-4 sm:mx-0 sm:px-0 flex overflow-x-auto scrollbar-none sm:overflow-visible sm:flex-wrap gap-2 mb-6 sm:mb-8 w-auto sm:w-full min-w-0 pb-1 sm:pb-0"}>
           {deskList.map((d) => {
             const liveDesk = deskIsLive(d.id, signals);
             const staged = binder.filter((x) => x.desk === d.id).length;
@@ -608,13 +661,14 @@ export default function Dashboard() {
               type="button"
               aria-pressed={desk === d.id}
               onClick={() => setDesk(d.id)}
-              className={`min-w-0 break-words px-3 sm:px-4 py-2.5 min-h-11 border text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.2em] leading-tight transition-all ${
+              className={`shrink-0 sm:shrink whitespace-nowrap sm:whitespace-normal min-w-0 break-words px-3 sm:px-4 py-2.5 min-h-11 border text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.2em] leading-tight transition-all ${
                 desk === d.id
                   ? "bg-accent text-accent-foreground border-accent"
                   : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
               }`}
             >
               <span>
+                <span className={`mr-1.5 font-mono ${desk === d.id ? "opacity-70" : "text-muted-foreground"}`}>{String(DESKS.findIndex((x) => x.id === d.id) + 1).padStart(2, "0")}</span>
                 {liveDesk && (
                   <span
                     className={`w-1.5 h-1.5 rounded-full inline-block mr-1.5 align-middle ${
@@ -643,7 +697,7 @@ export default function Dashboard() {
           })}
         </div>
 
-        <div className={`mb-7 max-w-3xl ${focus ? "hidden" : ""}`}>
+        <div className={`mb-6 max-w-3xl ${focus ? "hidden" : ""}`}>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <p className="eyebrow">{active.eyebrow}</p>
             <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -661,6 +715,9 @@ export default function Dashboard() {
           )}
         </div>
 
+        <EngineContext.Provider value={{ signals, publish }}>
+          <StatutoryClearanceBar deskId={desk} />
+        </EngineContext.Provider>
         <TelemetryStrip signals={signals} />
         <MissionChain
           deskId={desk}
@@ -673,7 +730,7 @@ export default function Dashboard() {
 
         <EngineContext.Provider value={{ signals, publish }}>
         <MissionContext.Provider value={profile}>
-        <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow }}>
+        <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow, id: active.id }}>
         <BinderContext.Provider value={{ add: addFromDesk }}>
         <div
           className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden"
@@ -685,31 +742,37 @@ export default function Dashboard() {
           }}
         >
           <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
-            {desk === "briefing" && <CableComposer />}
-            {desk === "diagnostics" && (
-              <div className="space-y-12">
-                <BondDiagnostic scores={bonds} onScoresChange={setBonds} />
-                <DeltaSimulator baseline={bonds} onApply={(sim) => setBonds(sim)} />
-                <PatternMatcher />
-              </div>
-            )}
-            {desk === "audit" && <AuditBench parties={PARTIES} />}
-            {desk === "mirror" && <MirrorDesk />}
-            {desk === "legal" && <LitigationWorkbench />}
-            {desk === "adversarial" && <AdversarialChamber />}
-            {desk === "clauses" && <ClauseArchitect />}
-            {desk === "redliner" && <ClauseRedliner />}
-            {desk === "multiparty" && <MultiPartySequencer />}
-            {desk === "compound" && <CompoundShockTester />}
-            {desk === "sentinel" && <SentinelMatrix />}
-            {desk === "readiness" && <ReadinessDesk />}
-            {desk === "counterpart" && <CounterpartPrompter />}
-            {desk === "succession" && <SuccessionSimulator />}
-            {desk === "tracks" && <TrackSequencer />}
-            {desk === "verification" && <VerificationLedger />}
-            {desk === "handover" && <HandoverProtocol />}
-            {desk === "binder" && (
-              <MissionBinder entries={binder} onRemove={(id) => setBinder((p) => p.filter((x) => x.id !== id))} onMove={moveEntry} />
+            {DESKS.map(({ id }) =>
+              visited.has(id) ? (
+                <div key={id} hidden={desk !== id}>
+                  {id === "briefing" && <CableComposer />}
+                  {id === "diagnostics" && (
+                    <div className="space-y-12">
+                      <BondDiagnostic scores={bonds} onScoresChange={setBonds} />
+                      <DeltaSimulator baseline={bonds} onApply={(sim) => setBonds(sim)} />
+                      <PatternMatcher />
+                    </div>
+                  )}
+                  {id === "audit" && <AuditBench parties={PARTIES} />}
+                  {id === "mirror" && <MirrorDesk />}
+                  {id === "legal" && <LitigationWorkbench />}
+                  {id === "adversarial" && <AdversarialChamber />}
+                  {id === "clauses" && <ClauseArchitect />}
+                  {id === "redliner" && <ClauseRedliner />}
+                  {id === "multiparty" && <MultiPartySequencer />}
+                  {id === "compound" && <CompoundShockTester />}
+                  {id === "sentinel" && <SentinelMatrix />}
+                  {id === "readiness" && <ReadinessDesk />}
+                  {id === "counterpart" && <CounterpartPrompter />}
+                  {id === "succession" && <SuccessionSimulator />}
+                  {id === "tracks" && <TrackSequencer />}
+                  {id === "verification" && <VerificationLedger />}
+                  {id === "handover" && <HandoverProtocol />}
+                  {id === "binder" && (
+                    <MissionBinder entries={binder} onRemove={(x) => setBinder((p) => p.filter((e) => e.id !== x))} onMove={moveEntry} />
+                  )}
+                </div>
+              ) : null,
             )}
           </Suspense>
         </div>

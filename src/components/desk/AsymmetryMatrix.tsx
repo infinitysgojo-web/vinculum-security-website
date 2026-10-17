@@ -66,7 +66,7 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
         Tolerance is the minimum each delegation will accept on each bond. Coefficients are Euclidean distance over the maximum (0 to 1).
       </p>
 
-      <div className="overflow-x-auto">
+      <div className="w-full min-w-0 overflow-x-auto">
         <table className="w-full min-w-[300px] border-collapse text-xs">
           <thead>
             <tr>
@@ -103,13 +103,13 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
       </div>
 
       <p className="mt-4 mb-1 text-[9px] uppercase tracking-[0.16em] font-semibold text-muted-foreground">Inter-party friction coefficient</p>
-      <div className="overflow-x-auto">
+      <div className="w-full min-w-0 overflow-x-auto">
         <table className="w-full min-w-[300px] border-collapse text-xs">
           <thead>
             <tr>
               <th className="p-1" />
               {parties.map((p) => (
-                <th key={p.id} className="p-1 text-[9px] uppercase tracking-[0.1em] text-muted-foreground font-semibold [overflow-wrap:anywhere]">{p.label}</th>
+                <th key={p.id} className="p-1 text-[9px] uppercase tracking-[0.1em] text-muted-foreground font-semibold whitespace-nowrap">{p.label}</th>
               ))}
             </tr>
           </thead>

@@ -54,6 +54,14 @@ function diff(prev: Signals, next: Signals): { cls: WireClass; text: string }[] 
   );
   if (!prev.elitePactAlert && next.elitePactAlert) out.push({ cls: "GATE_ALERT", text: `ELITE-PACT MIRAGE // TRACK GAP ${next.trackGap ?? "?"} EXCEEDS TOLERANCE ${next.trackTolerance ?? "?"}` });
   if (prev.vetoHolder !== next.vetoHolder && next.vetoHolder) out.push({ cls: "GATE_ALERT", text: `VETO ASYMMETRY // HOLDOUT LEVERAGE: ${next.vetoHolder.toUpperCase()}` });
+  if (next.presetEpoch !== undefined && prev.presetEpoch !== next.presetEpoch && next.presetId)
+    out.push({ cls: "VECTOR_SHIFT", text: `THEATRE HYDRATED // ${next.presetId} // ${next.theatre ?? ""}`.trim() });
+  if (prev.safeguardCoverage !== next.safeguardCoverage && next.safeguardCoverage !== undefined && prev.safeguardCoverage !== undefined)
+    out.push({ cls: "VECTOR_SHIFT", text: `SAFEGUARD COVERAGE ${next.safeguardCoverage}%` });
+  if (prev.litigationForum !== next.litigationForum && next.litigationForum && prev.litigationForum)
+    out.push({ cls: "VECTOR_SHIFT", text: `LITIGATION FORUM // ${next.litigationForum.toUpperCase()}` });
+  if (prev.counterpart !== next.counterpart && next.counterpart && prev.counterpart)
+    out.push({ cls: "VECTOR_SHIFT", text: `COUNTERPART // ${next.counterpart.toUpperCase()}` });
   const ga = stageGateAudit(prev).gates;
   const gb = stageGateAudit(next).gates;
   gb.forEach((g) => {
@@ -87,7 +95,7 @@ export default function ChancelleryWire({ signals }: { signals: Signals }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signals]);
 
-  useEffect(() => onDispatch((d) => push([{ cls: "DISPATCH", text: `MINTED ${d.kind.toUpperCase()} // ${d.ref} // ${d.digest.slice(0, 16)}` }])), []);
+  useEffect(() => onDispatch((d) => push([{ cls: "DISPATCH", text: `MINTED ${d.kind.toUpperCase()}${d.desk ? ` FROM ${d.desk.toUpperCase()}` : ""} // ${d.ref} // ${d.digest.slice(0, 16)}` }])), []);
 
   const shown = filter === "ALL" ? events : events.filter((e) => e.cls === filter);
 
