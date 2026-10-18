@@ -38,26 +38,26 @@ import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 
 // Proprietary desks are split into separate chunks that are only fetched
 // once a valid session exists, so they never ship with the public site.
-const BondDiagnostic = lazy(() => import("@/components/BondDiagnostic"));
-const CableComposer = lazy(() => import("@/components/CableComposer"));
-const PatternMatcher = lazy(() => import("@/components/PatternMatcher"));
-const DeltaSimulator = lazy(() => import("@/components/desk/DeltaSimulator"));
-const AuditBench = lazy(() => import("@/components/AuditBench"));
-const LitigationWorkbench = lazy(() => import("@/components/LitigationWorkbench"));
-const DiagnosticMirror = lazy(() => import("@/components/DiagnosticMirror"));
-const AdversarialChamber = lazy(() => import("@/components/AdversarialChamber"));
-const ClauseArchitect = lazy(() => import("@/components/desk/ClauseArchitect"));
-const SentinelMatrix = lazy(() => import("@/components/desk/SentinelMatrix"));
-const ReadinessDesk = lazy(() => import("@/components/desk/ReadinessDesk"));
-const CounterpartPrompter = lazy(() => import("@/components/desk/CounterpartPrompter"));
-const SuccessionSimulator = lazy(() => import("@/components/desk/SuccessionSimulator"));
-const MissionBinder = lazy(() => import("@/components/desk/MissionBinder"));
-const TrackSequencer = lazy(() => import("@/components/desk/TrackSequencer"));
-const ClauseRedliner = lazy(() => import("@/components/desk/ClauseRedliner"));
-const MultiPartySequencer = lazy(() => import("@/components/desk/MultiPartySequencer"));
-const CompoundShockTester = lazy(() => import("@/components/desk/CompoundShockTester"));
-const VerificationLedger = lazy(() => import("@/components/desk/VerificationLedger"));
-const HandoverProtocol = lazy(() => import("@/components/desk/HandoverProtocol"));
+import BondDiagnostic from "@/components/BondDiagnostic";
+import CableComposer from "@/components/CableComposer";
+import PatternMatcher from "@/components/PatternMatcher";
+import DeltaSimulator from "@/components/desk/DeltaSimulator";
+import AuditBench from "@/components/AuditBench";
+import LitigationWorkbench from "@/components/LitigationWorkbench";
+import DiagnosticMirror from "@/components/DiagnosticMirror";
+import AdversarialChamber from "@/components/AdversarialChamber";
+import ClauseArchitect from "@/components/desk/ClauseArchitect";
+import SentinelMatrix from "@/components/desk/SentinelMatrix";
+import ReadinessDesk from "@/components/desk/ReadinessDesk";
+import CounterpartPrompter from "@/components/desk/CounterpartPrompter";
+import SuccessionSimulator from "@/components/desk/SuccessionSimulator";
+import MissionBinder from "@/components/desk/MissionBinder";
+import TrackSequencer from "@/components/desk/TrackSequencer";
+import ClauseRedliner from "@/components/desk/ClauseRedliner";
+import MultiPartySequencer from "@/components/desk/MultiPartySequencer";
+import CompoundShockTester from "@/components/desk/CompoundShockTester";
+import VerificationLedger from "@/components/desk/VerificationLedger";
+import HandoverProtocol from "@/components/desk/HandoverProtocol";
 
 
 /** Without an unsealed enclave, an idle terminal signs out after the Sentinel's 15 minutes. */
@@ -220,8 +220,12 @@ const DESKS = [
 
 
 export default function Dashboard() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
+  const initialOffline = useMemo(() => {
+    const o = getOfflineSession();
+    return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
+  }, []);
+  const [session, setSession] = useState<Session | null>(initialOffline);
+  const [ready, setReady] = useState(() => !navigator.onLine || !!initialOffline);
   const [division, setDivision] = useState<(typeof DIVISIONS)[number]["id"]>("assess");
   const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("diagnostics");
   // Desks stay mounted once opened, so their inputs survive switching and they keep publishing.
@@ -346,27 +350,46 @@ export default function Dashboard() {
       return next;
     });
 
-  useEffect(() => {
-    // Offline field session: unlocked on this device by the cached credential.
+    useEffect(() => {
     const offlineSession = (): Session | null => {
       const o = getOfflineSession();
       return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
     };
+
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
       const next = s ?? offlineSession();
       setSession(next);
       if (!next) navigate("/login", { replace: true });
     });
+
+    if (!navigator.onLine) {
+      const current = offlineSession();
+      setSession(current);
+      setReady(true);
+      if (!current) navigate("/login", { replace: true });
+      return () => sub.subscription.unsubscribe();
+    }
+
+    const timer = setTimeout(() => {
+      setReady(true);
+      if (!session && !offlineSession()) navigate("/login", { replace: true });
+    }, 1500);
+
     supabase.auth
       .getSession()
       .catch(() => ({ data: { session: null } }))
       .then(({ data }) => {
+        clearTimeout(timer);
         const next = data.session ?? offlineSession();
         setSession(next);
         setReady(true);
         if (!next) navigate("/login", { replace: true });
       });
-    return () => sub.subscription.unsubscribe();
+
+    return () => {
+      clearTimeout(timer);
+      sub.subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const signOut = useCallback(async () => {
