@@ -69,7 +69,7 @@ export default function MissionBinder({
                 Empty. Open any desk and press "Add to binder" under its document. Adding again from the same desk replaces that tab with the latest version.
               </p>
             ) : (
-              <ol className="space-y-2">
+              <ol className="max-h-[28rem] overflow-y-auto space-y-2 pr-1" tabIndex={0} aria-label="Staged binder documents">
                 {entries.map((e, i) => (
                   <li key={e.id} className="flex items-center gap-2 border border-border bg-background p-3 text-sm">
                     <span className="font-serif text-accent w-8 shrink-0">{i + 1}</span>

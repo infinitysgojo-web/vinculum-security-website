@@ -252,7 +252,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
           <div className="mt-3 grid gap-x-6 gap-y-1 sm:grid-cols-2 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
             <p>Reference · <span className="text-primary/80">{ref}</span></p>
             <p className="truncate">Mission · <span className="text-primary/80">{profile.theatre.trim() || "Not named"}</span></p>
-                        <p>Registry · <span className="text-primary/80">Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</span></p>
+            <p className="sm:col-span-2 [overflow-wrap:anywhere]">Registry · <span className="text-primary/80">Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved</span></p>
             <p className="sm:col-span-2 flex min-w-0 flex-wrap items-center gap-x-1.5">
               <ShieldCheck size={12} className="shrink-0 text-accent" />
               <span>SHA-256 ·</span>
