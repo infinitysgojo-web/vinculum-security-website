@@ -155,7 +155,7 @@ const s = StyleSheet.create({
   foot: { marginTop: "auto", borderTopWidth: 0.6, borderTopColor: RULE, paddingTop: 7 },
   footNotice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginBottom: 7 },
   footRow: { flexDirection: "row", justifyContent: "space-between" },
-  footText: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 0.6, color: MUTED, textTransform: "uppercase" },
+  footText: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 0.6, color: MUTED, textTransform: "uppercase", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
 });
 
 function Bonds() {

@@ -39,7 +39,7 @@ export default function FadeIn({
     }
 
     let delayTimer: ReturnType<typeof setTimeout> | undefined;
-    const safetyTimer = setTimeout(() => setVisible(true), delay + 600);
+    const safetyTimer = setTimeout(() => setVisible(true), Math.min(delay, 300) + 300);
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -52,7 +52,7 @@ export default function FadeIn({
           }
         }
       },
-      { threshold: 0.01, rootMargin: "0px 0px 100px 0px" }
+      { threshold: 0, rootMargin: "0px 0px 120px 0px" }
     );
 
     io.observe(el);

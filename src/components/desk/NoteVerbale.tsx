@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Copy, Stamp } from "lucide-react";
 import { toast } from "sonner";
-import { bondBand, inscriptionLines, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
+import { bondBand, breachesFloor, holdsFloor, inscriptionLines, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
 import { apostille, mintDispatch, type Dispatch } from "./registry";
 import { seal } from "@/lib/chancelleryHaptics";
 
@@ -30,8 +30,8 @@ function draftCore(s: Signals, mode: Mode): string {
   if (!s.bonds) return "";
   const b = s.bonds;
   const rows = NAMES.map(([k, n]) => ({ n, v: b[k], band: bondBand(b[k]) }));
-  const breached = rows.filter((r) => r.v < VIABLE_FLOOR);
-  const holding = rows.filter((r) => r.v >= VIABLE_FLOOR);
+  const breached = rows.filter((r) => breachesFloor(r.v));
+  const holding = rows.filter((r) => holdsFloor(r.v));
   const theatre = s.theatre?.trim() || "the theatre under review";
   const audit = stageGateAudit(s);
   const passed = audit.gates.filter((g) => g.passed).length;
@@ -42,7 +42,7 @@ function draftCore(s: Signals, mode: Mode): string {
 
   const concern = breached.length
     ? `The Chancellery notes with grave concern that while ${holding.length ? `${list(holding.map((r) => r.n))} channels remain Viable or better` : "no bond holds the floor"}, ${list(breached.map((r) => `the ${r.n} Bond has deteriorated to ${r.v.toFixed(1)} (${r.band})`))}, breaching the statutory floor of ${VIABLE_FLOOR.toFixed(1)} established under §12C.`
-    : `The Chancellery records that all four bonds hold at or above the statutory floor of ${VIABLE_FLOOR.toFixed(1)} established under §12C, the ${limiting} Bond remaining the limiting factor.`;
+    : `The Chancellery records that all four bonds hold above the statutory floor of ${VIABLE_FLOOR.toFixed(1)} established under §12C, the ${limiting} Bond remaining the limiting factor.`;
   const covenantLine = covs.length
     ? `Accordingly, the annexed covenants of continuity (${list(covs)}) are deposited herewith under official seal.`
     : "No covenant of continuity has yet been deposited; the Chancellery reserves the drafting of such instruments pending the Legal Architecture desk.";
@@ -89,7 +89,7 @@ function draftCore(s: Signals, mode: Mode): string {
     `Theatre: ${theatre}.`,
     `Vector: ${vector}.`,
     `Limiting factor: ${limiting}${s.weakestScore !== undefined ? ` at ${s.weakestScore.toFixed(1)}` : ""}.`,
-    `Floor: ${breached.length ? `${breached.length} bond${breached.length === 1 ? "" : "s"} below ${VIABLE_FLOOR.toFixed(1)}` : `held at ${VIABLE_FLOOR.toFixed(1)}`}.`,
+    `Floor: ${breached.length ? `${breached.length} bond${breached.length === 1 ? "" : "s"} at or below ${VIABLE_FLOOR.toFixed(1)}` : `held at ${VIABLE_FLOOR.toFixed(1)}`}.`,
     `Clearances: ${clr} of ${sched.length} satisfied; stage gates ${passed} of ${audit.gates.length} cleared.`,
     `Covenants deposited: ${covs.length ? list(covs) : "none"}.`,
     s.rupture !== undefined ? `Rupture index: ${s.rupture}%${s.ruptureBand ? ` (${s.ruptureBand})` : ""}.` : "Rupture index: not yet measured.",

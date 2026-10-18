@@ -603,12 +603,12 @@ export function alerts(s: Signals): Alert[] {
     });
 
   // Canonical 3.0 viable floor: a limiting bond below it trips a critical alert even before it reaches Failing.
-  if (s.weakestBond && s.weakestScore !== undefined && s.weakestScore < VIABLE_FLOOR && bondBand(s.weakestScore) !== "Failing")
+  if (s.weakestBond && s.weakestScore !== undefined && breachesFloor(s.weakestScore) && bondBand(s.weakestScore) !== "Failing")
     out.push({
       level: "critical",
       name: "Viable floor breached",
-      reading: `The ${s.weakestBond.toLowerCase()} bond, the limiting factor, scores ${s.weakestScore.toFixed(1)} of 5, below the ${VIABLE_FLOOR.toFixed(1)} viable floor.`,
-      directive: "Lift the limiting bond to the viable floor through targeted repair before any further step is tabled.",
+      reading: `The ${s.weakestBond.toLowerCase()} bond, the limiting factor, scores ${s.weakestScore.toFixed(1)} of 5, at or below the ${VIABLE_FLOOR.toFixed(1)} viable floor.`,
+      directive: "Lift the limiting bond above the viable floor through targeted repair before any further step is tabled.",
     });
 
   if (s.elitePactAlert)
@@ -701,13 +701,13 @@ export function stageGateAudit(s: Signals): { gates: StageGate[]; locked: boolea
   } else {
     const v = [s.bonds.interpersonal, s.bonds.communal, s.bonds.intergenerational, s.bonds.institutional];
     const failing = v.filter((x) => bondBand(x) === "Failing").length;
-    const below = v.filter((x) => x < VIABLE_FLOOR).length;
+    const below = v.filter(breachesFloor).length;
     const deficit = round1(v.reduce((n, x) => n + Math.max(0, VIABLE_FLOOR - x), 0));
     gates.push({
       name: "Vector Integrity",
       passed: below === 0,
-      reading: `${below} bond${below === 1 ? "" : "s"} below the ${VIABLE_FLOOR.toFixed(1)} viable floor (${failing} Failing); relational deficit Δ ${deficit.toFixed(1)}.`,
-      directive: `Lift every bond to the ${VIABLE_FLOOR.toFixed(1)} viable floor through targeted repair before the mission proceeds.`,
+      reading: `${below} bond${below === 1 ? "" : "s"} at or below the ${VIABLE_FLOOR.toFixed(1)} viable floor (${failing} Failing); relational deficit Δ ${deficit.toFixed(1)}.`,
+      directive: `Lift every bond above the ${VIABLE_FLOOR.toFixed(1)} viable floor through targeted repair before the mission proceeds.`,
     });
   }
 
@@ -798,7 +798,7 @@ export function statutoryClearances(s: Signals): Clearance[] {
   return [
     C("1.1", VI, "Four-bond vector recorded", v.length === 4),
     C("1.2", VI, "No bond in the Failing band", v.length === 4 && v.every((x) => bondBand(x) !== "Failing")),
-    C("1.3", VI, `Every bond at or above the ${VIABLE_FLOOR.toFixed(1)} viable floor`, v.length === 4 && v.every((x) => x >= VIABLE_FLOOR)),
+    C("1.3", VI, `Every bond above the ${VIABLE_FLOOR.toFixed(1)} viable floor`, v.length === 4 && v.every(holdsFloor)),
     C("1.4", VI, "Vector cohesion: spread within 1.5", v.length === 4 && Math.max(...v) - Math.min(...v) <= 1.5, false),
     C("2.1", RC, "Rupture index measured", s.rupture !== undefined),
     C("2.2", RC, "Below the 60% critical threshold, or verifier seated", s.rupture !== undefined && (s.rupture < 60 || s.verifierSeated === true)),
@@ -864,6 +864,10 @@ export function telemetryLines(s: Signals): string[] {
 
 /** Viability threshold: a bond at or below 3.0 sits outside the Viable band. */
 export const VIABLE_FLOOR = 3.0;
+/** Canonical floor test: a score at or below 3.0 is a statutory rupture. */
+export const breachesFloor = (x: number) => x <= VIABLE_FLOOR;
+/** A bond holds the floor only when it sits strictly above 3.0. */
+export const holdsFloor = (x: number) => x > VIABLE_FLOOR;
 
 export type DecayCharacter = "None" | "Acute" | "Mixed" | "Systemic";
 
