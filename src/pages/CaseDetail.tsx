@@ -13,6 +13,8 @@ import { CASES, DOMAINS, getCase } from "@/content/cases";
 import CaseDossier from "@/components/CaseDossier";
 import DossierDownload from "@/components/DossierDownload";
 import CiteWork from "@/components/CiteWork";
+import CaseRadar, { VIABLE_FLOOR } from "@/components/CaseRadar";
+import CitationDrawer from "@/components/CitationDrawer";
 
 
 export default function CaseDetail() {
@@ -111,6 +113,7 @@ export default function CaseDetail() {
           </Link>
           <div className="flex flex-wrap items-center gap-3 min-w-0 max-w-full print:hidden [&_button]:max-w-full [&_button]:whitespace-normal">
             <CiteWork part={`Section ${c.ref}, ${c.title}`} path={`/cases/${c.slug}`} />
+            <CitationDrawer c={c} />
             <DossierDownload c={c} />
           </div>
         </nav>
@@ -179,13 +182,19 @@ export default function CaseDetail() {
                     <td className="px-3 py-3 align-top font-medium text-primary">{d}</td>
                     <td className="px-2 py-3 align-top">
                       <div className="flex items-center gap-2">
-                        <span className="flex-1 h-1.5 bg-brass/30 relative overflow-hidden">
+                        <span className="flex-1 h-1.5 bg-brass/30 relative">
                           <span
-                            className="absolute inset-y-0 left-0 bg-accent"
+                            className={`absolute inset-y-0 left-0 ${c.scores[i] < VIABLE_FLOOR ? "bg-destructive/70" : "bg-accent"}`}
                             style={{ width: `${(c.scores[i] / 5) * 100}%` }}
                           />
+                          <span
+                            aria-hidden
+                            title="3.0 viable floor"
+                            className="absolute -top-1 -bottom-1 w-px bg-primary"
+                            style={{ left: `${(VIABLE_FLOOR / 5) * 100}%` }}
+                          />
                         </span>
-                        <span className="font-serif text-accent w-4 text-right">{c.scores[i]}</span>
+                        <span className={`font-serif w-4 text-right ${c.scores[i] < VIABLE_FLOOR ? "text-destructive" : "text-accent"}`}>{c.scores[i]}</span>
                       </div>
                     </td>
                     <td className="px-3 py-3 align-top text-foreground/80 text-[0.85rem] leading-snug">
@@ -197,8 +206,12 @@ export default function CaseDetail() {
             </table>
           </div>
           <p className="mt-4 text-xs text-foreground/60">
-            Scores run 1 to 5 per bond domain. Higher values indicate stronger observed bond integrity.
+            Scores run 1 to 5 per bond domain. Higher values indicate stronger observed bond integrity. The
+            hairline on each bar marks the canonical 3.0 viable floor; a score below it is shown in crimson.
           </p>
+          <div className="mt-8">
+            <CaseRadar c={c} />
+          </div>
           {c.slug === "rwanda" && (
             <div className="mt-6 border-l-2 border-accent bg-gold-tint/40 p-5">
               <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">

@@ -154,45 +154,54 @@ const s = StyleSheet.create({
   coverFootValue: { fontSize: 9.5, color: INK },
 
   // Running masthead / footer
+  // Running header and footer: strictly bounded so body copy can never collide with them.
   masthead: {
     position: "absolute",
-    top: 26,
+    top: 28,
     left: 58,
     right: 58,
+    minHeight: 14,
+    maxHeight: 28,
+    overflow: "hidden",
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
-    borderBottomWidth: 0.7,
-    borderBottomColor: NAVY,
-    paddingBottom: 6,
+    alignItems: "center",
+    borderBottomWidth: 0.5,
+    borderBottomColor: RULE,
+    paddingBottom: 4,
   },
-  mastheadName: { fontSize: 11, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase" },
-  mastheadMotto: { fontSize: 7.5, fontStyle: "italic", color: MUTED },
-  mastheadRight: { width: "35%", alignItems: "flex-end", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
+  mastheadName: { fontSize: 9.5, lineHeight: 1.1, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase" },
+  mastheadMotto: { fontSize: 6.8, lineHeight: 1.1, fontStyle: "italic", color: MUTED },
+  mastheadRight: { width: "35%", alignItems: "flex-end", overflow: "hidden" },
   mastheadMeta: {
     fontFamily: "InterDoc",
     fontSize: 5.8,
     letterSpacing: 1.4,
+    lineHeight: 1.3,
     color: MUTED,
     textTransform: "uppercase",
   },
   footer: {
     position: "absolute",
-    top: 782,
-    // minHeight, not height: a fixed-height parent stops @react-pdf v4 painting render-prop page numbers.
-    minHeight: 36,
+    // Anchored from the top at A4 height minus 28pt margin minus the 28pt cap, i.e. bottom: 28.
+    // @react-pdf v4 misplaces render-prop page numbers inside bottom-anchored fixed boxes.
+    top: 786,
     left: 58,
     right: 58,
+    minHeight: 14,
+    maxHeight: 28,
+    overflow: "hidden",
     flexDirection: "row",
-    alignItems: "flex-start",
     justifyContent: "space-between",
+    alignItems: "center",
     borderTopWidth: 0.5,
     borderTopColor: RULE,
-    paddingTop: 6,
+    paddingTop: 4,
   },
   footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 0.6, color: MUTED, lineHeight: 1.4 },
-  footerLeft: { width: "80%", paddingRight: 12, minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
-  footerPage: { width: "20%", textAlign: "right", minHeight: 14 },
+  footerLeft: { width: "80%", paddingRight: 12 },
+  footerPage: { width: "20%", textAlign: "right" },
+  pageNo: { position: "absolute", top: 791, right: 58, width: 110, textAlign: "right" },
   statutoryNotice: { fontSize: 8.2, color: MUTED, lineHeight: 1.5, marginTop: 6 },
 
   // Opening block
@@ -340,11 +349,17 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
   const Footer = () => (
     <View style={s.footer} fixed>
       <Text style={[s.footerText, s.footerLeft]}>Vinculum Security · Unrestricted · Public record</Text>
-      <Text
-        style={[s.footerText, s.footerPage]}
-        render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
-      />
+      <View style={s.footerPage} />
     </View>
+  );
+
+  // Drawn beside the bounded footer, not inside it: @react-pdf v4 drops render-prop text in a maxHeight parent.
+  const PageNo = () => (
+    <Text
+      style={[s.footerText, s.pageNo]}
+      fixed
+      render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
+    />
   );
 
   return (
@@ -412,6 +427,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
       <Page size="A4" style={s.page}>
         <Masthead />
         <Footer />
+        <PageNo />
 
         <Text style={s.docTitle}>{c.title}</Text>
         <Text style={s.docSub}>

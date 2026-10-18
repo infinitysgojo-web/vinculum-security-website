@@ -86,7 +86,7 @@ const s = StyleSheet.create({
   ledgerVal: { fontSize: 9.5, color: INK, flex: 1 },
 
   page: {
-    paddingTop: 104,
+    paddingTop: 92,
     paddingBottom: 80,
     paddingHorizontal: 58,
     fontFamily: "Cormorant",
@@ -95,15 +95,21 @@ const s = StyleSheet.create({
     color: INK,
     backgroundColor: "#FFFFFF",
   },
+  // Running header and footer: strictly bounded so body copy can never collide with them.
   runHead: {
     position: "absolute",
-    top: 38,
+    top: 28,
     left: 58,
     right: 58,
-    flexDirection: "column",
+    minHeight: 14,
+    maxHeight: 28,
+    overflow: "hidden",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     borderBottomWidth: 0.5,
     borderBottomColor: RULE,
-    paddingBottom: 7,
+    paddingBottom: 4,
   },
   runText: {
     fontFamily: "InterDoc",
@@ -111,33 +117,31 @@ const s = StyleSheet.create({
     letterSpacing: 0.8,
     color: MUTED,
     textTransform: "uppercase",
-    lineHeight: 1.5,
+    lineHeight: 1.4,
   },
-  runHeadMeta: { flexDirection: "row", justifyContent: "space-between", marginTop: 4 },
-  runHeadLabel: { width: "60%", paddingRight: 12, minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
-  runHeadClass: { width: "40%", textAlign: "right", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
-  runFootRef: { width: "75%", paddingRight: 12, minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
-  runFootPage: { width: "25%", textAlign: "right", minHeight: 14 },
+  runHeadLabel: { width: "62%", paddingRight: 12 },
+  runHeadClass: { width: "38%", textAlign: "right" },
+  runFootRef: { width: "75%", paddingRight: 12 },
+  runFootPage: { width: "25%", textAlign: "right" },
+  // Page numbers sit in the footer band as their own fixed line: @react-pdf v4 drops render-prop
+  // text inside a maxHeight-bounded parent, so the number is drawn beside the bounded box, not in it.
+  pageNo: { position: "absolute", top: 791, right: 58, width: 110, textAlign: "right" },
   runFoot: {
     position: "absolute",
-    top: 785,
-    // minHeight, not height: a fixed-height parent stops @react-pdf v4 painting render-prop page numbers.
-    minHeight: 36,
+    // Anchored from the top at A4 height minus 28pt margin minus the 28pt cap, i.e. bottom: 28.
+    // @react-pdf v4 misplaces render-prop page numbers inside bottom-anchored fixed boxes.
+    top: 786,
     left: 58,
     right: 58,
+    minHeight: 14,
+    maxHeight: 28,
+    overflow: "hidden",
     flexDirection: "row",
-    alignItems: "flex-start",
     justifyContent: "space-between",
-    paddingTop: 7,
-  },
-  runFootRule: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    width: "100%",
-    height: 0.5,
-    backgroundColor: RULE,
+    alignItems: "center",
+    borderTopWidth: 0.5,
+    borderTopColor: RULE,
+    paddingTop: 4,
   },
   h: {
     fontFamily: "InterDoc",
@@ -162,6 +166,8 @@ const isKv = (l: string) => /^[A-Z][A-Z ]{2,}:/.test(l.trim());
 
 function Body({ text }: { text: string }) {
   const lines = text.split("\n");
+  // Trailing blank lines would only push an empty spacer onto a fresh, otherwise blank page.
+  while (lines.length > 1 && !lines[lines.length - 1].trim()) lines.pop();
   // The first line is the document title; it is carried on the cover sheet.
   return (
     <>
@@ -197,6 +203,17 @@ export type Attestation = {
   floorValidated: boolean;
 };
 
+/** Splits a long unbroken token (a minted reference, a hex digest) into fixed-width lines. */
+const chunk = (v: string, n: number) => (v.match(new RegExp(`.{1,${n}}`, "g")) ?? [v]);
+/** Wraps a hyphenated reference at its hyphens, falling back to hard breaks for any over-long segment. */
+const wrapRef = (v: string, n: number) =>
+  v.split(/(?<=[-/])/).flatMap((seg) => chunk(seg, n)).reduce<string[]>((out, seg) => {
+    const last = out[out.length - 1];
+    if (last !== undefined && (last + seg).length <= n) out[out.length - 1] = last + seg;
+    else out.push(seg);
+    return out;
+  }, []);
+
 const at = StyleSheet.create({
   title: { fontSize: 17, color: NAVY, textAlign: "center", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 2, lineHeight: 1.2 },
   latin: { fontSize: 10, fontStyle: "italic", color: MUTED, textAlign: "center", marginBottom: 8, lineHeight: 1.2 },
@@ -214,7 +231,8 @@ const at = StyleSheet.create({
   sigs: { flexDirection: "row", justifyContent: "space-between", marginTop: 8 },
   sigCol: { width: "46%" },
   sigLine: { borderBottomWidth: 0.6, borderBottomColor: INK, height: 22 },
-  sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", height: 50, alignItems: "center", justifyContent: "center" },
+  sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", minHeight: 50, paddingVertical: 6, paddingHorizontal: 8, alignItems: "center", justifyContent: "center" },
+  sealMono: { fontFamily: "Courier", fontSize: 6.6, color: NAVY, lineHeight: 1.3, textAlign: "center" },
   sigCap: { fontFamily: "InterDoc", fontSize: 7.2, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase", marginTop: 5 },
 });
 
@@ -274,17 +292,13 @@ export async function buildDeskDossier({
 
       <Page size="A4" style={s.page}>
         <View style={s.runHead} fixed>
-          <Text style={s.runText}>Vinculum Security · Chancellery document</Text>
-          <View style={s.runHeadMeta}>
-            <Text style={[s.runText, s.runHeadLabel]}>{eyebrow.length > 48 ? `${eyebrow.slice(0, 46).trimEnd()}…` : eyebrow}</Text>
-            <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
-          </View>
+          <Text style={[s.runText, s.runHeadLabel]}>Vinculum Security · {eyebrow.length > 38 ? `${eyebrow.slice(0, 36).trimEnd()}…` : eyebrow}</Text>
+          <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
         </View>
         <View style={s.runFoot} fixed>
-          <View style={s.runFootRule} />
           <Text style={[s.runText, s.runFootRef]}>{reference}</Text>
-          <Text style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
         </View>
+        <Text style={[s.runText, s.pageNo]} fixed render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
         <Text style={s.docTitle}>{deskTitle}</Text>
         <View style={s.gap} />
         <Body text={text} />
@@ -293,17 +307,13 @@ export async function buildDeskDossier({
       {attestation && (
         <Page size="A4" style={s.page}>
           <View style={s.runHead} fixed>
-            <Text style={s.runText}>Vinculum Security · Instrument of attestation</Text>
-            <View style={s.runHeadMeta}>
-              <Text style={[s.runText, s.runHeadLabel]}>Sigillum Cancellariae</Text>
-              <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
-            </View>
+            <Text style={[s.runText, s.runHeadLabel]}>Vinculum Security · Instrument of attestation · Sigillum Cancellariae</Text>
+            <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
           </View>
           <View style={s.runFoot} fixed>
-            <View style={s.runFootRule} />
-            <Text style={[s.runText, s.runFootRef]}>{attestation.ref}</Text>
-            <Text style={[s.runText, s.runFootPage]} render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
+              <Text style={[s.runText, s.runFootRef]}>{attestation.ref}</Text>
           </View>
+          <Text style={[s.runText, s.pageNo]} fixed render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
           <Text style={at.title}>Instrument of Attestation</Text>
           <Text style={at.latin}>Exequatur canonicalis · unalterable record</Text>
           <View style={at.box} wrap={false}>
@@ -352,6 +362,13 @@ export async function buildDeskDossier({
             <View style={at.sigCol}>
               <View style={at.sealBox}>
                 <Text style={at.sigCap}>Great Seal</Text>
+                {/* Reference and digest are chunked so they always wrap inside the seal, the PDF equivalent of overflow-wrap: anywhere. */}
+                {wrapRef(attestation.ref, 22).map((line, i) => (
+                  <Text key={`r${i}`} style={[at.sealMono, i === 0 ? { marginTop: 4 } : {}]}>{line}</Text>
+                ))}
+                {chunk(attestation.digest, 16).map((line, i) => (
+                  <Text key={`d${i}`} style={[at.sealMono, i === 0 ? { marginTop: 3 } : {}]}>{line}</Text>
+                ))}
               </View>
               <Text style={at.sigCap}>Seal imprint</Text>
             </View>
