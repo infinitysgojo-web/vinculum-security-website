@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CASES, DOMAINS, type CaseStudy, type Region } from "@/content/cases";
 import { LAND_PATH, SPHERE_PATH, MAP_W, MAP_H, COUNTRY_WORLD, PIN_XY } from "@/content/geo";
 import { tick, soundEnabled, setSoundEnabled, onSoundChange } from "@/lib/chancelleryHaptics";
@@ -23,15 +23,6 @@ const ZOOM_STEP = 1.5;
 const PAN_STEP = 60;
 /** The canonical viable floor: 3.0 of 5.0, i.e. the 60% mark on every bond bar. */
 const FLOOR = 3.0;
-
-/** What the Map Room hands the dashboard: the case's bond record and territory metadata. */
-export type CaseHydration = {
-  slug: string;
-  sigil: string;
-  theatre: string;
-  region: Region;
-  scores: [number, number, number, number];
-};
 
 /** Monospace territory sigils (ISO 3166 alpha-3 where one applies). */
 const SIGIL: Record<string, string> = {
@@ -79,10 +70,6 @@ const LABEL_DX: Record<string, number> = { "tuvalu-kiribati": -12, kenya: 12, rw
 const GLOBAL_MEAN = CASES.reduce((a, c) => a + c.scores.reduce((x, y) => x + y, 0), 0) / (CASES.length * 4);
 
 const breaches = (c: CaseStudy) => c.scores.some((v) => v < FLOOR);
-
-export function caseHydration(c: CaseStudy): CaseHydration {
-  return { slug: c.slug, sigil: SIGIL[c.slug] ?? c.slug.slice(0, 3).toUpperCase(), theatre: c.title, region: c.region, scores: c.scores };
-}
 
 type View = { k: number; x: number; y: number };
 
@@ -546,7 +533,6 @@ function RegionIndex({ onPick, onHover }: { onPick: (slug: string) => void; onHo
 /* ------------------------------------------------------------------ */
 
 export default function RelationalAtlas() {
-  const navigate = useNavigate();
   const [active, setActive] = useState<string | null>(null);
   const [hover, setHover] = useState<string | null>(null);
   const [view, setView] = useState<View>(zoomFor(null));
@@ -576,12 +562,6 @@ export default function RelationalAtlas() {
     setView((v) => rescale(v, f));
   }, []);
   const whole = () => select(null);
-
-  const hydrate = (c: CaseStudy) => {
-    tick();
-    setRoom(false);
-    navigate("/dashboard", { state: { hydrateCase: caseHydration(c) } });
-  };
 
   const controls = (inRoom: boolean) => (
     <div className="flex flex-wrap items-center gap-1" role="toolbar" aria-label="Map controls">
@@ -668,16 +648,18 @@ export default function RelationalAtlas() {
               <BondBars c={current} />
               <p className="text-[0.85rem] leading-snug text-foreground/80 mt-4">{current.pattern}</p>
               <div className="mt-auto pt-4 flex flex-col gap-2">
-                <Link to={`/cases/${current.slug}`} className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:underline">
+                <Link
+                  to={`/cases/${current.slug}`}
+                  className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:underline inline-flex items-center gap-1"
+                >
                   Open the full case study →
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => hydrate(current)}
-                  className="text-left text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/80 hover:text-accent hover:underline"
+                <Link
+                  to="/methodology"
+                  className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/80 hover:text-accent hover:underline inline-flex items-center gap-1"
                 >
-                  Analyze in Live Chancellery Dashboard →
-                </button>
+                  Continuum Scoring Methodology →
+                </Link>
               </div>
             </>
           ) : (
@@ -687,8 +669,11 @@ export default function RelationalAtlas() {
               <RegionIndex onPick={select} onHover={setHover} />
               <div className="mt-auto pt-4 flex flex-col gap-2">
                 <p className="text-[0.82rem] leading-snug text-muted-foreground">Select a marker or a name to move in on that territory.</p>
-                <Link to="/dashboard" className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/80 hover:text-accent hover:underline">
-                  Analyze in Live Chancellery Dashboard →
+                <Link
+                  to="/methodology"
+                  className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/80 hover:text-accent hover:underline inline-flex items-center gap-1"
+                >
+                  Explore Continuum Scoring Methodology →
                 </Link>
               </div>
             </>
@@ -715,7 +700,6 @@ export default function RelationalAtlas() {
               setRoom(false);
               window.setTimeout(() => opener.current?.focus(), 0);
             }}
-            onHydrate={hydrate}
             controls={controls(true)}
             badge={badge}
           />,
@@ -743,12 +727,11 @@ type RoomProps = {
   onPick: (slug: string | null) => void;
   onZoom: (f: number) => void;
   onClose: () => void;
-  onHydrate: (c: CaseStudy) => void;
   controls: ReactNode;
   badge: ReactNode;
 };
 
-function MapRoom({ view, setView, active, lit, current, grid, pointer, onPointer, onPin, onHover, onPick, onZoom, onClose, onHydrate, controls, badge }: RoomProps) {
+function MapRoom({ view, setView, active, lit, current, grid, pointer, onPointer, onPin, onHover, onPick, onZoom, onClose, controls, badge }: RoomProps) {
   const shell = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
   const [box, setBox] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
@@ -854,18 +837,35 @@ function MapRoom({ view, setView, active, lit, current, grid, pointer, onPointer
               <CaseHead c={current} />
               <BondBars c={current} />
               <p className="text-[0.85rem] leading-snug text-foreground/80 mt-4">{current.pattern}</p>
-              <button
-                type="button"
-                onClick={() => onHydrate(current)}
-                className="mt-5 w-full border border-accent bg-accent/10 px-3 py-2.5 text-left text-[10px] uppercase tracking-[0.2em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                Hydrate Mission Engine with this Case →
-              </button>
-              <div className="mt-3 flex flex-wrap justify-between gap-2">
-                <Link to={`/cases/${current.slug}`} onClick={onClose} className="text-[10px] uppercase tracking-[0.2em] font-semibold text-primary/80 hover:text-accent hover:underline">
-                  Full case study →
+              <div className="mt-5 flex flex-col gap-2">
+                <Link
+                  to={`/cases/${current.slug}`}
+                  onClick={onClose}
+                  className="w-full border border-accent bg-accent/10 px-3 py-2.5 text-center text-[10px] uppercase tracking-[0.2em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  Open the full case study →
                 </Link>
-                <button type="button" onClick={() => onPick(null)} className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground hover:text-accent">
+                <Link
+                  to="/methodology"
+                  onClick={onClose}
+                  className="w-full border border-border bg-card/60 px-3 py-2 text-center text-[10px] uppercase tracking-[0.2em] font-semibold text-primary/80 hover:text-accent hover:border-accent/60 transition-colors"
+                >
+                  Continuum Scoring Methodology →
+                </Link>
+              </div>
+              <div className="mt-3 flex flex-wrap justify-between items-center gap-2 pt-2 border-t border-border/50">
+                <Link
+                  to="/the-vinculum-dashboard"
+                  onClick={onClose}
+                  className="text-[9px] uppercase tracking-[0.18em] font-mono text-muted-foreground hover:text-primary transition-colors"
+                >
+                  System Architecture ↗
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => onPick(null)}
+                  className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground hover:text-accent transition-colors"
+                >
                   ← Whole map
                 </button>
               </div>
@@ -875,9 +875,18 @@ function MapRoom({ view, setView, active, lit, current, grid, pointer, onPointer
               <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Territory dossier</p>
               <hr className="gold-rule gold-rule-short mt-3 mb-4" />
               <RegionIndex onPick={onPick} onHover={onHover} />
-              <p className="mt-4 font-mono text-[9px] leading-relaxed text-muted-foreground">
-                Esc exits · arrow keys pan · + and − zoom · Enter on a beacon opens it
-              </p>
+              <div className="mt-4 pt-3 border-t border-border/50 flex flex-col gap-2">
+                <Link
+                  to="/methodology"
+                  onClick={onClose}
+                  className="text-[10px] uppercase tracking-[0.2em] font-semibold text-primary/80 hover:text-accent hover:underline"
+                >
+                  Explore Continuum Scoring Methodology →
+                </Link>
+                <p className="font-mono text-[9px] leading-relaxed text-muted-foreground">
+                  Esc exits · arrow keys pan · + and − zoom · Enter on a beacon opens it
+                </p>
+              </div>
             </>
           )}
         </aside>
