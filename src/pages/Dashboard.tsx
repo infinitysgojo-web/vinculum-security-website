@@ -993,6 +993,13 @@ function MirrorDesk() {
       ? [signals.bonds.interpersonal, signals.bonds.communal, signals.bonds.intergenerational, signals.bonds.institutional]
       : null;
   const analogue = linked && signals.analogue ? CASES.find((c) => c.shortTitle === signals.analogue) : undefined;
+  // The three nearest documented cases from the live reading, closest first.
+  const nearestThree = linked
+    ? ((signals.analogues ?? (signals.analogue ? [signals.analogue] : []))
+        .map((t) => CASES.find((c) => c.shortTitle === t))
+        .filter(Boolean) as typeof CASES)
+    : [];
+  const topThreeMirrored = nearestThree.length > 0 && nearestThree.every((c) => picked.includes(c.slug)) && picked.length === nearestThree.length;
 
   const toggle = (slug: string) =>
     setPicked((prev) =>
@@ -1078,7 +1085,11 @@ function MirrorDesk() {
           x.bonds
             ? [
                 `The live theatre vector (${[x.bonds.interpersonal, x.bonds.communal, x.bonds.intergenerational, x.bonds.institutional].map((n) => n.toFixed(1)).join(", ")}) is available to plot on the radar beside the selected cases.`,
-                ...(x.analogue ? [`Closest documented case by Euclidean distance: ${x.analogue}.`] : []),
+                ...(x.analogues?.length
+                  ? [`Nearest documented cases by Euclidean distance: ${x.analogues.join(", ")}.`]
+                  : x.analogue
+                    ? [`Closest documented case by Euclidean distance: ${x.analogue}.`]
+                    : []),
               ]
             : []
         }
@@ -1094,11 +1105,22 @@ function MirrorDesk() {
           Plot the live theatre vector on the radar
         </label>
       )}
-      {analogue && !picked.includes(analogue.slug) && (
-        <div className="border border-brass/40 bg-background/70 p-4 flex flex-wrap items-center justify-between gap-3">
-          <p className="text-xs text-foreground/85">Your live bond reading sits closest to <span className="font-semibold">{analogue.shortTitle}</span>.</p>
-          <button type="button" onClick={() => setPicked((p) => [analogue.slug, ...p].slice(0, 3))}
-            className="min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent">Mirror it</button>
+      {nearestThree.length > 0 && !topThreeMirrored && (
+        <div className="border border-brass/40 bg-background/70 p-4 flex flex-wrap items-center justify-between gap-3" data-testid="mirror-top-three">
+          <p className="text-xs text-foreground/85 min-w-0 [overflow-wrap:anywhere]">
+            Your live bond reading sits closest to{" "}
+            {nearestThree.map((c, i) => (
+              <span key={c.slug}>
+                {i > 0 && (i === nearestThree.length - 1 ? ", then " : ", ")}
+                <span className="font-semibold">{c.shortTitle}</span>
+              </span>
+            ))}
+            .
+          </p>
+          <button type="button" onClick={() => setPicked(nearestThree.map((c) => c.slug).slice(0, 3))}
+            className="min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent">
+            {nearestThree.length > 1 ? "Mirror top three" : "Mirror it"}
+          </button>
         </div>
       )}
       <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6">
