@@ -55,7 +55,7 @@ export default function RelationalDynamicsPanel({ scores }: { scores: [number, n
         <span className={mono}>Ω = {d.omega.toFixed(3)}</span> · k = {d.bondsInDeficit} · {d.character}
       </p>
       <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-        {d.character === "None" && "No bond sits below the Viable floor; there is no decay to classify."}
+        {d.character === "None" && "No bond sits at or below the Viable floor; there is no decay to classify."}
         {d.character === "Acute" && "Decay is confined to one bond. A targeted remedy on that bond is proportionate."}
         {d.character === "Mixed" && "Decay touches two bonds without full diffusion. Remedy both, largest deficit first, and watch for spread."}
         {d.character === "Systemic" && "Decay is structural. Clearance locks until two covenants, one binding office continuity, are drafted."}

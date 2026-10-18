@@ -10,7 +10,7 @@
  * UTC instant enters the hash only and is never displayed.
  */
 import { useEffect, useState } from "react";
-import { inscriptionLines, stageGateAudit, statutoryClearances, VIABLE_FLOOR, type Signals } from "./engine";
+import { inscriptionLines, stageGateAudit, statutoryClearances, VIABLE_FLOOR, holdsFloor, type Signals } from "./engine";
 import { theatreById } from "./theatres";
 
 export type DispatchKind = "note-verbale" | "demarche" | "aide-memoire" | "cable" | "dossier" | "attestation" | "text" | "minute";
@@ -114,7 +114,7 @@ export async function mintDispatch(s: Signals, kind: DispatchKind, desk?: string
   const gatesPassed = audit.gates.filter((g) => g.passed).length;
   const clearances = statutoryClearances(s);
   const clearancesPassed = clearances.filter((c) => c.passed).length;
-  const floorValidated = s.weakestScore !== undefined && s.weakestScore >= VIABLE_FLOOR;
+  const floorValidated = s.weakestScore !== undefined && holdsFloor(s.weakestScore);
   const preset = theatreById(s.presetId);
   const sigil = preset && preset.name === (s.theatre ?? "").trim() ? preset.sigil : theatreSigil(s.theatre);
 

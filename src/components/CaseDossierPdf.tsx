@@ -168,7 +168,7 @@ const s = StyleSheet.create({
   },
   mastheadName: { fontSize: 11, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase" },
   mastheadMotto: { fontSize: 7.5, fontStyle: "italic", color: MUTED },
-  mastheadRight: { width: "35%", alignItems: "flex-end" },
+  mastheadRight: { width: "35%", alignItems: "flex-end", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
   mastheadMeta: {
     fontFamily: "InterDoc",
     fontSize: 5.8,
@@ -191,7 +191,7 @@ const s = StyleSheet.create({
     paddingTop: 6,
   },
   footerText: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 0.6, color: MUTED, lineHeight: 1.4 },
-  footerLeft: { width: "80%", paddingRight: 12 },
+  footerLeft: { width: "80%", paddingRight: 12, minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
   footerPage: { width: "20%", textAlign: "right", minHeight: 14 },
   statutoryNotice: { fontSize: 8.2, color: MUTED, lineHeight: 1.5, marginTop: 6 },
 

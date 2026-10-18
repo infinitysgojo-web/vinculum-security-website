@@ -215,8 +215,8 @@ export default function ClauseArchitect() {
 
   return (
     <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
-        <div className="space-y-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+        <div className="space-y-5 lg:col-span-6">
           <div>
             <label className={label} htmlFor="ca-title">Instrument title (optional)</label>
             <input id="ca-title" className={field} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Accord on Northern Rift Disengagement" />
@@ -302,7 +302,7 @@ export default function ClauseArchitect() {
           </div>
         </div>
 
-        <div className="space-y-4 min-w-0">
+        <div className="space-y-4 min-w-0 lg:col-span-6">
           <SyncPanel
             linked={linked}
             onToggle={setLinked}

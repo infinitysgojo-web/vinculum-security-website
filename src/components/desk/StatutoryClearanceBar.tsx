@@ -1,4 +1,4 @@
-import { stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR } from "./engine";
+import { breachesFloor, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR } from "./engine";
 
 /**
  * Which articles of the twenty-clearance schedule each desk feeds. Desks that
@@ -27,7 +27,7 @@ export default function StatutoryClearanceBar({ deskId }: { deskId: string }) {
   const all = statutoryClearances(signals);
   const audit = stageGateAudit(signals);
   const ids = DESK_ARTICLES[deskId];
-  const floorBreached = signals.weakestScore !== undefined && signals.weakestScore < VIABLE_FLOOR;
+  const floorBreached = signals.weakestScore !== undefined && breachesFloor(signals.weakestScore);
   const cleared = all.filter((c) => c.passed).length;
 
   const chip = "inline-flex items-center gap-1.5 border px-2 py-1 font-mono text-[10px] whitespace-nowrap";

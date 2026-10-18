@@ -245,8 +245,8 @@ export default function LitigationWorkbench() {
         or transmitted, and no model is involved.
       </p>
 
-      <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
-        <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-12 w-full min-w-0 [&>*]:min-w-0">
+        <div className="space-y-5 lg:col-span-6">
           <div>
             <label className={label} htmlFor="lit-matter">Matter or caption</label>
             <input
@@ -261,7 +261,7 @@ export default function LitigationWorkbench() {
             <label className={label} htmlFor="lit-facts">Facts of the case</label>
             <textarea
               id="lit-facts"
-              rows={7}
+              rows={10}
               className={field}
               value={facts}
               onChange={(e) => setFacts(e.target.value)}
@@ -294,27 +294,11 @@ export default function LitigationWorkbench() {
               </select>
             </div>
           </div>
-          <div className="border border-border bg-background p-4">
-            <p className={label}>Anticipated defence · {COUNTERPART[tactic].label}</p>
-            <p className="text-xs text-muted-foreground">{COUNTERPART[tactic].risk}</p>
-            <p className="mt-2 text-xs text-foreground/85">{COUNTERPART[tactic].counter}</p>
-          </div>
         </div>
 
         {/* Right column: live evidentiary ledger beside the intake form. */}
-        <div className="space-y-4 min-w-0">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Evidentiary ledger · live preview</p>
-            <button type="button" onClick={reset} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
-              <RotateCcw size={13} /> Reset
-            </button>
-          </div>
-          <div className="border border-brass/40 bg-background p-4">
-            <p className={label}>Forum and posture</p>
-            <p className="font-serif text-base text-primary leading-tight [overflow-wrap:anywhere]">{activeForum.label}</p>
-            <p className="mt-1 text-xs text-muted-foreground">{activeForum.note}</p>
-            <p className="mt-2 text-xs text-foreground/85"><span className="font-semibold text-primary">{POSTURES[posture].label}.</span> {POSTURES[posture].focus}</p>
-          </div>
+        <div className="space-y-4 min-w-0 lg:col-span-6">
+          <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Evidentiary ledger · live preview</p>
           <div className="border border-border bg-background p-4">
             <p className={label}>Evidence to secure · {DOMAINS[bond]} bond</p>
             <ul className="space-y-1.5">
@@ -327,9 +311,19 @@ export default function LitigationWorkbench() {
             <p className={label}>§9A examination question</p>
             <p className="font-serif italic text-sm text-primary/90">“{BOND_INQUIRY[bond]}”</p>
           </div>
+          <div className="border border-border bg-background p-4">
+            <p className={label}>Anticipated defence · {COUNTERPART[tactic].label}</p>
+            <p className="text-xs text-muted-foreground">{COUNTERPART[tactic].risk}</p>
+            <p className="mt-2 text-xs text-foreground/85">{COUNTERPART[tactic].counter}</p>
+          </div>
           <div className="border border-brass/40 bg-gold-tint/40 p-4">
             <p className={label}>Prayer for continuity relief</p>
             <p className="text-xs leading-relaxed text-foreground/85">{BOND_RELIEF[bond]}</p>
+          </div>
+          <div className="flex justify-end">
+            <button type="button" onClick={reset} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
+              <RotateCcw size={13} /> Reset matter
+            </button>
           </div>
         </div>
       </div>

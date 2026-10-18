@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronUp, Download, Pause, Play } from "lucide-react";
-import { bondBand, stageGateAudit, VIABLE_FLOOR, type Signals } from "./engine";
+import { bondBand, breachesFloor, holdsFloor, stageGateAudit, VIABLE_FLOOR, type Signals } from "./engine";
 import { onDispatch, useStateDigest } from "./registry";
 
 export type WireClass = "DISPATCH" | "GATE_ALERT" | "VECTOR_SHIFT";
@@ -40,9 +40,9 @@ function diff(prev: Signals, next: Signals): { cls: WireClass; text: string }[] 
   const pw = prev.weakestScore;
   const nw = next.weakestScore;
   if (pw !== undefined && nw !== undefined) {
-    if (pw >= VIABLE_FLOOR && nw < VIABLE_FLOOR)
-      out.push({ cls: "GATE_ALERT", text: `VIABLE FLOOR BREACHED // LIMITING BOND ${String(next.weakestBond ?? "").toUpperCase()} ${nw.toFixed(1)} < ${VIABLE_FLOOR.toFixed(1)}` });
-    if (pw < VIABLE_FLOOR && nw >= VIABLE_FLOOR) out.push({ cls: "GATE_ALERT", text: `VIABLE FLOOR RESTORED // LIMITING BOND ${nw.toFixed(1)}` });
+    if (holdsFloor(pw) && breachesFloor(nw))
+      out.push({ cls: "GATE_ALERT", text: `VIABLE FLOOR BREACHED // LIMITING BOND ${String(next.weakestBond ?? "").toUpperCase()} ${nw.toFixed(1)} <= ${VIABLE_FLOOR.toFixed(1)}` });
+    if (breachesFloor(pw) && holdsFloor(nw)) out.push({ cls: "GATE_ALERT", text: `VIABLE FLOOR RESTORED // LIMITING BOND ${nw.toFixed(1)}` });
   }
   const newTraps = (next.traps ?? []).filter((t) => !(prev.traps ?? []).includes(t));
   newTraps.forEach((t) => out.push({ cls: "GATE_ALERT", text: `SENTINEL TRAP ELEVATED // ${t.toUpperCase()}` }));

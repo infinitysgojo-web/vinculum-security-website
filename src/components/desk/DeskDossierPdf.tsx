@@ -114,9 +114,9 @@ const s = StyleSheet.create({
     lineHeight: 1.5,
   },
   runHeadMeta: { flexDirection: "row", justifyContent: "space-between", marginTop: 4 },
-  runHeadLabel: { width: "60%", paddingRight: 12 },
-  runHeadClass: { width: "40%", textAlign: "right" },
-  runFootRef: { width: "75%", paddingRight: 12 },
+  runHeadLabel: { width: "60%", paddingRight: 12, minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
+  runHeadClass: { width: "40%", textAlign: "right", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
+  runFootRef: { width: "75%", paddingRight: 12, minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
   runFootPage: { width: "25%", textAlign: "right", minHeight: 14 },
   runFoot: {
     position: "absolute",

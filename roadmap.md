@@ -1,10 +1,12 @@
 # Roadmap
 
-- [ ] Restore embedded Lovable preview without permitting arbitrary foreign frames.
-- [ ] Verify all current desk layouts and rebalance any remaining one-sided workspace.
-- [ ] Run a connected Great Lakes mission through every current desk and verify the binder and unique seals.
+- [x] Embedded preview restoration: restore embedded Lovable preview without permitting arbitrary foreign frames
+- [x] Desk layout rebalancing: balanced two-column desks across all 18 desks, 12-column splits on the Litigation, Clause Architect, Counterpart, Readiness and Mission Binder desks
+- [x] Great Lakes connected mission verification: preset loaded once and read downstream on every desk, the binder and the transmittal manifest
+- [x] PDF headers and footers bounding
+- [x] Practice page stability: FadeIn reveals on a zero threshold with a 300ms safety fallback
 
-- [ ] Correct and visually verify headers, footers and pagination in both reference charts, all case PDFs and the shared desk PDF export.
+- [x] Correct and visually verify headers, footers and pagination in both reference charts, all case PDFs and the shared desk PDF export (running header and footer cells bounded 14 to 28pt with overflow clipped; statutory notice in full-width closing blocks)
 
 - [x] Audit and strengthen the readiness statement across index.html, llms.txt, seo-entities.ts, and page SEO blocks
 - [x] Cases page: prominent "Open the full case study" cue on every card plus an intro hint line
