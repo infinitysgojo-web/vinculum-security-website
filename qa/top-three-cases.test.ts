@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { CASES } from "../src/content/cases";
-import { distanceTable, mathReading, rankCases, sanitizeSignals } from "../src/components/desk/engine";
+import { applyInscriptions, distanceTable, mathReading, rankCases, sanitizeSignals, withCaseMatches } from "../src/components/desk/engine";
 
 const slugs = (v: number[]) => rankCases(v).map((m) => m.slug);
 
@@ -50,4 +50,53 @@ describe("top three nearest cases", () => {
 test("imported mission signals keep the top-three list", () => {
   const s = sanitizeSignals({ analogue: "Cambodia", analogues: ["Cambodia", "Rwanda", "South Africa"] });
   expect(s.analogues).toEqual(["Cambodia", "Rwanda", "South Africa"]);
+});
+
+describe("top three follow any vector, not just presets", () => {
+  // Deterministic pseudo-random vectors across the whole 1.0 to 5.0 scale.
+  let seed = 20261018;
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2 ** 31) / 2 ** 31);
+  const vec = () => [0, 0, 0, 0].map(() => Math.round((1 + rnd() * 4) * 10) / 10) as [number, number, number, number];
+  const brute = (v: number[]) =>
+    CASES.map((c, i) => ({ slug: c.slug, i, d: Math.hypot(...c.scores.map((x, k) => x - v[k])) }))
+      .sort((a, b) => (Math.abs(a.d - b.d) > 1e-9 ? a.d - b.d : a.i - b.i))
+      .slice(0, 3)
+      .map((x) => x.slug);
+
+  test("5,000 random readings each rank exactly the three nearest cases", () => {
+    const seen = new Set<string>();
+    for (let n = 0; n < 5000; n++) {
+      const v = vec();
+      const got = slugs(v);
+      expect(got).toEqual(brute(v));
+      const t = distanceTable(v);
+      expect([1, 2, 3].map((k) => t.find((r) => r.rank === k)!.slug)).toEqual(got);
+      expect(mathReading(v).nearest.slug).toBe(got[0]);
+      got.forEach((s) => seen.add(s));
+    }
+    // Every documented case can surface somewhere in the top three.
+    expect(seen.size).toBe(CASES.length);
+  });
+
+  test("the effective state re-derives the top three from its bonds", () => {
+    const s = applyInscriptions({ bonds: { interpersonal: 3, communal: 3, intergenerational: 3, institutional: 3 } });
+    expect(s.analogues).toEqual(rankCases([3, 3, 3, 3]).map((m) => m.shortTitle));
+    expect(s.analogue).toBe(s.analogues![0]);
+  });
+
+  test("inscribed shocks re-rank against the stressed vector", () => {
+    const bonds = { interpersonal: 3, communal: 3, intergenerational: 3, institutional: 3 };
+    const shock = { id: "x", name: "Coup", description: "", deltas: { interpersonal: -1, communal: -1, intergenerational: -1, institutional: -1 } };
+    const s = applyInscriptions({ bonds, customShocks: [shock] });
+    expect(s.analogues).toEqual(rankCases([2, 2, 2, 2]).map((m) => m.shortTitle));
+    expect(s.analogue).toBe("Cambodia");
+  });
+
+  test("a stale published ranking is replaced, and an unchanged one keeps identity", () => {
+    const bonds = { interpersonal: 4, communal: 3, intergenerational: 2, institutional: 5 };
+    const fresh = withCaseMatches({ bonds, analogue: "Cambodia", analogues: ["Cambodia"] });
+    expect(fresh.analogues).toEqual(rankCases([4, 3, 2, 5]).map((m) => m.shortTitle));
+    expect(withCaseMatches(fresh)).toBe(fresh);
+    expect(withCaseMatches({})).toEqual({});
+  });
 });

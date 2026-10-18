@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import { CASES } from "@/content/cases";
-import { usePublish, useEngine, bondBand, clampScore, mathReading, relationalDynamics, stageGateAudit, MAX_DISTANCE } from "@/components/desk/engine";
+import { usePublish, useEngine, bondBand, clampScore, mathReading, rankCases, inscribedShockDelta, relationalDynamics, stageGateAudit } from "@/components/desk/engine";
 import DeskOutput from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import BondMathPanel from "@/components/desk/BondMathPanel";
@@ -273,20 +273,6 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
     return { label: "Reconstituted", note: "Durable across transitions and independent of any single officeholder." };
   }, [mean]);
 
-  const analogue = useMemo(
-    () => CASES.find((c) => c.slug === reading.nearest.slug) ?? CASES[0],
-    [reading],
-  );
-  /** The three nearest documented cases, closest first, with their distance and resonance. */
-  const topThree = useMemo(
-    () =>
-      reading.topThree.flatMap((m) => {
-        const c = CASES.find((x) => x.slug === m.slug);
-        return c ? [{ c, m }] : [];
-      }),
-    [reading],
-  );
-
   // Publish the reading onto the mission engine for every downstream desk.
   usePublish("diagnostics", {
     bonds: {
@@ -302,8 +288,6 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
     bondVariance: reading.variance,
     communalBand: bondBand(scores.communal),
     standing: standing.label,
-    analogue: analogue.shortTitle,
-    analogues: topThree.map(({ c }) => c.shortTitle),
   });
 
   // Ghost target projection: a what-if remediation drawn beside the live vector.
@@ -352,24 +336,37 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
     return { name: "No warning archetype engaged", text: "The four bonds move together within a 1.5-point spread. Continue monitoring the limiting bond." };
   }, [scores, values, mean, spread]);
 
-  /** Top three documented analogues by Euclidean distance over the four-bond vector. */
-  const precedents = useMemo(
-    () =>
-      CASES.map((c) => {
-        const d = Math.sqrt(c.scores.reduce((acc, v, i) => acc + (v - values[i]) ** 2, 0));
-        return { c, d, res: Math.round((1 - d / MAX_DISTANCE) * 100) };
-      })
-        .sort((x, y) => x.d - y.d)
-        .slice(0, 3),
-    [values.join(",")],
-  );
-
   const customRules = useMemo(() => bus.customRules ?? [], [bus.customRules]);
   // When inscribed shocks are active the bus carries a stressed vector; show it beside the raw bench.
   const stressed =
     (bus.customShocks?.length ?? 0) > 0 && bus.bonds
       ? [bus.bonds.interpersonal, bus.bonds.communal, bus.bonds.intergenerational, bus.bonds.institutional].map((x) => x.toFixed(1))
       : null;
+
+  // The vector the rest of the mission reads: the bench plus any inscribed shocks.
+  // Computed here from the bench so it never lags a slider by a render.
+  const shockCount = bus.customShocks?.length ?? 0;
+  const liveVector = useMemo(() => {
+    if (!shockCount) return values;
+    const d = inscribedShockDelta(bus);
+    return [
+      clampScore(values[0] + d.interpersonal),
+      clampScore(values[1] + d.communal),
+      clampScore(values[2] + d.intergenerational),
+      clampScore(values[3] + d.institutional),
+    ] as [number, number, number, number];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values.join(","), shockCount, JSON.stringify(bus.customShocks ?? [])]);
+
+  /** The three nearest documented cases to the live vector, closest first. Re-ranked on every change. */
+  const topThree = useMemo(
+    () =>
+      rankCases(liveVector).flatMap((m) => {
+        const c = CASES.find((x) => x.slug === m.slug);
+        return c ? [{ c, m }] : [];
+      }),
+    [liveVector],
+  );
 
   const summary = useMemo(() => {
     const bar = "-".repeat(64);
@@ -409,10 +406,11 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
       bar,
       "IV. HISTORICAL PRECEDENTS (Euclidean distance over the bond vector)",
       bar,
-      ...precedents.map(
-        (p, i) => `  ${i + 1}. ${p.c.shortTitle} (${p.c.scores.map((v) => v.toFixed(1)).join(", ")}) · distance ${p.d.toFixed(2)} · resonance ${p.res}%`
+      ...(shockCount ? [`  Ranked against the live vector after ${shockCount} inscribed shock${shockCount === 1 ? "" : "s"}.`] : []),
+      ...topThree.map(
+        ({ c, m }, i) => `  ${i + 1}. ${c.shortTitle} (${c.scores.map((v) => v.toFixed(1)).join(", ")}) · distance ${m.distance.toFixed(2)} · resonance ${m.resonance}%`
       ),
-      `  Pattern of nearest case: ${precedents[0]?.c.pattern ?? ""}`,
+      `  Pattern of nearest case: ${topThree[0]?.c.pattern ?? ""}`,
       "",
       bar,
       "V. BOUNDARY RULES AND PRACTICE DIRECTIVE",
@@ -427,7 +425,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
       "Pro Omni Humanitate.",
     ];
     return lines.join("\n");
-  }, [context, mission, scores, standing, mean, spread, weakest, reading, archetype, precedents, values, customRules, stressed]);
+  }, [context, mission, scores, standing, mean, spread, weakest, reading, archetype, topThree, shockCount, values, customRules, stressed]);
 
   return (
     <section id="bench" className="scroll-mt-24">
@@ -676,6 +674,11 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
           <RelationalDynamicsPanel scores={values} />
           <div className="bg-background border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full" data-testid="nearest-cases">
             <p className="eyebrow">Nearest documented cases</p>
+            {shockCount > 0 && (
+              <p className="mt-2 text-[11px] text-muted-foreground" data-testid="nearest-cases-live">
+                Ranked against the live vector after {shockCount} inscribed shock{shockCount === 1 ? "" : "s"}.
+              </p>
+            )}
             <ol className="mt-3 space-y-5">
               {topThree.map(({ c, m }, i) => (
                 <li key={c.slug} className={i > 0 ? "border-t border-border pt-5" : undefined}>
@@ -706,7 +709,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
       {/* Tier 2: analytical deep dive, side by side. */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         <div className="space-y-6 min-w-0">
-          <BondMathPanel scores={values} />
+          <BondMathPanel scores={liveVector} />
         </div>
         <div className="space-y-6 min-w-0">
           <div className="bg-gold-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">

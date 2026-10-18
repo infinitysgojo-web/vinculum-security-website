@@ -82,13 +82,18 @@ export type CaseMatch = { slug: string; shortTitle: string; distance: number; re
  * The sort is stable, so cases at the same distance keep canonical order.
  */
 export function rankCases(v: readonly number[], n = 3): CaseMatch[] {
-  return CASES.map((c) => {
-    const d = Math.sqrt(c.scores.reduce((a, s, i) => a + (s - v[i]) ** 2, 0));
-    return { slug: c.slug, shortTitle: c.shortTitle, distance: d, resonance: Math.round((1 - d / MAX_DISTANCE) * 100) };
+  return CASES.map((c, i) => {
+    const d = Math.sqrt(c.scores.reduce((a, s, k) => a + (s - v[k]) ** 2, 0));
+    return { i, m: { slug: c.slug, shortTitle: c.shortTitle, distance: d, resonance: Math.round((1 - d / MAX_DISTANCE) * 100) } };
   })
-    .sort((a, b) => a.distance - b.distance)
-    .slice(0, n);
+    // Distances within floating-point noise count as a tie and keep canonical order.
+    .sort((a, b) => (Math.abs(a.m.distance - b.m.distance) > TIE_EPSILON ? a.m.distance - b.m.distance : a.i - b.i))
+    .slice(0, n)
+    .map((x) => x.m);
 }
+
+/** Two case distances closer than this are the same distance (scores are given to one decimal). */
+const TIE_EPSILON = 1e-9;
 
 /** Largest possible Euclidean distance between two four-bond vectors on a 1 to 5 scale. */
 export const MAX_DISTANCE = Math.sqrt(4 * 16);
@@ -188,11 +193,12 @@ export function distanceTable(v: readonly number[]): DistanceRow[] {
       rank: null as DistanceRow["rank"],
     };
   });
-  const order = rows.map((_, i) => i).sort((a, b) => rows[a].distance - rows[b].distance || a - b);
-  order.slice(0, 3).forEach((i, k) => {
-    rows[i].rank = (k + 1) as 1 | 2 | 3;
+  // Same ordering and tie rule as rankCases, so every desk agrees on the top three.
+  rankCases(v).forEach((m, k) => {
+    const row = rows.find((r) => r.slug === m.slug)!;
+    row.rank = (k + 1) as 1 | 2 | 3;
+    if (k === 0) row.nearest = true;
   });
-  rows[order[0]].nearest = true;
   return rows;
 }
 
@@ -473,7 +479,7 @@ export function applyInscriptions(s: Signals): Signals {
   const shocks = s.customShocks ?? [];
   const traps = (s.customTraps ?? []).filter((t) => t.active);
   const covs = s.customCovenants ?? [];
-  if (!shocks.length && !traps.length && !covs.length) return s;
+  if (!shocks.length && !traps.length && !covs.length) return withCaseMatches(s);
   const out: Signals = { ...s };
   if (shocks.length && s.bonds) {
     const d = inscribedShockDelta(s);
@@ -500,7 +506,21 @@ export function applyInscriptions(s: Signals): Signals {
   if (shocks.length) out.shocks = [...(s.shocks ?? []), ...shocks.map((x) => x.name)];
   if (traps.length) out.traps = [...(s.traps ?? []), ...traps.map((t) => t.name)];
   if (covs.length) out.covenants = [...(s.covenants ?? []), ...covs.map((c) => `${c.title} (${c.enforcementMechanism})`)];
-  return out;
+  return withCaseMatches(out);
+}
+
+/**
+ * Derive the nearest documented cases from whatever bond vector the state carries.
+ * This runs on the effective state, so the top three follow every change from any
+ * source: sliders, the delta simulator, presets, archive restores, imports and
+ * inscribed shocks. It returns the same object when the ranking is unchanged.
+ */
+export function withCaseMatches(s: Signals): Signals {
+  if (!s.bonds) return s;
+  const b = s.bonds;
+  const titles = rankCases([b.interpersonal, b.communal, b.intergenerational, b.institutional]).map((m) => m.shortTitle);
+  if (s.analogue === titles[0] && s.analogues?.length === titles.length && s.analogues.every((t, i) => t === titles[i])) return s;
+  return { ...s, analogue: titles[0], analogues: titles };
 }
 
 /** Summed bond deltas of every inscribed shock. */
