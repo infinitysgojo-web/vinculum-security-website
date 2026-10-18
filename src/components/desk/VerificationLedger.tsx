@@ -191,6 +191,9 @@ export default function VerificationLedger() {
 
   return (
     <div className="w-full min-w-0">
+    <div className="mb-6">
+      <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()).filter(Boolean).slice(0, 2) : ["The upstream reading carries no covenant to verify yet."]} />
+    </div>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
       <div className="space-y-6 min-w-0">
         <div className={panel}>
@@ -234,8 +237,6 @@ export default function VerificationLedger() {
       </div>
 
       <div className="space-y-6 min-w-0">
-        <SyncPanel linked={linked} onToggle={setLinked} summary={() => engineLines.length ? engineLines.slice(1).map((x) => x.trim()).filter(Boolean).slice(0, 2) : ["The upstream reading carries no covenant to verify yet."]} />
-
         <div className="border border-brass/40 p-4 sm:p-5">
           <div className="flex items-baseline justify-between mb-3">
             <p className={label}>Compliance</p>
