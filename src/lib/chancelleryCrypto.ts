@@ -1,7 +1,9 @@
 /**
  * Sovereign Enclave cryptography. Native Web Crypto only (window.crypto.subtle):
  * no libraries, no network. Mission data is sealed with AES-256-GCM under a key
- * derived from the operator's passphrase by PBKDF2-SHA-256 (100,000 iterations).
+ * derived from the operator's passphrase by PBKDF2-SHA-256. New seals use
+ * 310,000 iterations; records sealed before that (100,000 iterations) carry their
+ * KDF label and still open, and are re-sealed at the current count on unseal.
  *
  * Key lifecycle: the passphrase is imported once as non-extractable PBKDF2 key
  * material and held only in this module's memory. It is never written to storage,
@@ -10,7 +12,15 @@
  * AES key and nonce differ for each write.
  */
 
-export const PBKDF2_ITERATIONS = 100_000;
+/** Iterations for every new seal (OWASP 2023 guidance for PBKDF2-HMAC-SHA-256). */
+export const PBKDF2_ITERATIONS = 310_000;
+/** Iterations of records and markers sealed before the 310,000 upgrade. */
+export const LEGACY_PBKDF2_ITERATIONS = 100_000;
+export const KDF_CURRENT = "PBKDF2-SHA-256-310000" as const;
+export const KDF_LEGACY = "PBKDF2-SHA-256-100000" as const;
+export type KdfLabel = typeof KDF_CURRENT | typeof KDF_LEGACY;
+/** AES-GCM authentication tag length in bytes (128 bits). */
+export const TAG_BYTES = 16;
 export const SALT_BYTES = 16;
 export const IV_BYTES = 12;
 export const TAG_MISMATCH = "Authentication tag mismatch. Invalid passphrase or corrupted enclave payload.";
@@ -36,14 +46,33 @@ export function randomBytes(n: number): Uint8Array<ArrayBuffer> {
   return globalThis.crypto.getRandomValues(new Uint8Array(n));
 }
 
-/** Import a passphrase as non-extractable PBKDF2 base material (the in-memory "enclave key"). */
+/**
+ * Import a passphrase as non-extractable PBKDF2 base material (the in-memory
+ * "enclave key"). The encoded passphrase bytes are zeroized once imported.
+ */
 export async function importPassphrase(passphrase: string): Promise<CryptoKey> {
-  return subtle().importKey("raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+  const raw = new TextEncoder().encode(passphrase);
+  try {
+    return await subtle().importKey("raw", raw, "PBKDF2", false, ["deriveKey"]);
+  } finally {
+    zeroizeBuffer(raw);
+  }
 }
 
-async function deriveFromMaterial(material: CryptoKey, salt: Uint8Array): Promise<CryptoKey> {
+/**
+ * The iteration count a sealed record names. A record without a label predates
+ * the label and was sealed at 100,000. An unknown label is refused rather than
+ * guessed, so a hand-edited record cannot ask for a weak count.
+ */
+export function iterationsFor(kdf: unknown): number {
+  if (kdf === undefined || kdf === KDF_LEGACY) return LEGACY_PBKDF2_ITERATIONS;
+  if (kdf === KDF_CURRENT) return PBKDF2_ITERATIONS;
+  throw new Error(TAG_MISMATCH);
+}
+
+async function deriveFromMaterial(material: CryptoKey, salt: Uint8Array, iterations: number = PBKDF2_ITERATIONS): Promise<CryptoKey> {
   return subtle().deriveKey(
-    { name: "PBKDF2", hash: "SHA-256", salt: salt as BufferSource, iterations: PBKDF2_ITERATIONS },
+    { name: "PBKDF2", hash: "SHA-256", salt: salt as BufferSource, iterations },
     material,
     { name: "AES-GCM", length: 256 },
     false,
@@ -51,9 +80,117 @@ async function deriveFromMaterial(material: CryptoKey, salt: Uint8Array): Promis
   );
 }
 
-/** PBKDF2 (SHA-256, 100,000 iterations) to a non-extractable AES-GCM 256-bit key. */
-export async function deriveEnclaveKey(passphrase: string, salt: Uint8Array): Promise<CryptoKey> {
-  return deriveFromMaterial(await importPassphrase(passphrase), salt);
+/** PBKDF2-SHA-256 (310,000 iterations unless given) to a non-extractable AES-GCM 256-bit key. */
+export async function deriveEnclaveKey(passphrase: string, salt: Uint8Array, iterations: number = PBKDF2_ITERATIONS): Promise<CryptoKey> {
+  return deriveFromMaterial(await importPassphrase(passphrase), salt, iterations);
+}
+
+/* ------------------------------------------------------------------ */
+/* Constant-time comparison and zeroization                            */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Constant-time byte comparison: the loop runs over every byte whatever the
+ * first difference, so the time taken does not reveal where two digests part.
+ * Lengths are not secret here (digests have fixed lengths).
+ */
+export function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
+/** timingSafeEqual over two strings (hex digests, seals, markers), compared as UTF-8 bytes. */
+export function timingSafeEqualText(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+  return timingSafeEqual(enc.encode(a), enc.encode(b));
+}
+
+/**
+ * Overwrite a buffer in place: random bytes, then zeros. JavaScript gives no
+ * guarantee that no other copy exists, so this narrows the window in which a
+ * passphrase or plaintext sits in memory; it is not a proof of erasure.
+ */
+export function zeroizeBuffer(buf: Uint8Array | ArrayBuffer): void {
+  const view = (buf instanceof Uint8Array ? buf : new Uint8Array(buf)) as Uint8Array<ArrayBuffer>;
+  // getRandomValues accepts at most 65,536 bytes per call.
+  for (let i = 0; i < view.length; i += 65_536) globalThis.crypto.getRandomValues(view.subarray(i, Math.min(view.length, i + 65_536)));
+  view.fill(0);
+}
+
+/* ------------------------------------------------------------------ */
+/* Portable passphrase envelope (vinculum-cipher-v1)                   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * A self-contained sealed value: everything needed to open it except the
+ * passphrase. The 128-bit GCM tag is carried separately from the ciphertext.
+ * `kdf` names the iteration count; an envelope without it is read at 310,000,
+ * the count the format was introduced with.
+ */
+export interface EncryptedPayload {
+  format: "vinculum-cipher-v1";
+  kdf?: KdfLabel;
+  saltHex: string;
+  ivHex: string;
+  ciphertextHex: string;
+  tagHex: string;
+  savedAt: string;
+}
+
+/** Seal any JSON-serialisable value under a passphrase: AES-256-GCM, PBKDF2 310,000, fresh salt and IV. */
+export async function sealEnvelope(data: unknown, passphrase: string): Promise<EncryptedPayload> {
+  const plaintext = new TextEncoder().encode(JSON.stringify(data));
+  const salt = randomBytes(SALT_BYTES);
+  const iv = randomBytes(IV_BYTES);
+  try {
+    const key = await deriveEnclaveKey(passphrase, salt, PBKDF2_ITERATIONS);
+    const sealed = new Uint8Array(await subtle().encrypt({ name: "AES-GCM", iv, tagLength: TAG_BYTES * 8 }, key, plaintext));
+    // Web Crypto appends the 16-byte tag to the ciphertext; carry it on its own.
+    return {
+      format: "vinculum-cipher-v1",
+      kdf: KDF_CURRENT,
+      saltHex: bytesToHex(salt),
+      ivHex: bytesToHex(iv),
+      ciphertextHex: bytesToHex(sealed.subarray(0, sealed.length - TAG_BYTES)),
+      tagHex: bytesToHex(sealed.subarray(sealed.length - TAG_BYTES)),
+      savedAt: new Date().toISOString(),
+    };
+  } finally {
+    zeroizeBuffer(plaintext);
+  }
+}
+
+/** Open a vinculum-cipher-v1 envelope. A wrong passphrase or any altered byte raises TAG_MISMATCH. */
+export async function openEnvelope<T>(payload: EncryptedPayload, passphrase: string): Promise<T> {
+  if (!payload || payload.format !== "vinculum-cipher-v1") throw new Error("Unsupported cipher format.");
+  let combined: Uint8Array<ArrayBuffer>;
+  let key: CryptoKey;
+  let iv: Uint8Array<ArrayBuffer>;
+  try {
+    const ciphertext = hexToBytes(payload.ciphertextHex);
+    const tag = hexToBytes(payload.tagHex);
+    iv = hexToBytes(payload.ivHex);
+    if (tag.length !== TAG_BYTES || iv.length !== IV_BYTES) throw new Error(TAG_MISMATCH);
+    combined = new Uint8Array(ciphertext.length + tag.length);
+    combined.set(ciphertext);
+    combined.set(tag, ciphertext.length);
+    key = await deriveEnclaveKey(passphrase, hexToBytes(payload.saltHex), payload.kdf === undefined ? PBKDF2_ITERATIONS : iterationsFor(payload.kdf));
+  } catch {
+    throw new Error(TAG_MISMATCH);
+  }
+  let plain: Uint8Array;
+  try {
+    plain = new Uint8Array(await subtle().decrypt({ name: "AES-GCM", iv, tagLength: TAG_BYTES * 8 }, key, combined));
+  } catch {
+    throw new Error(TAG_MISMATCH);
+  }
+  try {
+    return JSON.parse(new TextDecoder().decode(plain)) as T;
+  } finally {
+    zeroizeBuffer(plain);
+  }
 }
 
 /** AES-GCM with a fresh random 12-byte IV. Returns hex-encoded ciphertext (tag appended) and IV. */
@@ -108,7 +245,7 @@ export function fromBase64Utf8(b64: string): string {
 /* ------------------------------------------------------------------ */
 
 /** A sealed record as it rests in IndexedDB: ciphertext, IV and salt only. */
-export type SealedPayload = { alg: "AES-256-GCM"; kdf: "PBKDF2-SHA-256-100000"; saltHex: string; ivHex: string; ciphertextHex: string };
+export type SealedPayload = { alg: "AES-256-GCM"; kdf: KdfLabel; saltHex: string; ivHex: string; ciphertextHex: string };
 
 let material: CryptoKey | null = null;
 const keyListeners = new Set<() => void>();
@@ -136,15 +273,22 @@ export async function sealWith(plaintext: string, mat: CryptoKey | null = materi
   const salt = randomBytes(SALT_BYTES);
   const key = await deriveFromMaterial(mat, salt);
   const { ciphertextHex, ivHex } = await encryptEnclavePayload(plaintext, key);
-  return { alg: "AES-256-GCM", kdf: "PBKDF2-SHA-256-100000", saltHex: bytesToHex(salt), ivHex, ciphertextHex };
+  return { alg: "AES-256-GCM", kdf: KDF_CURRENT, saltHex: bytesToHex(salt), ivHex, ciphertextHex };
 }
 
-/** Open a sealed record with the in-memory passphrase (or the material given). */
-export async function openWith(rec: Pick<SealedPayload, "saltHex" | "ivHex" | "ciphertextHex">, mat: CryptoKey | null = material): Promise<string> {
+/** True when a record was sealed at the legacy 100,000 iterations (or carries no label). */
+export const isLegacySeal = (rec: { kdf?: unknown }): boolean => rec.kdf !== KDF_CURRENT;
+
+/**
+ * Open a sealed record with the in-memory passphrase (or the material given).
+ * The record's own `kdf` label picks the iteration count, so records sealed at
+ * 100,000 before the upgrade still open.
+ */
+export async function openWith(rec: Pick<SealedPayload, "saltHex" | "ivHex" | "ciphertextHex"> & { kdf?: unknown }, mat: CryptoKey | null = material): Promise<string> {
   if (!mat) throw new Error("The enclave is sealed. Enter the passphrase first.");
   let key: CryptoKey;
   try {
-    key = await deriveFromMaterial(mat, hexToBytes(rec.saltHex));
+    key = await deriveFromMaterial(mat, hexToBytes(rec.saltHex), iterationsFor(rec.kdf));
   } catch {
     throw new Error(TAG_MISMATCH);
   }

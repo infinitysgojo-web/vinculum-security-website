@@ -153,6 +153,45 @@ export function __resetVaultForTests() {
   memory.forEach((m) => m.clear());
 }
 
+/**
+ * Emergency zeroization: close the open connection, delete the whole vault
+ * database (theatres, verification marker, sealed snapshots) and empty the
+ * in-memory fallback. Resolves once the browser reports the deletion, or after
+ * `timeoutMs` if another tab holds the database open (the delete then completes
+ * when that tab lets go).
+ */
+export async function destroyVault(timeoutMs = 2000): Promise<"deleted" | "blocked" | "unavailable"> {
+  const pending = dbPromise;
+  backendPromise = null;
+  dbPromise = null;
+  storageIds.clear();
+  memory.forEach((m) => m.clear());
+  try {
+    (await pending)?.close();
+  } catch {
+    // Never opened.
+  }
+  const idb = typeof indexedDB !== "undefined" ? indexedDB : undefined;
+  if (!idb) return "unavailable";
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (r: "deleted" | "blocked" | "unavailable") => {
+      if (done) return;
+      done = true;
+      resolve(r);
+    };
+    try {
+      const req = idb.deleteDatabase(VAULT_DB_NAME);
+      req.onsuccess = () => finish("deleted");
+      req.onerror = () => finish("unavailable");
+      req.onblocked = () => setTimeout(() => finish("blocked"), timeoutMs);
+    } catch {
+      finish("unavailable");
+    }
+    setTimeout(() => finish("blocked"), timeoutMs);
+  });
+}
+
 /* ------------------------------------------------------------------ */
 /* Theatre library                                                     */
 /* ------------------------------------------------------------------ */
@@ -235,6 +274,11 @@ export async function deleteTheatreFromVault(id: string): Promise<void> {
   if (sid) await b.del(THEATRE_STORE, sid);
   await b.del(THEATRE_STORE, id);
   storageIds.delete(id);
+}
+
+/** Write a record exactly as given, sealed or not (re-keying tooling and compatibility tests). */
+export async function putRawTheatreRecord(rec: TheatreRecord): Promise<void> {
+  await (await backend()).put(THEATRE_STORE, rec);
 }
 
 /** Remove a stored record by its storage id (enclave re-keying only). */

@@ -3,6 +3,8 @@ import { ChevronDown, KeyRound, Lock, LockOpen } from "lucide-react";
 import { toast } from "sonner";
 import {
   IDLE_OPTIONS,
+  DEFAULT_IDLE_MINUTES,
+  SENTINEL_SIGN_OUT_MINUTES,
   MIN_PASSPHRASE,
   changeEnclavePassphrase,
   clearEnclavePassphrase,
@@ -77,7 +79,7 @@ export default function EnclaveSecurityDrawer({ sealedCount }: { sealedCount: nu
         <div id="enclave-drawer-body" className="space-y-5 px-4 pb-5 min-w-0">
           <p className="max-w-3xl text-xs text-muted-foreground leading-relaxed">
             With a passphrase set, every theatre saved to the library is sealed with AES-256-GCM under a key derived in
-            this browser (PBKDF2-SHA-256, 100,000 iterations, a fresh salt and IV per record). The passphrase and key are
+            this browser (PBKDF2-SHA-256, 310,000 iterations, a fresh salt and IV per record; records sealed earlier at 100,000 are re-sealed on unseal). The passphrase and key are
             held in memory only and are gone when the tab closes. There is no recovery: a lost passphrase means the sealed
             theatres cannot be opened.
           </p>
@@ -199,13 +201,15 @@ export default function EnclaveSecurityDrawer({ sealedCount }: { sealedCount: nu
               onChange={(e) => setIdleMinutes(Number(e.target.value) as IdleMinutes)}
             >
               {IDLE_OPTIONS.map((m) => (
-                <option key={m} value={m}>{m === 0 ? "Off" : `${m} min`}</option>
+                <option key={m} value={m}>{m === 0 ? "Off (sign out)" : `${m} min${m === DEFAULT_IDLE_MINUTES ? " (default)" : ""}`}</option>
               ))}
             </select>
             <p className="min-w-0 flex-1 basis-56 text-xs text-muted-foreground">
               {enclave.configured
-                ? "After this long without input, the desks are cleared from memory and the key is dropped until the passphrase is entered again."
-                : "Set a passphrase to enable the idle seal. Until then an idle terminal signs out after 20 minutes."}
+                ? enclave.idleMinutes > 0
+                  ? "After this long without input, the Chancellery Sentinel seals the desks: they are cleared from memory and the key is dropped until the passphrase is entered again."
+                  : `Idle seal off: after ${SENTINEL_SIGN_OUT_MINUTES} minutes without input the terminal signs out instead, and unsaved work is lost.`
+                : `Set a passphrase to enable the idle seal. Until then an idle terminal signs out after ${SENTINEL_SIGN_OUT_MINUTES} minutes.`}
             </p>
           </div>
         </div>

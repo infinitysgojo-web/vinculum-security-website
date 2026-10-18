@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { FileUp, ShieldCheck, ShieldAlert, ScrollText } from "lucide-react";
+import { detectSteganographicTokens } from "@/lib/sanitizer";
 import { bondLabel, verifyApostilleText, verifyArchiveText, type AttestationReceipt, type Check } from "@/lib/attestation";
 
 /**
@@ -17,8 +18,12 @@ export default function AttestationVerifier() {
   const [inspectedAt, setInspectedAt] = useState("");
   const [fileName, setFileName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  // Hidden characters are reported, never silently stripped: a verifier checks the
+  // record exactly as received, so stripping first could mask a tampered copy.
+  const [hiddenTokens, setHiddenTokens] = useState(0);
 
-  const run = async (job: () => Promise<AttestationReceipt>) => {
+  const run = async (job: () => Promise<AttestationReceipt>, source: string) => {
+    setHiddenTokens(detectSteganographicTokens(source).count);
     setBusy(true);
     try {
       setReceipt(await job());
@@ -31,7 +36,10 @@ export default function AttestationVerifier() {
   const readFile = (file: File) => {
     setFileName(file.name);
     const reader = new FileReader();
-    reader.onload = () => void run(() => verifyArchiveText(String(reader.result)));
+    reader.onload = () => {
+      const raw = String(reader.result);
+      void run(() => verifyArchiveText(raw), raw);
+    };
     reader.readAsText(file);
   };
 
@@ -103,13 +111,19 @@ export default function AttestationVerifier() {
             className={`${btn} self-start`}
             disabled={busy || !text.trim()}
             data-testid="verifier-submit"
-            onClick={() => void run(() => verifyApostilleText(text))}
+            onClick={() => void run(() => verifyApostilleText(text), text)}
           >
             <ScrollText size={13} /> Verify apostille
           </button>
         </div>
       </div>
 
+      {receipt && hiddenTokens > 0 && (
+        <p role="alert" data-testid="verifier-hidden-tokens" className="mt-6 border border-destructive px-3 py-2 text-xs text-destructive">
+          {hiddenTokens} hidden character{hiddenTokens === 1 ? "" : "s"} (zero-width, bidirectional override or control) found in this record. They
+          can carry a tracking watermark or disguise the text; the digests below were computed on the record exactly as received.
+        </p>
+      )}
       {receipt && <Receipt r={receipt} inspectedAt={inspectedAt} />}
     </div>
   );
