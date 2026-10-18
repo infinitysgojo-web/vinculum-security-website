@@ -5,7 +5,8 @@ import SEO from "@/components/SEO";
 import FadeIn from "@/components/FadeIn";
 import GoldRule from "@/components/GoldRule";
 import { Search, ChevronDown, BookOpen } from "lucide-react";
-import { COMMENTARY, COMMENTARY_COUNT, Division, Inquiry } from "@/content/commentary";
+import { toast } from "sonner";
+import { COMMENTARY, COMMENTARY_COUNT, INQUIRY_NUMBER, INQUIRY_BY_NUMBER, Division, Inquiry } from "@/content/commentary";
 import { SITE_URL, PERSON_ID } from "@/lib/seo-entities";
 
 function buildCommentarySchema() {
@@ -50,23 +51,42 @@ function buildCommentarySchema() {
 export default function Commentary() {
   const [query, setQuery] = useState("");
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+  const [marked, setMarked] = useState<string | null>(null);
 
   const { hash } = useLocation();
 
   // Deep links: /commentary#<division-id> scrolls to a division;
-  // /commentary#q-<inquiry-id> scrolls to that inquiry and opens it.
+  // /commentary#inquiry-<N> (the permalink form) and the older /commentary#q-<inquiry-id>
+  // both scroll to that inquiry, open it and mark it.
   useEffect(() => {
     if (!hash) return;
-    const target = decodeURIComponent(hash.slice(1));
-    if (target.startsWith("q-")) {
-      const itemId = target.slice(2);
+    let target = decodeURIComponent(hash.slice(1));
+    const num = /^inquiry-(\d+)$/.exec(target);
+    const itemId = num ? INQUIRY_BY_NUMBER[Number(num[1])] : target.startsWith("q-") ? target.slice(2) : undefined;
+    if (itemId) {
       setOpenItems((prev) => ({ ...prev, [itemId]: true }));
+      setMarked(itemId);
+      target = `inquiry-${INQUIRY_NUMBER[itemId]}`;
     }
     const t = window.setTimeout(() => {
       document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 80);
     return () => window.clearTimeout(t);
   }, [hash]);
+
+  const copyPermalink = async (id: string) => {
+    const n = INQUIRY_NUMBER[id];
+    const url = `${window.location.origin}/commentary#inquiry-${n}`;
+    window.history.replaceState(null, "", `#inquiry-${n}`);
+    setMarked(id);
+    setOpenItems((prev) => ({ ...prev, [id]: true }));
+    try {
+      await navigator.clipboard.writeText(url);
+      toast(`Permalink to Inquiry ${n} copied`, { description: url });
+    } catch {
+      toast(`Permalink to Inquiry ${n}`, { description: url });
+    }
+  };
 
   const toggleItem = (id: string) => {
     setOpenItems((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -151,27 +171,47 @@ export default function Commentary() {
                 <div className="space-y-4">
                   {div.items.map((item: Inquiry) => {
                     const isOpen = openItems[item.id] ?? false;
+                    const n = INQUIRY_NUMBER[item.id];
+                    const isMarked = marked === item.id;
                     return (
                       <div
                         key={item.id}
-                        id={`q-${item.id}`}
-                        className="scroll-mt-24 border border-border/70 bg-card/40 transition-colors hover:border-accent/40"
+                        id={`inquiry-${n}`}
+                        className={`scroll-mt-24 border bg-card/40 transition-colors hover:border-accent/40 ${
+                          isMarked ? "border-accent ring-1 ring-accent/30" : "border-border/70"
+                        }`}
                       >
-                        <button
-                          type="button"
-                          onClick={() => toggleItem(item.id)}
-                          aria-expanded={isOpen}
-                          className="w-full p-5 text-left flex items-start justify-between gap-4 group cursor-pointer"
-                        >
-                          <span className="font-serif text-base font-semibold text-foreground group-hover:text-accent transition-colors leading-snug">
-                            {item.q}
-                          </span>
-                          <ChevronDown
-                            className={`w-4 h-4 text-brass shrink-0 mt-1 transition-transform duration-200 ${
-                              isOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
+                        {/* Legacy anchor, so older #q-<id> links still land here. */}
+                        <span id={`q-${item.id}`} className="block scroll-mt-24" aria-hidden />
+                        <div className="flex items-start">
+                          <a
+                            href={`#inquiry-${n}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              copyPermalink(item.id);
+                            }}
+                            className="shrink-0 pl-4 pt-5 pr-1 font-mono text-[11px] leading-6 text-brass hover:text-accent focus-visible:text-accent transition-colors"
+                            aria-label={`Copy permalink to Inquiry ${n}`}
+                            title={`Copy permalink to Inquiry ${n}`}
+                          >
+                            #{n}
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => toggleItem(item.id)}
+                            aria-expanded={isOpen}
+                            className="flex-1 min-w-0 p-5 pl-2 text-left flex items-start justify-between gap-4 group cursor-pointer"
+                          >
+                            <span className="font-serif text-base font-semibold text-foreground group-hover:text-accent transition-colors leading-snug">
+                              {item.q}
+                            </span>
+                            <ChevronDown
+                              className={`w-4 h-4 text-brass shrink-0 mt-1 transition-transform duration-200 ${
+                                isOpen ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                        </div>
 
                         {isOpen && (
                           <div className="px-5 pb-6 pt-1 border-t border-border/40 text-[0.95rem] text-foreground/85 leading-relaxed space-y-3">
