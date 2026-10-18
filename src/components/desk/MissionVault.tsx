@@ -25,6 +25,8 @@ import {
   type SavedTheatreSlot,
 } from "@/lib/chancelleryDb";
 import { refreshEnclave, useEnclave } from "@/lib/chancelleryEnclave";
+import { timingSafeEqualText } from "@/lib/chancelleryCrypto";
+import { countStrippedDeep, sanitizeDeep } from "@/lib/sanitizer";
 
 export { EMPTY_PROFILE };
 export type { MissionProfile, SavedTheatreSlot };
@@ -266,7 +268,7 @@ export default function MissionVault({
         if (typeof data.sha256Seal === "string") {
           const { sha256Seal, ...body } = data;
           const actual = await sha256(JSON.stringify(body));
-          if (actual !== sha256Seal) {
+          if (!timingSafeEqualText(actual, sha256Seal)) {
             const proceed = window.confirm(
               "SEAL MISMATCH. This archive was altered after it was sealed, or is damaged.\n\nLoad it anyway? Treat its contents as unverified."
             );
@@ -282,10 +284,17 @@ export default function MissionVault({
           sealNote = " No seal on this file (saved before sealing).";
         }
 
+        // The seal is checked on the bytes as received; only then is every text field
+        // stripped of zero-width, bidi-override and control characters before restore.
+        const stripped = countStrippedDeep([data.profile, data.binder, data.signals ?? null]);
+        const cleanProfile = sanitizeDeep(data.profile);
+        const cleanBinder = Array.isArray(data.binder) ? sanitizeDeep(data.binder) : [];
+        if (data.signals) data.signals = sanitizeDeep(data.signals);
+        if (stripped > 0) sealNote += ` ${stripped} hidden or control character${stripped === 1 ? "" : "s"} removed.`;
         // Version 1 archives carry no bonds, so they restore at the 3.0 default.
-        const restoredProfile = { ...EMPTY_PROFILE, ...data.profile, bonds: sanitizeBonds(data.profile?.bonds) };
+        const restoredProfile = { ...EMPTY_PROFILE, ...cleanProfile, bonds: sanitizeBonds(cleanProfile?.bonds) };
         setProfile(restoredProfile);
-        setBinder(Array.isArray(data.binder) ? data.binder : []);
+        setBinder(cleanBinder);
         // Version 3+ archives carry the live signals; restore them so every downstream desk reads the saved mission at once.
         // Older archives carry none, so the bus is left as it stands rather than wiped.
         const restoredSignals = check.version >= 3 && data.signals ? sanitizeSignals(data.signals) : null;
@@ -302,7 +311,7 @@ export default function MissionVault({
           "vault",
         );
         toast.success(
-          `Archive restored. ${Array.isArray(data.binder) ? data.binder.length : 0} document(s) in the binder${restoredSignals ? " and the live mission signals" : ""}.${sealNote}`,
+          `Archive restored. ${cleanBinder.length} document(s) in the binder${restoredSignals ? " and the live mission signals" : ""}.${sealNote}`,
           { description: `Verification stamp re-minted: ${stamp.ref}` },
         );
         setOpen(true);

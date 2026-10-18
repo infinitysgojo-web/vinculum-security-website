@@ -4,6 +4,7 @@
  * form the dashboard uses (integrity.ts and registry.ts). No network, no storage,
  * no auth or dashboard module.
  */
+import { timingSafeEqualText } from "@/lib/chancelleryCrypto";
 import { ARCHIVE_SCHEMA, validateArchive } from "@/components/desk/archive";
 import { applyInscriptions, breachesFloor, statutoryClearances, VIABLE_FLOOR, type Signals } from "@/components/desk/engine";
 import { APOSTILLE_BOTTOM, APOSTILLE_TOP } from "@/components/desk/registry";
@@ -53,7 +54,7 @@ export async function verifyArchive(data: unknown): Promise<AttestationReceipt> 
   if (typeof a.sha256Seal === "string") {
     const { sha256Seal, ...body } = a;
     const computed = await sha256(JSON.stringify(body));
-    checks.push({ label: "Archive seal (SHA-256)", status: computed === sha256Seal ? "match" : "mismatch", recorded: sha256Seal, computed });
+    checks.push({ label: "Archive seal (SHA-256)", status: timingSafeEqualText(computed, sha256Seal) ? "match" : "mismatch", recorded: sha256Seal, computed });
   } else {
     checks.push({ label: "Archive seal (SHA-256)", status: "absent", note: "No seal on this file (saved before sealing)." });
   }
@@ -77,7 +78,7 @@ export async function verifyArchive(data: unknown): Promise<AttestationReceipt> 
     } catch {
       computed = "";
     }
-    checks.push({ label: "State digest (SHA-256)", status: computed && computed === ledger.stateDigest ? "match" : "mismatch", recorded: ledger.stateDigest, computed: computed || "not computable" });
+    checks.push({ label: "State digest (SHA-256)", status: computed && timingSafeEqualText(computed, ledger.stateDigest) ? "match" : "mismatch", recorded: ledger.stateDigest, computed: computed || "not computable" });
   } else {
     checks.push({ label: "State digest (SHA-256)", status: "absent", note: "This archive version records no state digest." });
   }
@@ -87,7 +88,7 @@ export async function verifyArchive(data: unknown): Promise<AttestationReceipt> 
   if (ledger && Array.isArray(ledger.events)) {
     merkleRoot = await archiveMerkleRoot(ledger.events as { at: string; kind: string; detail: string }[]);
     if (typeof ledger.merkleRoot === "string") {
-      checks.push({ label: "Merkle session root", status: merkleRoot === ledger.merkleRoot ? "match" : "mismatch", recorded: ledger.merkleRoot, computed: merkleRoot });
+      checks.push({ label: "Merkle session root", status: timingSafeEqualText(merkleRoot, ledger.merkleRoot) ? "match" : "mismatch", recorded: ledger.merkleRoot, computed: merkleRoot });
     } else {
       checks.push({ label: "Merkle session root", status: "absent", computed: merkleRoot, note: "Root computed from the events; none was recorded." });
     }
@@ -216,7 +217,7 @@ export async function verifyApostilleText(text: string): Promise<AttestationRece
       canon = "";
     }
     const computed = canon ? await sha256(canon) : "";
-    checks.push({ label: "State digest (SHA-256)", status: computed && computed === p.state ? "match" : "mismatch", recorded: p.state, computed: computed || "canonical state unreadable" });
+    checks.push({ label: "State digest (SHA-256)", status: computed && timingSafeEqualText(computed, p.state) ? "match" : "mismatch", recorded: p.state, computed: computed || "canonical state unreadable" });
     let snap: { vector?: unknown; gateClearances?: unknown } | undefined;
     try {
       snap = canon ? JSON.parse(canon) : undefined;

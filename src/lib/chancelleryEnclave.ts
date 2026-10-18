@@ -8,7 +8,7 @@
  * passphrase from a wrong one, and ciphertext records with their salt and IV.
  */
 import { useSyncExternalStore } from "react";
-import { TAG_MISMATCH, hasEnclaveKey, importPassphrase, isSealedPayload, openWith, sealWith, setEnclaveMaterial } from "./chancelleryCrypto";
+import { TAG_MISMATCH, hasEnclaveKey, importPassphrase, isLegacySeal, isSealedPayload, openWith, sealWith, setEnclaveMaterial, timingSafeEqualText } from "./chancelleryCrypto";
 import {
   VERIFICATION_KEY,
   deleteEnclaveMetadata,
@@ -26,6 +26,14 @@ export const MIN_PASSPHRASE = 8;
 export const IDLE_PREF_KEY = "vs:enclave-idle-minutes";
 export const IDLE_OPTIONS = [0, 5, 15, 30] as const;
 export type IdleMinutes = (typeof IDLE_OPTIONS)[number];
+/**
+ * The Chancellery Sentinel's inactivity threshold in minutes. With a passphrase
+ * set, the idle seal defaults to it; with no passphrase (or the seal turned off)
+ * an idle terminal signs out after it. One threshold, one timer.
+ */
+export const SENTINEL_LOCK_MINUTES = 15;
+export const DEFAULT_IDLE_MINUTES: IdleMinutes = SENTINEL_LOCK_MINUTES;
+export const SENTINEL_SIGN_OUT_MINUTES = SENTINEL_LOCK_MINUTES;
 
 export type EnclaveState = {
   /** The metadata store has been read at least once. */
@@ -42,10 +50,13 @@ export type EnclaveState = {
 
 const readIdlePref = (): IdleMinutes => {
   try {
-    const n = Number(window.localStorage.getItem(IDLE_PREF_KEY));
-    return (IDLE_OPTIONS as readonly number[]).includes(n) ? (n as IdleMinutes) : 0;
+    const raw = window.localStorage.getItem(IDLE_PREF_KEY);
+    // No choice recorded yet: the Sentinel's 15-minute seal. An explicit "0" stays off.
+    if (raw === null) return DEFAULT_IDLE_MINUTES;
+    const n = Number(raw);
+    return (IDLE_OPTIONS as readonly number[]).includes(n) ? (n as IdleMinutes) : DEFAULT_IDLE_MINUTES;
   } catch {
-    return 0;
+    return DEFAULT_IDLE_MINUTES;
   }
 };
 
@@ -89,8 +100,41 @@ async function verify(passphrase: string): Promise<CryptoKey> {
   if (!marker || !isSealedPayload(marker)) throw new Error("No enclave passphrase is set.");
   const mat = await importPassphrase(passphrase);
   const text = await openWith(marker, mat);
-  if (text !== VERIFICATION_TEXT) throw new Error(TAG_MISMATCH);
+  if (!timingSafeEqualText(text, VERIFICATION_TEXT)) throw new Error(TAG_MISMATCH);
   return mat;
+}
+
+/**
+ * Re-seal anything still at the legacy 100,000 iterations under the current
+ * count: the verification marker, sealed theatres and sealed snapshots. Runs
+ * after a successful unseal; every record is opened before it is rewritten, and
+ * a record that cannot be opened is left exactly as it was.
+ */
+export async function upgradeLegacySeals(mat: CryptoKey): Promise<number> {
+  let upgraded = 0;
+  const marker = await getEnclaveMetadata(VERIFICATION_KEY);
+  if (marker && isSealedPayload(marker) && isLegacySeal(marker)) {
+    await writeMarker(mat);
+    upgraded++;
+  }
+  const legacyTheatres = (await readRawTheatreRecords()).filter((r) => "sealed" in r && r.sealed && isLegacySeal(r as { kdf?: unknown }));
+  if (legacyTheatres.length) {
+    // getAllTheatresFromVault maps each logical slot to its storage id, so a re-save overwrites in place.
+    for (const slot of await getAllTheatresFromVault()) await saveTheatreToVault(slot);
+    upgraded += legacyTheatres.length;
+  }
+  for (const key of await snapshotKeys()) {
+    const rec = await getEnclaveMetadata(key);
+    if (!rec || !isSealedPayload(rec) || !isLegacySeal(rec)) continue;
+    try {
+      const text = await openWith(rec, mat);
+      await putEnclaveMetadata(key, { ...(await sealWith(text, mat)) });
+      upgraded++;
+    } catch {
+      // Left at the legacy count; still opens.
+    }
+  }
+  return upgraded;
 }
 
 async function writeMarker(mat: CryptoKey) {
@@ -114,6 +158,11 @@ export async function unsealEnclave(passphrase: string): Promise<void> {
   const mat = await verify(passphrase);
   setEnclaveMaterial(mat);
   set({ configured: true });
+  try {
+    await upgradeLegacySeals(mat);
+  } catch {
+    // The vault still opens at the legacy count; the upgrade is retried next unseal.
+  }
 }
 
 /** Re-seal every record and snapshot under a new passphrase. */
@@ -155,6 +204,12 @@ export async function clearEnclavePassphrase(current: string): Promise<void> {
   setEnclaveMaterial(null);
   for (const slot of slots) await saveTheatreToVault(slot);
   for (const id of sealedIds) await deleteRawTheatreRecord(id);
+  set({ configured: false, idleSealed: false });
+}
+
+/** Panic purge: drop the key and forget the enclave (its vault database is being deleted). */
+export function forgetEnclave() {
+  setEnclaveMaterial(null);
   set({ configured: false, idleSealed: false });
 }
 

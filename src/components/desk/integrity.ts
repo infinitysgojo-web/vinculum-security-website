@@ -1,6 +1,6 @@
 import { applyInscriptions, type Signals } from "./engine";
 import { stateSnapshot } from "./registry";
-import { calculateMerkleRoot } from "@/lib/chancelleryCrypto";
+import { calculateMerkleRoot, timingSafeEqualText } from "@/lib/chancelleryCrypto";
 
 export { calculateMerkleRoot };
 
@@ -47,7 +47,7 @@ export async function verifySealedText(stamped: string): Promise<SealVerdict> {
   const m = /SHA-256 Digest : ([0-9a-f]{64})/.exec(stamped.slice(at));
   if (!m) return { status: "unsealed" };
   const actual = await sha256(body);
-  return actual === m[1] ? { status: "valid", hash: actual } : { status: "tampered", expected: m[1], actual };
+  return timingSafeEqualText(actual, m[1]) ? { status: "valid", hash: actual } : { status: "tampered", expected: m[1], actual };
 }
 
 /**

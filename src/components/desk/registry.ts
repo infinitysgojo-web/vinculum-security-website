@@ -151,6 +151,18 @@ export function onDispatch(fn: (d: Dispatch) => void): () => void {
   };
 }
 
+/**
+ * Emergency zeroization: forget the state snapshots, digests and references
+ * held for this tab. The sequence floor is kept, so numbering stays monotonic
+ * and a reference is still never reissued.
+ */
+export function purgeRegistrySession() {
+  issuedRefs.clear();
+  issuedDigests.clear();
+  revisions.clear();
+  lastRef = undefined;
+}
+
 /** The last reference minted in this tab, if any. */
 export function lastIssuedRef(): string | undefined {
   return lastRef;

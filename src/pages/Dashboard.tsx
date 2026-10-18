@@ -27,8 +27,10 @@ import MissionVault from "@/components/desk/MissionVault";
 import SessionLedgerDrawer, { useLedgerWatch } from "@/components/desk/SessionLedger";
 import { clearLedger, ledgerEntries, logEvent, restoreLedger } from "@/components/desk/ledgerStore";
 import EnclaveLockScreen from "@/components/desk/EnclaveLockScreen";
-import { useIdleTimer } from "@/hooks/useIdleTimer";
-import { enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
+import { ChancellerySentinel } from "@/components/desk/ChancellerySentinel";
+import { SENTINEL_SIGN_OUT_MINUTES, enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
+import { executePanicPurge, purgeVolatileState } from "@/lib/panicPurge";
+import { sanitizeOnBlur, sanitizeOnPaste } from "@/lib/sanitizeFields";
 import SaveSession from "@/components/desk/SaveSession";
 import DeskFinder from "@/components/desk/DeskFinder";
 import { LexiconDrawer } from "@/components/desk/Lexicon";
@@ -58,7 +60,8 @@ const VerificationLedger = lazy(() => import("@/components/desk/VerificationLedg
 const HandoverProtocol = lazy(() => import("@/components/desk/HandoverProtocol"));
 
 
-const IDLE_MS = 20 * 60 * 1000;
+/** Without an unsealed enclave, an idle terminal signs out after the Sentinel's 15 minutes. */
+const IDLE_MS = SENTINEL_SIGN_OUT_MINUTES * 60 * 1000;
 
 const DIVISIONS = [
   { id: "assess", label: "I. Assessment and early warning", short: "I. Assess" },
@@ -376,10 +379,13 @@ export default function Dashboard() {
     navigate("/login", { replace: true });
   }, [navigate]);
 
-  // Idle guard. With the enclave unsealed and an idle seal chosen, an unattended
-  // terminal seals itself: the working state is sealed into IndexedDB, then it and
-  // the key are cleared from memory until the passphrase is entered. Otherwise an
-  // idle terminal signs out after IDLE_MS, as before. One timer, one set of listeners.
+  // Idle guard, run by the Chancellery Sentinel (one timer, one set of listeners).
+  // With the enclave unsealed and an idle seal chosen (15 minutes by default), an
+  // unattended terminal seals itself: the working state is sealed into IndexedDB,
+  // then it and the key are cleared from memory until the passphrase is entered.
+  // Otherwise (no passphrase, enclave not unsealed, or the seal turned off) an idle
+  // terminal signs out after IDLE_MS: a lock screen anyone could dismiss would
+  // protect nothing.
   const enclave = useEnclave();
   const idleSealArmed = enclave.configured && enclave.unlocked && enclave.idleMinutes > 0;
   // Development-only hook so QA can exercise the seal without waiting minutes.
@@ -403,10 +409,36 @@ export default function Dashboard() {
     setSignals({});
     clearLedger();
   }, [session, signOut]);
-  useIdleTimer(
-    session ? (idleSealArmed ? idleTestMs || enclave.idleMinutes * 60 * 1000 : IDLE_MS) : null,
-    idleSealArmed ? () => void sealForIdle() : () => void signOut(),
-  );
+  const idleMs = session ? idleTestMs || (idleSealArmed ? enclave.idleMinutes * 60 * 1000 : IDLE_MS) : null;
+  const onIdle = idleSealArmed ? () => void sealForIdle() : () => void signOut();
+
+  // Panic purge (Sentinel: Ctrl+Shift+X or Escape three times within 600 ms).
+  // The desks unmount at once, memory and browser storage are wiped, the vault
+  // database is deleted, the clipboard is overwritten, the session is signed out
+  // and the practitioner lands on sign-in. Only this page navigates.
+  const [purged, setPurged] = useState(false);
+  const panicPurge = useCallback(() => {
+    setPurged(true);
+    setProfile({ ...EMPTY_PROFILE });
+    setBinder([]);
+    setSignals({});
+    setSavedAt(null);
+    workRef.current = { profile: { ...EMPTY_PROFILE }, binder: [], signals: {}, division: "assess", desk: "diagnostics" };
+    purgeVolatileState();
+    void (async () => {
+      const cap = <T,>(p: Promise<T>, ms: number) => Promise.race([p, new Promise<void>((r) => setTimeout(r, ms))]);
+      await cap(executePanicPurge(), 2500);
+      clearOfflineSession();
+      try {
+        await cap(supabase.auth.signOut(), 1500);
+      } catch {
+        // Offline: the local token copy was already removed by the purge.
+      }
+      purgeVolatileState();
+      toast.error("PANIC PURGE EXECUTED. Memory zeroized.");
+      navigate("/login", { replace: true });
+    })();
+  }, [navigate]);
 
   // Unsealing restores the sealed working state: the idle snapshot first; after a
   // reload, the sealed saved session, but only onto an untouched dashboard.
@@ -551,16 +583,7 @@ export default function Dashboard() {
     return () => window.removeEventListener("keydown", onKey);
   }, [saveSession]);
 
-  if (!ready || !session) return null;
-
-  if (enclave.idleSealed) {
-    return (
-      <>
-        <SEO title="The Vinculum Dashboard" description="Private working desks for Vinculum practitioners." path="/dashboard" noIndex />
-        <EnclaveLockScreen onSignOut={() => void signOut()} />
-      </>
-    );
-  }
+  if (!ready || !session || purged) return null;
 
   // The desk order is the chancellery lifecycle: assess, engage, draft, govern.
   const position = DESKS.findIndex((d) => d.id === desk);
@@ -575,7 +598,19 @@ export default function Dashboard() {
   };
 
   return (
-    <>
+    <ChancellerySentinel
+      idleMs={idleMs}
+      onIdle={onIdle}
+      locked={enclave.idleSealed}
+      onPanic={panicPurge}
+      lockScreen={
+        <>
+          <SEO title="The Vinculum Dashboard" description="Private working desks for Vinculum practitioners." path="/dashboard" noIndex />
+          <EnclaveLockScreen onSignOut={() => void signOut()} />
+        </>
+      }
+    >
+    <div onPasteCapture={sanitizeOnPaste} onBlurCapture={sanitizeOnBlur} className="contents">
       <SEO
         title="The Vinculum Dashboard"
         description="Private working desks for Vinculum practitioners."
@@ -918,7 +953,8 @@ export default function Dashboard() {
         </div>
       </div>
       <ChancelleryWire signals={effective} />
-    </>
+    </div>
+    </ChancellerySentinel>
   );
 }
 
