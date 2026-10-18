@@ -6,8 +6,29 @@ import FadeIn from "@/components/FadeIn";
 import GoldRule from "@/components/GoldRule";
 import { Search, ChevronDown, BookOpen } from "lucide-react";
 import { toast } from "sonner";
-import { COMMENTARY, COMMENTARY_COUNT, INQUIRY_NUMBER, INQUIRY_BY_NUMBER, Division, Inquiry } from "@/content/commentary";
+import {
+  COMMENTARY,
+  COMMENTARY_COUNT,
+  INQUIRY_NUMBER,
+  INQUIRY_BY_NUMBER,
+  INQUIRY_THEME,
+  THEMES,
+  THEME_COUNTS,
+  type ThemeId,
+  type Division,
+  type Inquiry,
+} from "@/content/commentary";
 import { SITE_URL, PERSON_ID } from "@/lib/seo-entities";
+
+const ITEM_BY_ID: Record<string, Inquiry> = Object.fromEntries(COMMENTARY.flatMap((d) => d.items).map((i) => [i.id, i]));
+
+function matchesQuery(item: Inquiry, raw: string) {
+  const q = raw.trim().toLowerCase();
+  if (!q) return true;
+  return item.q.toLowerCase().includes(q) || item.a.some((paragraph) => paragraph.toLowerCase().includes(q));
+}
+
+type ThemeFilter = "all" | ThemeId;
 
 function buildCommentarySchema() {
   const allItems: { q: string; a: string }[] = [];
@@ -50,6 +71,7 @@ function buildCommentarySchema() {
 
 export default function Commentary() {
   const [query, setQuery] = useState("");
+  const [theme, setTheme] = useState<ThemeFilter>("all");
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [marked, setMarked] = useState<string | null>(null);
 
@@ -64,6 +86,10 @@ export default function Commentary() {
     const num = /^inquiry-(\d+)$/.exec(target);
     const itemId = num ? INQUIRY_BY_NUMBER[Number(num[1])] : target.startsWith("q-") ? target.slice(2) : undefined;
     if (itemId) {
+      // A permalink always lands: if the active theme or search hides the inquiry, reset them.
+      const item = ITEM_BY_ID[itemId];
+      setTheme((t) => (t === "all" || INQUIRY_THEME[itemId] === t ? t : "all"));
+      if (item) setQuery((q) => (matchesQuery(item, q) ? q : ""));
       setOpenItems((prev) => ({ ...prev, [itemId]: true }));
       setMarked(itemId);
       target = `inquiry-${INQUIRY_NUMBER[itemId]}`;
@@ -93,18 +119,12 @@ export default function Commentary() {
   };
 
   const filteredDivisions = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return COMMENTARY;
-
-    return COMMENTARY.map((div) => {
-      const matchingItems = div.items.filter(
-        (item) =>
-          item.q.toLowerCase().includes(q) ||
-          item.a.some((paragraph) => paragraph.toLowerCase().includes(q))
-      );
-      return { ...div, items: matchingItems };
-    }).filter((div) => div.items.length > 0);
-  }, [query]);
+    if (!query.trim() && theme === "all") return COMMENTARY;
+    return COMMENTARY.map((div) => ({
+      ...div,
+      items: div.items.filter((item) => (theme === "all" || INQUIRY_THEME[item.id] === theme) && matchesQuery(item, query)),
+    })).filter((div) => div.items.length > 0);
+  }, [query, theme]);
 
   const totalFilteredCount = useMemo(
     () => filteredDivisions.reduce((acc, div) => acc + div.items.length, 0),
@@ -128,6 +148,39 @@ export default function Commentary() {
         />
 
         <div className="py-8">
+        {/* Thematic filter ribbon (sticky beneath the site header) */}
+        <div
+          className="sticky top-[66px] z-30 -mx-4 px-4 py-3 mb-4 bg-background/95 backdrop-blur border-b border-brass/30 print:hidden"
+          data-testid="theme-ribbon"
+        >
+          <div role="group" aria-label="Filter inquiries by theme" className="flex gap-2 overflow-x-auto scrollbar-none">
+            {([{ id: "all", label: "All", count: COMMENTARY_COUNT }, ...THEMES.map((t) => ({ ...t, count: THEME_COUNTS[t.id] }))] as {
+              id: ThemeFilter;
+              label: string;
+              count: number;
+            }[]).map((t) => {
+              const active = theme === t.id;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setTheme(t.id)}
+                  aria-pressed={active}
+                  data-theme-pill={t.id}
+                  data-count={t.count}
+                  className={`shrink-0 whitespace-nowrap border px-3 py-1.5 min-h-9 text-[11px] uppercase tracking-[0.12em] transition-colors ${
+                    active
+                      ? "border-accent bg-accent text-accent-foreground"
+                      : "border-border/80 bg-card/60 text-foreground/80 hover:border-accent hover:text-accent"
+                  }`}
+                >
+                  {t.label} ({t.count})
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Search Bar & Stats */}
         <div className="mb-12">
           <div className="relative">
@@ -152,7 +205,7 @@ export default function Commentary() {
         {/* Divisions & Accordions */}
         <div className="space-y-16">
           {filteredDivisions.map((div: Division) => (
-            <section key={div.id} id={div.id} className="scroll-mt-24">
+            <section key={div.id} id={div.id} className="scroll-mt-40">
               <FadeIn>
                 <div className="border-b border-brass/40 pb-4 mb-6">
                   <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
@@ -177,12 +230,12 @@ export default function Commentary() {
                       <div
                         key={item.id}
                         id={`inquiry-${n}`}
-                        className={`scroll-mt-24 border bg-card/40 transition-colors hover:border-accent/40 ${
+                        className={`scroll-mt-40 border bg-card/40 transition-colors hover:border-accent/40 ${
                           isMarked ? "border-accent ring-1 ring-accent/30" : "border-border/70"
                         }`}
                       >
                         {/* Legacy anchor, so older #q-<id> links still land here. */}
-                        <span id={`q-${item.id}`} className="block scroll-mt-24" aria-hidden />
+                        <span id={`q-${item.id}`} className="block scroll-mt-40" aria-hidden />
                         <div className="flex items-start">
                           <a
                             href={`#inquiry-${n}`}

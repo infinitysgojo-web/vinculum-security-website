@@ -613,3 +613,25 @@ html.scif {
 }
 html.scif body { background: hsl(var(--background)); }
 html.scif [class*="tracking-["] { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; }
+
+/* ---------- Archival print folio (sitewide) ----------
+   Formats articles for physical treaty folios. The executive dossier's own masthead
+   (header.dossier-masthead) is exempt so the print-only dossier keeps its running head. */
+@media print {
+  header:not(.dossier-masthead), footer, nav, #stcm-wrapper, .no-print, button, [role="dialog"] {
+    display: none !important;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+  a {
+    text-decoration: none !important;
+    color: #1A1A1A !important;
+  }
+  .page-break-after {
+    page-break-after: always;
+  }
+}

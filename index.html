@@ -319,6 +319,8 @@
         --iconColor: #1B3A6B;
         --iconBackgroundColor: #F5EBDD;
       }
+      /* Non-commercial archive: suppress the vendor's promotional credit link. */
+      #stcm-wrapper .stcm-credit-link { display: none !important; }
     </style>
     <script src="/vendor/silktide/silktide-consent-manager.js" defer></script>
     <script>
@@ -331,41 +333,26 @@
           consentTypes: [
             {
               id: "essential",
-              label: "Essential",
-              description: "<p>These cookies are necessary for the website to function properly and cannot be switched off. They help with things like logging in and setting your privacy preferences.</p>",
+              label: "Essential Security & Integrity",
+              description: "<p>Required for cryptographic session verification, offline credential validation, and statutory accessibility preferences. These store zero commercial or behavioral identifiers and cannot be disabled.</p>",
               required: true
-            },
-            {
-              id: "analytics",
-              label: "Analytics",
-              description: "<p>These cookies help us improve the site by tracking which pages are most popular and how visitors move around the site.</p>",
-              defaultValue: true,
-              gtag: "analytics_storage"
-            },
-            {
-              id: "marketing",
-              label: "Marketing",
-              description: "<p>These cookies are used by us and our advertising partners to show you relevant ads on this site and elsewhere, and to measure how those campaigns perform.</p>",
-              gtag: ["ad_storage", "ad_user_data", "ad_personalization"]
             }
           ],
           text: {
             prompt: {
-              description: "<p>We use cookies on our site to enhance your user experience, provide personalized content, and analyze our traffic.</p>",
-              acceptAllButtonText: "Accept all",
-              acceptAllButtonAccessibleLabel: "Accept all cookies",
-              rejectNonEssentialButtonText: "Reject non-essential",
-              rejectNonEssentialButtonAccessibleLabel: "Reject all non-essential cookies",
-              preferencesButtonText: "Preferences",
-              preferencesButtonAccessibleLabel: "Toggle preferences"
+              description: "<p>Vinculum Security is a non-commercial diplomatic research archive. We host zero advertisements, deploy zero commercial marketing trackers, and never sell or share user data. Essential local storage is used solely to maintain cryptographic session integrity and document verification state.</p>",
+              acceptAllButtonText: "Acknowledge",
+              acceptAllButtonAccessibleLabel: "Acknowledge essential privacy terms",
+              rejectNonEssentialButtonText: "Close",
+              rejectNonEssentialButtonAccessibleLabel: "Close privacy prompt",
+              preferencesButtonText: "Details",
+              preferencesButtonAccessibleLabel: "View technical privacy details"
             },
             preferences: {
-              title: "Customize your cookie preferences",
-              description: "<p>We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.</p>",
-              saveButtonText: "Save and close",
-              saveButtonAccessibleLabel: "Save your cookie preferences",
-              creditLinkText: "Get this banner for free",
-              creditLinkAccessibleLabel: "Get this banner for free"
+              title: "Non-Commercial Data Protection Standard",
+              description: "<p>This sovereign archive operates under strict privacy-by-design standards in alignment with academic and diplomatic practice.</p>",
+              saveButtonText: "Confirm",
+              saveButtonAccessibleLabel: "Confirm privacy settings"
             }
           }
         });

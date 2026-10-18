@@ -550,3 +550,51 @@ export const INQUIRY_NUMBER: Record<string, number> = Object.fromEntries(
 export const INQUIRY_BY_NUMBER: Record<number, string> = Object.fromEntries(
   Object.entries(INQUIRY_NUMBER).map(([id, n]) => [n, id]),
 );
+
+/**
+ * Thematic ribbon on /commentary. Every inquiry belongs to exactly one theme, assigned by
+ * its content (divisions are the reading order; themes cut across them). Pill counts are
+ * always computed from this map, never written by hand.
+ */
+export const THEMES = [
+  { id: "mathematics", label: "Mathematics & Formalisms" },
+  { id: "lineage", label: "Lineage & Ubuntu" },
+  { id: "diplomatic", label: "Diplomatic Practice" },
+  { id: "statutory", label: "Statutory Safeguards" },
+] as const;
+
+export type ThemeId = (typeof THEMES)[number]["id"];
+
+const THEME_MEMBERS: Record<ThemeId, string[]> = {
+  // Deterministic law, the minimum, entropy, scoring, trend and contagion: the formal model.
+  mathematics: [
+    "deterministic-relational-law", "liebig", "relational-entropy", "relational-deficit", "falsifiability",
+    "continuum", "scoring", "assessment", "trend", "relational-contagion", "incident-vs-decay", "weakest-bond-warning",
+  ],
+  // The referent object and its intellectual lineage: Ubuntu, Confucian role ethics, Galtung, Rawls, realism.
+  lineage: [
+    "core-claim", "why-the-bond", "galtung", "ubuntu-confucian", "realism-human-security", "intergenerational",
+    "digital", "liberal-peacebuilding", "customary-justice", "security-dilemma", "rawls-law-of-peoples",
+  ],
+  // Chancellery practice, treaty mechanics, the operational desks and the canonical case record.
+  diplomatic: [
+    "elite-pact-mirage", "sovereignty-obligation", "wps-yps", "capacity-vs-alienation", "what-is-dashboard", "desk-chain",
+    "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
+    "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
+    "climate", "corridors", "kenya-2008", "colonial-boundaries",
+  ],
+  // Confidentiality, integrity, auditability, legal status, attribution and citation.
+  statutory: [
+    "no-generative-ai", "confidentiality", "integrity", "browser-local", "audit-trail", "dashboard-disambiguation",
+    "dashboard-and-judgement", "author", "legal-status", "disambiguation", "citation", "teaching", "ip-and-open-scholarship",
+  ],
+};
+
+export const INQUIRY_THEME: Record<string, ThemeId> = Object.fromEntries(
+  (Object.entries(THEME_MEMBERS) as [ThemeId, string[]][]).flatMap(([theme, ids]) => ids.map((id) => [id, theme])),
+);
+
+/** Inquiries per theme, computed from the data. */
+export const THEME_COUNTS: Record<ThemeId, number> = Object.fromEntries(
+  THEMES.map((t) => [t.id, COMMENTARY.flatMap((d) => d.items).filter((i) => INQUIRY_THEME[i.id] === t.id).length]),
+) as Record<ThemeId, number>;

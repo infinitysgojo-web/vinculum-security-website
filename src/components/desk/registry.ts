@@ -39,6 +39,8 @@ const issuedDigests = new Set<string>();
 /** State key to number of times that exact state has been issued. */
 const revisions = new Map<string, number>();
 const listeners = new Set<(d: Dispatch) => void>();
+/** The most recent reference minted in this tab, for the archive's ledger state. */
+let lastRef: string | undefined;
 
 function hex(bytes: Uint8Array): string {
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
@@ -127,6 +129,7 @@ export async function mintDispatch(s: Signals, kind: DispatchKind, desk?: string
     if (issuedRefs.has(ref) || issuedDigests.has(digest)) continue;
     issuedRefs.add(ref);
     issuedDigests.add(digest);
+    lastRef = ref;
     const d: Dispatch = { ref, digest, nonce, seq, revision, kind, desk, gatesPassed, gatesTotal: audit.gates.length, clearancesPassed, clearancesTotal: clearances.length, floorValidated };
     listeners.forEach((fn) => fn(d));
     return d;
@@ -139,6 +142,11 @@ export function onDispatch(fn: (d: Dispatch) => void): () => void {
   return () => {
     listeners.delete(fn);
   };
+}
+
+/** The last reference minted in this tab, if any. */
+export function lastIssuedRef(): string | undefined {
+  return lastRef;
 }
 
 /** Number of distinct dispatches issued this session. */

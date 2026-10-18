@@ -10,6 +10,8 @@ import {
 } from "@react-pdf/renderer";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import { DOMAINS, type CaseStudy } from "@/content/cases";
+import { mathReading, holdsFloor, bondBand, VIABLE_FLOOR } from "@/components/desk/engine";
+import { Neatline } from "@/components/pdf/Neatline";
 import mark from "@/assets/vinculum-mark.png";
 import serifRegular from "@/assets/fonts/CormorantGaramond-Regular.ttf";
 import serifItalic from "@/assets/fonts/CormorantGaramond-Italic.ttf";
@@ -47,6 +49,9 @@ const INK = "#2B2B2B";
 const BRASS = "#D4A24C";
 const RULE = "#C9CBD1";
 const MUTED = "#5F6470";
+const PARCHMENT = "#FBF7F1";
+const CRIMSON = "#8B1E1E";
+const SLATE = "#2F3A4A";
 
 const s = StyleSheet.create({
   page: {
@@ -69,11 +74,8 @@ const s = StyleSheet.create({
     color: INK,
     backgroundColor: "#FFFFFF",
   },
+  frameOuter: { margin: 26 },
   coverFrame: {
-    margin: 26,
-    borderWidth: 0.9,
-    borderColor: NAVY,
-    flexGrow: 1,
     paddingTop: 54,
     paddingBottom: 30,
     paddingHorizontal: 40,
@@ -229,6 +231,37 @@ const s = StyleSheet.create({
   },
   td: { fontSize: 10, paddingVertical: 7, paddingRight: 10 },
 
+  // Continuum Scorecard Grid
+  grid: { flexDirection: "row", marginTop: 6, marginBottom: 6 },
+  cell: {
+    width: "25%",
+    backgroundColor: PARCHMENT,
+    borderWidth: 0.5,
+    borderColor: BRASS,
+    paddingVertical: 9,
+    paddingHorizontal: 7,
+  },
+  cellNum: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.4, color: BRASS, textTransform: "uppercase" },
+  cellName: { fontFamily: "InterDoc", fontSize: 6.4, letterSpacing: 0.9, color: NAVY, textTransform: "uppercase", marginTop: 2, lineHeight: 1.25, minHeight: 16 },
+  cellScore: { fontSize: 19, color: NAVY, marginTop: 4, lineHeight: 1.1 },
+  cellScale: { fontSize: 10, color: MUTED },
+  cellClass: { fontSize: 8.6, fontStyle: "italic", color: MUTED, marginTop: 2, lineHeight: 1.2 },
+  chipRow: { flexDirection: "row", marginTop: 6 },
+  chipText: { fontFamily: "Courier", fontSize: 6.8, lineHeight: 1.2, paddingTop: 2, paddingBottom: 1, paddingHorizontal: 3, borderWidth: 0.5 },
+  summary: {
+    flexDirection: "row",
+    borderWidth: 0.5,
+    borderColor: BRASS,
+    borderTopWidth: 1,
+    borderTopColor: NAVY,
+    marginBottom: 12,
+  },
+  sumCell: { width: "33.33%", paddingVertical: 6, paddingHorizontal: 7 },
+  sumLabel: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 1.3, color: MUTED, textTransform: "uppercase" },
+  sumValue: { fontFamily: "Courier", fontSize: 9, color: NAVY, marginTop: 2 },
+  rationaleName: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 1.2, color: NAVY, textTransform: "uppercase", width: "26%", paddingTop: 2, paddingRight: 8 },
+  rationaleText: { fontSize: 10, width: "74%" },
+
   h2: {
     fontSize: 14,
     color: NAVY,
@@ -287,10 +320,6 @@ const s = StyleSheet.create({
 
   // Back cover
   backFrame: {
-    margin: 26,
-    borderWidth: 0.9,
-    borderColor: NAVY,
-    flexGrow: 1,
     paddingVertical: 60,
     paddingHorizontal: 48,
     alignItems: "center",
@@ -315,6 +344,51 @@ const s = StyleSheet.create({
     paddingTop: 12,
   },
 });
+
+function Scorecard({ scores }: { scores: number[] }) {
+  const v = [scores[0], scores[1], scores[2], scores[3]] as [number, number, number, number];
+  const m = mathReading(v);
+  return (
+    <View wrap={false}>
+      <View style={s.grid}>
+        {DOMAINS.map((d, i) => {
+          const ok = holdsFloor(v[i]);
+          return (
+            <View key={d} style={i > 0 ? [s.cell, { borderLeftWidth: 0 }] : s.cell}>
+              <Text style={s.cellNum}>Domain {["I", "II", "III", "IV"][i]}</Text>
+              <Text style={s.cellName}>{d}</Text>
+              <Text style={s.cellScore}>
+                {v[i].toFixed(1)} <Text style={s.cellScale}>/ 5.0</Text>
+              </Text>
+              <Text style={s.cellClass}>{bondBand(v[i])} band</Text>
+              <View style={s.chipRow}>
+                <Text style={[s.chipText, { color: ok ? SLATE : CRIMSON, borderColor: ok ? BRASS : CRIMSON }]}>
+                  {ok ? "[VIABLE]" : "[ACUTE STRAIN]"}
+                </Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+      <View style={s.summary}>
+        <View style={s.sumCell}>
+          <Text style={s.sumLabel}>Arithmetic mean</Text>
+          <Text style={s.sumValue}>{m.mean.toFixed(2)} / 5.00</Text>
+        </View>
+        <View style={s.sumCell}>
+          <Text style={s.sumLabel}>Variance (population)</Text>
+          <Text style={s.sumValue}>{m.variance.toFixed(3)}</Text>
+        </View>
+        <View style={s.sumCell}>
+          <Text style={s.sumLabel}>Canonical limiting bond</Text>
+          <Text style={s.sumValue}>
+            {DOMAINS[m.limitingIndex]} · {m.limitingScore.toFixed(1)}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+}
 
 function Rows({ rows }: { rows: { label: string; value: string }[] }) {
   return (
@@ -373,7 +447,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
     >
       {/* ---------------- FRONT COVER ---------------- */}
       <Page size="A4" style={s.cover}>
-        <View style={s.coverFrame}>
+        <Neatline outer={s.frameOuter} inner={s.coverFrame}>
           <View style={s.coverTop}>
             <Image style={s.emblem} src={mark} />
             <Text style={s.coverWordmark}>Vinculum Security</Text>
@@ -420,7 +494,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
             </View>
             <Text style={s.statutoryNotice}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.</Text>
           </View>
-        </View>
+        </Neatline>
       </Page>
 
       {/* ---------------- BODY ---------------- */}
@@ -433,6 +507,9 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
         <Text style={s.docSub}>
           Section {c.ref} · {c.region} · {c.era} · Primary pillar: {c.pillar}
         </Text>
+
+        <Text style={s.h3}>Continuum Scorecard</Text>
+        <Scorecard scores={c.scores} />
 
         <Rows
           rows={[
@@ -462,24 +539,24 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
         />
 
         <Text style={s.h2} minPresenceAhead={60}>II. The Four-Bond Continuum Matrix</Text>
+        <Text style={s.body}>
+          The Continuum Scorecard on the opening page of this dossier records each domain score. The rationale
+          for each reading follows.
+        </Text>
+        <Text style={s.h3}>Diagnostic rationale by domain</Text>
         <View style={s.table}>
-          <View style={[s.row, { borderBottomWidth: 0.8, borderBottomColor: NAVY }]}>
-            <Text style={[s.th, { width: "24%" }]}>Bond domain</Text>
-            <Text style={[s.th, { width: "13%" }]}>Score</Text>
-            <Text style={[s.th, { width: "63%" }]}>Diagnostic rationale</Text>
-          </View>
           {DOMAINS.map((d, i) => (
             <View key={d} style={s.row} wrap={false}>
-              <Text style={[s.td, { width: "24%", color: NAVY }]}>{d}</Text>
-              <Text style={[s.td, { width: "13%" }]}>{c.scores[i]} / 5</Text>
-              <Text style={[s.td, { width: "63%" }]}>{c.rationales[i]}</Text>
+              <Text style={s.rationaleName}>{d}</Text>
+              <Text style={[s.td, s.rationaleText]}>{c.rationales[i]}</Text>
             </View>
           ))}
         </View>
         <Text style={s.note}>
           Scores run 1 to 5 within each bond domain. Higher values indicate stronger observed bond
           integrity at the period of record. Scores are diagnostic instruments for deliberation, not
-          certifications of compliance.
+          certifications of compliance. A bond holds the canonical {VIABLE_FLOOR.toFixed(1)} viable floor only when it
+          scores above it; at or below the floor it is marked as acute strain.
         </Text>
 
         <View style={s.quote} wrap={false}>
@@ -518,7 +595,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
 
       {/* ---------------- BACK COVER ---------------- */}
       <Page size="A4" style={s.cover}>
-        <View style={s.backFrame}>
+        <Neatline outer={s.frameOuter} inner={s.backFrame}>
           <View style={s.coverTop}>
             <Image style={s.emblemSm} src={mark} />
             <Text style={[s.coverWordmark, { fontSize: 17, letterSpacing: 4.5 }]}>
@@ -549,7 +626,7 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
             </Text>
             <Text>{url}</Text>
           </View>
-        </View>
+        </Neatline>
       </Page>
     </Document>
   );
