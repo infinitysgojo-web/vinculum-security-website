@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, Maximize2, Minimize2, Monitor, Volume2, VolumeX } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
@@ -7,7 +7,7 @@ import { THEATRES, type TheatreId } from "@/components/desk/theatres";
 import { toast } from "sonner";
 import { tick, seal, soundEnabled, setSoundEnabled, onSoundChange } from "@/lib/chancelleryHaptics";
 import { supabase } from "@/integrations/supabase/client";
-import { getOfflineSession, clearOfflineSession } from "@/lib/offlineAuth";
+import { getOfflineSession, clearOfflineSession, raceAuth } from "@/lib/offlineAuth";
 import type { Session } from "@supabase/supabase-js";
 import SEO from "@/components/SEO";
 import Logo from "@/components/Logo";
@@ -36,8 +36,9 @@ import DeskFinder from "@/components/desk/DeskFinder";
 import { LexiconDrawer } from "@/components/desk/Lexicon";
 import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 
-// Proprietary desks are split into separate chunks that are only fetched
-// once a valid session exists, so they never ship with the public site.
+// All 18 desks are bundled statically with the dashboard so that mounting or
+// switching desks never fetches a chunk: an air-gapped terminal has every desk
+// in memory the moment /dashboard renders.
 import BondDiagnostic from "@/components/BondDiagnostic";
 import CableComposer from "@/components/CableComposer";
 import PatternMatcher from "@/components/PatternMatcher";
@@ -219,13 +220,16 @@ const DESKS = [
 
 
 
+function offlineSessionAsSession(): Session | null {
+  const o = getOfflineSession();
+  return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
+}
+
 export default function Dashboard() {
-  const initialOffline = useMemo(() => {
-    const o = getOfflineSession();
-    return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
-  }, []);
-  const [session, setSession] = useState<Session | null>(initialOffline);
-  const [ready, setReady] = useState(() => !navigator.onLine || !!initialOffline);
+  // Hydrated synchronously: an offline field session (or a disconnected terminal)
+  // renders on the first frame instead of waiting on cloud auth.
+  const [session, setSession] = useState<Session | null>(() => offlineSessionAsSession());
+  const [ready, setReady] = useState<boolean>(() => !navigator.onLine || !!getOfflineSession());
   const [division, setDivision] = useState<(typeof DIVISIONS)[number]["id"]>("assess");
   const [desk, setDesk] = useState<(typeof DESKS)[number]["id"]>("diagnostics");
   // Desks stay mounted once opened, so their inputs survive switching and they keep publishing.
@@ -350,44 +354,43 @@ export default function Dashboard() {
       return next;
     });
 
-    useEffect(() => {
-    const offlineSession = (): Session | null => {
-      const o = getOfflineSession();
-      return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
-    };
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
-      const next = s ?? offlineSession();
+  useEffect(() => {
+    let cancelled = false;
+    const settle = (next: Session | null) => {
+      if (cancelled) return;
       setSession(next);
+      setReady(true);
       if (!next) navigate("/login", { replace: true });
+    };
+    // A cloud auth event never replaces a valid offline session with nothing.
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      if (cancelled) return;
+      const offline = offlineSessionAsSession();
+      if (!s && offline) {
+        setSession(offline);
+        return;
+      }
+      if (!s && !navigator.onLine) return;
+      setSession(s);
+      if (!s) navigate("/login", { replace: true });
     });
-
     if (!navigator.onLine) {
-      const current = offlineSession();
-      setSession(current);
-      setReady(true);
-      if (!current) navigate("/login", { replace: true });
-      return () => sub.subscription.unsubscribe();
-    }
-
-    const timer = setTimeout(() => {
-      setReady(true);
-      if (!session && !offlineSession()) navigate("/login", { replace: true });
-    }, 1500);
-
-    supabase.auth
-      .getSession()
-      .catch(() => ({ data: { session: null } }))
-      .then(({ data }) => {
-        clearTimeout(timer);
-        const next = data.session ?? offlineSession();
-        setSession(next);
-        setReady(true);
-        if (!next) navigate("/login", { replace: true });
+      // Disconnected: no cloud request is attempted at all.
+      settle(offlineSessionAsSession());
+    } else {
+      // Online: cloud auth gets a short head start. If it stalls, an offline field
+      // session takes over at once; with none, the cloud answer is still awaited
+      // rather than signing out a valid account on a slow link.
+      const cloud = supabase.auth.getSession().then((r) => r.data.session).catch(() => null);
+      raceAuth(cloud).then((res) => {
+        if (res.settled) return settle(res.value ?? offlineSessionAsSession());
+        const stand = offlineSessionAsSession();
+        if (stand) return settle(stand);
+        cloud.then((s) => settle(s ?? offlineSessionAsSession()));
       });
-
+    }
     return () => {
-      clearTimeout(timer);
+      cancelled = true;
       sub.subscription.unsubscribe();
     };
   }, [navigate]);
@@ -904,7 +907,6 @@ export default function Dashboard() {
             if ((e.target as HTMLElement).closest('input[type="checkbox"], input[type="radio"], button[aria-pressed]')) tick();
           }}
         >
-          <Suspense fallback={<p className="text-sm text-muted-foreground">Opening the desk…</p>}>
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
                 <div key={id} hidden={desk !== id} className="w-full min-w-0">
@@ -939,7 +941,6 @@ export default function Dashboard() {
                 </div>
               ) : null,
             )}
-          </Suspense>
         </div>
         </BinderContext.Provider>
         </DeskMetaContext.Provider>
