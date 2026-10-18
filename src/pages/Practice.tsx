@@ -8,6 +8,10 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import NumeralDivider from "@/components/NumeralDivider";
 import ReadingProgress from "@/components/ReadingProgress";
 import FieldLexicon from "@/components/FieldLexicon";
+import { lazy, Suspense } from "react";
+
+// The verifier carries the canonical engine and Web Crypto checks; split into its own chunk.
+const AttestationVerifier = lazy(() => import("@/components/AttestationVerifier"));
 
 const PRINCIPLES = [
   {
@@ -232,6 +236,15 @@ export default function Practice() {
             </article>
           </div>
         </FadeIn>
+
+        <section id="verifier" className="scroll-mt-24 mb-16">
+          <p className="eyebrow">Chancellery Record · Attestation</p>
+          <h2 className="mt-3 font-serif text-primary">Verify a sealed record</h2>
+          <GoldRule className="mt-4 mb-6" />
+          <Suspense fallback={<div className="min-h-44 border border-brass/50 bg-card/40" aria-busy="true" />}>
+            <AttestationVerifier />
+          </Suspense>
+        </section>
 
         <FadeIn className="max-w-3xl mb-20">
           <p className="text-sm italic text-muted-foreground">

@@ -3,6 +3,7 @@ import { Copy, Stamp } from "lucide-react";
 import { toast } from "sonner";
 import { bondBand, breachesFloor, holdsFloor, inscriptionLines, stageGateAudit, statutoryClearances, useEngine, VIABLE_FLOOR, type Signals } from "./engine";
 import { apostille, mintDispatch, type Dispatch } from "./registry";
+import { currentMerkleRoot, useSessionMerkleRoot } from "./ledgerStore";
 import { seal } from "@/lib/chancelleryHaptics";
 
 type Mode = "note-verbale" | "demarche" | "aide-memoire";
@@ -101,6 +102,7 @@ export default function NoteVerbale() {
   const { signals } = useEngine();
   const [mode, setMode] = useState<Mode>("note-verbale");
   const [last, setLast] = useState<Dispatch | null>(null);
+  const merkleRoot = useSessionMerkleRoot();
   const text = useMemo(() => draftTransmittal(signals, mode), [signals, mode]);
 
   if (!text) {
@@ -115,7 +117,7 @@ export default function NoteVerbale() {
     const d = await mintDispatch(signals, mode);
     setLast(d);
     try {
-      await navigator.clipboard.writeText(`${apostille(d)}\n\n${text}`);
+      await navigator.clipboard.writeText(`${apostille(d, await currentMerkleRoot())}\n\n${text}`);
       toast.success(`Transmittal ${d.ref} minted and copied`);
     } catch {
       toast.success(`Transmittal ${d.ref} minted. Select the text to copy.`);
@@ -142,7 +144,7 @@ export default function NoteVerbale() {
         ))}
       </div>
       <pre className="mb-3 max-h-56 overflow-auto border border-border bg-navy-tint/40 p-3 font-mono text-[10px] leading-relaxed text-primary whitespace-pre">
-        {last ? apostille(last) : "+--- VINCULUM PROTOCOL REGISTRY // SIGILLUM CANCELLARIAE ---+\nREF NO  : (minted on copy)\n+-----------------------------------------------------------+"}
+        {last ? apostille(last, merkleRoot) : "+--- VINCULUM PROTOCOL REGISTRY // SIGILLUM CANCELLARIAE ---+\nREF NO  : (minted on copy)\n+-----------------------------------------------------------+"}
       </pre>
       <div className="font-serif text-[0.95rem] leading-relaxed text-foreground/90 whitespace-pre-wrap [overflow-wrap:anywhere]">{text}</div>
       <button

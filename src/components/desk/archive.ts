@@ -6,7 +6,10 @@
  *   1  profile and binder.
  *   2  adds profile.bonds.
  *   3  adds the live mission signals.
- *   4  adds the `schema` field, the registry ledger state and the session ledger.
+ *   4  adds the `schema` field, the registry ledger state and the session ledger,
+ *      and `ledger.merkleRoot`: the Merkle session root over `ledger.events`.
+ *      Version 4 files written before the root existed carry no merkleRoot and
+ *      still validate; every older version still loads.
  */
 export const ARCHIVE_FORMAT = "vinculum-mission-archive";
 export const ARCHIVE_SCHEMA = "vinculum.mission-archive";
@@ -24,7 +27,11 @@ export type ArchiveLedger = {
   lastRef?: string;
   /** Session ledger entries (UTC), carried for the debrief; not replayed on import. */
   events: { at: string; kind: string; detail: string }[];
+  /** calculateMerkleRoot(events): Node_i = SHA-256(Node_{i-1} + at + kind + detail). 64 hex. */
+  merkleRoot?: string;
 };
+
+export const HEX64 = /^[0-9a-f]{64}$/;
 
 /** `reason` is set whenever `ok` is false. */
 export type ArchiveValidation = { ok: boolean; version: number; reason?: string };
@@ -51,6 +58,23 @@ export function validateArchive(data: unknown): ArchiveValidation {
   if (data.binder !== undefined && !Array.isArray(data.binder)) return { ok: false, version: 0, reason: "The binder is not a list." };
   if (data.signals !== undefined && !isObj(data.signals)) return { ok: false, version: 0, reason: "The mission signals are not an object." };
   if (data.ledger !== undefined && !isObj(data.ledger)) return { ok: false, version: 0, reason: "The ledger state is not an object." };
+  if (isObj(data.ledger)) {
+    const l = data.ledger;
+    if (l.events !== undefined) {
+      if (!Array.isArray(l.events)) return { ok: false, version: 0, reason: "The session ledger events are not a list." };
+      for (const e of l.events) {
+        if (!isObj(e) || typeof e.at !== "string" || typeof e.kind !== "string" || typeof e.detail !== "string") {
+          return { ok: false, version: 0, reason: "A session ledger event is malformed." };
+        }
+      }
+    }
+    if (l.merkleRoot !== undefined && (typeof l.merkleRoot !== "string" || !HEX64.test(l.merkleRoot))) {
+      return { ok: false, version: 0, reason: "The Merkle session root is not a 64-character hex digest." };
+    }
+    if (l.stateDigest !== undefined && (typeof l.stateDigest !== "string" || !HEX64.test(l.stateDigest))) {
+      return { ok: false, version: 0, reason: "The state digest is not a 64-character hex digest." };
+    }
+  }
   return { ok: true, version };
 }
 

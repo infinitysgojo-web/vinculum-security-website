@@ -32,7 +32,7 @@ for (const source of ["/(.*)", "/dashboard", "/login"]) {
     const csp: string = rule.headers.find((h: { key: string }) => h.key === "Content-Security-Policy").value;
     expect(csp).toContain("object-src 'none'");
     const connect = csp.split(";").map((d) => d.trim()).find((d) => d.startsWith("connect-src"))!;
-    for (const src of ["'self'", "https://*.supabase.co", "wss://*.supabase.co", "https://*.lovable.cloud"]) expect(connect).toContain(src);
+    for (const src of ["'self'", "https://*.supabase.co", "https://*.lovable.cloud"]) expect(connect).toContain(src);
     expect(connect).not.toMatch(/(^|\s)(\*|https:)(\s|$)/);
   });
 }

@@ -1,3 +1,9 @@
+import { applyInscriptions, type Signals } from "./engine";
+import { stateSnapshot } from "./registry";
+import { calculateMerkleRoot } from "@/lib/chancelleryCrypto";
+
+export { calculateMerkleRoot };
+
 /** SHA-256 hex digest computed locally with the browser's Web Crypto. Nothing leaves the device. */
 export async function sha256(text: string): Promise<string> {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
@@ -43,3 +49,16 @@ export async function verifySealedText(stamped: string): Promise<SealVerdict> {
   const actual = await sha256(body);
   return actual === m[1] ? { status: "valid", hash: actual } : { status: "tampered", expected: m[1], actual };
 }
+
+/**
+ * Canonical state JSON for a mission archive: the normalised bond vector, active
+ * case, twenty gate clearances, covenants and inscriptions, with inscriptions
+ * applied, exactly as the dashboard hashes it into ledger.stateDigest.
+ */
+export const canonicalArchiveState = (signals: Signals) => JSON.stringify(stateSnapshot(applyInscriptions(signals)));
+
+/** ledger.stateDigest for an archive. */
+export const archiveStateDigest = (signals: Signals) => sha256(canonicalArchiveState(signals));
+
+/** ledger.merkleRoot for an archive (version 4): the Merkle session root over its events. */
+export const archiveMerkleRoot = (events: ReadonlyArray<{ at: string; kind: string; detail: string }>) => calculateMerkleRoot(events);

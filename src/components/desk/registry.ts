@@ -12,6 +12,7 @@
 import { useEffect, useState } from "react";
 import { inscriptionLines, stageGateAudit, statutoryClearances, VIABLE_FLOOR, holdsFloor, type Signals } from "./engine";
 import { theatreById } from "./theatres";
+import { toBase64Utf8 } from "@/lib/chancelleryCrypto";
 
 export type DispatchKind = "note-verbale" | "demarche" | "aide-memoire" | "cable" | "dossier" | "attestation" | "text" | "minute";
 
@@ -29,6 +30,10 @@ export type Dispatch = {
   clearancesPassed: number;
   clearancesTotal: number;
   floorValidated: boolean;
+  /** SHA-256 of the canonical state JSON (no nonce): recomputable by any verifier. */
+  stateDigest: string;
+  /** The canonical state JSON itself, exactly as hashed into stateDigest. */
+  canon: string;
 };
 
 const SEQ_KEY = "vs:registry_seq";
@@ -108,6 +113,8 @@ export function useStateDigest(s: Signals): string {
 /** Mint a fresh, collision-proof dispatch for the current bus state. */
 export async function mintDispatch(s: Signals, kind: DispatchKind, desk?: string): Promise<Dispatch> {
   const snap = stateSnapshot(s);
+  const canon = JSON.stringify(snap);
+  const stateDigest = await sha256Hex(canon);
   const stateKey = `${kind}|${desk ?? ""}|${JSON.stringify(snap)}`;
   const prior = revisions.get(stateKey) ?? 0;
   revisions.set(stateKey, prior + 1);
@@ -130,7 +137,7 @@ export async function mintDispatch(s: Signals, kind: DispatchKind, desk?: string
     issuedRefs.add(ref);
     issuedDigests.add(digest);
     lastRef = ref;
-    const d: Dispatch = { ref, digest, nonce, seq, revision, kind, desk, gatesPassed, gatesTotal: audit.gates.length, clearancesPassed, clearancesTotal: clearances.length, floorValidated };
+    const d: Dispatch = { ref, digest, nonce, seq, revision, kind, desk, gatesPassed, gatesTotal: audit.gates.length, clearancesPassed, clearancesTotal: clearances.length, floorValidated, stateDigest, canon };
     listeners.forEach((fn) => fn(d));
     return d;
   }
@@ -154,18 +161,32 @@ export function ledgerSize(): number {
   return issuedRefs.size;
 }
 
-/** The ASCII apostille block printed at the head of every transmittal. */
-export function apostille(d: Dispatch): string {
-  const W = 61;
-  const top = "+--- VINCULUM PROTOCOL REGISTRY // SIGILLUM CANCELLARIAE ---+";
-  const bottom = `+${"-".repeat(W - 2)}+`;
+export const APOSTILLE_TOP = "+--- VINCULUM PROTOCOL REGISTRY // SIGILLUM CANCELLARIAE ---+";
+export const APOSTILLE_BOTTOM = `+${"-".repeat(59)}+`;
+/** Indent of CANON continuation lines (aligned under the value column). */
+export const CANON_INDENT = " ".repeat(10);
+const CANON_WIDTH = 64;
+
+/**
+ * The ASCII apostille block printed at the head of every transmittal.
+ * DIGEST is the nonce-salted dispatch digest (unique per dispatch). STATE is the
+ * SHA-256 of the canonical state JSON, which the CANON lines carry in base64, so
+ * the public Attestation Verifier can recompute it with no archive and no network.
+ * The Merkle session root line is added when the ledger root is known.
+ */
+export function apostille(d: Dispatch, merkleRoot?: string): string {
+  const canon = d.canon ? toBase64Utf8(d.canon) : "";
+  const chunks = canon.match(new RegExp(`.{1,${CANON_WIDTH}}`, "g")) ?? [];
   return [
-    top,
+    APOSTILLE_TOP,
     `REF NO  : ${d.ref}`,
     `DIGEST  : ${d.digest}`,
+    ...(d.stateDigest ? [`STATE   : ${d.stateDigest}`] : []),
     `STATUS  : ${d.clearancesPassed}/${d.clearancesTotal} STATUTORY CLEARANCES // ${d.gatesPassed}/${d.gatesTotal} GATES`,
     `FLOOR   : VIABLE FLOOR ${VIABLE_FLOOR.toFixed(1)} ${d.floorValidated ? "VALIDATED" : "BREACHED"}`,
     `SEAL    : EXEQUATUR CANONICALIS // UNALTERABLE RECORD`,
-    bottom,
+    ...(merkleRoot ? [`MERKLE SESSION ROOT: ${merkleRoot}`] : []),
+    ...chunks.map((c, i) => (i === 0 ? `CANON   : ${c}` : `${CANON_INDENT}${c}`)),
+    APOSTILLE_BOTTOM,
   ].join("\n");
 }

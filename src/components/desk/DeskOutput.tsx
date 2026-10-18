@@ -5,6 +5,7 @@ import { MissionContext } from "./mission";
 import { sha256, sealText, shortHash } from "./integrity";
 import { inscriptionLines, statutoryClearances, useEngine } from "./engine";
 import { apostille, ledgerSize, mintDispatch, type Dispatch } from "./registry";
+import { currentMerkleRoot, useSessionMerkleRoot } from "./ledgerStore";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 export const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
@@ -98,7 +99,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
     try {
       // Every cable that leaves the desk carries its own registry reference and digest.
       const d = await mintDispatch(signals, "cable");
-      await navigator.clipboard.writeText(`${apostille(d)}\n\n${toCable(text, d.ref)}`);
+      await navigator.clipboard.writeText(`${apostille(d, await currentMerkleRoot())}\n\n${toCable(text, d.ref)}`);
       toast.success("Diplomatic cable copied");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");
@@ -117,6 +118,9 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
     };
   }, [text]);
 
+  // Merkle session root over the chancellery ledger, live as events are recorded.
+  const merkleRoot = useSessionMerkleRoot();
+
   // Chancellery minute: a registry dispatch minted from this desk, on demand.
   const [minute, setMinute] = useState<Dispatch | null>(null);
   const mintMinute = async () => {
@@ -128,7 +132,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
     const d = minute ?? (await mintDispatch(signals, "minute", meta.id));
     if (!minute) setMinute(d);
     try {
-      await navigator.clipboard.writeText(`${apostille(d)}\n\n${text}`);
+      await navigator.clipboard.writeText(`${apostille(d, await currentMerkleRoot())}\n\n${text}`);
       toast.success("Sovereign seal and document copied");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");
@@ -148,7 +152,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
   const downloadText = async () => {
     const { stamped } = await sealText(text);
     const d = await mintDispatch(signals, "text");
-    const url = URL.createObjectURL(new Blob([`${apostille(d)}\n\n${stamped}`], { type: "text/plain;charset=utf-8" }));
+    const url = URL.createObjectURL(new Blob([`${apostille(d, await currentMerkleRoot())}\n\n${stamped}`], { type: "text/plain;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
     a.download = `${fileName}.txt`;
@@ -289,6 +293,9 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
           ) : (
             "No minute minted from this desk yet"
           )}
+          <span className="block" data-testid="merkle-session-root">
+            MERKLE SESSION ROOT: <span className="text-primary">{merkleRoot || "computing…"}</span>
+          </span>
         </p>
       </div>
     </div>

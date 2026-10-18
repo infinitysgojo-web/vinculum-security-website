@@ -1,9 +1,11 @@
 /*
  * Vinculum Field Service Worker.
- * Keeps the dashboard fully operational with no connection: every desk, script,
- * stylesheet and font is cached on first visit, and the app shell answers any
- * page request while offline. All mission state already lives in this browser
- * (localStorage and Web Crypto), so nothing here ever stores or sends mission data.
+ * Keeps the site and the dashboard fully operational with no connection: every
+ * desk chunk, script, stylesheet and self-hosted font is precached at install,
+ * same-origin assets are served cache-first, and the app shell answers any page
+ * request while offline. Mission state lives only in this browser (IndexedDB and
+ * Web Crypto); this worker never stores, reads or sends mission data, and it
+ * never touches cross-origin requests.
  *
  * At build time, vite.config.ts replaces BUILD_ID and BUILD_ASSETS below with the
  * hashed bundle list. In development (where this file is not registered) they
@@ -12,12 +14,15 @@
 const BUILD_ID = "__BUILD_ID__";
 const BUILD_ASSETS = /*__BUILD_ASSETS__*/ [];
 
-const CACHE_NAME = `vinculum-field-cache-${BUILD_ID}`;
-const FONT_CACHE = "vinculum-field-fonts-v1";
+// v2: fonts are self-hosted under /assets, so the old Google font cache is retired.
+const CACHE_VERSION = "v2";
+const CACHE_NAME = `vinculum-field-cache-${CACHE_VERSION}-${BUILD_ID}`;
 const SHELL = "/index.html";
 const SHELL_EXTRAS = [
   "/",
   "/site.webmanifest",
+  "/vendor/silktide/silktide-consent-manager.css",
+  "/vendor/silktide/silktide-consent-manager.js",
   "/favicon.ico",
   "/vinculum-security-favicon.png",
   "/icon-192.png",
@@ -51,7 +56,8 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
       const keys = await caches.keys();
-      await Promise.all(keys.filter((k) => k !== CACHE_NAME && k !== FONT_CACHE).map((k) => caches.delete(k)));
+      // Every older build cache and the retired font cache are removed.
+      await Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)));
       await self.clients.claim();
     })()
   );
@@ -103,13 +109,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
   const url = new URL(request.url);
 
-  // Web fonts from Google, if the page still uses them: cache for offline typography.
-  if (url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com") {
-    event.respondWith(staleWhileRevalidate(request, FONT_CACHE));
-    return;
-  }
-
-  // Anything else cross-origin (authentication, APIs, analytics) goes straight to the network, untouched.
+  // Anything cross-origin (authentication, APIs, analytics) goes straight to the network, untouched.
   if (url.origin !== self.location.origin) return;
   if (url.pathname === "/sw.js") return;
 
@@ -118,8 +118,8 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Hashed build output never changes under the same name.
-  if (url.pathname.startsWith("/assets/")) {
+  // Hashed build output (scripts, styles, fonts) never changes under the same name.
+  if (url.pathname.startsWith("/assets/") || /\.(?:woff2?|ttf|otf)$/.test(url.pathname)) {
     event.respondWith(cacheFirst(request).catch(() => Response.error()));
     return;
   }
