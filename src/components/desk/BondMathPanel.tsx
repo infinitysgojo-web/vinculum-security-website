@@ -15,6 +15,8 @@ const mono = "font-mono tabular-nums";
  *   sigma_B^2 = (1/4) sum (B_i - mu_B)^2
  *   d(B, C_k) = sqrt( sum (B_i - C_k,i)^2 )      R_k = (1 - d / 8) x 100%
  */
+const RANK_LABEL = { 1: "1st", 2: "2nd", 3: "3rd" } as const;
+
 export default function BondMathPanel({ scores }: { scores: [number, number, number, number] }) {
   const m = useMemo(() => mathReading(scores), [scores]);
   const facade = useMemo(() => facadeSyndrome(scores), [scores]);
@@ -22,7 +24,7 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
   const sd = Math.sqrt(m.variance);
   const limitingBand = bondBand(m.limitingScore);
   const liebigFails = m.limitingScore <= 2.0;
-  const nearest = table.find((r) => r.nearest)!;
+  const ranked = table.filter((r) => r.rank !== null).sort((a, b) => a.rank! - b.rank!);
 
   return (
     <div className="bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full overflow-hidden">
@@ -107,20 +109,26 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
       )}
 
       <hr className="gold-rule gold-rule-short mt-5 mb-4" />
-      <p className={sub}>Resonance with the nearest canonical case</p>
-      <p className="mt-1 font-serif text-primary text-lg">
-        {nearest.shortTitle}
-        {nearest.year ? ` (${nearest.year})` : ""} · {nearest.resonance.toFixed(1)}%
-      </p>
-      <p className="text-[11px] text-muted-foreground mt-1">
-        d = √Σ(Bᵢ − Cᵢ)² = {nearest.distance.toFixed(3)} · Rₖ = (1 − d ÷ 8) × 100%
-      </p>
-      <Link
-        to={`/cases/${nearest.slug}`}
-        className="mt-3 inline-block text-[10px] uppercase tracking-[0.2em] font-semibold text-accent hover:underline"
-      >
-        Open {nearest.shortTitle} →
-      </Link>
+      <p className={sub}>Resonance with the three nearest canonical cases</p>
+      <ol className="mt-1 space-y-3" data-testid="math-top-three">
+        {ranked.map((r) => (
+          <li key={r.slug}>
+            <p className={`font-serif text-primary ${r.rank === 1 ? "text-lg" : "text-base"}`}>
+              <span className={`mr-2 ${mono} text-[10px] text-muted-foreground`}>{RANK_LABEL[r.rank!]}</span>
+              {r.shortTitle}
+              {r.year ? ` (${r.year})` : ""} · {r.resonance.toFixed(1)}%
+            </p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">d = √Σ(Bᵢ − Cᵢ)² = {r.distance.toFixed(3)}</p>
+            <Link
+              to={`/cases/${r.slug}`}
+              className="mt-1 inline-block text-[10px] uppercase tracking-[0.2em] font-semibold text-accent hover:underline"
+            >
+              Open {r.shortTitle} →
+            </Link>
+          </li>
+        ))}
+      </ol>
+      <p className="text-[11px] text-muted-foreground mt-2">Rₖ = (1 − d ÷ 8) × 100%. Cases at equal distance keep canonical order.</p>
 
       <hr className="gold-rule gold-rule-short mt-5 mb-4" />
       <p className={sub}>Canonical distance table, all eight settlements</p>
@@ -148,8 +156,10 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
                   <Link to={`/cases/${r.slug}`} className="hover:text-accent hover:underline">
                     {r.shortTitle}
                   </Link>
-                  {r.nearest && (
-                    <span className="ml-2 text-[9px] uppercase tracking-[0.14em] text-accent">Closest twin</span>
+                  {r.rank !== null && (
+                    <span className={`ml-2 text-[9px] uppercase tracking-[0.14em] ${r.nearest ? "text-accent" : "text-muted-foreground"}`}>
+                      {r.nearest ? "Closest twin" : `${RANK_LABEL[r.rank]} closest`}
+                    </span>
                   )}
                 </td>
                 <td className={`px-2 py-1.5 ${mono}`}>{r.year ?? "—"}</td>

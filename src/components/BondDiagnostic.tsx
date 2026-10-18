@@ -277,6 +277,15 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
     () => CASES.find((c) => c.slug === reading.nearest.slug) ?? CASES[0],
     [reading],
   );
+  /** The three nearest documented cases, closest first, with their distance and resonance. */
+  const topThree = useMemo(
+    () =>
+      reading.topThree.flatMap((m) => {
+        const c = CASES.find((x) => x.slug === m.slug);
+        return c ? [{ c, m }] : [];
+      }),
+    [reading],
+  );
 
   // Publish the reading onto the mission engine for every downstream desk.
   usePublish("diagnostics", {
@@ -294,6 +303,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
     communalBand: bondBand(scores.communal),
     standing: standing.label,
     analogue: analogue.shortTitle,
+    analogues: topThree.map(({ c }) => c.shortTitle),
   });
 
   // Ghost target projection: a what-if remediation drawn beside the live vector.
@@ -664,17 +674,30 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
           </div>
 
           <RelationalDynamicsPanel scores={values} />
-          <div className="bg-background border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
-            <p className="eyebrow">Nearest documented case</p>
-            <h4 className="mt-3 font-serif text-primary text-xl">{analogue.shortTitle}</h4>
-            <hr className="gold-rule gold-rule-short mt-4 mb-4" />
-            <p className="text-sm leading-relaxed text-foreground/80">{analogue.pattern}</p>
-            <Link
-              to={`/cases/${analogue.slug}`}
-              className="mt-5 inline-flex items-center border border-brass px-5 py-3 text-[10px] uppercase tracking-[0.22em] font-bold text-primary hover:bg-primary hover:text-background hover:border-primary transition-colors"
-            >
-              Open the full case study &rarr;
-            </Link>
+          <div className="bg-background border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full" data-testid="nearest-cases">
+            <p className="eyebrow">Nearest documented cases</p>
+            <ol className="mt-3 space-y-5">
+              {topThree.map(({ c, m }, i) => (
+                <li key={c.slug} className={i > 0 ? "border-t border-border pt-5" : undefined}>
+                  <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-muted-foreground">
+                    {i + 1 === 1 ? "1st" : i + 1 === 2 ? "2nd" : "3rd"} · d = {m.distance.toFixed(2)} · {m.resonance}% resonance
+                  </p>
+                  <h4 className={`mt-2 font-serif text-primary ${i === 0 ? "text-xl" : "text-lg"}`}>{c.shortTitle}</h4>
+                  {i === 0 && <hr className="gold-rule gold-rule-short mt-4 mb-4" />}
+                  <p className={`text-sm leading-relaxed text-foreground/80 ${i === 0 ? "" : "mt-2"}`}>{c.pattern}</p>
+                  <Link
+                    to={`/cases/${c.slug}`}
+                    className={
+                      i === 0
+                        ? "mt-5 inline-flex items-center border border-brass px-5 py-3 text-[10px] uppercase tracking-[0.22em] font-bold text-primary hover:bg-primary hover:text-background hover:border-primary transition-colors"
+                        : "mt-3 inline-flex items-center text-[10px] uppercase tracking-[0.22em] font-bold text-primary hover:text-accent transition-colors"
+                    }
+                  >
+                    Open the full case study &rarr;
+                  </Link>
+                </li>
+              ))}
+            </ol>
           </div>
 
         </div>
