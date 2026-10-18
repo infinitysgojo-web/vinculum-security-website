@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
@@ -20,12 +20,10 @@ export default function Login() {
   const [lockLeft, setLockLeft] = useState(0);
   const mountedAt = useRef(Date.now());
   const navigate = useNavigate();
-  // Carries an Atlas case hydration through sign-in, so it reaches the dashboard.
-  const carried = useLocation().state;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/dashboard", { replace: true, state: carried });
+      if (data.session) navigate("/dashboard", { replace: true });
     });
   }, [navigate]);
 
@@ -70,7 +68,7 @@ export default function Login() {
         return;
       }
       setAttempts(0);
-      navigate("/dashboard", { replace: true, state: carried });
+      navigate("/dashboard", { replace: true });
     };
 
     if (!navigator.onLine) {
@@ -101,7 +99,7 @@ export default function Login() {
     clearOfflineSession();
     setBusy(false);
     setAttempts(0);
-    navigate("/dashboard", { replace: true, state: carried });
+    navigate("/dashboard", { replace: true });
   };
 
   const locked = lockLeft > 0;

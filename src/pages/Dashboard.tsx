@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import type { CaseHydration } from "@/components/RelationalAtlas";
+import { Link, useNavigate } from "react-router-dom";
 import { ChevronDown, Maximize2, Minimize2, Monitor, Volume2, VolumeX } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
 import StatutoryClearanceBar from "@/components/desk/StatutoryClearanceBar";
@@ -223,7 +222,6 @@ export default function Dashboard() {
     setVisited((v) => (v.has(desk) ? v : new Set(v).add(desk)));
   }, [desk]);
   const navigate = useNavigate();
-  const location = useLocation();
   const [binder, setBinder] = useState<BinderEntry[]>([]);
   const [profile, setProfile] = useState<MissionProfile>(EMPTY_PROFILE);
   // The mission engine: every desk publishes its readings here, and every
@@ -292,30 +290,6 @@ export default function Dashboard() {
     setVisited(new Set(DESKS.map((d) => d.id)));
   };
 
-  // Case hydration from the Relational Atlas Map Room. The case arrives as router
-  // navigation state (in memory, never stored), and is written onto the mission
-  // profile and the MissionEngine bus here, the one place the engine lives. The
-  // profile effect above publishes the bond vector; the preset epoch logs the
-  // hydration on the Chancellery Wire. Desks keep their own inputs: a documented
-  // case carries a bond record, not desk seeds.
-  const caseHydration = (location.state as { hydrateCase?: CaseHydration } | null)?.hydrateCase;
-  const hydratedKey = useRef<string | null>(null);
-  useEffect(() => {
-    if (!session || !caseHydration) return;
-    const key = `${caseHydration.slug}:${location.key}`;
-    if (hydratedKey.current === key) return;
-    hydratedKey.current = key;
-    const [interpersonal, communal, intergenerational, institutional] = caseHydration.scores;
-    setProfile((p) => ({ ...p, theatre: caseHydration.theatre, bonds: { interpersonal, communal, intergenerational, institutional } }));
-    publish("atlas", { presetId: `CASE:${caseHydration.sigil}`, presetEpoch: (signals.presetEpoch ?? 0) + 1 });
-    setDivision("assess");
-    setDesk("diagnostics");
-    toast.success(`${caseHydration.theatre} hydrated into the Mission Engine`);
-    // Clear the navigation state so a reload does not hydrate the case a second time.
-    navigate(location.pathname, { replace: true, state: null });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, caseHydration, location.key]);
-
   // SCIF / Amber Field terminal mode: a token swap on the root, kept for this tab only.
   const [scif, setScif] = useState(false);
   useEffect(() => {
@@ -370,7 +344,7 @@ export default function Dashboard() {
     const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
       const next = s ?? offlineSession();
       setSession(next);
-      if (!next) navigate("/login", { replace: true, state: location.state });
+      if (!next) navigate("/login", { replace: true });
     });
     supabase.auth
       .getSession()
@@ -379,7 +353,7 @@ export default function Dashboard() {
         const next = data.session ?? offlineSession();
         setSession(next);
         setReady(true);
-        if (!next) navigate("/login", { replace: true, state: location.state });
+        if (!next) navigate("/login", { replace: true });
       });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
