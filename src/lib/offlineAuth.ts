@@ -73,3 +73,32 @@ export function clearOfflineSession() {
 
 export const isNetworkFailure = (msg?: string) =>
   !navigator.onLine || /fetch|network|load failed|timeout/i.test(msg ?? "");
+
+/**
+ * Cloud auth gets this long before callers fall back to the offline session, so a
+ * hanging socket or an expired token retrying in the background never holds the screen.
+ */
+export const AUTH_RACE_MS = 1500;
+
+export type AuthRace<T> = { settled: true; value: T } | { settled: false };
+
+/** Races a cloud auth call against AUTH_RACE_MS. A rejection counts as settled with null. */
+export async function raceAuth<T>(p: Promise<T>, ms = AUTH_RACE_MS): Promise<AuthRace<T | null>> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      p.then(
+        (value): AuthRace<T | null> => ({ settled: true, value }),
+        (): AuthRace<T | null> => ({ settled: true, value: null }),
+      ),
+      new Promise<AuthRace<T | null>>((resolve) => {
+        timer = setTimeout(() => resolve({ settled: false }), ms);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** A password sign-in gets longer than a session read: it is one real round trip. */
+export const SIGN_IN_RACE_MS = 8000;

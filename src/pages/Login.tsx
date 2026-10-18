@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import SEO from "@/components/SEO";
-import { rememberCredential, verifyOffline, hasOfflineCredential, clearOfflineSession, isNetworkFailure } from "@/lib/offlineAuth";
+import { rememberCredential, verifyOffline, hasOfflineCredential, clearOfflineSession, getOfflineSession, isNetworkFailure, raceAuth, SIGN_IN_RACE_MS } from "@/lib/offlineAuth";
 
 const MAX_ATTEMPTS = 3;
 const LOCK_SECONDS = 60;
@@ -22,9 +22,20 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/dashboard", { replace: true });
+    // Already unlocked offline on this tab: straight through, no cloud request.
+    if (getOfflineSession()) {
+      navigate("/dashboard", { replace: true });
+      return;
+    }
+    // Disconnected: never poll cloud auth.
+    if (!navigator.onLine) return;
+    let cancelled = false;
+    raceAuth(supabase.auth.getSession()).then((res) => {
+      if (!cancelled && res.settled && res.value?.data.session) navigate("/dashboard", { replace: true });
     });
+    return () => {
+      cancelled = true;
+    };
   }, [navigate]);
 
   useEffect(() => {
@@ -76,14 +87,14 @@ export default function Login() {
       return;
     }
 
-    let result: Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>;
-    try {
-      result = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    } catch (err) {
+    // A sign-in that throws, or hangs past SIGN_IN_RACE_MS on a dead link, goes
+    // straight to offline verification instead of waiting out retries.
+    const race = await raceAuth(supabase.auth.signInWithPassword({ email: email.trim(), password }), SIGN_IN_RACE_MS);
+    if (!race.settled || !race.value) {
       await offlineEntry();
       return;
     }
-    const { data, error } = result;
+    const { data, error } = race.value;
 
     if (error) {
       if (isNetworkFailure(error.message)) {
