@@ -7,6 +7,7 @@ import serifSemiBold from "@/assets/fonts/CormorantGaramond-SemiBold.ttf";
 import sansRegular from "@/assets/fonts/Inter-Regular.ttf";
 import sansSemiBold from "@/assets/fonts/Inter-SemiBold.ttf";
 import type { MissionProfile } from "./mission";
+import { Neatline } from "@/components/pdf/Neatline";
 
 /**
  * Publication-grade PDF for every dashboard desk document, matching the
@@ -39,11 +40,8 @@ const MUTED = "#5F6470";
 
 const s = StyleSheet.create({
   cover: { fontFamily: "Cormorant", color: INK, backgroundColor: "#FFFFFF" },
+  frameOuter: { margin: 26 },
   coverFrame: {
-    margin: 26,
-    borderWidth: 0.9,
-    borderColor: NAVY,
-    flexGrow: 1,
     paddingTop: 54,
     paddingBottom: 30,
     paddingHorizontal: 40,
@@ -233,8 +231,79 @@ const at = StyleSheet.create({
   sigLine: { borderBottomWidth: 0.6, borderBottomColor: INK, height: 22 },
   sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", minHeight: 50, paddingVertical: 6, paddingHorizontal: 8, alignItems: "center", justifyContent: "center" },
   sealMono: { fontFamily: "Courier", fontSize: 6.6, color: NAVY, lineHeight: 1.3, textAlign: "center" },
+  apo: { borderWidth: 0.85, borderColor: NAVY, padding: 2.5, marginTop: 14 },
+  apoInner: { borderWidth: 0.35, borderColor: BRASS, paddingVertical: 8, paddingHorizontal: 10 },
+  apoTitle: { fontFamily: "InterDoc", fontSize: 7, fontWeight: 600, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase", textAlign: "center" },
+  apoLatin: { fontSize: 8.6, fontStyle: "italic", color: MUTED, textAlign: "center", marginTop: 1, marginBottom: 6, lineHeight: 1.2 },
+  apoRow: { flexDirection: "row", borderTopWidth: 0.4, borderTopColor: RULE, paddingVertical: 3 },
+  apoKey: { width: 112, fontFamily: "InterDoc", fontSize: 6, letterSpacing: 1.3, color: MUTED, textTransform: "uppercase", paddingTop: 1.5 },
+  apoVal: { flex: 1 },
+  apoMono: { fontFamily: "Courier", fontSize: 7.6, color: INK, lineHeight: 1.3 },
+  apoCleared: { fontFamily: "Courier", fontSize: 8, color: NAVY, lineHeight: 1.3 },
+  apoRestricted: { fontFamily: "Courier", fontSize: 8, color: "#8B1E1E", lineHeight: 1.3 },
+  apoNote: { fontSize: 7.8, color: MUTED, lineHeight: 1.35, marginTop: 4, textAlign: "center" },
   sigCap: { fontFamily: "InterDoc", fontSize: 7.2, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase", marginTop: 5 },
 });
+
+/** Clearance verdict from the real gate state minted with this dispatch. */
+export function clearanceVerdict(a?: Attestation): { cleared: boolean; label: string } {
+  if (!a || a.clearances.length === 0) return { cleared: false, label: "[RESTRICTED: REMEDIATION REQUIRED]" };
+  const passed = a.clearances.filter((c) => c.passed).length;
+  const total = a.clearances.length;
+  return passed === total ? { cleared: true, label: `[CLEARED: ${passed}/${total}]` } : { cleared: false, label: "[RESTRICTED: REMEDIATION REQUIRED]" };
+}
+
+/**
+ * Official Chancellery Apostille at the base of the back cover: double-bordered certification
+ * box with the session-minted serial, the SHA-256 state digest (chunked so it always wraps, the PDF
+ * equivalent of overflow-wrap: anywhere) and the 20-gate statutory clearance verdict.
+ */
+function Apostille({ attestation }: { attestation?: Attestation }) {
+  const verdict = clearanceVerdict(attestation);
+  const passed = attestation ? attestation.clearances.filter((c) => c.passed).length : 0;
+  const total = attestation ? attestation.clearances.length : 0;
+  return (
+    <View style={at.apo} wrap={false}>
+      <View style={at.apoInner}>
+        <Text style={at.apoTitle}>Chancellery Apostille</Text>
+        <Text style={at.apoLatin}>Sigillum Cancellariae · certificatio status</Text>
+        <View style={at.apoRow}>
+          <Text style={at.apoKey}>Serial stamp</Text>
+          <View style={at.apoVal}>
+            {attestation ? (
+              wrapRef(attestation.ref, 48).map((line, i) => <Text key={i} style={at.apoMono}>{line}</Text>)
+            ) : (
+              <Text style={at.apoMono}>Not minted for this export</Text>
+            )}
+          </View>
+        </View>
+        <View style={at.apoRow}>
+          <Text style={at.apoKey}>SHA-256 state digest</Text>
+          <View style={at.apoVal}>
+            {attestation ? (
+              chunk(attestation.digest, 32).map((line, i) => <Text key={i} style={at.apoMono}>{line}</Text>)
+            ) : (
+              <Text style={at.apoMono}>Not computed</Text>
+            )}
+          </View>
+        </View>
+        <View style={at.apoRow}>
+          <Text style={at.apoKey}>Statutory clearance</Text>
+          <View style={at.apoVal}>
+            <Text style={verdict.cleared ? at.apoCleared : at.apoRestricted}>{verdict.label}</Text>
+            {attestation && !verdict.cleared && (
+              <Text style={at.apoMono}>{passed}/{total} articles clear · viable floor 3.0 {attestation.floorValidated ? "validated" : "breached"}</Text>
+            )}
+          </View>
+        </View>
+        <Text style={at.apoNote}>
+          Canonical references: Universal Declaration of Human Rights · Vienna Convention on the Law of Treaties ·
+          UN Cartographic Standards. The digest covers the mission state at the moment of issue.
+        </Text>
+      </View>
+    </View>
+  );
+}
 
 export async function buildDeskDossier({
   attestation,
@@ -262,7 +331,7 @@ export async function buildDeskDossier({
       subject={eyebrow}
     >
       <Page size="A4" style={s.cover}>
-        <View style={s.coverFrame}>
+        <Neatline outer={s.frameOuter} inner={s.coverFrame}>
           <View style={s.center}>
             <Image src={mark} style={s.emblem} />
             <Text style={s.wordmark}>Vinculum Security</Text>
@@ -287,7 +356,7 @@ export async function buildDeskDossier({
               </View>
             ))}
           </View>
-        </View>
+        </Neatline>
       </Page>
 
       <Page size="A4" style={s.page}>
@@ -377,7 +446,7 @@ export async function buildDeskDossier({
       )}
 
       <Page size="A4" style={s.cover}>
-        <View style={s.coverFrame}>
+        <Neatline outer={s.frameOuter} inner={s.coverFrame}>
           <View />
           <View style={s.center}>
             <Image src={mark} style={s.emblemSm} />
@@ -394,17 +463,20 @@ export async function buildDeskDossier({
               CC BY-NC-SA 4.0.
             </Text>
           </View>
-          <View style={s.ledger}>
-            <View style={s.ledgerRow}>
-              <Text style={s.ledgerKey}>Record</Text>
-              <Text style={s.ledgerVal}>{SITE_URL}</Text>
+          <View>
+            <View style={s.ledger}>
+              <View style={s.ledgerRow}>
+                <Text style={s.ledgerKey}>Record</Text>
+                <Text style={s.ledgerVal}>{SITE_URL}</Text>
+              </View>
+              <View style={s.ledgerRow}>
+                <Text style={s.ledgerKey}>Classification</Text>
+                <Text style={s.ledgerVal}>{classification}</Text>
+              </View>
             </View>
-            <View style={s.ledgerRow}>
-              <Text style={s.ledgerKey}>Classification</Text>
-              <Text style={s.ledgerVal}>{classification}</Text>
-            </View>
+            <Apostille attestation={attestation} />
           </View>
-        </View>
+        </Neatline>
       </Page>
     </Document>
   );

@@ -8,6 +8,7 @@ import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import ReadingProgress from "@/components/ReadingProgress";
 import PrintFootnotes from "@/components/PrintFootnotes";
+import ScoringBench from "@/components/ScoringBench";
 
 const CITED = ["diagnostic-question", "interpersonal", "communal", "intergenerational", "institutional-relational", "party-differentiated", "scoring-rubric", "government-non-self-assessment"];
 
@@ -99,6 +100,20 @@ export default function Methodology() {
               a picture of where security is materially present and where it is only nominally reported.
             </p>
           </div>
+        </FadeIn>
+
+        <FadeIn className="mb-16">
+          <section id="mathematical-model" aria-labelledby="mathematical-model-title">
+            <p className="eyebrow">Section II · The Mathematical Model</p>
+            <GoldRule className="mt-4 mb-6" />
+            <h2 id="mathematical-model-title" className="sr-only">The Mathematical Model</h2>
+            <p className="text-muted-foreground mb-6 max-w-3xl">
+              Each case is read as a four-bond vector B = (B₁, B₂, B₃, B₄) on the 1 to 5 scale. The observed mean B̄
+              summarises the vector, but the limiting domain min(Bᵢ) decides viability: an accord is only as secure as
+              its weakest bond, measured against the canonical viable floor of 3.0.
+            </p>
+            <ScoringBench />
+          </section>
         </FadeIn>
 
         <FadeIn className="mb-16">

@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import LoadingScreen from "./components/LoadingScreen";
@@ -21,61 +21,48 @@ import Dashboard from "./pages/Dashboard";
 import { Toaster } from "@/components/ui/sonner";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 
-const SCROLL_KEY = "vs:scroll";
-
-function readMap(): Record<string, number> {
-  try {
-    return JSON.parse(sessionStorage.getItem(SCROLL_KEY) || "{}");
-  } catch {
-    return {};
-  }
-}
-
-function ScrollMemory() {
+/**
+ * Deterministic route scroll: every pathname change without a hash begins at
+ * the top of the page. A hash link waits (a bounded number of frames) for its
+ * anchor to mount, since lazy and filtered content can land after the route.
+ */
+function ScrollToTop() {
   const { pathname, hash } = useLocation();
-  const prevPath = useRef<string | null>(null);
-  const rafRef = useRef<number | null>(null);
 
-  // Save on scroll for the current path
+  // Back/forward must not reinstate an old mid-page offset either: take restoration from the browser.
   useEffect(() => {
-    const onScroll = () => {
-      if (rafRef.current != null) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        const map = readMap();
-        map[pathname] = window.scrollY;
-        try {
-          sessionStorage.setItem(SCROLL_KEY, JSON.stringify(map));
-        } catch {
-          // ignore quota
-        }
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (rafRef.current != null) cancelAnimationFrame(rafRef.current);
-    };
-  }, [pathname]);
+    if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+  }, []);
 
-  // Restore on path change
   useEffect(() => {
-    if (prevPath.current === pathname) return;
-    prevPath.current = pathname;
-
+    let raf = 0;
+    let cancelled = false;
     if (hash) {
-      // Let the target page handle its own hash scrolling
-      return;
+      const id = decodeURIComponent(hash.replace("#", ""));
+      let tries = 0;
+      const seek = () => {
+        if (cancelled) return;
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+        if (tries++ < 30) raf = requestAnimationFrame(seek);
+      };
+      raf = requestAnimationFrame(seek);
+      return () => {
+        cancelled = true;
+        cancelAnimationFrame(raf);
+      };
     }
-
-    const map = readMap();
-    const y = map[pathname];
-    // Defer to next frame so route content is mounted
-    requestAnimationFrame(() => {
-      window.scrollTo(0, typeof y === "number" ? y : 0);
-      // Nudge IntersectionObservers (FadeIn) after the programmatic jump
-      requestAnimationFrame(() => window.dispatchEvent(new Event("scroll")));
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    raf = requestAnimationFrame(() => {
+      window.dispatchEvent(new Event("scroll"));
     });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf);
+    };
   }, [pathname, hash]);
 
   return null;
@@ -89,7 +76,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {loading && !portal && <LoadingScreen onDone={() => setLoading(false)} />}
-      <ScrollMemory />
+      <ScrollToTop />
       {!portal && <SiteHeader />}
       <main className="flex-1" role="main">
         <RouteErrorBoundary resetKey={pathname}>

@@ -5,30 +5,35 @@ import { toast } from "sonner";
 import type { BinderEntry } from "./DeskOutput";
 
 import { DEFAULT_BONDS, EMPTY_PROFILE, sanitizeBonds, type MissionProfile } from "./mission";
-import { sanitizeSignals, type Signals } from "./engine";
+import { applyInscriptions, sanitizeSignals, statutoryClearances, type Signals } from "./engine";
 import { sha256, verifySealedText } from "./integrity";
+import { ARCHIVE_FORMAT, ARCHIVE_SCHEMA, ARCHIVE_VERSION, archiveFileName, validateArchive, type ArchiveLedger } from "./archive";
+import { lastIssuedRef, ledgerSize, mintDispatch, stateSnapshot } from "./registry";
+import { ledgerEntries, logEvent } from "./ledgerStore";
 import { Lex } from "./Lexicon";
 
 export { EMPTY_PROFILE };
 export type { MissionProfile };
 
 type ArchiveBody = {
-  format: "vinculum-mission-archive";
+  format: typeof ARCHIVE_FORMAT;
+  /** Schema name; required from version 4. */
+  schema: typeof ARCHIVE_SCHEMA;
   /**
-   * 3 adds the live mission signals (rupture index, active shocks, covenants, track divergence).
-   * 2 added profile.bonds. Version 1 and 2 archives still load; they carry no signals,
-   * so the desks upstream have to be revisited, as before.
+   * 4 adds the schema field and the registry/session ledger state.
+   * 3 added the live mission signals (rupture index, active shocks, covenants, track divergence,
+   * every Sovereign inscription: custom parties, shocks, covenants, traps and readiness gates).
+   * 2 added profile.bonds. Versions 1 to 3 still load.
    * The optional sha256Seal is the SHA-256 of the archive body without the seal itself.
    */
-  version: 3;
+  version: typeof ARCHIVE_VERSION;
   savedAt: string;
   profile: MissionProfile;
   binder: BinderEntry[];
   signals?: Signals;
+  ledger?: ArchiveLedger;
 };
 type Archive = ArchiveBody & { sha256Seal?: string };
-
-const ARCHIVE_VERSION = 3;
 
 /** Browser-local library of operational theatres. Never leaves this device. */
 export const THEATRE_LIBRARY_KEY = "vinculum-theatre-library";
@@ -93,6 +98,7 @@ export default function MissionVault({
   setSignals: (s: Signals) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const [slots, setSlots] = useState<SavedTheatreSlot[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const verifyRef = useRef<HTMLInputElement>(null);
@@ -135,6 +141,7 @@ export default function MissionVault({
     setProfile({ ...EMPTY_PROFILE, ...slot.profile, bonds: sanitizeBonds(slot.profile.bonds) });
     setBinder(slot.binder ?? []);
     setSignals(sanitizeSignals(slot.signals));
+    logEvent("MISSION_HYDRATED", `${slot.name} (theatre library)`);
     toast.success(`Switched theatre to “${slot.name}”`);
   };
 
@@ -144,38 +151,58 @@ export default function MissionVault({
   };
 
   const save = async () => {
+    const effective = applyInscriptions(signals);
+    const clearances = statutoryClearances(effective);
+    const ledger: ArchiveLedger = {
+      stateDigest: await sha256(JSON.stringify(stateSnapshot(effective))),
+      clearancesPassed: clearances.filter((c) => c.passed).length,
+      clearancesTotal: clearances.length,
+      dispatchesIssued: ledgerSize(),
+      lastRef: lastIssuedRef(),
+      events: ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail })),
+    };
     const body: ArchiveBody = {
-      format: "vinculum-mission-archive",
+      format: ARCHIVE_FORMAT,
+      schema: ARCHIVE_SCHEMA,
       version: ARCHIVE_VERSION,
       savedAt: new Date().toISOString(),
       profile: { ...profile, bonds: profile.bonds ?? DEFAULT_BONDS },
       binder,
       signals,
+      ledger,
     };
     // The seal covers the body exactly as it will be re-read: parsed back from its own JSON.
     const seal = await sha256(JSON.stringify(JSON.parse(JSON.stringify(body))));
     const archive: Archive = { ...body, sha256Seal: seal };
     const url = URL.createObjectURL(new Blob([JSON.stringify(archive, null, 2)], { type: "application/json" }));
-    const slug = (profile.theatre.trim() || "mission").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+    const name = archiveFileName(profile.theatre);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `vinculum-${slug}.vinculum`;
+    a.download = name;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
     sealChime();
-    toast.success("Mission archive saved with SHA-256 seal");
+    logEvent("ARCHIVE_EXPORTED", name);
+    toast.success("Sovereign mission archive exported with SHA-256 seal", { description: name });
   };
 
   const load = (file: File) => {
     const reader = new FileReader();
     reader.onload = async () => {
+      let parsed: unknown;
       try {
-        const data = JSON.parse(String(reader.result)) as Omit<Archive, "version"> & { version?: number };
-        if (data?.format !== "vinculum-mission-archive") throw new Error("wrong format");
-        if (typeof data.version === "number" && data.version > ARCHIVE_VERSION) {
-          toast.error("This archive was saved by a newer version of the vault.");
-          return;
-        }
+        parsed = JSON.parse(String(reader.result));
+      } catch {
+        toast.error("Import rejected: the file is not valid JSON.");
+        return;
+      }
+      const check = validateArchive(parsed);
+      if (!check.ok) {
+        toast.error(`Import rejected: ${check.reason}`);
+        return;
+      }
+      try {
+        const data = parsed as Omit<Archive, "version"> & { version?: number };
 
         // Verify the SHA-256 seal before anything is restored.
         let sealNote = "";
@@ -199,18 +226,31 @@ export default function MissionVault({
         }
 
         // Version 1 archives carry no bonds, so they restore at the 3.0 default.
-        setProfile({ ...EMPTY_PROFILE, ...data.profile, bonds: sanitizeBonds(data.profile?.bonds) });
+        const restoredProfile = { ...EMPTY_PROFILE, ...data.profile, bonds: sanitizeBonds(data.profile?.bonds) };
+        setProfile(restoredProfile);
         setBinder(Array.isArray(data.binder) ? data.binder : []);
-        // Version 3 archives carry the live signals; restore them so every downstream desk reads the saved mission at once.
+        // Version 3+ archives carry the live signals; restore them so every downstream desk reads the saved mission at once.
         // Older archives carry none, so the bus is left as it stands rather than wiped.
-        const restoredSignals = data.version === 3 && data.signals ? sanitizeSignals(data.signals) : null;
+        const restoredSignals = check.version >= 3 && data.signals ? sanitizeSignals(data.signals) : null;
         if (restoredSignals) setSignals(restoredSignals);
+        const theatre = restoredProfile.theatre.trim();
+        logEvent("ARCHIVE_IMPORTED", `${file.name} (schema v${check.version})`);
+        logEvent("MISSION_HYDRATED", theatre || "Unnamed mission");
+        // Re-mint a fresh verification stamp for the restored state. References are never reused,
+        // so the archived reference is superseded rather than revived.
+        const b = restoredProfile.bonds;
+        const stamp = await mintDispatch(
+          applyInscriptions({ ...(restoredSignals ?? signals), bonds: b, theatre: theatre || undefined }),
+          "attestation",
+          "vault",
+        );
         toast.success(
-          `Archive restored. ${Array.isArray(data.binder) ? data.binder.length : 0} document(s) in the binder${restoredSignals ? " and the live mission signals" : ""}.${sealNote}`
+          `Archive restored. ${Array.isArray(data.binder) ? data.binder.length : 0} document(s) in the binder${restoredSignals ? " and the live mission signals" : ""}.${sealNote}`,
+          { description: `Verification stamp re-minted: ${stamp.ref}` },
         );
         setOpen(true);
       } catch {
-        toast.error("That file is not a Vinculum mission archive.");
+        toast.error("Import rejected: the archive could not be restored.");
       }
     };
     reader.readAsText(file);
@@ -232,7 +272,22 @@ export default function MissionVault({
     "inline-flex items-center justify-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.18em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors";
 
   return (
-    <div className="border border-brass/40 bg-navy-tint/40 w-full min-w-0 max-w-full">
+    <div
+      className={`border bg-navy-tint/40 w-full min-w-0 max-w-full transition-colors ${dragging ? "border-accent" : "border-brass/40"}`}
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes("Files")) return;
+        e.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={(e) => {
+        if (!e.dataTransfer.files.length) return;
+        e.preventDefault();
+        setDragging(false);
+        load(e.dataTransfer.files[0]);
+      }}
+      data-testid="mission-vault"
+    >
       <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3 px-4 py-3">
         <div className="flex items-center gap-3 min-w-0">
           <Archive size={15} className="text-accent shrink-0" />
@@ -254,11 +309,11 @@ export default function MissionVault({
           <button type="button" className={btn} onClick={saveCurrentToLibrary} title="Save this theatre to the library kept in this browser">
             <BookmarkCheck size={13} /> Save to library
           </button>
-          <button type="button" className={btn} onClick={() => fileRef.current?.click()} title="Import a mission file from your device">
-            <Upload size={13} /> Import file
+          <button type="button" className={btn} onClick={() => fileRef.current?.click()} aria-label="Import mission archive" title="Import a .vinculum mission archive from your device (or drop it on this bar)">
+            <Upload size={13} /> <span className="sm:hidden">Import archive</span><span className="hidden sm:inline">Import mission archive</span>
           </button>
-          <button type="button" className={btn} onClick={save} title="Export this mission as a sealed file to your device">
-            <Archive size={13} /> Export file
+          <button type="button" className={btn} onClick={save} aria-label="Export sovereign mission archive" title="Export this mission as a sealed file to your device">
+            <Archive size={13} /> <span className="sm:hidden">Export archive</span><span className="hidden sm:inline">Export sovereign mission archive</span>
           </button>
           <button
             type="button"
@@ -268,6 +323,7 @@ export default function MissionVault({
               setProfile({ ...EMPTY_PROFILE });
               setBinder([]);
               setSignals({});
+              logEvent("MISSION_HYDRATED", "New blank mission");
               toast.success("New blank mission started.");
             }}
           >
@@ -278,6 +334,8 @@ export default function MissionVault({
             type="file"
             accept=".vinculum,application/json"
             className="hidden"
+            data-testid="archive-input"
+            aria-label="Mission archive file"
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) load(f);

@@ -24,6 +24,8 @@ import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain, { deskIsLive } from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
+import SessionLedgerDrawer, { useLedgerWatch } from "@/components/desk/SessionLedger";
+import { logEvent } from "@/components/desk/ledgerStore";
 import SaveSession from "@/components/desk/SaveSession";
 import DeskFinder from "@/components/desk/DeskFinder";
 import { LexiconDrawer } from "@/components/desk/Lexicon";
@@ -236,6 +238,8 @@ export default function Dashboard() {
   // The effective state every desk reads: raw publications with Sovereign inscriptions applied.
   const effective = useMemo(() => applyInscriptions(signals), [signals]);
   const engineValue = useMemo(() => ({ signals: effective, publish }), [effective, publish]);
+  // Session ledger: real operational events from the bus and the dispatch registry, in memory only.
+  useLedgerWatch(effective);
   // The bond scores live on the mission profile, so presets, archives and saved
   // sessions reach the bond bench. Bond Diagnostic runs controlled from here.
   const bonds = profile.bonds ?? DEFAULT_BONDS;
@@ -287,6 +291,7 @@ export default function Dashboard() {
     }
     setProfile((p) => ({ ...p, theatre: t.name, parties: t.parties, bonds: t.bonds }));
     publish("preset", { presetId: t.id, presetEpoch: (signals.presetEpoch ?? 0) + 1 });
+    logEvent("MISSION_HYDRATED", `${t.name} (theatre preset)`);
     setVisited(new Set(DESKS.map((d) => d.id)));
   };
 
@@ -404,6 +409,7 @@ export default function Dashboard() {
       if (s.division) setDivision(s.division);
       if (s.desk) setDesk(s.desk);
       if (s.savedAt) setSavedAt(s.savedAt);
+      logEvent("MISSION_HYDRATED", `${(s.profile?.theatre ?? "").trim() || "Unnamed mission"} (saved browser session)`);
     } catch {
       /* ignore a damaged save */
     }
@@ -595,6 +601,9 @@ export default function Dashboard() {
       <div className={`container ${focus ? "py-4" : "py-6 sm:py-8"}`}>
         <div className={`mb-6 sm:mb-8 ${focus ? "hidden" : ""}`}>
           <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
+          <div className="mt-3">
+            <SessionLedgerDrawer />
+          </div>
         </div>
 
         <div className={`mb-6 border border-border bg-card/60 px-3 sm:px-4 py-3 ${focus ? "hidden" : ""}`}>

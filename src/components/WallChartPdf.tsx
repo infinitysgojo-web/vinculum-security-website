@@ -6,6 +6,7 @@ import serifItalic from "@/assets/fonts/CormorantGaramond-Italic.ttf";
 import serifSemiBold from "@/assets/fonts/CormorantGaramond-SemiBold.ttf";
 import sansRegular from "@/assets/fonts/Inter-Regular.ttf";
 import sansSemiBold from "@/assets/fonts/Inter-SemiBold.ttf";
+import { Neatline } from "@/components/pdf/Neatline";
 
 /**
  * The Doctrinal Reference Chart: a single-sheet wall chart compiled from
@@ -106,7 +107,7 @@ const s = StyleSheet.create({
     color: INK,
     backgroundColor: "#FFFFFF",
   },
-  frame: { borderWidth: 0.9, borderColor: NAVY, flexGrow: 1, padding: 16 },
+  frame: { padding: 16 },
   head: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
   headBrand: { flex: 1, minWidth: 0, paddingRight: 16 },
   emblem: { width: 34, height: 34, flexShrink: 0, objectFit: "contain", marginRight: 12 },
@@ -140,79 +141,91 @@ const s = StyleSheet.create({
   lineVal: { flex: 1, fontSize: 7.4, color: NAVY, lineHeight: 1.3 },
 
   pRow: { marginBottom: 4.5 },
-  pName: { fontSize: 8.6, color: NAVY },
+  pName: { fontSize: 10, color: NAVY },
   pLens: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 1.1, color: BRASS, textTransform: "uppercase", marginTop: 1 },
-  pNote: { fontSize: 7.3, color: INK, lineHeight: 1.3, marginTop: 1 },
+  pNote: { fontSize: 8.4, color: INK, lineHeight: 1.3, marginTop: 1 },
 
   weight: { borderLeftWidth: 1.4, borderLeftColor: BRASS, paddingLeft: 8, marginTop: 6 },
   weightText: { fontSize: 8.2, fontStyle: "italic", color: NAVY, lineHeight: 1.35 },
 
-  trap: { marginBottom: 4.5 },
-  trapName: { fontSize: 8.8, color: NAVY },
-  trapRead: { fontSize: 7.3, color: INK, lineHeight: 1.3 },
-  trapCounter: { fontSize: 7.3, color: MUTED, lineHeight: 1.3, fontStyle: "italic" },
+  trap: { marginBottom: 5 },
+  trapName: { fontSize: 10, color: NAVY },
+  trapRead: { fontSize: 8.4, color: INK, lineHeight: 1.3 },
+  trapCounter: { fontSize: 8.4, color: MUTED, lineHeight: 1.3, fontStyle: "italic" },
 
+  quad: { borderWidth: 0.6, borderColor: RULE, padding: 9, flexGrow: 1 },
+  quadHead: { flexDirection: "row", alignItems: "baseline", borderBottomWidth: 0.6, borderBottomColor: BRASS, paddingBottom: 4, marginBottom: 5 },
+  quadNum: { fontFamily: "InterDoc", fontSize: 6, letterSpacing: 1.6, color: BRASS, textTransform: "uppercase", width: 64 },
+  quadName: { fontSize: 15, color: NAVY, flex: 1 },
+  qBody: { fontSize: 9.4, color: INK, lineHeight: 1.4 },
+  qInquiry: { fontSize: 10.6, fontStyle: "italic", color: NAVY, lineHeight: 1.35 },
+  qKey: { width: "50%", fontSize: 8.8, color: INK, paddingRight: 8, lineHeight: 1.35 },
+  qVal: { flex: 1, fontSize: 8.8, color: NAVY, lineHeight: 1.35 },
+  qName: { fontSize: 10, color: NAVY, marginTop: 2 },
+  qNote: { fontSize: 8.6, color: INK, lineHeight: 1.35, marginTop: 1 },
+  qWeight: { fontSize: 9.2, fontStyle: "italic", color: NAVY, lineHeight: 1.35 },
+  quadLabel: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginTop: 8, marginBottom: 2.5 },
+  band: { flexDirection: "row", marginTop: 0 },
+  panel: { borderWidth: 0.6, borderColor: BRASS, backgroundColor: CREAM, padding: 9, flexGrow: 1 },
+  notice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginTop: 6, paddingTop: 5, borderTopWidth: 0.5, borderTopColor: RULE },
   foot: { marginTop: "auto", borderTopWidth: 0.6, borderTopColor: RULE, paddingTop: 7 },
   footNotice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginBottom: 7 },
   footRow: { flexDirection: "row", justifyContent: "space-between" },
   footText: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 0.6, color: MUTED, textTransform: "uppercase", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
 });
 
-function Bonds() {
-  return (
-    <View style={s.card}>
-      <Text style={s.cardTitle}>I. The Vinculum Continuum and its diagnostic inquiries</Text>
-      {CONTINUUM.map((b) => (
-        <View key={b.n} style={s.bond}>
-          <View style={s.bondHead}>
-            <Text style={s.bondNum}>{b.n}</Text>
-            <Text style={s.bondName}>{b.name}</Text>
-          </View>
-          <Text style={s.bondBody}>{b.body}</Text>
-          <Text style={s.bondInquiry}>"{b.inquiry}"</Text>
-        </View>
-      ))}
-      <Text style={{ fontSize: 7.2, color: MUTED, lineHeight: 1.3 }}>
-        Each level is scored 1 to 5 against citable public reporting, and all four levels are scored for
-        every case, whether or not a level flatters the doctrine.
-      </Text>
-    </View>
-  );
-}
+/** Party lenses filed under the domain each is primarily assessed in (the first lens named). */
+const partiesFor = (domain: string) => PARTY_RULES.filter(([, lens]) => lens.split(",")[0].trim().startsWith(domain));
 
-function Rules() {
+/** One archival quadrant per Continuum domain: definition, formal inquiry, classification rule, party lenses. */
+function Quadrant({ i }: { i: number }) {
+  const b = CONTINUUM[i];
+  const [rule, verdict] = CLASSIFICATION[i];
+  const parties = partiesFor(b.name);
   return (
-    <View style={s.card}>
-      <Text style={s.cardTitle}>II. Classification rules and the weighting principle</Text>
-      {CLASSIFICATION.map(([k, v]) => (
-        <View key={k} style={s.line}>
-          <Text style={s.lineKey}>If the bond is between {k.charAt(0).toLowerCase() + k.slice(1)}</Text>
-          <Text style={s.lineVal}>{v}</Text>
-        </View>
-      ))}
-      <View style={s.weight}>
-        <Text style={s.weightText}>
-          A severed intergenerational bond is treated as the least compensable by strength in the other
-          three levels, derived from Menkiti's gradational account of personhood.
-        </Text>
+    <View style={s.quad}>
+      <View style={s.quadHead}>
+        <Text style={s.quadNum}>Quadrant {b.n}</Text>
+        <Text style={s.quadName}>{b.name}</Text>
       </View>
-      <Text style={{ fontSize: 7.2, color: MUTED, marginTop: 6, lineHeight: 1.3 }}>
-        Falsifiability, Section IV: a case scoring uniformly high across all four levels that then
-        collapses for reasons unrelated to any bond domain would falsify the central claim.
-      </Text>
+      <Text style={s.qBody}>{b.body}</Text>
+      <Text style={s.quadLabel}>Formal inquiry</Text>
+      <Text style={s.qInquiry}>"{b.inquiry}"</Text>
+      <Text style={s.quadLabel}>Classification rule</Text>
+      <View style={s.line}>
+        <Text style={s.qKey}>If the bond is between {rule.charAt(0).toLowerCase() + rule.slice(1)}</Text>
+        <Text style={s.qVal}>{verdict}</Text>
+      </View>
+      {b.name === "Intergenerational" && (
+        <View style={[s.weight, { marginTop: 2, marginBottom: 2 }]}>
+          <Text style={s.qWeight}>
+            A severed intergenerational bond is treated as the least compensable by strength in the other
+            three levels, derived from Menkiti's gradational account of personhood.
+          </Text>
+        </View>
+      )}
+      {parties.length > 0 && <Text style={s.quadLabel}>Party-differentiated application</Text>}
+      {parties.map(([name, lens, note]) => (
+        <View key={name} style={s.pRow}>
+          <Text style={s.qName}>
+            {name} <Text style={s.pLens}>· {lens}</Text>
+          </Text>
+          <Text style={s.qNote}>{note}</Text>
+        </View>
+      ))}
     </View>
   );
 }
 
-function Parties() {
+function Traps() {
   return (
-    <View style={s.card}>
-      <Text style={s.cardTitle}>III. Party-differentiated application</Text>
-      {PARTY_RULES.map(([name, lens, note]) => (
-        <View key={name} style={s.pRow}>
-          <Text style={s.pName}>{name}</Text>
-          <Text style={s.pLens}>{lens}</Text>
-          <Text style={s.pNote}>{note}</Text>
+    <View style={s.panel}>
+      <Text style={s.cardTitle}>The five structural traps and their operational counters</Text>
+      {TRAPS.map(([name, reading, counter]) => (
+        <View key={name} style={s.trap}>
+          <Text style={s.trapName}>{name}</Text>
+          <Text style={s.trapRead}>{reading}</Text>
+          <Text style={s.trapCounter}>Counter: {counter}</Text>
         </View>
       ))}
     </View>
@@ -221,8 +234,8 @@ function Parties() {
 
 function Guards() {
   return (
-    <View style={s.card}>
-      <Text style={s.cardTitle}>IV. Abuse-resistance safeguards</Text>
+    <View style={s.panel}>
+      <Text style={s.cardTitle}>The three statutory safeguards against abuse</Text>
       {SAFEGUARDS.map(([name, note]) => (
         <View key={name} style={s.pRow}>
           <Text style={s.pName}>{name}</Text>
@@ -235,14 +248,10 @@ function Guards() {
           entrenches injustice or silences dissent has inverted the claim.
         </Text>
       </View>
-      <Text style={[s.cardTitle, { marginTop: 9 }]}>V. The five latent traps</Text>
-      {TRAPS.map(([name, reading, counter]) => (
-        <View key={name} style={s.trap}>
-          <Text style={s.trapName}>{name}</Text>
-          <Text style={s.trapRead}>{reading}</Text>
-          <Text style={s.trapCounter}>Counter-measure: {counter}</Text>
-        </View>
-      ))}
+      <Text style={s.notice}>
+        Statutorily registered and legally protected intellectual property. Formally protected under statutory
+        copyright law and international conventions. All statutory rights reserved.
+      </Text>
     </View>
   );
 }
@@ -250,7 +259,7 @@ function Guards() {
 function Chart({ landscape }: { landscape: boolean }) {
   return (
     <Page size="A3" orientation={landscape ? "landscape" : "portrait"} style={s.page}>
-      <View style={s.frame}>
+      <Neatline inner={s.frame}>
         <View style={s.head}>
           <Image src={mark} style={s.emblem} />
           <View style={s.headBrand}>
@@ -272,46 +281,51 @@ function Chart({ landscape }: { landscape: boolean }) {
             protection, dignity, and peace possible in the first place.
           </Text>
           <Text style={s.defCite}>
-            The proper unit of security analysis is the bond, Section III.B
+            The proper unit of security analysis is the bond, Section III.B · Each level is scored 1 to 5 against citable
+            public reporting, all four for every case · Falsifiability, Section IV
           </Text>
         </View>
 
+        {/* Four balanced archival quadrants: 2 x 2 on the portrait sheet, one rank of four on the landscape
+            sheet so the broadsheet keeps to a single page. Rows share the free height. */}
         {landscape ? (
-          <>
-            <View style={s.row}>
-              <View style={s.col}><Bonds /></View>
-              <View style={s.gap} />
-              <View style={s.col}><Rules /></View>
-              <View style={s.gap} />
-              <View style={s.col}><Parties /></View>
-              <View style={s.gap} />
-              <View style={s.col}><Guards /></View>
-            </View>
-          </>
+          <View style={[s.row, { flexGrow: 1 }]}>
+            {[0, 1, 2, 3].map((i) => (
+              <View key={i} style={{ flex: 1, flexDirection: "row" }}>
+                {i > 0 && <View style={s.gap} />}
+                <View style={s.col}><Quadrant i={i} /></View>
+              </View>
+            ))}
+          </View>
         ) : (
           <>
-            <View style={s.row}>
-              <View style={s.col}><Bonds /></View>
+            <View style={[s.row, { flexGrow: 1 }]}>
+              <View style={s.col}><Quadrant i={0} /></View>
               <View style={s.gap} />
-              <View style={s.col}><Rules /></View>
+              <View style={s.col}><Quadrant i={1} /></View>
             </View>
-            <View style={s.row}>
-              <View style={s.col}><Parties /></View>
+            <View style={[s.row, { flexGrow: 1 }]}>
+              <View style={s.col}><Quadrant i={2} /></View>
               <View style={s.gap} />
-              <View style={s.col}><Guards /></View>
+              <View style={s.col}><Quadrant i={3} /></View>
             </View>
           </>
         )}
 
+        <View style={s.band}>
+          <View style={s.col}><Traps /></View>
+          <View style={s.gap} />
+          <View style={s.col}><Guards /></View>
+        </View>
+
         <View style={s.foot}>
-          <Text style={s.footNotice}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.</Text>
           <View style={s.footRow}>
             <Text style={s.footText}>{AUTHOR_NAME} · CC BY-NC-ND 4.0</Text>
             <Text style={s.footText}>{SITE_URL.replace(/^https?:\/\//, "")}/doctrine</Text>
             <Text style={s.footText}>Unrestricted · Public record</Text>
           </View>
         </View>
-      </View>
+      </Neatline>
     </Page>
   );
 }
@@ -325,7 +339,7 @@ export async function buildWallChartPdf(landscape: boolean) {
     <Document
       title="Vinculum Security · Doctrinal Reference Chart"
       author={AUTHOR_NAME}
-      subject="The Vinculum Continuum, classification rules, party-differentiated application, safeguards and latent traps"
+      subject="The Vinculum Continuum in four quadrants, classification rules, party-differentiated application, structural traps and statutory safeguards"
       creator="Vinculum Security"
     >
       <Chart landscape={landscape} />
