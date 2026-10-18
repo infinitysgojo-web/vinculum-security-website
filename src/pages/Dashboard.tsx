@@ -25,7 +25,10 @@ import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain, { deskIsLive } from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SessionLedgerDrawer, { useLedgerWatch } from "@/components/desk/SessionLedger";
-import { logEvent } from "@/components/desk/ledgerStore";
+import { clearLedger, ledgerEntries, logEvent, restoreLedger } from "@/components/desk/ledgerStore";
+import EnclaveLockScreen from "@/components/desk/EnclaveLockScreen";
+import { useIdleTimer } from "@/hooks/useIdleTimer";
+import { enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
 import SaveSession from "@/components/desk/SaveSession";
 import DeskFinder from "@/components/desk/DeskFinder";
 import { LexiconDrawer } from "@/components/desk/Lexicon";
@@ -373,24 +376,69 @@ export default function Dashboard() {
     navigate("/login", { replace: true });
   }, [navigate]);
 
-  // Idle auto sign-out: an unattended terminal closes itself.
-  const idleRef = useRef<number | null>(null);
+  // Idle guard. With the enclave unsealed and an idle seal chosen, an unattended
+  // terminal seals itself: the working state is sealed into IndexedDB, then it and
+  // the key are cleared from memory until the passphrase is entered. Otherwise an
+  // idle terminal signs out after IDLE_MS, as before. One timer, one set of listeners.
+  const enclave = useEnclave();
+  const idleSealArmed = enclave.configured && enclave.unlocked && enclave.idleMinutes > 0;
+  // Development-only hook so QA can exercise the seal without waiting minutes.
+  const idleTestMs = import.meta.env.DEV ? Number(globalThis.sessionStorage?.getItem("vs:idle-test-ms")) || 0 : 0;
+  const workRef = useRef({ profile, binder, signals, division, desk });
+  workRef.current = { profile, binder, signals, division, desk };
+  const sealForIdle = useCallback(async () => {
+    if (!session) return;
+    try {
+      const w = workRef.current;
+      await sealSnapshot(`idle:${session.user.id}`, { ...w, ledger: ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail })) });
+    } catch {
+      // The working state could not be sealed: fall back to the plain idle sign-out.
+      void signOut();
+      return;
+    }
+    lockEnclave();
+    setIdleSealed(true);
+    setProfile({ ...EMPTY_PROFILE });
+    setBinder([]);
+    setSignals({});
+    clearLedger();
+  }, [session, signOut]);
+  useIdleTimer(
+    session ? (idleSealArmed ? idleTestMs || enclave.idleMinutes * 60 * 1000 : IDLE_MS) : null,
+    idleSealArmed ? () => void sealForIdle() : () => void signOut(),
+  );
+
+  // Unsealing restores the sealed working state: the idle snapshot first; after a
+  // reload, the sealed saved session, but only onto an untouched dashboard.
+  type WorkSnapshot = { profile?: MissionProfile; binder?: BinderEntry[]; signals?: Signals; division?: string; desk?: string; savedAt?: string; ledger?: { at: string; kind: string; detail: string }[] };
+  const sawLocked = useRef(false);
   useEffect(() => {
     if (!session) return;
-    const reset = () => {
-      if (idleRef.current) window.clearTimeout(idleRef.current);
-      idleRef.current = window.setTimeout(() => {
-        void signOut();
-      }, IDLE_MS);
-    };
-    const events = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "visibilitychange"];
-    events.forEach((e) => window.addEventListener(e, reset, { passive: true }));
-    reset();
-    return () => {
-      events.forEach((e) => window.removeEventListener(e, reset));
-      if (idleRef.current) window.clearTimeout(idleRef.current);
-    };
-  }, [session, signOut]);
+    if (enclave.configured && !enclave.unlocked) {
+      sawLocked.current = true;
+      return;
+    }
+    if (!enclave.unlocked || !sawLocked.current) return;
+    sawLocked.current = false;
+    void (async () => {
+      const uid = session.user.id;
+      const idle = await openSnapshot<WorkSnapshot>(`idle:${uid}`, true).catch(() => undefined);
+      const w = workRef.current;
+      const pristine = !w.profile.theatre.trim() && w.binder.length === 0;
+      const snap = idle ?? (pristine ? await openSnapshot<WorkSnapshot>(`session:${uid}`).catch(() => undefined) : undefined);
+      if (snap) {
+        if (snap.profile) setProfile({ ...EMPTY_PROFILE, ...snap.profile, bonds: sanitizeBonds(snap.profile.bonds) });
+        if (Array.isArray(snap.binder)) setBinder(snap.binder);
+        if (snap.signals) setSignals(snap.signals);
+        if (snap.division) setDivision(snap.division as typeof division);
+        if (snap.desk) setDesk(snap.desk as typeof desk);
+        if (!idle && snap.savedAt) setSavedAt(snap.savedAt);
+        if (idle && Array.isArray(snap.ledger)) restoreLedger(snap.ledger as Parameters<typeof restoreLedger>[0]);
+        if (!idle) logEvent("MISSION_HYDRATED", `${(snap.profile?.theatre ?? "").trim() || "Unnamed mission"} (sealed browser session)`);
+      }
+      setIdleSealed(false);
+    })();
+  }, [session, enclave.configured, enclave.unlocked]);
 
   // Saved session: kept on this device only, per signed-in account.
   const saveKey = session ? `vinculum-session:${session.user.id}` : null;
@@ -414,16 +462,52 @@ export default function Dashboard() {
       /* ignore a damaged save */
     }
   }, [saveKey]);
-  const saveSession = useCallback(() => {
-    if (!saveKey) return;
+  // With the enclave configured the saved session is sealed into IndexedDB and no
+  // plaintext copy is kept in localStorage.
+  const saveSession = useCallback(async (): Promise<boolean> => {
+    if (!saveKey || !session) return false;
     const stamp = new Date().toLocaleString();
-    window.localStorage.setItem(
-      saveKey,
-      JSON.stringify({ profile, binder, signals, division, desk, savedAt: stamp }),
-    );
+    const payload = { profile, binder, signals, division, desk, savedAt: stamp };
+    const st = enclaveState();
+    try {
+      if (st.configured) {
+        if (!st.unlocked) {
+          toast.error("The enclave is sealed. Enter the passphrase under Sovereign Enclave Security to save.");
+          return false;
+        }
+        await sealSnapshot(`session:${session.user.id}`, payload);
+        window.localStorage.removeItem(saveKey);
+      } else {
+        window.localStorage.setItem(saveKey, JSON.stringify(payload));
+      }
+    } catch {
+      toast.error("This browser would not store the session.");
+      return false;
+    }
     setSavedAt(stamp);
     seal();
-  }, [saveKey, profile, binder, signals, division, desk]);
+    return true;
+  }, [saveKey, session, profile, binder, signals, division, desk]);
+
+  // Setting a passphrase seals a plaintext saved session that is already on this device.
+  useEffect(() => {
+    if (!saveKey || !session || !enclave.configured || !enclave.unlocked) return;
+    let raw: string | null = null;
+    try {
+      raw = window.localStorage.getItem(saveKey);
+    } catch {
+      return;
+    }
+    if (!raw) return;
+    void (async () => {
+      try {
+        await sealSnapshot(`session:${session.user.id}`, JSON.parse(raw!));
+        window.localStorage.removeItem(saveKey);
+      } catch {
+        // Left in place; retried on the next unseal.
+      }
+    })();
+  }, [saveKey, session, enclave.configured, enclave.unlocked]);
 
   // Power-user shortcuts. Ignored while typing in a field, except Ctrl/Cmd+S.
   useEffect(() => {
@@ -445,8 +529,7 @@ export default function Dashboard() {
       const mod = e.metaKey || e.ctrlKey;
       if (mod && e.key.toLowerCase() === "s") {
         e.preventDefault();
-        saveSession();
-        toast.success("Mission state saved to browser storage");
+        void saveSession().then((ok) => ok && toast.success("Mission state saved to browser storage"));
         return;
       }
       if (typing(e.target)) return;
@@ -469,6 +552,15 @@ export default function Dashboard() {
   }, [saveSession]);
 
   if (!ready || !session) return null;
+
+  if (enclave.idleSealed) {
+    return (
+      <>
+        <SEO title="The Vinculum Dashboard" description="Private working desks for Vinculum practitioners." path="/dashboard" noIndex />
+        <EnclaveLockScreen onSignOut={() => void signOut()} />
+      </>
+    );
+  }
 
   // The desk order is the chancellery lifecycle: assess, engage, draft, govern.
   const position = DESKS.findIndex((d) => d.id === desk);

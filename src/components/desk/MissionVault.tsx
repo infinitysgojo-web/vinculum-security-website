@@ -6,14 +6,28 @@ import type { BinderEntry } from "./DeskOutput";
 
 import { DEFAULT_BONDS, EMPTY_PROFILE, sanitizeBonds, type MissionProfile } from "./mission";
 import { applyInscriptions, sanitizeSignals, statutoryClearances, type Signals } from "./engine";
-import { sha256, verifySealedText } from "./integrity";
+import { archiveMerkleRoot, archiveStateDigest, sha256, verifySealedText } from "./integrity";
 import { ARCHIVE_FORMAT, ARCHIVE_SCHEMA, ARCHIVE_VERSION, archiveFileName, validateArchive, type ArchiveLedger } from "./archive";
-import { lastIssuedRef, ledgerSize, mintDispatch, stateSnapshot } from "./registry";
+import { lastIssuedRef, ledgerSize, mintDispatch } from "./registry";
 import { ledgerEntries, logEvent } from "./ledgerStore";
 import { Lex } from "./Lexicon";
+import EnclaveSecurityDrawer from "./EnclaveSecurityDrawer";
+import {
+  LEGACY_LIBRARY_KEY,
+  countSealedTheatres,
+  deleteTheatreFromVault,
+  getAllTheatresFromVault,
+  getStorageQuota,
+  migrateLegacyStorage,
+  requestPersistentStorage,
+  saveTheatreToVault,
+  vaultBackendKind,
+  type SavedTheatreSlot,
+} from "@/lib/chancelleryDb";
+import { refreshEnclave, useEnclave } from "@/lib/chancelleryEnclave";
 
 export { EMPTY_PROFILE };
-export type { MissionProfile };
+export type { MissionProfile, SavedTheatreSlot };
 
 type ArchiveBody = {
   format: typeof ARCHIVE_FORMAT;
@@ -35,44 +49,25 @@ type ArchiveBody = {
 };
 type Archive = ArchiveBody & { sha256Seal?: string };
 
-/** Browser-local library of operational theatres. Never leaves this device. */
-export const THEATRE_LIBRARY_KEY = "vinculum-theatre-library";
-
-type SavedTheatreSlot = {
-  id: string;
-  name: string;
-  updatedAt: string;
-  profile: MissionProfile;
-  binder: BinderEntry[];
-  signals: Signals;
-};
+/** The localStorage key the library used before the IndexedDB vault (migrated on first boot). */
+export const THEATRE_LIBRARY_KEY = LEGACY_LIBRARY_KEY;
 
 const fieldCls = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 const labelCls = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
 
 const slotIdFor = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "untitled-mission";
 
-/** Read the library defensively: a damaged or hand-edited entry is dropped, never trusted. */
-function readLibrary(): SavedTheatreSlot[] {
-  try {
-    const raw = window.localStorage.getItem(THEATRE_LIBRARY_KEY);
-    if (!raw) return [];
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed
-      .filter((s): s is SavedTheatreSlot => !!s && typeof s === "object" && typeof (s as SavedTheatreSlot).id === "string" && typeof (s as SavedTheatreSlot).name === "string" && !!(s as SavedTheatreSlot).profile)
-      .map((s) => ({
-        id: s.id,
-        name: s.name,
-        updatedAt: typeof s.updatedAt === "string" ? s.updatedAt : new Date(0).toISOString(),
-        profile: { ...EMPTY_PROFILE, ...s.profile, bonds: sanitizeBonds(s.profile.bonds) },
-        binder: Array.isArray(s.binder) ? s.binder : [],
-        signals: sanitizeSignals(s.signals),
-      }));
-  } catch {
-    return [];
-  }
-}
+/** Normalise a stored slot defensively: a damaged or hand-edited entry is repaired, never trusted. */
+const normaliseSlot = (s: SavedTheatreSlot): SavedTheatreSlot => ({
+  id: s.id,
+  name: s.name,
+  updatedAt: typeof s.updatedAt === "string" ? s.updatedAt : new Date(0).toISOString(),
+  profile: { ...EMPTY_PROFILE, ...s.profile, bonds: sanitizeBonds(s.profile?.bonds) },
+  binder: Array.isArray(s.binder) ? s.binder : [],
+  signals: sanitizeSignals(s.signals),
+});
+
+type StorageTelemetry = { backend: "indexeddb" | "memory"; persisted: boolean; usedBytes: number };
 
 /**
  * Mission State Vault. Saves the working session to a file on the practitioner's
@@ -103,22 +98,68 @@ export default function MissionVault({
   const fileRef = useRef<HTMLInputElement>(null);
   const verifyRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setSlots(readLibrary());
-  }, []);
+  const enclave = useEnclave();
+  const [telemetry, setTelemetry] = useState<StorageTelemetry | null>(null);
+  const [sealedCount, setSealedCount] = useState(0);
 
-  const persistSlots = (updated: SavedTheatreSlot[]): boolean => {
+  const refreshTelemetry = async () => {
+    const [backend, q] = await Promise.all([vaultBackendKind(), getStorageQuota()]);
+    setTelemetry((t) => ({ backend, persisted: t?.persisted ?? false, usedBytes: q.usedBytes }));
+  };
+
+  const reloadSlots = async () => {
     try {
-      window.localStorage.setItem(THEATRE_LIBRARY_KEY, JSON.stringify(updated));
-      setSlots(updated);
-      return true;
+      setSlots((await getAllTheatresFromVault()).map(normaliseSlot));
+      setSealedCount(await countSealedTheatres());
     } catch {
-      toast.error("This browser would not store the library (storage full or blocked). Export a file instead.");
-      return false;
+      setSlots([]);
     }
   };
 
-  const saveCurrentToLibrary = () => {
+  // Asynchronous hydration: migrate the legacy localStorage library once, then read the vault.
+  useEffect(() => {
+    let live = true;
+    (async () => {
+      await refreshEnclave();
+      try {
+        await migrateLegacyStorage();
+      } catch {
+        // A failed migration leaves the legacy key in place for the next boot.
+      }
+      if (!live) return;
+      await reloadSlots();
+      const persisted = await requestPersistentStorage();
+      const [backend, q] = await Promise.all([vaultBackendKind(), getStorageQuota()]);
+      if (live) setTelemetry({ backend, persisted, usedBytes: q.usedBytes });
+    })();
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  // Sealing or unsealing changes which records can be read.
+  useEffect(() => {
+    if (!enclave.ready) return;
+    void (async () => {
+      if (enclave.unlocked) {
+        try {
+          await migrateLegacyStorage();
+        } catch {
+          // ignore
+        }
+      }
+      await reloadSlots();
+      await refreshTelemetry();
+    })();
+  }, [enclave.ready, enclave.unlocked, enclave.configured]);
+
+  const enclaveLocked = enclave.configured && !enclave.unlocked;
+
+  const saveCurrentToLibrary = async () => {
+    if (enclaveLocked) {
+      toast.error("The enclave is sealed. Enter the passphrase under Sovereign Enclave Security to save.");
+      return;
+    }
     const name = profile.theatre.trim() || "Untitled mission";
     const id = slotIdFor(name);
     const slot: SavedTheatreSlot = {
@@ -130,11 +171,16 @@ export default function MissionVault({
       signals,
     };
     const exists = slots.some((s) => s.id === id);
-    const updated = exists ? slots.map((s) => (s.id === id ? slot : s)) : [slot, ...slots];
-    if (persistSlots(updated)) {
-      sealChime();
-      toast.success(`${exists ? "Updated" : "Saved"} “${name}” in the theatre library`);
+    try {
+      await saveTheatreToVault(slot);
+    } catch (e) {
+      toast.error(e instanceof Error && /sealed/i.test(e.message) ? e.message : "This browser would not store the library (storage full or blocked). Export a file instead.");
+      return;
     }
+    setSlots(exists ? slots.map((s) => (s.id === id ? slot : s)) : [slot, ...slots]);
+    void refreshTelemetry();
+    sealChime();
+    toast.success(`${exists ? "Updated" : "Saved"} “${name}” in the theatre library${enclave.configured ? " (sealed AES-256-GCM)" : ""}`);
   };
 
   const loadSlot = (slot: SavedTheatreSlot) => {
@@ -147,19 +193,30 @@ export default function MissionVault({
 
   const deleteSlot = (slot: SavedTheatreSlot) => {
     if (!window.confirm(`Remove “${slot.name}” from the theatre library? This cannot be undone.`)) return;
-    if (persistSlots(slots.filter((s) => s.id !== slot.id))) toast.success("Theatre removed from the library");
+    void (async () => {
+      try {
+        await deleteTheatreFromVault(slot.id);
+        setSlots((prev) => prev.filter((s) => s.id !== slot.id));
+        void refreshTelemetry();
+        toast.success("Theatre removed from the library");
+      } catch {
+        toast.error("The theatre could not be removed from this browser's vault.");
+      }
+    })();
   };
 
   const save = async () => {
     const effective = applyInscriptions(signals);
     const clearances = statutoryClearances(effective);
+    const events = ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail }));
     const ledger: ArchiveLedger = {
-      stateDigest: await sha256(JSON.stringify(stateSnapshot(effective))),
+      stateDigest: await archiveStateDigest(signals),
       clearancesPassed: clearances.filter((c) => c.passed).length,
       clearancesTotal: clearances.length,
       dispatchesIssued: ledgerSize(),
       lastRef: lastIssuedRef(),
-      events: ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail })),
+      events,
+      merkleRoot: await archiveMerkleRoot(events),
     };
     const body: ArchiveBody = {
       format: ARCHIVE_FORMAT,
@@ -356,13 +413,37 @@ export default function MissionVault({
         </div>
       </div>
 
+      <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-brass/30 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.12em]">
+        <span data-testid="enclave-badge" className={enclave.configured ? "text-accent" : "text-muted-foreground"}>
+          {enclave.configured ? "[ENCLAVE: SEALED (AES-256-GCM)]" : "[ENCLAVE: PLAINTEXT LOCAL]"}
+        </span>
+        <span data-testid="storage-badge" className="text-muted-foreground [overflow-wrap:anywhere]">
+          {telemetry
+            ? telemetry.backend === "indexeddb"
+              ? `STORAGE: INDEXEDDB ${telemetry.persisted ? "PERSISTED" : "BEST-EFFORT"} · ${Math.max(0, Math.round(telemetry.usedBytes / 1024)).toLocaleString("en-US")} KB USED`
+              : "STORAGE: IN-MEMORY (INDEXEDDB UNAVAILABLE) · NOT PERSISTED"
+            : "STORAGE: READING…"}
+        </span>
+        {enclaveLocked && (
+          <span className="text-destructive" data-testid="enclave-locked-note">
+            {sealedCount} sealed {sealedCount === 1 ? "theatre" : "theatres"} · key not in memory
+          </span>
+        )}
+      </div>
+      <EnclaveSecurityDrawer sealedCount={sealedCount} />
+
       {open && (
         <div className="border-t border-brass/30 px-4 py-5 space-y-6 min-w-0">
           <div>
             <span className={labelCls}>
               Saved operational theatres ({slots.length}) · <Lex term="theatre-library">local library</Lex>
             </span>
-            {slots.length === 0 ? (
+            {slots.length === 0 && enclaveLocked && sealedCount > 0 ? (
+              <p className="text-xs text-muted-foreground border border-dashed border-brass/50 p-3">
+                {sealedCount} sealed {sealedCount === 1 ? "theatre is" : "theatres are"} held in this browser. Unseal the enclave
+                under Sovereign Enclave Security to read or switch to them.
+              </p>
+            ) : slots.length === 0 ? (
               <p className="text-xs text-muted-foreground border border-dashed border-brass/50 p-3">
                 Empty. Name the theatre below, then press “Save to library”. Each theatre keeps its profile, bond scores,
                 live readings and binder, so you can switch between them without losing records.
@@ -449,7 +530,7 @@ export default function MissionVault({
               </button>
               <p className="min-w-0 flex-1 basis-60 text-xs text-muted-foreground leading-relaxed">
                 Archive files are sealed with a SHA-256 digest that is checked again on import. The theatre library is kept
-                in this browser only. It is never uploaded and the system keeps no copy. Anything not saved to the library
+                in this browser's IndexedDB only{enclave.configured ? ", encrypted with AES-256-GCM" : ""}. It is never uploaded and the system keeps no copy. Anything not saved to the library
                 or to a file clears when you refresh.
               </p>
             </div>

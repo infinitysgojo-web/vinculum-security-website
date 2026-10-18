@@ -3,7 +3,8 @@
  * nothing leaves the tab, and a reload starts a fresh ledger. Each entry carries a
  * UTC wall-clock stamp so a debrief can be read against any theatre's local time.
  */
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
+import { calculateMerkleRoot } from "@/lib/chancelleryCrypto";
 
 export type LedgerKind =
   | "MISSION_HYDRATED"
@@ -44,6 +45,17 @@ export function clearLedger() {
   emit();
 }
 
+/** Put back a ledger that the idle seal took out of memory. */
+export function restoreLedger(list: ReadonlyArray<Pick<LedgerEntry, "at" | "kind" | "detail">>) {
+  entries = list.slice(-MAX_ENTRIES).map((e) => ({ seq: ++seq, at: e.at, kind: e.kind, detail: e.detail }));
+  emit();
+}
+
+/** Merkle session root over the current ledger, computed on demand (always fresh). */
+export function currentMerkleRoot(list: LedgerEntry[] = entries): Promise<string> {
+  return calculateMerkleRoot(list);
+}
+
 export function subscribeLedger(fn: () => void): () => void {
   listeners.add(fn);
   return () => {
@@ -53,6 +65,20 @@ export function subscribeLedger(fn: () => void): () => void {
 
 export function useSessionLedger(): LedgerEntry[] {
   return useSyncExternalStore(subscribeLedger, ledgerEntries, ledgerEntries);
+}
+
+/** Live Merkle session root; recomputed whenever an event is added. Empty while hashing. */
+export function useSessionMerkleRoot(): string {
+  const list = useSessionLedger();
+  const [root, setRoot] = useState("");
+  useEffect(() => {
+    let live = true;
+    calculateMerkleRoot(list).then((r) => live && setRoot(r));
+    return () => {
+      live = false;
+    };
+  }, [list]);
+  return root;
 }
 
 /** `[HH:MM:SS UTC] KIND: detail` */
