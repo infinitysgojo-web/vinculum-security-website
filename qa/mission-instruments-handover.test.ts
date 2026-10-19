@@ -32,10 +32,13 @@ describe("public glossary mirrors the three instruments", () => {
     expect(f("decay-horizon")).toContain("B_i(t) = 1 + (B_i − 1) × e^(−λ_i t)");
     expect(f("enforceability")).toContain("E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5");
     expect(f("escrow")).toContain("60 per cent");
+    expect(f("escrow")).toContain("Final Cession");
+    expect(f("enforceability")).toContain("E − 18");
   });
 
   test("the published bench values match the engine for every forum", () => {
     const line = GLOSSARY.find((x) => x.id === "enforceability")!.formula!.find((l) => l.startsWith("Bench values"))!;
+    expect(line.match(/; /g)?.length).toBe(FORUMS.length - 1);
     for (const forum of FORUMS) {
       const short = forum.name.replace(" (CCJA)", "");
       expect(line).toContain(`${short} ${enforceability(forum)}`);
@@ -56,22 +59,26 @@ describe("instrument signals ride the browser-local bus", () => {
     decayHalfLife: 13.9,
     projectedDegradation: 0.42,
     disputeForum: "Permanent Court of Arbitration",
-    disputeEnforceability: 70,
+    disputeEnforceability: 74,
+    immunityWaived: false,
     escrowReleased: 0,
     escrowFrozen: true,
+    escrowTranchesMet: 1,
+    decayConstant: 0.05,
+    stabilityHalfLifeDays: 423,
   };
 
-  test("all six instrument signals survive archive sanitising", () => {
+  test("all ten instrument signals survive archive sanitising", () => {
     const s = sanitizeSignals(JSON.parse(JSON.stringify(live)));
-    for (const k of ["decayHalfLife", "projectedDegradation", "disputeForum", "disputeEnforceability", "escrowReleased", "escrowFrozen"] as const)
+    for (const k of ["decayHalfLife", "projectedDegradation", "decayConstant", "stabilityHalfLifeDays", "disputeForum", "disputeEnforceability", "immunityWaived", "escrowReleased", "escrowFrozen", "escrowTranchesMet"] as const)
       expect(s[k]).toEqual(live[k]);
   });
 
   test("telemetry carries them into every brief and the Binder", () => {
     const t = telemetryLines(live).join("\n");
-    expect(t).toContain("treaty half-life 13.9 months, mean bond loss 0.42");
-    expect(t).toContain("Dispute forum: Permanent Court of Arbitration, enforceability 70 of 100");
-    expect(t).toContain("Sovereign escrow: frozen");
+    expect(t).toContain("treaty half-life 13.9 months (423 days), λ 0.0500 per month, mean bond loss 0.42");
+    expect(t).toContain("Dispute forum: Permanent Court of Arbitration, venue fitness 74 of 100; immunity not waived");
+    expect(t).toContain("Conditional escrow: frozen");
   });
 
   test("the instruments engine is pure: no network, storage, secrets or cloud client", () => {

@@ -359,12 +359,19 @@ export type Signals = {
   /** Desk 17, decay horizon: treaty half-life T½ in months (0 when no modelled decay) and mean bond loss at the chosen horizon. */
   decayHalfLife?: number;
   projectedDegradation?: number;
+  /** Desk 17: monthly decay constant λ = (U + R) ÷ 2000, and the half-life restated in days. */
+  decayConstant?: number;
+  stabilityHalfLifeDays?: number;
   /** Desk 7, dispute forum chosen for the accord and its enforceability index E (0 to 100). */
   disputeForum?: string;
   disputeEnforceability?: number;
+  /** Whether the dispute clause waives immunity from jurisdiction and execution. */
+  immunityWaived?: boolean;
   /** Desk 11, sovereign escrow: share released (0 to 100) and whether the rupture freeze is engaged. */
   escrowReleased?: number;
   escrowFrozen?: boolean;
+  /** Number of escrow tranches met, in order, out of four. */
+  escrowTranchesMet?: number;
   /** Sovereign Custom Mode inscriptions. Every list rides the bus, the digest and the manifest. */
   customRules?: string[];
   customParties?: CustomParty[];
@@ -383,13 +390,14 @@ const SIGNAL_NUMBERS = [
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
   "handoverViability", "partyFriction", "presetEpoch", "safeguardCoverage",
   "decayHalfLife", "projectedDegradation", "disputeEnforceability", "escrowReleased",
+  "decayConstant", "stabilityHalfLifeDays", "escrowTranchesMet",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
   "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder", "presetId", "litigationForum", "counterpart",
   "disputeForum",
 ] as const;
-const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen"] as const;
+const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen", "immunityWaived"] as const;
 const SIGNAL_STRING_LISTS = ["analogues", "traps", "shocks", "frictionPairs", "covenants", "mirrors", "customRules"] as const;
 
 /**
@@ -882,11 +890,14 @@ export function telemetryLines(s: Signals): string[] {
   if (s.safeguardCoverage !== undefined) L.push(`  Stakeholder safeguards complete: ${s.safeguardCoverage} per cent of affected parties.`);
   if (s.decayHalfLife !== undefined)
     L.push(s.decayHalfLife > 0
-      ? `  Decay horizon: treaty half-life ${s.decayHalfLife} months${s.projectedDegradation !== undefined ? `, mean bond loss ${s.projectedDegradation.toFixed(2)} at the chosen horizon` : ""}.`
+      ? `  Decay horizon: treaty half-life ${s.decayHalfLife} months${s.stabilityHalfLifeDays ? ` (${s.stabilityHalfLifeDays} days)` : ""}${s.decayConstant !== undefined ? `, λ ${s.decayConstant.toFixed(4)} per month` : ""}${s.projectedDegradation !== undefined ? `, mean bond loss ${s.projectedDegradation.toFixed(2)} at the chosen horizon` : ""}.`
       : "  Decay horizon: no modelled decay (no uninsulated exposure and no rupture).");
-  if (s.disputeForum) L.push(`  Dispute forum: ${s.disputeForum}${s.disputeEnforceability !== undefined ? `, enforceability ${s.disputeEnforceability} of 100` : ""}.`);
+  if (s.disputeForum)
+    L.push(`  Dispute forum: ${s.disputeForum}${s.disputeEnforceability !== undefined ? `, venue fitness ${s.disputeEnforceability} of 100` : ""}${s.immunityWaived === false ? "; immunity not waived" : ""}.`);
   if (s.escrowReleased !== undefined)
-    L.push(s.escrowFrozen ? `  Sovereign escrow: frozen, rupture at or above 60 per cent; 0 per cent released.` : `  Sovereign escrow: ${s.escrowReleased} per cent released on met conditions.`);
+    L.push(s.escrowFrozen
+      ? "  Conditional escrow: frozen, rupture at or above 60 per cent; 0 per cent released."
+      : `  Conditional escrow: ${s.escrowReleased} per cent released${s.escrowTranchesMet !== undefined ? `, ${s.escrowTranchesMet} of 4 tranches met` : ""}.`);
   if (s.litigationForum) L.push(`  Litigation forum in preparation: ${s.litigationForum}.`);
   if (s.counterpart) L.push(`  Counterpart being prepared for: ${s.counterpart}.`);
   const dyn = relationalDynamics(s);

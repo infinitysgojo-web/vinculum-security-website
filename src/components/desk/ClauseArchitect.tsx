@@ -4,7 +4,7 @@ import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 import ForumMatrix from "./ForumMatrix";
-import { FORUMS, enforceability } from "./instruments";
+import { FORUMS, forumClause, forumFitness, type ForumTerms } from "./instruments";
 
 /** Handbook §12 Continuity Provision drafting desk. Deterministic; nothing stored. */
 const AGREEMENTS = [
@@ -153,9 +153,12 @@ export default function ClauseArchitect() {
 
   const [forumId, setForumId] = useState<string>("pca");
   const forum = FORUMS.find((f) => f.id === forumId) ?? FORUMS[0];
+  const [forumTerms, setForumTerms] = useState<ForumTerms>({ immunityWaived: true, neutralSeat: true });
+  const forumFit = forumFitness(forum, forumTerms);
   usePublish("clauses", {
     disputeForum: forum.name,
-    disputeEnforceability: enforceability(forum),
+    disputeEnforceability: forumFit.fitness,
+    immunityWaived: forumTerms.immunityWaived,
     covenants: [...picked.map((i) => FRAGILITIES[i].label), ...own.map((o) => o.label)],
     verifierSeated: picked.includes(4),
   });
@@ -215,7 +218,7 @@ export default function ClauseArchitect() {
     L.push(`PRECEDENT OF RECORD: ${a.precedent}.`);
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
-    L.push("", `DISPUTE SETTLEMENT (${forum.name}; enforceability E = ${enforceability(forum)} of 100)`, forum.article);
+    L.push("", `DISPUTE SETTLEMENT (${forum.name}; enforceability E ${forumFit.base}, venue fitness F ${forumFit.fitness} of 100${forumFit.immunity ? "; immunity not waived" : ""}${forumFit.seat ? "; seat not neutral" : ""})`, forumClause(forum, forumTerms));
     return L.join("\n");
   }, [ag, picked, title, parties, office, rig, own, ownType, live, signals, mandated, forum]);
 
@@ -321,7 +324,7 @@ export default function ClauseArchitect() {
               return n;
             }}
           />
-          <ForumMatrix value={forumId} onChange={setForumId} />
+          <ForumMatrix value={forumId} onChange={setForumId} terms={forumTerms} onTerms={setForumTerms} />
           <div className="border border-brass/40 bg-background p-4">
             <span className={label}>Part C · operative preview</span>
             {picked.length + own.length === 0 ? (

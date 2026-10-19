@@ -213,6 +213,8 @@ export default function SuccessionSimulator() {
     survivalScore: canon ? canon.percent : r.q,
     decayHalfLife: decay?.halfLife ? Math.round(decay.halfLife * 10) / 10 : 0,
     projectedDegradation: decay?.meanLoss ?? 0,
+    decayConstant: decay ? Math.round(decay.lambda * 10000) / 10000 : 0,
+    stabilityHalfLifeDays: decay?.halfLifeDays ?? 0,
   });
 
   const text = useMemo(() => {
@@ -262,7 +264,7 @@ export default function SuccessionSimulator() {
       L.push(`  S% = ${canon.raw.toFixed(4)} / 5.0 x 100 = ${canon.percent.toFixed(1)}%`);
       L.push(canon.trap ? `  [TERMINAL SUCCESSION TRAP ENGAGED] S% is below the ${SUCCESSION_TRAP.toFixed(1)}% gate; Desk 15 clearance is locked.` : `  Gate passed: S% is at or above ${SUCCESSION_TRAP.toFixed(1)}%.`);
     }
-    if (decay) L.push("", `DECAY HORIZON: lambda = ${decay.lambda.toFixed(4)} per month; T1/2 = ${decay.halfLife ? decay.halfLife.toFixed(1) + " months" : "no modelled decay"}; mean bond loss at ${decay.months} months = ${decay.meanLoss.toFixed(2)}`);
+    if (decay) L.push("", `DECAY HORIZON: lambda = ${decay.lambda.toFixed(4)} per month; T1/2 = ${decay.halfLife ? `${decay.halfLife.toFixed(1)} months (${decay.halfLifeDays} days)` : "no modelled decay"}; mean bond loss at ${decay.months} months = ${decay.meanLoss.toFixed(2)}`);
     L.push("", `READING: ${r.b.advice}`);
     L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
@@ -466,6 +468,9 @@ export default function SuccessionSimulator() {
                   {decay.halfLife ? decay.halfLife.toFixed(1) : "∞"}
                   <span className="text-base text-muted-foreground"> months T½</span>
                 </p>
+                {decay.halfLifeDays !== null && (
+                  <p className="text-xs text-muted-foreground">{decay.halfLifeDays} days at {30.4375} days a month</p>
+                )}
                 <p className="mt-1 text-[11px] text-muted-foreground font-mono [overflow-wrap:anywhere]">
                   λ = (U + R) ÷ 2000 = ({r.exposure.toFixed(1)} + {linked ? signals.rupture ?? 0 : 0}) ÷ 2000 = {decay.lambda.toFixed(4)} · T½ = ln 2 ÷ λ
                 </p>
