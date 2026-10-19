@@ -29,6 +29,9 @@ const OPERATIONAL: LexEntry[] = [
   { id: "what-if", term: "What-If Simulator", short: "A sandbox beside the bond diagnostic. It recomputes the limiting factor, mean, variance and communal tolerance for a hypothetical intervention without touching the live mission until you apply it.", source: "Diagnostics · delta simulator" },
   { id: "theatre-library", term: "Theatre Library", short: "Operational theatres saved in this browser so you can switch between them without losing records. Nothing is uploaded.", source: "Mission State Vault · local library" },
   { id: "integrity", term: "Integrity Stamp", short: "A SHA-256 fingerprint of an exported document or mission file, computed on this device. Any change to the text changes the fingerprint.", source: "Chain of custody" },
+  { id: "decay-horizon", term: "Decay Horizon", short: "Treaty half-life T½: the months until each bond loses half its height above the 1.0 floor without remedy. λ = (U + R) ÷ 2000, where U is uninsulated shock exposure and R the rupture index; T½ = ln 2 ÷ λ; each bond follows Bᵢ(t) = 1 + (Bᵢ − 1)·e^(−λᵢ t) with λᵢ = λ(0.5 + strainᵢ ÷ 100). A rule, not a forecast.", source: "Succession desk · decay horizon" },
+  { id: "enforceability", term: "Dispute Enforceability Index", short: "E, from 0 to 100, ranks a dispute forum on doctrinal 1 to 5 ratings: E = 100 × (0.5·teeth + 0.3·(6 − immunity) + 0.2·pace) ÷ 5. Teeth is the enforcement route, immunity the exposure to a sovereign-immunity defence, pace the speed of procedure.", source: "Clause Architect · forum bench" },
+  { id: "escrow", term: "Sovereign Escrow Waterfall", short: "Funds held by a neutral custodian and released in three tranches: verifier seated, communal bond ≥ 3.0, intergenerational bond ≥ 3.0. Released = Σ shares of met tranches; everything freezes while the rupture index is 60 per cent or more.", source: "Multi-party desk · escrow" },
 ];
 
 export const LEXICON: LexEntry[] = [
