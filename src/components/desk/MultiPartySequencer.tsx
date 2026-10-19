@@ -3,6 +3,8 @@ import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish, type Signals } from "@/components/desk/engine";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import AsymmetryMatrix from "./AsymmetryMatrix";
+import EscrowWaterfall from "./EscrowWaterfall";
+import { escrowWaterfall } from "./instruments";
 import { useTheatreSeed } from "./theatres";
 
 type Actor = {
@@ -309,7 +311,16 @@ export default function MultiPartySequencer() {
   const shownFrictions = pairOk ? frictions.filter((f) => pairOk.includes(f.a) && pairOk.includes(f.b)) : frictions;
   // Friction term of the engine's contagion coefficient: 1 + 0.10 per friction pair on the bus.
   const fricMultiplier = 1 + 0.1 * (linked ? signals.frictionPairs?.length ?? frictions.length : frictions.length);
+  const [shares, setShares] = useState<[number, number, number]>([40, 35, 25]);
+  const escrow = escrowWaterfall(shares, {
+    verifierSeated: signals.verifierSeated,
+    communal: signals.bonds?.communal,
+    intergenerational: signals.bonds?.intergenerational,
+    rupture: linked ? signals.rupture : 0,
+  });
   usePublish("multiparty", {
+    escrowReleased: escrow.released,
+    escrowFrozen: escrow.frozen,
     seatedParties: seated.length,
     frictionPairs: frictions.map((f) => `${ACTORS.find((a) => a.id === f.a)?.label} and ${ACTORS.find((a) => a.id === f.b)?.label}`),
   });
@@ -369,8 +380,10 @@ export default function MultiPartySequencer() {
     if (spoiler) L.push(spoiler, "");
     if (linked) L.push(...telemetryLines(signals));
     L.push("END OF MATRIX");
+    L.push("", `SOVEREIGN ESCROW: ${escrow.frozen ? "FROZEN (rupture at or above 60%)" : `${escrow.released}% of ${escrow.total}% released`}`);
+    escrow.tranches.forEach((t) => L.push(`  [${t.met ? "x" : " "}] ${t.label} (${t.share}%): ${t.condition}`));
     return L.join("\n");
-  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals]);
+  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow]);
 
   return (
     <div className="w-full min-w-0">
@@ -432,6 +445,7 @@ export default function MultiPartySequencer() {
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
+        <EscrowWaterfall reading={escrow} shares={shares} onShares={setShares} />
       </div>
     </div>
 
