@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, successionDurability, SUCCESSION_TRAP } from "./engine";
+import { decayHorizon, DECAY_HORIZONS } from "./instruments";
 import SyncPanel from "./SyncPanel";
 import { AlertTriangle, ShieldCheck } from "lucide-react";
 
@@ -197,13 +198,22 @@ export default function SuccessionSimulator() {
       .sort((a, b) => b.weight - a.weight);
     const first = gaps[0] ?? null;
     const unguarded = allShocks.filter((sh) => shocks.includes(sh.id) && !insulatedBy(sh));
-    return { q, b: bandOf(q), first, gaps, unguarded, base, compound, bonds };
+    return { q, b: bandOf(q), first, gaps, unguarded, base, compound, bonds, exposure };
   }, [inForce, shocks, allProvisions, allShocks, bondMap]);
 
   // Section 4.5 canonical durability, from the live bonds, rupture index and covenants on the bus.
   const canon = useMemo(() => (linked ? successionDurability(signals) : undefined), [linked, signals]);
+  const [horizon, setHorizon] = useState<number>(12);
+  const decay = useMemo(
+    () => (signals.bonds ? decayHorizon(signals.bonds, r.bonds.map((b) => b.strain), r.exposure, linked ? signals.rupture ?? 0 : 0, horizon) : null),
+    [signals.bonds, signals.rupture, r, linked, horizon],
+  );
   // Publish the canonical S% when linked, otherwise the drafted-text quotient, so Desk 15 always has live data.
-  usePublish("succession", { survivalScore: canon ? canon.percent : r.q });
+  usePublish("succession", {
+    survivalScore: canon ? canon.percent : r.q,
+    decayHalfLife: decay?.halfLife ? Math.round(decay.halfLife * 10) / 10 : 0,
+    projectedDegradation: decay?.meanLoss ?? 0,
+  });
 
   const text = useMemo(() => {
     const L = [
@@ -252,10 +262,11 @@ export default function SuccessionSimulator() {
       L.push(`  S% = ${canon.raw.toFixed(4)} / 5.0 x 100 = ${canon.percent.toFixed(1)}%`);
       L.push(canon.trap ? `  [TERMINAL SUCCESSION TRAP ENGAGED] S% is below the ${SUCCESSION_TRAP.toFixed(1)}% gate; Desk 15 clearance is locked.` : `  Gate passed: S% is at or above ${SUCCESSION_TRAP.toFixed(1)}%.`);
     }
+    if (decay) L.push("", `DECAY HORIZON: lambda = ${decay.lambda.toFixed(4)} per month; T1/2 = ${decay.halfLife ? decay.halfLife.toFixed(1) + " months" : "no modelled decay"}; mean bond loss at ${decay.months} months = ${decay.meanLoss.toFixed(2)}`);
     L.push("", `READING: ${r.b.advice}`);
     L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon]);
+  }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon, decay]);
 
   return (
     <section className={panel}>
@@ -445,6 +456,41 @@ export default function SuccessionSimulator() {
               <p className="text-xs text-muted-foreground mt-1">{r.first.breaks}</p>
             </div>
           )}
+          <div className="border border-brass/40 bg-background p-4">
+            <p className={label}>Decay horizon · treaty half-life</p>
+            {!decay ? (
+              <p className="text-xs text-muted-foreground">Score the four bonds in Desk 1 to project their decay.</p>
+            ) : (
+              <>
+                <p className="font-serif text-3xl text-primary">
+                  {decay.halfLife ? decay.halfLife.toFixed(1) : "∞"}
+                  <span className="text-base text-muted-foreground"> months T½</span>
+                </p>
+                <p className="mt-1 text-[11px] text-muted-foreground font-mono [overflow-wrap:anywhere]">
+                  λ = (U + R) ÷ 2000 = ({r.exposure.toFixed(1)} + {linked ? signals.rupture ?? 0 : 0}) ÷ 2000 = {decay.lambda.toFixed(4)} · T½ = ln 2 ÷ λ
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Projection horizon">
+                  {DECAY_HORIZONS.map((m) => (
+                    <button key={m} type="button" aria-pressed={horizon === m} onClick={() => setHorizon(m)}
+                      className={`min-h-9 px-3 border text-[10px] uppercase tracking-[0.16em] ${horizon === m ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
+                      {m} months
+                    </button>
+                  ))}
+                </div>
+                <ul className="mt-3 space-y-1.5 text-xs">
+                  {decay.bonds.map((b) => (
+                    <li key={b.name} className="flex justify-between gap-2">
+                      <span className="text-foreground/80">{b.name}</span>
+                      <span className="font-mono tabular-nums text-muted-foreground">{b.now.toFixed(1)} → <span className="text-primary">{b.then.toFixed(2)}</span></span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-[11px] text-muted-foreground">
+                  Bᵢ(t) = 1 + (Bᵢ − 1)·e^(−λᵢ t), λᵢ = λ(0.5 + strainᵢ ÷ 100). Mean loss at {horizon} months: {decay.meanLoss.toFixed(2)}. A rule applied to the inputs, not a forecast.
+                </p>
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="mt-8 w-full min-w-0">

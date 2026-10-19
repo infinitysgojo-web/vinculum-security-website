@@ -356,6 +356,15 @@ export type Signals = {
   litigationForum?: string;
   /** Counterpart desk: the archetype being prepared for. */
   counterpart?: string;
+  /** Desk 17, decay horizon: treaty half-life T½ in months (0 when no modelled decay) and mean bond loss at the chosen horizon. */
+  decayHalfLife?: number;
+  projectedDegradation?: number;
+  /** Desk 7, dispute forum chosen for the accord and its enforceability index E (0 to 100). */
+  disputeForum?: string;
+  disputeEnforceability?: number;
+  /** Desk 11, sovereign escrow: share released (0 to 100) and whether the rupture freeze is engaged. */
+  escrowReleased?: number;
+  escrowFrozen?: boolean;
   /** Sovereign Custom Mode inscriptions. Every list rides the bus, the digest and the manifest. */
   customRules?: string[];
   customParties?: CustomParty[];
@@ -373,12 +382,14 @@ const SIGNAL_NUMBERS = [
   "bondMean", "weakestScore", "bondVariance", "trackTolerance", "rupture", "trendMultiplier",
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
   "handoverViability", "partyFriction", "presetEpoch", "safeguardCoverage",
+  "decayHalfLife", "projectedDegradation", "disputeEnforceability", "escrowReleased",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
   "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder", "presetId", "litigationForum", "counterpart",
+  "disputeForum",
 ] as const;
-const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated"] as const;
+const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen"] as const;
 const SIGNAL_STRING_LISTS = ["analogues", "traps", "shocks", "frictionPairs", "covenants", "mirrors", "customRules"] as const;
 
 /**
