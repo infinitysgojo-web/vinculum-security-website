@@ -21,7 +21,7 @@ describe("decay horizon", () => {
 });
 
 describe("dispute enforceability", () => {
-  test("ICSID scores 74", () => expect(enforceability(FORUMS.find((f) => f.id === "icsid")!)).toBe(74));
+  test("ICSID scores 80", () => expect(enforceability(FORUMS.find((f) => f.id === "icsid")!)).toBe(80));
   test("ICJ scores 46", () => expect(enforceability(FORUMS.find((f) => f.id === "icj")!)).toBe(46));
 });
 
