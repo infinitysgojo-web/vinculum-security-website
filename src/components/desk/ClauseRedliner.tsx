@@ -3,6 +3,8 @@ import { Wand2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import SyncPanel from "@/components/desk/SyncPanel";
 import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine";
+import ForumMatrix from "@/components/desk/ForumMatrix";
+import { FORUMS, forumFitness, type ForumTerms } from "@/components/desk/instruments";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 
 type Rule = {
@@ -193,7 +195,19 @@ export default function ClauseRedliner() {
   const ownHits = body.trim().length >= 20 ? own.filter((r) => body.toLowerCase().includes(r.phrase.toLowerCase())) : [];
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
-  usePublish("redliner", { redlineFlags: findings.length });
+  const [forumId, setForumId] = useState<string>("pca");
+  const [forumTerms, setForumTerms] = useState<ForumTerms>({ immunityWaived: false, neutralSeat: true });
+  const forum = FORUMS.find((f) => f.id === forumId) ?? FORUMS[0];
+  const forumFit = forumFitness(forum, forumTerms);
+  usePublish("redliner", {
+    redlineFlags: findings.length,
+    disputeForum: forum.name,
+    disputeForumId: forum.id,
+    activeForumScore: forumFit.fitness,
+    enforcementFriction: forumFit.friction,
+    immunityWaived: forumTerms.immunityWaived,
+    neutralSeat: forumTerms.neutralSeat,
+  });
   /** Shock-aware tests: wording that leans on a mechanism the live reading shows is failing. */
   const live: string[] = [];
   if (linked && body.trim().length >= 20) {
@@ -390,6 +404,7 @@ export default function ClauseRedliner() {
           </div>
         )}
         <SyncPanel linked={linked} onToggle={setLinked} summary={() => live.length ? live : ["The live reading raises no extra finding against this wording."]} />
+        <ForumMatrix value={forumId} onChange={setForumId} terms={forumTerms} onTerms={setForumTerms} />
         <div className="border border-brass/40 bg-background p-4 sm:p-5 space-y-2">
           <p className={label}>Custom mode: your own rule</p>
           <input className={field} value={op} onChange={(e) => setOp(e.target.value)} placeholder="Phrase to flag, e.g. best endeavours" />

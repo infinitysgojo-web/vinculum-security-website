@@ -323,7 +323,7 @@ export default function MultiPartySequencer() {
     rupture: linked ? signals.rupture : 0,
   });
   usePublish("multiparty", {
-    escrowReleased: escrow.released,
+    escrowReleasedPercent: escrow.released,
     escrowFrozen: escrow.frozen,
     escrowTranchesMet: escrow.tranches.filter((t) => t.met).length,
     seatedParties: seated.length,

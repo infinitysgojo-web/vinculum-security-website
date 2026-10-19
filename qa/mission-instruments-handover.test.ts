@@ -27,22 +27,20 @@ describe("public glossary mirrors the three instruments", () => {
 
   test("the equations are the ones the engine runs", () => {
     const f = (id: string) => GLOSSARY.find((x) => x.id === id)!.formula!.join(" ");
-    expect(f("decay-horizon")).toContain("λ = (U + R) ÷ 2000");
-    expect(f("decay-horizon")).toContain("T½ = ln 2 ÷ λ");
-    expect(f("decay-horizon")).toContain("B_i(t) = 1 + (B_i − 1) × e^(−λ_i t)");
+    expect(f("decay-horizon")).toContain("λ = (U_unmitigated + R_rupture) ÷ 2000");
+    expect(f("decay-horizon")).toContain("t½ = ln(2) ÷ λ, in days");
+    expect(f("decay-horizon")).toContain("B(t) = max(1.0, B₀ · e^(−λt))");
     expect(f("enforceability")).toContain("E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5");
     expect(f("escrow")).toContain("60 per cent");
     expect(f("escrow")).toContain("Final Cession");
     expect(f("enforceability")).toContain("E − 18");
+    expect(f("enforceability")).toContain("Enforcement friction = 100 − F");
   });
 
   test("the published bench values match the engine for every forum", () => {
-    const line = GLOSSARY.find((x) => x.id === "enforceability")!.formula!.find((l) => l.startsWith("Bench values"))!;
+    const line = GLOSSARY.find((x) => x.id === "enforceability")!.formula!.find((l) => l.startsWith("Venue fitness scores"))!;
     expect(line.match(/; /g)?.length).toBe(FORUMS.length - 1);
-    for (const forum of FORUMS) {
-      const short = forum.name.replace(" (CCJA)", "");
-      expect(line).toContain(`${short} ${enforceability(forum)}`);
-    }
+    for (const forum of FORUMS) expect(line).toContain(`${forum.name} ${enforceability(forum)}`);
   });
 
   test("glossary ids are unique and the Lexicon shows each id once", () => {
@@ -56,29 +54,31 @@ describe("public glossary mirrors the three instruments", () => {
 describe("instrument signals ride the browser-local bus", () => {
   const live = {
     bonds: { interpersonal: 2.5, communal: 1.6, intergenerational: 1.4, institutional: 1.8 },
-    decayHalfLife: 13.9,
+    decayConstant: 0.05,
+    stabilityHalfLifeDays: 13.9,
     projectedDegradation: 0.42,
-    disputeForum: "Permanent Court of Arbitration",
-    disputeEnforceability: 74,
+    disputeForum: "PCA / The Hague",
+    disputeForumId: "pca",
+    activeForumScore: 56,
+    enforcementFriction: 44,
     immunityWaived: false,
-    escrowReleased: 0,
+    neutralSeat: true,
+    escrowReleasedPercent: 0,
     escrowFrozen: true,
     escrowTranchesMet: 1,
-    decayConstant: 0.05,
-    stabilityHalfLifeDays: 423,
   };
 
-  test("all ten instrument signals survive archive sanitising", () => {
+  test("all twelve instrument signals survive archive sanitising", () => {
     const s = sanitizeSignals(JSON.parse(JSON.stringify(live)));
-    for (const k of ["decayHalfLife", "projectedDegradation", "decayConstant", "stabilityHalfLifeDays", "disputeForum", "disputeEnforceability", "immunityWaived", "escrowReleased", "escrowFrozen", "escrowTranchesMet"] as const)
+    for (const k of ["decayConstant", "stabilityHalfLifeDays", "projectedDegradation", "disputeForum", "disputeForumId", "activeForumScore", "enforcementFriction", "immunityWaived", "neutralSeat", "escrowReleasedPercent", "escrowFrozen", "escrowTranchesMet"] as const)
       expect(s[k]).toEqual(live[k]);
   });
 
   test("telemetry carries them into every brief and the Binder", () => {
     const t = telemetryLines(live).join("\n");
-    expect(t).toContain("treaty half-life 13.9 months (423 days), λ 0.0500 per month, mean bond loss 0.42");
-    expect(t).toContain("Dispute forum: Permanent Court of Arbitration, venue fitness 74 of 100; immunity not waived");
-    expect(t).toContain("Conditional escrow: frozen");
+    expect(t).toContain("Decay horizon: λ 0.0500, stability half-life 13.9 days, mean bond loss 0.42");
+    expect(t).toContain("Dispute forum (Desk 11): PCA / The Hague, venue fitness 56 of 100, enforcement friction 44; immunity unaddressed");
+    expect(t).toContain("Conditional escrow (Desk 07): frozen");
   });
 
   test("the instruments engine is pure: no network, storage, secrets or cloud client", () => {

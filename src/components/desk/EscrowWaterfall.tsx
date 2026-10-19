@@ -5,7 +5,7 @@ type Reading = ReturnType<typeof escrowWaterfall>;
 
 const pct = (n: number) => (Number.isInteger(n) ? `${n}` : n.toFixed(1));
 
-/** Multi-Party desk: conditional escrow, four tranches released in order on conditions read from the bus. */
+/** Desk 07: Conditional Escrow Waterfall, four milestone tranches released in order on conditions read from the bus. */
 export default function EscrowWaterfall({ reading, terms, onTerms }: {
   reading: Reading;
   terms: EscrowTerms;
@@ -30,16 +30,24 @@ export default function EscrowWaterfall({ reading, terms, onTerms }: {
         </p>
       )}
       {reading.total !== 100 && <p className="mt-1 text-[11px] text-terracotta">Tranche shares total {reading.total}%, not 100%.</p>}
-      <ol className="mt-3 space-y-2">
+      <div className="mt-3 flex h-3 w-full border border-border" role="img" aria-label={`${pct(reading.released)} per cent released, ${pct(reading.clawbackHeld + reading.bondHeld)} per cent held in reserve`}>
+        <div className={reading.frozen ? "bg-terracotta/40" : "bg-accent"} style={{ width: `${reading.frozen ? reading.gross : reading.released}%` }} />
+        {!reading.frozen && <div className="bg-brass/50" style={{ width: `${reading.clawbackHeld + reading.bondHeld}%` }} />}
+      </div>
+      <ol className="mt-3 space-y-3">
         {reading.tranches.map((t, i) => (
-          <li key={t.id} className="flex items-center gap-3 text-xs">
-            <span className={`w-4 text-center font-mono ${t.met ? "text-accent" : "text-muted-foreground"}`} aria-hidden>{t.met ? "+" : "·"}</span>
-            <span className="flex-1 min-w-0">
-              <span className="block text-primary">{t.label}</span>
-              <span className="block text-muted-foreground">{t.met ? "Met · " : "Not met · "}{t.condition}</span>
-            </span>
-            <input type="number" min={0} max={100} value={t.share} onChange={(e) => setShare(i, Number(e.target.value))}
-              aria-label={`${t.label} share in per cent`} className={input} />
+          <li key={t.id} className="text-xs">
+            <div className="flex items-center gap-3">
+              <span className="flex-1 min-w-0">
+                <span className="block text-primary">{t.label}</span>
+                <span className="block text-muted-foreground">{t.met ? (reading.frozen ? "Cleared, held by freeze" : "Cleared") : "Pending"} · {t.condition}</span>
+              </span>
+              <input type="number" min={0} max={100} value={t.share} onChange={(e) => setShare(i, Number(e.target.value))}
+                aria-label={`${t.label} share in per cent`} className={input} />
+            </div>
+            <div className="mt-1 h-1.5 w-full bg-border" aria-hidden>
+              <div className={`h-full ${t.met ? (reading.frozen ? "bg-terracotta/60" : "bg-accent") : "bg-transparent"}`} style={{ width: t.met ? "100%" : "0%" }} />
+            </div>
           </li>
         ))}
       </ol>
@@ -60,9 +68,16 @@ export default function EscrowWaterfall({ reading, terms, onTerms }: {
             : `Met ${pct(reading.gross)}%; held ${pct(reading.clawbackHeld)}% clawback and ${pct(reading.bondHeld)}% bond until Final Cession.`}
         </p>
       )}
-      <p className="mt-3 text-[11px] text-muted-foreground font-mono [overflow-wrap:anywhere]">
-        Tranches release in order. Released = Σ share_k × (1 − clawback) − bond until Final Cession, then Σ share_k; 0 while R ≥ {ESCROW_FREEZE}%
-      </p>
+      <details className="mt-3 border-t border-border pt-2 text-[11px]">
+        <summary className="cursor-pointer min-h-9 flex items-center text-primary">Formulae and clearing criteria</summary>
+        <ul className="mt-1 space-y-1 font-mono text-muted-foreground [overflow-wrap:anywhere]">
+          <li>A tranche clears only when its criterion holds and every earlier tranche has cleared.</li>
+          <li>Gross = Σ share_k for cleared tranches</li>
+          <li>Before Final Cession: Released = Gross × (1 − clawback) − performance bond, floor 0</li>
+          <li>At Final Cession: Released = Gross; clawback reserve and performance bond discharged</li>
+          <li>Emergency freeze: Released = 0 while R ≥ {ESCROW_FREEZE}%</li>
+        </ul>
+      </details>
     </div>
   );
 }

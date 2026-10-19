@@ -3,7 +3,6 @@ import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
-import ForumMatrix from "./ForumMatrix";
 import { FORUMS, forumClause, forumFitness, type ForumTerms } from "./instruments";
 
 /** Handbook §12 Continuity Provision drafting desk. Deterministic; nothing stored. */
@@ -151,14 +150,11 @@ export default function ClauseArchitect() {
     setPicked((p) => (p.includes(i) ? (p.length > 1 ? p.filter((x) => x !== i) : p) : [...p, i].sort((a, b) => a - b)));
 
 
-  const [forumId, setForumId] = useState<string>("pca");
-  const forum = FORUMS.find((f) => f.id === forumId) ?? FORUMS[0];
-  const [forumTerms, setForumTerms] = useState<ForumTerms>({ immunityWaived: true, neutralSeat: true });
+  // The dispute forum is chosen on Desk 11's enforceability matrix and read here from the bus.
+  const forum = FORUMS.find((f) => f.id === signals.disputeForumId) ?? FORUMS.find((f) => f.id === "pca")!;
+  const forumTerms: ForumTerms = { immunityWaived: signals.immunityWaived ?? false, neutralSeat: signals.neutralSeat ?? true };
   const forumFit = forumFitness(forum, forumTerms);
   usePublish("clauses", {
-    disputeForum: forum.name,
-    disputeEnforceability: forumFit.fitness,
-    immunityWaived: forumTerms.immunityWaived,
     covenants: [...picked.map((i) => FRAGILITIES[i].label), ...own.map((o) => o.label)],
     verifierSeated: picked.includes(4),
   });
@@ -218,7 +214,7 @@ export default function ClauseArchitect() {
     L.push(`PRECEDENT OF RECORD: ${a.precedent}.`);
     L.push("");
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
-    L.push("", `DISPUTE SETTLEMENT (${forum.name}; enforceability E ${forumFit.base}, venue fitness F ${forumFit.fitness} of 100${forumFit.immunity ? "; immunity not waived" : ""}${forumFit.seat ? "; seat not neutral" : ""})`, forumClause(forum, forumTerms));
+    L.push("", `DISPUTE SETTLEMENT (Desk 11 forum: ${forum.name}; venue fitness ${forumFit.fitness} of 100, enforcement friction ${forumFit.friction}${forumFit.immunity ? "; immunity unaddressed" : ""}${forumFit.seat ? "; seat not neutral" : ""})`, forumClause(forum, forumTerms));
     return L.join("\n");
   }, [ag, picked, title, parties, office, rig, own, ownType, live, signals, mandated, forum]);
 
@@ -324,7 +320,6 @@ export default function ClauseArchitect() {
               return n;
             }}
           />
-          <ForumMatrix value={forumId} onChange={setForumId} terms={forumTerms} onTerms={setForumTerms} />
           <div className="border border-brass/40 bg-background p-4">
             <span className={label}>Part C · operative preview</span>
             {picked.length + own.length === 0 ? (
