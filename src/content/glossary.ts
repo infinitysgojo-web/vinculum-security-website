@@ -7,6 +7,8 @@ export type GlossaryEntry = {
   source: string;
   quote: string;
   category: GlossaryCategory;
+  /** Formal equations, in plain text, for terms that name a deterministic instrument. */
+  formula?: string[];
 };
 
 export const GLOSSARY: GlossaryEntry[] = [
@@ -337,6 +339,51 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "Jurisprudence § II · Principle of the Weakest Bond",
     quote: "No accumulation of elite institutional agreements or textual declarations can compensate for an unaddressed communal or interpersonal deficit.",
     category: "method",
+  },
+  {
+    id: "decay-horizon",
+    term: "Decay Horizon (Stability Half-Life)",
+    short: "The stability half-life of a settlement: how many days, with no remedy applied, its relational bonds take to lose half their strength, given the unmitigated shock exposure and the rupture index on record. Bonds never decay below the statutory 1.0 sovereign baseline. It is a rule applied to the inputs, not a forecast of events.",
+    source: "The Vinculum Dashboard · Desk 17 instrument, Succession Simulator (Statutorily Protected Work)",
+    quote: "A settlement left untended does not hold its height; it settles toward the floor at a rate set by its unmitigated exposure and its rupture, and the half-life names how long the remedy may wait.",
+    category: "method",
+    formula: [
+      "Decay constant: λ = (U_unmitigated + R_rupture) ÷ 2000, where U is unmitigated shock exposure in points (full severity for each uninsulated shock, one quarter for each insulated shock) and R is the rupture index in per cent.",
+      "Stability half-life: t½ = ln(2) ÷ λ, in days; undefined when λ = 0, because nothing decays.",
+      "Dynamic bond preservation floor: B(t) = max(1.0, B₀ · e^(−λt)), so no bond decays below the statutory 1.0 sovereign baseline.",
+    ],
+  },
+  {
+    id: "enforceability",
+    term: "Dispute Forum Enforceability Matrix",
+    short: "A comparative bench that scores the forum an accord names for its disputes by how far an award can actually be enforced against a State under the 1958 New York Convention and the 1965 ICSID Convention. Each venue carries a fitness score, reduced when the clause leaves sovereign immunity unaddressed and when the seat is not neutral; enforcement friction is what remains at risk. Ratings are doctrinal ordinal judgements, not measured statistics.",
+    source: "The Vinculum Dashboard · Desk 11, Forum Matrix (Statutorily Protected Work)",
+    quote: "A dispute clause is only as strong as the place its award can be executed; a forum chosen for prestige and not for teeth leaves the accord with a right and no remedy.",
+    category: "core",
+    formula: [
+      "Base score E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, from doctrinal ratings on a 1 to 5 scale.",
+      "Venue fitness scores: ICSID 80; PCA / The Hague 74; LCIA 72; ICC Paris 70; Swiss Arbitration Centre 68; Singapore SIAC 66; ICJ Advisory 46.",
+      "Sovereign immunity waiver penalty: F = E − 18 when the clause leaves immunity from jurisdiction and execution unaddressed.",
+      "Seat neutrality weighting: a further − 8 when the seat lies in the territory of a party to the dispute; F is floored at 0.",
+      "Enforcement friction = 100 − F.",
+    ],
+  },
+  {
+    id: "escrow",
+    term: "Conditional Escrow Waterfall Protocol",
+    short: "Funds pledged to a settlement are held by a neutral custodian and released in four tranches, in order, each only when its verified relational condition is met. Part of every release is held back as a clawback reserve, and a sovereign performance bond is retained, until Final Cession. The whole account freezes while rupture is high, so money never rewards a peace that is breaking.",
+    source: "The Vinculum Dashboard · Desk 07, Escrow Waterfall (Statutorily Protected Work)",
+    quote: "Money released on signature buys a ceremony; money released on a verified bond buys the bond.",
+    category: "field",
+    formula: [
+      "Tranche 1, Mobilization: an independent verifier is seated.",
+      "Tranche 2, Demarcation: the communal bond stands above the 3.0 floor.",
+      "Tranche 3, Operational Commissioning: the institutional bond stands above 3.0 and the track gap is within tolerance.",
+      "Tranche 4, Final Cession: the intergenerational bond stands above 3.0 and treaty survival is at or above 55 per cent.",
+      "A tranche is met only when its own condition holds and every earlier tranche is met. Gross = Σ share_k for met tranches.",
+      "Before Final Cession: Released = Gross × (1 − clawback) − performance bond, floored at 0. At Final Cession: Released = Gross, and both reserves are discharged.",
+      "Emergency freeze: Released = 0 while the rupture index R is 60 per cent or more, whatever tranches are met.",
+    ],
   },
   ...([
     ["elite-pact-mirage", "Elite-Pact Mirage", "Agreement among principals that runs ahead of what the affected communities have actually carried, giving the appearance of peace without its relational foundation.", "Deterministic Relational Law · Track Sequencing", "An accord signed at the top and unowned below is a mirage: visible from afar, absent on arrival."],

@@ -66,7 +66,8 @@ export default function Glossary() {
       (g) =>
         g.term.toLowerCase().includes(query) ||
         g.short.toLowerCase().includes(query) ||
-        g.source.toLowerCase().includes(query)
+        g.source.toLowerCase().includes(query) ||
+        (g.formula ?? []).some((line) => line.toLowerCase().includes(query))
     );
   }, [q, activeCategory]);
 
@@ -235,6 +236,16 @@ export default function Glossary() {
 
                       <hr className="gold-rule gold-rule-short mt-3 mb-4" />
                       <p className="text-[0.95rem] leading-relaxed text-foreground/85">{g.short}</p>
+                      {g.formula?.length ? (
+                        <div className="mt-4 border border-brass/30 bg-navy-tint/40 p-3 min-w-0">
+                          <p className="text-[9px] uppercase tracking-[0.2em] font-semibold text-accent">Formal statement</p>
+                          <ul className="mt-2 space-y-1.5">
+                            {g.formula.map((line) => (
+                              <li key={line} className="font-mono text-[11px] leading-relaxed text-foreground/85 [overflow-wrap:anywhere]">{line}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
                       <blockquote className="mt-4 pl-4 border-l-2 border-brass text-sm italic font-serif text-primary/80 leading-relaxed">
                         {g.quote}
                       </blockquote>

@@ -203,15 +203,16 @@ export default function SuccessionSimulator() {
 
   // Section 4.5 canonical durability, from the live bonds, rupture index and covenants on the bus.
   const canon = useMemo(() => (linked ? successionDurability(signals) : undefined), [linked, signals]);
-  const [horizon, setHorizon] = useState<number>(12);
+  const [horizon, setHorizon] = useState<number>(180);
   const decay = useMemo(
-    () => (signals.bonds ? decayHorizon(signals.bonds, r.bonds.map((b) => b.strain), r.exposure, linked ? signals.rupture ?? 0 : 0, horizon) : null),
-    [signals.bonds, signals.rupture, r, linked, horizon],
+    () => (signals.bonds ? decayHorizon(signals.bonds, r.exposure, linked ? signals.rupture ?? 0 : 0, horizon) : null),
+    [signals.bonds, signals.rupture, r.exposure, linked, horizon],
   );
   // Publish the canonical S% when linked, otherwise the drafted-text quotient, so Desk 15 always has live data.
   usePublish("succession", {
     survivalScore: canon ? canon.percent : r.q,
-    decayHalfLife: decay?.halfLife ? Math.round(decay.halfLife * 10) / 10 : 0,
+    decayConstant: decay ? Math.round(decay.lambda * 10000) / 10000 : 0,
+    stabilityHalfLifeDays: decay?.halfLifeDays ? Math.round(decay.halfLifeDays * 10) / 10 : 0,
     projectedDegradation: decay?.meanLoss ?? 0,
   });
 
@@ -262,7 +263,11 @@ export default function SuccessionSimulator() {
       L.push(`  S% = ${canon.raw.toFixed(4)} / 5.0 x 100 = ${canon.percent.toFixed(1)}%`);
       L.push(canon.trap ? `  [TERMINAL SUCCESSION TRAP ENGAGED] S% is below the ${SUCCESSION_TRAP.toFixed(1)}% gate; Desk 15 clearance is locked.` : `  Gate passed: S% is at or above ${SUCCESSION_TRAP.toFixed(1)}%.`);
     }
-    if (decay) L.push("", `DECAY HORIZON: lambda = ${decay.lambda.toFixed(4)} per month; T1/2 = ${decay.halfLife ? decay.halfLife.toFixed(1) + " months" : "no modelled decay"}; mean bond loss at ${decay.months} months = ${decay.meanLoss.toFixed(2)}`);
+    if (decay) {
+      L.push("", `DECAY HORIZON AND STABILITY HALF-LIFE: lambda = (U + R) / 2000 = ${decay.lambda.toFixed(4)}; t1/2 = ln 2 / lambda = ${decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "no modelled decay"}`);
+      decay.bonds.forEach((b) => L.push(`  ${b.name}: ${b.now.toFixed(1)} -> ${b.then.toFixed(2)} at ${decay.days} days (B(t) = max(1.0, B0 x e^(-lambda t)))`));
+      L.push(`  Mean bond loss at ${decay.days} days = ${decay.meanLoss.toFixed(2)}`);
+    }
     L.push("", `READING: ${r.b.advice}`);
     L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
@@ -456,24 +461,22 @@ export default function SuccessionSimulator() {
               <p className="text-xs text-muted-foreground mt-1">{r.first.breaks}</p>
             </div>
           )}
-          <div className="border border-brass/40 bg-background p-4">
-            <p className={label}>Decay horizon · treaty half-life</p>
+          <div className="border border-brass/40 bg-background p-4 min-w-0">
+            <p className={label}>Decay horizon · stability half-life</p>
             {!decay ? (
               <p className="text-xs text-muted-foreground">Score the four bonds in Desk 1 to project their decay.</p>
             ) : (
               <>
                 <p className="font-serif text-3xl text-primary">
-                  {decay.halfLife ? decay.halfLife.toFixed(1) : "∞"}
-                  <span className="text-base text-muted-foreground"> months T½</span>
+                  {decay.halfLifeDays ? decay.halfLifeDays.toFixed(1) : "∞"}
+                  <span className="text-base text-muted-foreground"> days t½</span>
                 </p>
-                <p className="mt-1 text-[11px] text-muted-foreground font-mono [overflow-wrap:anywhere]">
-                  λ = (U + R) ÷ 2000 = ({r.exposure.toFixed(1)} + {linked ? signals.rupture ?? 0 : 0}) ÷ 2000 = {decay.lambda.toFixed(4)} · T½ = ln 2 ÷ λ
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground font-mono tabular-nums">λ = {decay.lambda.toFixed(4)} per day</p>
                 <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Projection horizon">
-                  {DECAY_HORIZONS.map((m) => (
-                    <button key={m} type="button" aria-pressed={horizon === m} onClick={() => setHorizon(m)}
-                      className={`min-h-9 px-3 border text-[10px] uppercase tracking-[0.16em] ${horizon === m ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
-                      {m} months
+                  {DECAY_HORIZONS.map((d) => (
+                    <button key={d} type="button" aria-pressed={horizon === d} onClick={() => setHorizon(d)}
+                      className={`min-h-9 px-3 border text-[10px] uppercase tracking-[0.16em] ${horizon === d ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
+                      {d} days
                     </button>
                   ))}
                 </div>
@@ -485,9 +488,25 @@ export default function SuccessionSimulator() {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-2 text-[11px] text-muted-foreground">
-                  Bᵢ(t) = 1 + (Bᵢ − 1)·e^(−λᵢ t), λᵢ = λ(0.5 + strainᵢ ÷ 100). Mean loss at {horizon} months: {decay.meanLoss.toFixed(2)}. A rule applied to the inputs, not a forecast.
-                </p>
+                <p className={`${label} mt-4`}>Breakdown curve · mean bond</p>
+                <div className="flex items-end gap-1 h-20" role="img" aria-label={`Mean bond from ${decay.curve[0].mean.toFixed(2)} to ${decay.curve[decay.curve.length - 1].mean.toFixed(2)} over ${decay.days} days`}>
+                  {decay.curve.map((pt) => (
+                    <div key={pt.day} className="flex-1 min-w-0 flex flex-col items-center justify-end h-full">
+                      <div className="w-full bg-accent/70" style={{ height: `${(pt.mean / 5) * 100}%` }} />
+                      <span className="mt-1 text-[9px] font-mono tabular-nums text-muted-foreground">{pt.day}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-1 text-[10px] text-muted-foreground">Day 0 to day {decay.days}; mean loss {decay.meanLoss.toFixed(2)}. Floor 1.0.</p>
+                <details className="mt-3 border-t border-border pt-2 text-[11px]">
+                  <summary className="cursor-pointer min-h-9 flex items-center text-primary">Formulae</summary>
+                  <ul className="mt-1 space-y-1 font-mono text-muted-foreground [overflow-wrap:anywhere]">
+                    <li>λ = (U_unmitigated + R_rupture) ÷ 2000 = ({r.exposure.toFixed(1)} + {linked ? signals.rupture ?? 0 : 0}) ÷ 2000 = {decay.lambda.toFixed(4)}</li>
+                    <li>t½ = ln(2) ÷ λ = {decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "undefined (λ = 0)"}</li>
+                    <li>B(t) = max(1.0, B₀ · e^(−λt))</li>
+                  </ul>
+                  <p className="mt-1 text-muted-foreground">A rule applied to the inputs, not a forecast. Bonds never decay below the statutory 1.0 sovereign baseline.</p>
+                </details>
               </>
             )}
           </div>

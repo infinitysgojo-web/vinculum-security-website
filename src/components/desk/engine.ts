@@ -356,14 +356,20 @@ export type Signals = {
   litigationForum?: string;
   /** Counterpart desk: the archetype being prepared for. */
   counterpart?: string;
-  /** Desk 17, decay horizon: treaty half-life T½ in months (0 when no modelled decay) and mean bond loss at the chosen horizon. */
-  decayHalfLife?: number;
+  /** Decay Horizon (SuccessionSimulator): decay constant λ = (U + R) ÷ 2000 and stability half-life t½ = ln 2 ÷ λ in days (0 when no decay); mean bond loss at the chosen horizon. */
+  decayConstant?: number;
+  stabilityHalfLifeDays?: number;
   projectedDegradation?: number;
-  /** Desk 7, dispute forum chosen for the accord and its enforceability index E (0 to 100). */
+  /** Desk 11, Dispute Forum Enforceability Matrix: chosen venue, its fitness score (0 to 100), enforcement friction (100 − fitness), and the clause terms. */
   disputeForum?: string;
-  disputeEnforceability?: number;
-  /** Desk 11, sovereign escrow: share released (0 to 100) and whether the rupture freeze is engaged. */
-  escrowReleased?: number;
+  disputeForumId?: string;
+  activeForumScore?: number;
+  enforcementFriction?: number;
+  immunityWaived?: boolean;
+  neutralSeat?: boolean;
+  /** Desk 07, Conditional Escrow Waterfall: per cent of the pledge released, tranches met in order (of four), and the rupture freeze. */
+  escrowReleasedPercent?: number;
+  escrowTranchesMet?: number;
   escrowFrozen?: boolean;
   /** Sovereign Custom Mode inscriptions. Every list rides the bus, the digest and the manifest. */
   customRules?: string[];
@@ -382,14 +388,15 @@ const SIGNAL_NUMBERS = [
   "bondMean", "weakestScore", "bondVariance", "trackTolerance", "rupture", "trendMultiplier",
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
   "handoverViability", "partyFriction", "presetEpoch", "safeguardCoverage",
-  "decayHalfLife", "projectedDegradation", "disputeEnforceability", "escrowReleased",
+  "decayConstant", "stabilityHalfLifeDays", "projectedDegradation", "activeForumScore", "enforcementFriction",
+  "escrowReleasedPercent", "escrowTranchesMet",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
   "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder", "presetId", "litigationForum", "counterpart",
-  "disputeForum",
+  "disputeForum", "disputeForumId",
 ] as const;
-const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen"] as const;
+const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen", "immunityWaived", "neutralSeat"] as const;
 const SIGNAL_STRING_LISTS = ["analogues", "traps", "shocks", "frictionPairs", "covenants", "mirrors", "customRules"] as const;
 
 /**
@@ -880,6 +887,16 @@ export function telemetryLines(s: Signals): string[] {
   if (s.covenants?.length) L.push(`  Covenants drafted upstream: ${s.covenants.join("; ")}.`);
   if (s.survivalScore !== undefined) L.push(`  Treaty survival under stress: ${s.survivalScore} per cent.`);
   if (s.safeguardCoverage !== undefined) L.push(`  Stakeholder safeguards complete: ${s.safeguardCoverage} per cent of affected parties.`);
+  if (s.stabilityHalfLifeDays !== undefined)
+    L.push(s.stabilityHalfLifeDays > 0
+      ? `  Decay horizon: λ ${(s.decayConstant ?? 0).toFixed(4)}, stability half-life ${s.stabilityHalfLifeDays} days${s.projectedDegradation !== undefined ? `, mean bond loss ${s.projectedDegradation.toFixed(2)} at the chosen horizon` : ""}.`
+      : "  Decay horizon: no modelled decay (no unmitigated exposure and no rupture).");
+  if (s.disputeForum)
+    L.push(`  Dispute forum (Desk 11): ${s.disputeForum}${s.activeForumScore !== undefined ? `, venue fitness ${s.activeForumScore} of 100` : ""}${s.enforcementFriction !== undefined ? `, enforcement friction ${s.enforcementFriction}` : ""}${s.immunityWaived === false ? "; immunity unaddressed" : s.immunityWaived ? "; immunity waived" : ""}.`);
+  if (s.escrowReleasedPercent !== undefined)
+    L.push(s.escrowFrozen
+      ? "  Conditional escrow (Desk 07): frozen, rupture at or above 60 per cent; 0 per cent released."
+      : `  Conditional escrow (Desk 07): ${s.escrowReleasedPercent} per cent released${s.escrowTranchesMet !== undefined ? `, ${s.escrowTranchesMet} of 4 tranches met` : ""}.`);
   if (s.litigationForum) L.push(`  Litigation forum in preparation: ${s.litigationForum}.`);
   if (s.counterpart) L.push(`  Counterpart being prepared for: ${s.counterpart}.`);
   const dyn = relationalDynamics(s);
