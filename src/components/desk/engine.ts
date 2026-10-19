@@ -880,6 +880,13 @@ export function telemetryLines(s: Signals): string[] {
   if (s.covenants?.length) L.push(`  Covenants drafted upstream: ${s.covenants.join("; ")}.`);
   if (s.survivalScore !== undefined) L.push(`  Treaty survival under stress: ${s.survivalScore} per cent.`);
   if (s.safeguardCoverage !== undefined) L.push(`  Stakeholder safeguards complete: ${s.safeguardCoverage} per cent of affected parties.`);
+  if (s.decayHalfLife !== undefined)
+    L.push(s.decayHalfLife > 0
+      ? `  Decay horizon: treaty half-life ${s.decayHalfLife} months${s.projectedDegradation !== undefined ? `, mean bond loss ${s.projectedDegradation.toFixed(2)} at the chosen horizon` : ""}.`
+      : "  Decay horizon: no modelled decay (no uninsulated exposure and no rupture).");
+  if (s.disputeForum) L.push(`  Dispute forum: ${s.disputeForum}${s.disputeEnforceability !== undefined ? `, enforceability ${s.disputeEnforceability} of 100` : ""}.`);
+  if (s.escrowReleased !== undefined)
+    L.push(s.escrowFrozen ? `  Sovereign escrow: frozen, rupture at or above 60 per cent; 0 per cent released.` : `  Sovereign escrow: ${s.escrowReleased} per cent released on met conditions.`);
   if (s.litigationForum) L.push(`  Litigation forum in preparation: ${s.litigationForum}.`);
   if (s.counterpart) L.push(`  Counterpart being prepared for: ${s.counterpart}.`);
   const dyn = relationalDynamics(s);

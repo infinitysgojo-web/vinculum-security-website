@@ -7,6 +7,8 @@ export type GlossaryEntry = {
   source: string;
   quote: string;
   category: GlossaryCategory;
+  /** Formal equations, in plain text, for terms that name a deterministic instrument. */
+  formula?: string[];
 };
 
 export const GLOSSARY: GlossaryEntry[] = [
@@ -337,6 +339,50 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "Jurisprudence § II · Principle of the Weakest Bond",
     quote: "No accumulation of elite institutional agreements or textual declarations can compensate for an unaddressed communal or interpersonal deficit.",
     category: "method",
+  },
+  {
+    id: "decay-horizon",
+    term: "Decay Horizon (Stability Half-Life)",
+    short: "The treaty half-life: how many months each relational bond takes, with no remedy applied, to lose half of its height above the 1.0 floor. It is a rule applied to recorded exposure and rupture, not a forecast of events.",
+    source: "The Vinculum Dashboard · Succession Desk, Decay Horizon (Statutorily Protected Work)",
+    quote: "A settlement left untended does not hold its height; it settles toward the floor at a rate set by its unmitigated exposure and its rupture, and the half-life names how long the remedy may wait.",
+    category: "method",
+    formula: [
+      "λ = (U + R) ÷ 2000, per month, where U is uninsulated shock exposure in points (full severity for each uninsulated shock, one quarter for each insulated shock) and R is the rupture index in per cent.",
+      "T½ = ln 2 ÷ λ, in months; undefined when λ = 0, because nothing decays.",
+      "λ_i = λ × (0.5 + strain_i ÷ 100) for each bond i, so a bond under heavier strain decays faster.",
+      "B_i(t) = 1 + (B_i − 1) × e^(−λ_i t). Every bond approaches the 1.0 floor and never falls below it.",
+    ],
+  },
+  {
+    id: "enforceability",
+    term: "Dispute Forum Enforceability Matrix",
+    short: "A comparative bench that ranks the forum an accord names for its disputes by how well an award or judgment can actually be enforced against a State: the strength of the enforcement route, the exposure to a sovereign-immunity defence at execution, and the speed of procedure. Ratings are doctrinal ordinal judgements on a 1 to 5 scale, not measured statistics.",
+    source: "The Vinculum Dashboard · Clause Architect, Forum Bench (Statutorily Protected Work)",
+    quote: "A dispute clause is only as strong as the place its award can be executed; a forum chosen for prestige and not for teeth leaves the accord with a right and no remedy.",
+    category: "core",
+    formula: [
+      "E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, rounded, on a scale of 0 to 100.",
+      "Teeth: strength of the enforcement route, from 1 to 5 (ICSID awards enforced as final domestic judgments under Washington Convention art. 54 rate 5).",
+      "Immunity: exposure to a sovereign-immunity defence at execution, from 1 to 5, where 5 is most exposed; an express waiver of immunity from execution lowers it.",
+      "Pace: speed of procedure, from 1 to 5, where 5 is fastest.",
+      "Bench values: ICSID 80; Permanent Court of Arbitration 70; OHADA Common Court 70; UNCITRAL ad hoc tribunal 58; International Court of Justice 46.",
+    ],
+  },
+  {
+    id: "escrow",
+    term: "Conditional Escrow Waterfall Protocol",
+    short: "Funds pledged to a settlement are held by a neutral custodian and released in tranches, each only when its verified relational condition is met; the whole account freezes while rupture is high, so money never rewards a peace that is breaking.",
+    source: "The Vinculum Dashboard · Multi-Party Desk, Sovereign Escrow (Statutorily Protected Work)",
+    quote: "Money released on signature buys a ceremony; money released on a verified bond buys the bond.",
+    category: "field",
+    formula: [
+      "Tranche 1, signature: released when an independent verifier is seated.",
+      "Tranche 2, communal: released when the communal bond stands at or above 3.0.",
+      "Tranche 3, succession: released when the intergenerational bond stands at or above 3.0.",
+      "Released = Σ share_k for every met tranche; the shares are set by the parties and should total 100 per cent.",
+      "Freeze: Released = 0 while the rupture index R is 60 per cent or more, whatever tranches are met.",
+    ],
   },
   ...([
     ["elite-pact-mirage", "Elite-Pact Mirage", "Agreement among principals that runs ahead of what the affected communities have actually carried, giving the appearance of peace without its relational foundation.", "Deterministic Relational Law · Track Sequencing", "An accord signed at the top and unowned below is a mirage: visible from afar, absent on arrival."],
