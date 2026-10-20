@@ -444,6 +444,15 @@ export const COMMENTARY: Division[] = [
           "The design follows the Liebig Relational Minimum: money is tied to the bond it is meant to build, so released funds reflect verified relational conditions rather than signatures or ceremonies.",
         ],
       },
+      {
+        id: "instruments-together",
+        q: "How do the Decay Horizon, the forum matrix and the escrow waterfall work together on one reading?",
+        a: [
+          "They read the same inputs, so they cannot drift apart. The rupture index raises the decay constant and shortens the stability half-life; at 60 per cent or more it also freezes the escrow account. The bond scores that set the decay path are the same scores each escrow tranche must clear above the 3.0 floor.",
+          "The forum matrix covers the case where those conditions fail and a party disputes the accord. A low enforcement friction means a breach can be remedied; a high one means the settlement depends on goodwill that the Decay Horizon may show is already wearing away.",
+          "Read together, they answer three practical questions about one settlement: how fast it erodes if left alone, whether its money is tied to verified bonds, and whether its promises can be enforced if the bonds give way.",
+        ],
+      },
     ],
   },
   {
@@ -609,7 +618,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
     "elite-pact-mirage", "sovereignty-obligation", "wps-yps", "capacity-vs-alienation", "what-is-dashboard", "desk-chain",
     "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
     "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
-    "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall",
+    "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall", "instruments-together",
   ],
   // Confidentiality, integrity, auditability, legal status, attribution and citation.
   statutory: [

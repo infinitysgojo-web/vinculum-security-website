@@ -297,6 +297,9 @@ The Dispute Forum Enforceability Matrix rates venues on doctrinal 1 to 5 scales:
 #### Q: How does a Conditional Escrow Waterfall keep money from rewarding a peace that is breaking?
 Pledged funds are released in four ordered tranches (Mobilization, Demarcation, Operational Commissioning, Final Cession), each only on its verified relational condition, with a clawback reserve and performance bond held until Final Cession. The account freezes while the rupture index is 60 per cent or more.
 
+#### Q: How do the Decay Horizon, the forum matrix and the escrow waterfall work together on one reading?
+They read the same inputs. The rupture index shortens the stability half-life and, at 60 per cent or more, freezes the escrow; the same bond scores set the decay path and gate each tranche above 3.0. The forum matrix shows whether promises can be enforced if those bonds give way.
+
 
 ### Division VI: Empirical Calibration Against the Canonical Cases
 *The historical processes against which the doctrine is tested, and what they show.*
