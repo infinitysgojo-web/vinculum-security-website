@@ -417,6 +417,33 @@ export const COMMENTARY: Division[] = [
           "Fixed calendar expirations can, however, invite delay: a reluctant party may wait out the deadline rather than comply. The doctrine therefore favours transitions tied to agreed, verifiable benchmarks, while recognising that some fixed dates may still be politically necessary.",
         ],
       },
+      {
+        id: "decay-horizon",
+        q: "What is the Decay Horizon, and why does an unattended settlement have a half-life?",
+        a: [
+          "The Decay Horizon puts a number on Relational Entropy. It asks how long, with no remedy applied, a settlement's bonds take to lose half their strength, given the shocks left unmitigated and the rupture index on record. The decay constant is λ = (U + R) ÷ 2000, where U is unmitigated shock exposure and R is the rupture index in per cent, and the stability half-life is t½ = ln(2) ÷ λ days.",
+          "Each bond then follows B(t) = max(1.0, B₀ · e^(−λt)), so no bond falls below the 1.0 sovereign baseline. Insulating a shock or lowering rupture reduces λ and lengthens the half-life, which is why the doctrine treats maintenance as part of the settlement rather than an afterthought.",
+          "It is a rule applied to recorded inputs, not a forecast of events. It says how fast neglect erodes the bonds on the current reading, not when or whether conflict will occur.",
+        ],
+      },
+      {
+        id: "forum-enforceability",
+        q: "Why does the doctrine score the dispute forum an accord names, rather than taking the clause at its word?",
+        a: [
+          "A dispute clause is only as strong as the place its award can be executed. The Dispute Forum Enforceability Matrix rates each venue on doctrinal 1 to 5 scales for procedural teeth, exposure to sovereign immunity, and pace, and combines them as E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, with reference to the 1958 New York Convention and the 1965 ICSID Convention.",
+          "The score is reduced by 18 when the clause leaves immunity from jurisdiction and execution unaddressed, and by a further 8 when the seat lies in the territory of a party to the dispute. Enforcement friction, 100 minus the result, is what remains at risk.",
+          "The ratings are ordinal doctrinal judgements, not measured statistics. Their purpose is to stop a forum being chosen for prestige when the accord needs a remedy it can actually enforce.",
+        ],
+      },
+      {
+        id: "escrow-waterfall",
+        q: "How does a Conditional Escrow Waterfall keep money from rewarding a peace that is breaking?",
+        a: [
+          "Funds pledged to a settlement are held by a neutral custodian and released in four tranches, in order: Mobilization once an independent verifier is seated; Demarcation once the communal bond stands above 3.0; Operational Commissioning once the institutional bond stands above 3.0 and the track gap is within tolerance; and Final Cession once the intergenerational bond stands above 3.0 and treaty survival is at or above 55 per cent.",
+          "Until Final Cession, part of each release is held back as a clawback reserve and a sovereign performance bond is retained. The whole account freezes while the rupture index is 60 per cent or more, whatever tranches have been met.",
+          "The design follows the Liebig Relational Minimum: money is tied to the bond it is meant to build, so released funds reflect verified relational conditions rather than signatures or ceremonies.",
+        ],
+      },
     ],
   },
   {
@@ -570,6 +597,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
   mathematics: [
     "deterministic-relational-law", "liebig", "relational-entropy", "relational-deficit", "falsifiability",
     "continuum", "scoring", "assessment", "trend", "relational-contagion", "incident-vs-decay", "weakest-bond-warning",
+    "decay-horizon",
   ],
   // The referent object and its intellectual lineage: Ubuntu, Confucian role ethics, Galtung, Rawls, realism.
   lineage: [
@@ -581,7 +609,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
     "elite-pact-mirage", "sovereignty-obligation", "wps-yps", "capacity-vs-alienation", "what-is-dashboard", "desk-chain",
     "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
     "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
-    "climate", "corridors", "kenya-2008", "colonial-boundaries",
+    "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall",
   ],
   // Confidentiality, integrity, auditability, legal status, attribution and citation.
   statutory: [
