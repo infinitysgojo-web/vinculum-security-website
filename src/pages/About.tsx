@@ -206,7 +206,7 @@ export default function About() {
               Provenance, Disambiguation &amp; Primary Citations
             </h3>
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-              Review authoritative statements on authorship provenance, statutory protection under copyright law, entity disambiguation, and canonical citations.
+              Review authoritative statements on authorship provenance, statutory registration of The Vinculum Compact and The Vinculum Codex under copyright law, entity disambiguation, and canonical citations.
             </p>
           </div>
           <a
