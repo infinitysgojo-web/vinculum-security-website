@@ -286,6 +286,18 @@ Sunset clauses can reassure hesitant parties that obligations are not permanent,
 
 Fixed calendar expirations can, however, invite delay: a reluctant party may wait out the deadline rather than comply. The doctrine therefore favours transitions tied to agreed, verifiable benchmarks, while recognising that some fixed dates may still be politically necessary.
 
+#### Q: What is the Decay Horizon, and why does an unattended settlement have a half-life?
+The Decay Horizon puts a number on Relational Entropy: how long, with no remedy applied, a settlement's bonds take to lose half their strength. Decay constant λ = (U + R) ÷ 2000 (U unmitigated shock exposure, R rupture index in per cent); stability half-life t½ = ln(2) ÷ λ days; each bond follows B(t) = max(1.0, B₀ · e^(−λt)).
+
+It is a rule applied to recorded inputs, not a forecast of events.
+
+#### Q: Why does the doctrine score the dispute forum an accord names, rather than taking the clause at its word?
+The Dispute Forum Enforceability Matrix rates venues on doctrinal 1 to 5 scales: E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, minus 18 when sovereign immunity is unaddressed and a further 8 when the seat is not neutral. Enforcement friction = 100 minus the result. Ratings are ordinal judgements, not statistics.
+
+#### Q: How does a Conditional Escrow Waterfall keep money from rewarding a peace that is breaking?
+Pledged funds are released in four ordered tranches (Mobilization, Demarcation, Operational Commissioning, Final Cession), each only on its verified relational condition, with a clawback reserve and performance bond held until Final Cession. The account freezes while the rupture index is 60 per cent or more.
+
+
 ### Division VI: Empirical Calibration Against the Canonical Cases
 *The historical processes against which the doctrine is tested, and what they show.*
 
