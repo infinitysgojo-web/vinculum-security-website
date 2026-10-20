@@ -78,8 +78,8 @@ export default function Commentary() {
   const { hash } = useLocation();
 
   // Deep links: /commentary#<division-id> scrolls to a division;
-  // /commentary#inquiry-<N> (the permalink form) and the older /commentary#q-<inquiry-id>
-  // both scroll to that inquiry, open it and mark it.
+  // /commentary#q-<slug> (the permanent permalink form) and the legacy /commentary#inquiry-<N>
+  // both scroll to that inquiry, open it and mark it. Slugs never shift when inquiries are added or reordered.
   useEffect(() => {
     if (!hash) return;
     let target = decodeURIComponent(hash.slice(1));
@@ -92,7 +92,7 @@ export default function Commentary() {
       if (item) setQuery((q) => (matchesQuery(item, q) ? q : ""));
       setOpenItems((prev) => ({ ...prev, [itemId]: true }));
       setMarked(itemId);
-      target = `inquiry-${INQUIRY_NUMBER[itemId]}`;
+      target = `q-${itemId}`;
     }
     const t = window.setTimeout(() => {
       document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -102,8 +102,8 @@ export default function Commentary() {
 
   const copyPermalink = async (id: string) => {
     const n = INQUIRY_NUMBER[id];
-    const url = `${window.location.origin}/commentary#inquiry-${n}`;
-    window.history.replaceState(null, "", `#inquiry-${n}`);
+    const url = `${window.location.origin}/commentary#q-${id}`;
+    window.history.replaceState(null, "", `#q-${id}`);
     setMarked(id);
     setOpenItems((prev) => ({ ...prev, [id]: true }));
     try {
@@ -229,16 +229,16 @@ export default function Commentary() {
                     return (
                       <div
                         key={item.id}
-                        id={`inquiry-${n}`}
+                        id={`q-${item.id}`}
                         className={`scroll-mt-40 border bg-card/40 transition-colors hover:border-accent/40 ${
                           isMarked ? "border-accent ring-1 ring-accent/30" : "border-border/70"
                         }`}
                       >
-                        {/* Legacy anchor, so older #q-<id> links still land here. */}
-                        <span id={`q-${item.id}`} className="block scroll-mt-40" aria-hidden />
+                        {/* Legacy anchor, so older #inquiry-<n> links still land here. */}
+                        <span id={`inquiry-${n}`} className="block scroll-mt-40" aria-hidden />
                         <div className="flex items-start">
                           <a
-                            href={`#inquiry-${n}`}
+                            href={`#q-${item.id}`}
                             onClick={(e) => {
                               e.preventDefault();
                               copyPermalink(item.id);

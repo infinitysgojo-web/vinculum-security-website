@@ -21,8 +21,8 @@ const INDEX: Entry[] = [
         title: item.q,
         detail: `Inquiry ${n} · Division ${d.numeral}, ${d.title}`,
         haystack: `${item.q} ${item.a.join(" ")}`.toLowerCase(),
-        to: `/commentary#inquiry-${n}`,
-        anchor: `inquiry-${n}`,
+        to: `/commentary#q-${item.id}`,
+        anchor: `q-${item.id}`,
       };
     }),
   ),

@@ -579,7 +579,7 @@ export const COMMENTARY: Division[] = [
 
 export const COMMENTARY_COUNT = COMMENTARY.reduce((n, d) => n + d.items.length, 0);
 
-/** Sitewide inquiry numbering, 1 to COMMENTARY_COUNT in reading order, used for `#inquiry-N` permalinks. */
+/** Sitewide inquiry numbering, 1 to COMMENTARY_COUNT in reading order, shown as `#N` labels; permalinks use `#q-<slug>`, and legacy `#inquiry-N` links resolve through INQUIRY_BY_NUMBER. */
 export const INQUIRY_NUMBER: Record<string, number> = Object.fromEntries(
   COMMENTARY.flatMap((d) => d.items).map((item, i) => [item.id, i + 1]),
 );
