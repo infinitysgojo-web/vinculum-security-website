@@ -618,7 +618,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
     "elite-pact-mirage", "sovereignty-obligation", "wps-yps", "capacity-vs-alienation", "what-is-dashboard", "desk-chain",
     "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
     "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
-    "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall",
+    "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall", "instruments-together",
   ],
   // Confidentiality, integrity, auditability, legal status, attribution and citation.
   statutory: [
