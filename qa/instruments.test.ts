@@ -62,9 +62,9 @@ import { fractureWindow, rebalance, resourceReading, pleadingHeads } from "../sr
 
 describe("fracture window", () => {
   test("t_f = ln(B̄₀ ÷ 2) ÷ λ", () => {
-    const f = fractureWindow(4, 0.01);
-    expect(f.days).toBe(Math.round(Math.log(2) / 0.01));
-    expect(f.severity).toBe("acute");
+    const f = fractureWindow(4, 0.001);
+    expect(f.days).toBe(Math.round(Math.log(2) / 0.001));
+    expect(f.severity).toBe("monitored");
   });
   test("no decay is stable; mean at or below 2.0 is imminent", () => {
     expect(fractureWindow(4, 0).severity).toBe("stable");
