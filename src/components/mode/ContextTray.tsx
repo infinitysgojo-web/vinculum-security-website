@@ -113,13 +113,13 @@ export default function ContextTray({
           </SheetDescription>
         </SheetHeader>
         <Tabs value={tab} onValueChange={(v) => onTab(v as TrayTab)} className="mt-4">
-          <TabsList className="grid h-auto w-full grid-cols-2 gap-1 sm:grid-cols-4">
+          <TabsList className="grid h-auto w-full grid-cols-2 gap-1">
             {(["assumptions", "evidence", "questions"] as TrayPanel[]).map((p) => (
-              <TabsTrigger key={p} value={p} className="text-[10px] uppercase tracking-[0.12em]">
+              <TabsTrigger key={p} value={p} className="min-w-0 whitespace-normal px-2 py-1.5 text-center text-[10px] uppercase leading-tight tracking-[0.1em]">
                 {PANEL_LABEL[p]} ({ws.tray.filter((e) => e.panel === p).length})
               </TabsTrigger>
             ))}
-            <TabsTrigger value="decisions" className="text-[10px] uppercase tracking-[0.12em]">
+            <TabsTrigger value="decisions" className="min-w-0 whitespace-normal px-2 py-1.5 text-center text-[10px] uppercase leading-tight tracking-[0.1em]">
               Decisions ({ws.decisions.length})
             </TabsTrigger>
           </TabsList>
