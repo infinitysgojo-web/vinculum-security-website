@@ -394,7 +394,7 @@ export default function MultiPartySequencer() {
     L.push("", `CONDITIONAL ESCROW: ${escrow.frozen ? "FROZEN (rupture at or above 60%)" : `${escrow.released}% of ${escrow.total}% released; clawback ${escrowTerms.clawback}% and performance bond ${escrowTerms.bond}% ${escrow.ceded ? "discharged at Final Cession" : "held until Final Cession"}`}`);
     escrow.tranches.forEach((t) => L.push(`  [${t.met ? "x" : " "}] ${t.label} (${t.share}%): ${t.condition}`));
     return L.join("\n");
-  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow, escrowTerms]);
+  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow, escrowTerms, resources, res]);
 
   return (
     <div className="w-full min-w-0">
