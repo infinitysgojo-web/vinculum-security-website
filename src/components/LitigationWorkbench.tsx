@@ -5,6 +5,7 @@ import { telemetryLines, useEngine, usePublish } from "@/components/desk/engine"
 import { useEffect } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput from "@/components/desk/DeskOutput";
+import { ADMISSIBILITY, enforceability, pleadingForum, pleadingHeads, pleadingLines, PROVISIONAL_THRESHOLD } from "@/components/desk/instruments";
 
 /**
  * The Legal & Litigation Preparation Workbench.
@@ -167,6 +168,12 @@ export default function LitigationWorkbench() {
     const i = (DOMAINS as readonly string[]).indexOf(signals.weakestBond);
     if (i >= 0) setBond(i);
   }, [linked, signals.weakestBond]);
+  // Pleadings Bench: fixed heads compiled from the live bus (dispute forum, covenants, weakest bond, rupture).
+  const pleadings = useMemo(() => pleadingHeads(signals), [signals]);
+  const pleadingVenue = pleadingForum(signals);
+  const rupture = signals.rupture ?? 0;
+  const provisionalActive = rupture >= PROVISIONAL_THRESHOLD;
+
   const text = useMemo(() => {
     const f = activeForum;
     const p = POSTURES[posture];
@@ -198,13 +205,15 @@ export default function LitigationWorkbench() {
     lines.push(`Risk: ${t.risk}`);
     lines.push(`Answer: ${t.counter}`);
     lines.push("");
-    lines.push("IV. EXAMINATION LINE (HANDBOOK §9A)");
+    lines.push(...pleadingLines(signals));
+    lines.push("");
+    lines.push("V. EXAMINATION LINE (HANDBOOK §9A)");
     lines.push(`  Scripted inquiry: "${BOND_INQUIRY[bond]}"`);
     lines.push(
       "  Guardrail: no witness from an affected community is exposed without an existing protection framework in force; children are a protected party and are never examined as a bond source."
     );
     lines.push("");
-    lines.push("V. PRAYER FOR CONTINUITY RELIEF (HANDBOOK §12)");
+    lines.push("VI. PRAYER FOR CONTINUITY RELIEF (HANDBOOK §12)");
     lines.push(`  1. ${BOND_RELIEF[bond]}`);
     lines.push(`  2. ${BOND_RELIEF[3]}`);
     lines.push(
@@ -212,7 +221,7 @@ export default function LitigationWorkbench() {
     );
     lines.push("");
     if (linked) lines.push(...telemetryLines(signals));
-    lines.push("VI. NOTE ON COMPILATION");
+    lines.push("VII. NOTE ON COMPILATION");
     lines.push(
       "This checklist is compiled deterministically from fixed doctrinal rules. No part of it is machine-generated or predictive, and nothing entered above leaves this browser."
     );
@@ -326,6 +335,45 @@ export default function LitigationWorkbench() {
             </button>
           </div>
         </div>
+      </div>
+      <div className="mt-8 w-full min-w-0 border border-brass/40 bg-background p-4 sm:p-5" aria-labelledby="lit-pleadings">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <p id="lit-pleadings" className={label}>Doctrinal pleading heads · Pleadings Bench</p>
+          <span className="font-mono text-[10px] text-primary">{pleadings.ready} of {pleadings.total} heads ready</span>
+        </div>
+        <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-border pb-3">
+          {pleadingVenue ? (
+            <>
+              <span className="border border-primary/50 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-primary">{pleadingVenue.name}</span>
+              <span className="text-[11px] text-muted-foreground [overflow-wrap:anywhere]">{pleadingVenue.basis}</span>
+              <span className="border border-brass/50 px-2 py-1 font-mono text-[10px] text-primary">Teeth {pleadingVenue.teeth}/5 · E {enforceability(pleadingVenue)}</span>
+            </>
+          ) : (
+            <span className="text-[11px] text-muted-foreground">No dispute forum on the bus. Select a venue on the Forum Matrix (Desk 11).</span>
+          )}
+        </div>
+        {pleadingVenue && (
+          <p className="mb-4 text-xs leading-relaxed text-foreground/85"><span className="font-semibold text-primary">Admissibility. </span>{ADMISSIBILITY[pleadingVenue.id]}</p>
+        )}
+        <ol className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {pleadings.heads.filter((h) => h.id !== "provisional").map((h) => (
+            <li key={h.id} className={`border p-3 ${h.ready ? "border-primary/40 bg-navy-tint/30" : "border-dashed border-border"}`}>
+              <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">{h.title}</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-foreground/85 [overflow-wrap:anywhere]">{h.body}</p>
+            </li>
+          ))}
+          <li className={`border p-3 ${provisionalActive ? "border-destructive/60 bg-destructive/5" : "border-dashed border-border"}`}>
+            <div className="flex items-baseline justify-between gap-2">
+              <p className={`text-[10px] uppercase tracking-[0.18em] font-semibold ${provisionalActive ? "text-destructive" : "text-muted-foreground"}`}>IV. Provisional measures</p>
+              <span className={`font-mono text-[10px] ${provisionalActive ? "text-destructive" : "text-muted-foreground"}`}>{provisionalActive ? "Urgent" : "Inactive"}</span>
+            </div>
+            <p className="mt-1.5 text-xs leading-relaxed text-foreground/85">
+              {provisionalActive
+                ? pleadings.heads.find((h) => h.id === "provisional")?.body
+                : `The rupture index stands at ${rupture}%, below the ${PROVISIONAL_THRESHOLD}% threshold. The head is drafted once rupture reaches ${PROVISIONAL_THRESHOLD}%.`}
+            </p>
+          </li>
+        </ol>
       </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName={fileName} />

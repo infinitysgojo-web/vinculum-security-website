@@ -202,3 +202,132 @@ export function apostille(d: Dispatch, merkleRoot?: string): string {
     APOSTILLE_BOTTOM,
   ].join("\n");
 }
+
+/* ------------------------------------------------------------------ */
+/* Chancellery Apostille (Desk 18, Mission Binder)                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Deterministic canonical JSON: object keys sorted at every depth, undefined members
+ * dropped, non-finite numbers written as null. The same state always yields the same
+ * bytes, so any verifier can recompute the digest offline.
+ */
+export function canonicalJson(value: unknown): string {
+  const norm = (v: unknown): unknown => {
+    if (v === null || typeof v === "string" || typeof v === "boolean") return v;
+    if (typeof v === "number") return Number.isFinite(v) ? v : null;
+    if (Array.isArray(v)) return v.map((x) => (x === undefined || typeof x === "function" ? null : norm(x)));
+    if (typeof v === "object") {
+      const out: Record<string, unknown> = {};
+      for (const k of Object.keys(v as object).sort()) {
+        const x = (v as Record<string, unknown>)[k];
+        if (x === undefined || typeof x === "function") continue;
+        out[k] = norm(x);
+      }
+      return out;
+    }
+    return null;
+  };
+  return JSON.stringify(norm(value));
+}
+
+export type ApostilleEntry = { id: string; title: string; text: string };
+
+/** The sealed body: every live signal on the bus and every binder tab, in binder order. */
+export const apostilleBody = (s: Signals, entries: ReadonlyArray<ApostilleEntry>) => ({
+  signals: s,
+  binder: entries.map((e, i) => ({ tab: i + 1, id: e.id, title: e.title, text: e.text })),
+});
+
+export const ATTEST_FORMAT = "vinculum.attest.v1";
+
+export type ChancelleryApostille = {
+  format: typeof ATTEST_FORMAT;
+  algorithm: "SHA-256";
+  ref: string;
+  /** SHA-256 of `canonical`, computed in this browser with Web Crypto. */
+  digest: string;
+  /** The registry state digest for the same moment (no nonce). */
+  stateDigest: string;
+  theatreCode: string;
+  tabs: number;
+  signalKeys: number;
+  clearancesPassed: number;
+  clearancesTotal: number;
+  gatesPassed: number;
+  gatesTotal: number;
+  floorValidated: boolean;
+  /** Canonical JSON of { ref, signals, binder }, exactly as hashed into `digest`. */
+  canonical: string;
+  /** Canonical JSON of the body without the reference: compared to tell whether the seal is current. */
+  bodyKey: string;
+};
+
+/**
+ * Seal & mint: draws a registry reference NV/VINC-[THEATRE_CODE]-[EPOCH]-[SEQ] from the
+ * monotonic counter, then hashes the canonical JSON of the reference, the live signals
+ * and the binder entries with SHA-256 in the client runtime. Nothing leaves the browser.
+ */
+export async function mintChancelleryApostille(s: Signals, entries: ReadonlyArray<ApostilleEntry>): Promise<ChancelleryApostille> {
+  const d = await mintDispatch(s, "attestation", "binder");
+  const body = apostilleBody(s, entries);
+  const canonical = canonicalJson({ format: ATTEST_FORMAT, ref: d.ref, ...body });
+  const digest = await sha256Hex(canonical);
+  return {
+    format: ATTEST_FORMAT,
+    algorithm: "SHA-256",
+    ref: d.ref,
+    digest,
+    stateDigest: d.stateDigest,
+    theatreCode: d.ref.split("-")[1] ?? "UNK",
+    tabs: entries.length,
+    signalKeys: Object.keys(JSON.parse(canonicalJson(s)) as object).length,
+    clearancesPassed: d.clearancesPassed,
+    clearancesTotal: d.clearancesTotal,
+    gatesPassed: d.gatesPassed,
+    gatesTotal: d.gatesTotal,
+    floorValidated: d.floorValidated,
+    canonical,
+    bodyKey: canonicalJson(body),
+  };
+}
+
+/** Recompute the digest of an attestation file's canonical payload. */
+export async function verifyChancelleryApostille(a: Pick<ChancelleryApostille, "canonical" | "digest">): Promise<boolean> {
+  return (await sha256Hex(a.canonical)) === a.digest;
+}
+
+const BOX_INNER = 76;
+
+/** Tamper-evident ASCII certificate, fixed width, monospace borders. */
+export function apostilleCertificate(a: ChancelleryApostille): string {
+  const title = "+--- [CHANCELLERY APOSTILLE] ";
+  const top = `${title}${"-".repeat(BOX_INNER + 3 - title.length)}+`;
+  const rows: [string, string][] = [
+    ["REF NO", a.ref],
+    ["SHA-256", a.digest],
+    ["STATE", a.stateDigest],
+    ["THEATRE", a.theatreCode],
+    ["BINDER", `${a.tabs} TAB${a.tabs === 1 ? "" : "S"} // ${a.signalKeys} LIVE SIGNALS SEALED`],
+    ["STATUS", `${a.clearancesPassed}/${a.clearancesTotal} STATUTORY CLEARANCES // ${a.gatesPassed}/${a.gatesTotal} GATES`],
+    ["FLOOR", `VIABLE FLOOR ${VIABLE_FLOOR.toFixed(1)} ${a.floorValidated ? "VALIDATED" : "BREACHED"}`],
+    ["SEAL", "EXEQUATUR CANONICALIS // UNALTERABLE RECORD"],
+    ["VERIFY", "SHA-256 OF THE CANONICAL JSON IN THE .VINCULUM.ATTEST.JSON FILE"],
+  ];
+  const lines: string[] = [];
+  for (const [k, v] of rows) {
+    const head = `${k.padEnd(8)} : `;
+    const width = BOX_INNER - head.length;
+    for (let i = 0; i < Math.max(1, v.length); i += width) {
+      const chunk = v.slice(i, i + width);
+      lines.push(`| ${(i === 0 ? head : " ".repeat(head.length)) + chunk.padEnd(width)} |`);
+    }
+  }
+  return [top, ...lines, `+${"-".repeat(BOX_INNER + 2)}+`].join("\n");
+}
+
+/** The raw verifiable payload offered for download, pretty-printed for reading. */
+export function apostilleFile(a: ChancelleryApostille): string {
+  const { bodyKey: _bodyKey, ...file } = a;
+  return JSON.stringify({ ...file, payload: JSON.parse(a.canonical) }, null, 2);
+}
