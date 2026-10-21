@@ -1,4 +1,4 @@
-import { BookOpen, FilePlus2, FolderOpen, History, Lock, Play, RotateCcw, ScrollText } from "lucide-react";
+import { BookOpen, FilePlus2, FolderOpen, HardDrive, History, Lock, Play, RotateCcw, ScrollText } from "lucide-react";
 import GoldRule from "@/components/GoldRule";
 import { LIFECYCLE_LABEL, MODE_LABEL, type Mode, type Workspace } from "./workspace";
 import { btn, btnPrimary, eyebrowCls, localStamp, type NetworkState } from "./ui";
@@ -11,7 +11,8 @@ export type FoyerAction =
   | { kind: "new-mission" }
   | { kind: "resume-draft" }
   | { kind: "review-ready" }
-  | { kind: "sealed" };
+  | { kind: "sealed" }
+  | { kind: "local-data" };
 
 const byRecent = (a: Workspace, b: Workspace) => (b.updatedAt || "").localeCompare(a.updatedAt || "");
 
@@ -25,6 +26,7 @@ export default function MissionFoyer({
   network,
   legacyDraft,
   storeError,
+  quarantined = 0,
   onAction,
 }: {
   workspaces: Workspace[];
@@ -33,6 +35,8 @@ export default function MissionFoyer({
   /** A saved browser session from before the two modes, offered as a draft to resume. */
   legacyDraft: boolean;
   storeError?: string;
+  /** Records kept aside because this browser could not read them. */
+  quarantined?: number;
   onAction: (a: FoyerAction) => void;
 }) {
   const exercises = workspaces.filter((w) => w.mode === "preset").sort(byRecent);
@@ -96,6 +100,14 @@ export default function MissionFoyer({
           Last custom mission: <span className="text-primary">{missions[0].title}</span> · {LIFECYCLE_LABEL[missions[0].lifecycle]} · {localStamp(missions[0].updatedAt)}
         </p>
       )}
+      <div className="mt-6 flex flex-col gap-3 border border-border px-4 py-3 sm:flex-row sm:items-center">
+        <HardDrive size={14} className="hidden shrink-0 text-primary/70 sm:block" aria-hidden />
+        <p className="min-w-0 flex-1 text-xs text-muted-foreground">
+          Stored only in this browser on this device. Export a package to keep a copy or move work to another device.
+          {quarantined > 0 ? ` ${quarantined} unreadable record${quarantined === 1 ? " is" : "s are"} kept aside unchanged.` : ""}
+        </p>
+        <button type="button" onClick={() => onAction({ kind: "local-data" })} className={`${btn} shrink-0 justify-center`}>Backup, import and recovery</button>
+      </div>
     </section>
   );
 }

@@ -569,8 +569,12 @@ export function PromotionDialog({ open, onOpenChange, ws, onConfirm }: { open: b
 
 export function DerivativeDialog({ open, onOpenChange, ws, onConfirm }: { open: boolean; onOpenChange: (v: boolean) => void; ws: Workspace; onConfirm: (c: DerivativeChoice[]) => void }) {
   const [choices, setChoices] = useState<DerivativeChoice[]>([]);
+  const [confirmed, setConfirmed] = useState(false);
   useEffect(() => {
-    if (open) setChoices(derivativeChoices(ws));
+    if (open) {
+      setChoices(derivativeChoices(ws));
+      setConfirmed(false);
+    }
   }, [open, ws]);
   const incomplete = choices.some((c) => !c.omit && !c.replacement.trim());
   return (
@@ -582,7 +586,7 @@ export function DerivativeDialog({ open, onOpenChange, ws, onConfirm }: { open: 
       footer={
         <>
           <button type="button" className={btn} onClick={() => onOpenChange(false)}>Cancel</button>
-          <button type="button" className={btnPrimary} disabled={incomplete} onClick={() => onConfirm(choices)}>Create derivative</button>
+          <button type="button" className={btnPrimary} disabled={incomplete || !confirmed} onClick={() => onConfirm(choices)}>Create derivative</button>
         </>
       }
     >
@@ -606,6 +610,10 @@ export function DerivativeDialog({ open, onOpenChange, ws, onConfirm }: { open: 
         ))}
         {choices.length === 0 && <li className="text-xs text-muted-foreground">No named material to replace.</li>}
       </ul>
+      <label className="mt-4 flex items-start gap-2 border border-brass/50 p-3 text-xs">
+        <input type="checkbox" className="mt-0.5" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} data-testid="derivative-confirm" />
+        <span>I have reviewed each field above. Every replacement label is safe for training use and carries no operational detail. Nothing is classified as training-safe automatically.</span>
+      </label>
     </Shell>
   );
 }
