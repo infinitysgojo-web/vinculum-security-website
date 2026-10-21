@@ -239,22 +239,63 @@ export function resourceReading(shares: [number, number, number]) {
 /** Rupture index at which a provisional-measures head is drafted. */
 export const PROVISIONAL_THRESHOLD = 40;
 
-export type PleadingInput = { forum?: string; litigationForum?: string; covenants?: string[]; weakestBond?: string; weakestScore?: number; rupture?: number; immunityWaived?: boolean };
+export type PleadingInput = { disputeForum?: string; disputeForumId?: string; forum?: string; litigationForum?: string; covenants?: string[]; weakestBond?: string; weakestScore?: number; rupture?: number; immunityWaived?: boolean };
 
-/** Fixed pleading heads filled only from what is on the bus; a missing input is named as missing. */
+/**
+ * Jurisdictional admissibility criteria for each venue on the Forum Matrix. Doctrinal
+ * summaries of the governing instrument, not legal advice for a particular filing.
+ */
+export const ADMISSIBILITY: Record<string, string> = {
+  icsid: "A legal dispute arising directly out of an investment, between a Contracting State and a national of another Contracting State, with the written consent of both (ICSID Convention art. 25).",
+  pca: "A written agreement to arbitrate under the PCA Arbitration Rules 2012; at least one party a State, a State-controlled entity or an intergovernmental organisation, or otherwise by agreement of the parties.",
+  lcia: "A written agreement referring the dispute to the LCIA Rules, with the subject matter arbitrable under the law of the seat.",
+  icc: "An agreement referring the dispute to the ICC Rules; the ICC Court confirms that such an agreement prima facie exists before the case proceeds (art. 6).",
+  swiss: "An agreement referring the dispute to the Swiss Rules; at a Swiss seat, any claim involving an economic interest is arbitrable (PILA art. 177).",
+  siac: "An agreement referring the dispute to SIAC; the Court of Arbitration screens for a prima facie arbitration agreement before constitution of the tribunal.",
+  icj: "Contentious proceedings only between States that have consented under art. 36 of the Statute; an advisory opinion only on request of an organ or agency authorised under art. 96 of the Charter.",
+};
+
+/** The Forum Matrix venue on the bus, matched by id and then by name. */
+export const pleadingForum = (s: Pick<PleadingInput, "disputeForumId" | "disputeForum">): Forum | undefined =>
+  FORUMS.find((f) => f.id === s.disputeForumId) ?? FORUMS.find((f) => f.name === s.disputeForum);
+
+/**
+ * Fixed pleading heads filled only from what is on the bus; a missing input is named as missing.
+ * I Jurisdictional foundation (dispute forum), II Substantive relational breach (weakest bond),
+ * III Sovereign covenants at risk (covenants of record), and IV Provisional measures, drafted
+ * only when the rupture index is at or above 40 per cent.
+ */
 export function pleadingHeads(s: PleadingInput) {
-  const forum = s.forum || s.litigationForum || "";
+  const forum = s.disputeForum || s.forum || s.litigationForum || "";
   const heads: { id: string; title: string; body: string; ready: boolean }[] = [
     { id: "jurisdiction", title: "I. Jurisdictional foundation", ready: !!forum,
-      body: forum ? `Consent to the jurisdiction of ${forum} is founded on the dispute settlement clause of the instrument.${s.immunityWaived === false ? " Immunity is not waived in the clause; anticipate an immunity objection at execution." : ""}` : "No forum chosen. Select a venue on the Forum Matrix or this desk." },
-    { id: "obligations", title: "II. Obligations relied upon", ready: !!s.covenants?.length,
-      body: s.covenants?.length ? `The claimant relies on ${s.covenants.length} covenant(s) of record: ${s.covenants.join("; ")}.` : "No covenants on the bus. Draft them in the Clause Architect." },
-    { id: "breach", title: "III. Breach specification", ready: !!s.weakestBond,
+      body: forum ? `Consent to the jurisdiction of ${forum} is founded on the dispute settlement clause of the instrument.${s.immunityWaived === false ? " Immunity is not waived in the clause; anticipate an immunity objection at execution." : ""}` : "No forum chosen. Select a venue on the Forum Matrix." },
+    { id: "breach", title: "II. Substantive relational breach", ready: !!s.weakestBond,
       body: s.weakestBond ? `The breach is specified against the ${s.weakestBond.toLowerCase()} bond${s.weakestScore !== undefined ? `, scored ${s.weakestScore.toFixed(1)} of 5.0` : ""}, the most exposed bond on the diagnostic.` : "No bond reading. Score the bonds on Desk 1." },
+    { id: "covenants", title: "III. Sovereign covenants at risk", ready: !!s.covenants?.length,
+      body: s.covenants?.length ? `${s.covenants.length} covenant${s.covenants.length === 1 ? "" : "s"} of record ${s.covenants.length === 1 ? "is" : "are"} placed at risk by the breach: ${s.covenants.join("; ")}.` : "No covenants on the bus. Draft them in the Clause Architect." },
   ];
   const r = s.rupture ?? 0;
   if (r >= PROVISIONAL_THRESHOLD)
-    heads.push({ id: "provisional", title: "IV. Request for provisional measures", ready: true,
+    heads.push({ id: "provisional", title: "IV. Provisional measures", ready: true,
       body: `Urgency: the rupture index stands at ${r}%, at or above the ${PROVISIONAL_THRESHOLD}% threshold. Interim protection of the relational record is requested pending the merits.` });
   return { heads, ready: heads.filter((h) => h.ready).length, total: heads.length };
+}
+
+/** The pleadings matrix as export text, under section IV of the litigation checklist. */
+export function pleadingLines(s: PleadingInput): string[] {
+  const p = pleadingHeads(s);
+  const f = pleadingForum(s);
+  const r = s.rupture ?? 0;
+  const L = ["IV. DOCTRINAL PLEADINGS MATRIX"];
+  if (f) {
+    L.push(`  Forum citation: ${f.name} · ${f.basis}`);
+    L.push(`  Enforcement teeth: ${f.teeth} of 5 · base enforceability ${enforceability(f)} of 100`);
+    L.push(`  Admissibility: ${ADMISSIBILITY[f.id] ?? "Not recorded."}`);
+  } else L.push("  Forum citation: none on the bus. Select a venue on the Forum Matrix (Desk 11).");
+  p.heads.forEach((h) => L.push(`  ${h.title.toUpperCase()}${h.ready ? "" : " (INCOMPLETE)"}`, `    ${h.body}`));
+  if (!p.heads.some((h) => h.id === "provisional"))
+    L.push("  IV. PROVISIONAL MEASURES (NOT DRAFTED)", `    The rupture index stands at ${r}%, below the ${PROVISIONAL_THRESHOLD}% threshold for interim relief.`);
+  L.push(`  Heads ready: ${p.ready} of ${p.total}.`);
+  return L;
 }

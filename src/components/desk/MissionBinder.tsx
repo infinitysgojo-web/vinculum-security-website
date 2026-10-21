@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { statutoryClearances, telemetryLines, useEngine } from "./engine";
-import { mintDispatch } from "./registry";
+import { apostilleBody, apostilleCertificate, apostilleFile, canonicalJson, mintChancelleryApostille, mintDispatch, type ChancelleryApostille } from "./registry";
 import { sha256, shortHash } from "./integrity";
 import { toast } from "sonner";
 import DeskOutput, { BinderContext, field, label, panel, type BinderEntry } from "./DeskOutput";
@@ -38,6 +38,12 @@ export default function MissionBinder({
     return () => { live = false; };
   }, [clearances]);
   const [lastRef, setLastRef] = useState("");
+  const [seal, setSeal] = useState<ChancelleryApostille | null>(null);
+  const [sealing, setSealing] = useState(false);
+  // The seal is current only while the live signals and binder tabs are exactly those it hashed.
+  const liveKey = useMemo(() => canonicalJson(apostilleBody(signals, entries)), [signals, entries]);
+  const sealCurrent = !!seal && seal.bodyKey === liveKey;
+  const certificate = useMemo(() => (seal ? apostilleCertificate(seal) : ""), [seal]);
 
   const text = useMemo(() => {
     const bar = "=".repeat(64);
@@ -56,9 +62,10 @@ export default function MissionBinder({
     entries.forEach((e, i) => {
       L.push("", bar, `TAB ${i + 1} OF ${entries.length}`, bar, "", e.text);
     });
+    if (seal && sealCurrent) L.push("", bar, "CHANCELLERY APOSTILLE", bar, "", certificate);
     L.push("", bar, "END OF BINDER. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [entries, theatre, envoy, signals]);
+  }, [entries, theatre, envoy, signals, seal, sealCurrent, certificate]);
 
   const copyBinder = async () => {
     try {
@@ -72,6 +79,31 @@ export default function MissionBinder({
     const d = await mintDispatch(signals, "dossier", "binder");
     setLastRef(`Dossier ${d.ref}`);
     toast.success(`Dossier ${d.ref} minted`);
+  };
+
+  const sealApostille = async () => {
+    setSealing(true);
+    try {
+      const a = await mintChancelleryApostille(signals, entries);
+      setSeal(a);
+      setLastRef(`Apostille ${a.ref}`);
+      toast.success(`Apostille ${a.ref} sealed`);
+    } catch {
+      toast.error("The apostille could not be sealed in this browser.");
+    } finally {
+      setSealing(false);
+    }
+  };
+  const downloadAttestation = () => {
+    if (!seal) return;
+    const url = URL.createObjectURL(new Blob([apostilleFile(seal)], { type: "application/json" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Vinculum-Apostille-${seal.ref.replace(/[^A-Za-z0-9]+/g, "-")}.vinculum.attest.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
   };
 
   return (
@@ -114,6 +146,22 @@ export default function MissionBinder({
             </div>
             {lastRef && <p className="mt-2 font-mono text-[11px] text-accent [overflow-wrap:anywhere]">{lastRef}</p>}
             <p className="mt-2 text-[11px] text-muted-foreground">PDF and print export sit with the compiled binder beneath.</p>
+          </div>
+          <div className="border border-brass/40 bg-background p-4">
+            <p className={label}>Chancellery apostille · Web Crypto SHA-256</p>
+            <p className="mb-3 text-[11px] leading-relaxed text-muted-foreground">Seals every live signal and every binder tab as canonical JSON, hashes it on this device and mints a registry reference. Nothing is transmitted.</p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <button type="button" onClick={sealApostille} disabled={sealing} className="min-h-11 border border-accent bg-accent px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-accent-foreground disabled:opacity-60">{sealing ? "Sealing…" : "Seal & mint chancellery apostille"}</button>
+              <button type="button" onClick={downloadAttestation} disabled={!seal} className="min-h-11 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Download .vinculum.attest.json</button>
+            </div>
+            {seal && (
+              <>
+                <pre aria-label="Chancellery apostille certificate" className="mt-3 max-w-full overflow-x-auto border border-border bg-navy-tint/40 p-3 font-mono text-[10px] leading-snug text-primary">{certificate}</pre>
+                <p className={`mt-2 text-[11px] ${sealCurrent ? "text-muted-foreground" : "text-destructive"}`}>
+                  {sealCurrent ? "Current: the apostille is appended to the compiled binder." : "Superseded: the signals or binder changed after sealing. Seal again before export."}
+                </p>
+              </>
+            )}
           </div>
         </div>
         {/* Right column: live master dossier, contents, synopsis and clearance hash. */}
