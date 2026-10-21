@@ -276,7 +276,7 @@ test("enclave: set seals every record (no plaintext), wrong passphrase errors, u
 /* ---------------- edge headers ---------------- */
 
 const EXPECTED_CSP =
-  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; font-src 'self'; connect-src 'self' https://*.lovable.cloud https://*.supabase.co data: blob:; frame-ancestors 'self' https://lovable.dev https://*.lovable.dev https://lovable.app https://*.lovable.app https://lovableproject.com https://*.lovableproject.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests";
+  "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.lovable.cloud https://*.supabase.co data: blob:; frame-ancestors 'self' https://lovable.dev https://*.lovable.dev https://lovable.app https://*.lovable.app https://lovableproject.com https://*.lovableproject.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests";
 const EXPECTED_PP =
   "camera=(), microphone=(), geolocation=(), payment=(), usb=(), display-capture=(), interest-cohort=(), browsing-topics=(), accelerometer=(), gyroscope=(), magnetometer=()";
 
