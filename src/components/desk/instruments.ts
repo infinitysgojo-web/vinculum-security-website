@@ -173,3 +173,88 @@ export function escrowWaterfall(terms: EscrowTerms, s: EscrowInput) {
   const released = frozen ? 0 : Math.max(0, Math.round((gross - clawbackHeld - bondHeld) * 100) / 100);
   return { tranches, frozen, total, gross, clawbackHeld, bondHeld, released, ceded };
 }
+
+/* ------------------------------------------------------------------ */
+/* Critical Fracture Window (Desk 17, SuccessionSimulator)             */
+/* ------------------------------------------------------------------ */
+
+/** Mean-bond level at which the reading is treated as fractured. */
+export const FRACTURE_LEVEL = 2.0;
+
+export type FractureSeverity = "stable" | "monitored" | "acute" | "imminent";
+
+/**
+ * Days until the mean bond, decaying as B(t) = B̄₀ · e^(−λt), reaches the fracture level:
+ *   t_f = ln(B̄₀ ÷ 2.0) ÷ λ    (0 when B̄₀ ≤ 2.0; null when λ = 0)
+ * Months = t_f ÷ 30.44. Bands: > 24 stable, > 12 monitored, > 6 acute, otherwise imminent.
+ * A rule applied to the inputs, not a forecast of events.
+ */
+export function fractureWindow(meanBond: number, lambda: number) {
+  if (meanBond <= FRACTURE_LEVEL) return { days: 0, months: 0, severity: "imminent" as FractureSeverity };
+  if (lambda <= 0) return { days: null, months: null, severity: "stable" as FractureSeverity };
+  const days = Math.log(meanBond / FRACTURE_LEVEL) / lambda;
+  const months = Math.round((days / 30.44) * 10) / 10;
+  const severity: FractureSeverity = months > 24 ? "stable" : months > 12 ? "monitored" : months > 6 ? "acute" : "imminent";
+  return { days: Math.round(days), months, severity };
+}
+
+/* ------------------------------------------------------------------ */
+/* Resource-Sharing Covenant (Desk 07, MultiPartySequencer)            */
+/* ------------------------------------------------------------------ */
+
+/** Statutory minimum share for the community restitution trust. */
+export const COMMUNAL_FLOOR = 30;
+/** Strain added on the Compound Shock desk while the communal share is under the floor. */
+export const LEGITIMACY_PENALTY = 15;
+export const RESOURCE_HEADS = ["Community restitution trust", "Cross-border corridor fund", "Joint demarcation and monitoring"] as const;
+export const DEFAULT_RESOURCES: [number, number, number] = [40, 35, 25];
+
+/**
+ * Setting one head rebalances the other two in proportion so the total stays 100.
+ * Parity P = round(100 − (max − min) × 1.5), floored at 0. Deficit when communal < 30.
+ */
+export function rebalance(shares: [number, number, number], i: number, v: number): [number, number, number] {
+  const val = Math.max(0, Math.min(100, Math.round(v)));
+  const others = [0, 1, 2].filter((k) => k !== i);
+  const rest = others.reduce((a, k) => a + shares[k], 0);
+  const out = [...shares] as [number, number, number];
+  out[i] = val;
+  const left = 100 - val;
+  const a = rest > 0 ? Math.round((shares[others[0]] / rest) * left) : Math.round(left / 2);
+  out[others[0]] = a;
+  out[others[1]] = left - a;
+  return out;
+}
+
+export function resourceReading(shares: [number, number, number]) {
+  const parity = Math.max(0, Math.round(100 - (Math.max(...shares) - Math.min(...shares)) * 1.5));
+  const deficit = shares[0] < COMMUNAL_FLOOR;
+  return { parity, deficit, total: shares[0] + shares[1] + shares[2] };
+}
+
+/* ------------------------------------------------------------------ */
+/* Pleadings Bench (Desk 13, LitigationWorkbench)                      */
+/* ------------------------------------------------------------------ */
+
+/** Rupture index at which a provisional-measures head is drafted. */
+export const PROVISIONAL_THRESHOLD = 40;
+
+export type PleadingInput = { forum?: string; litigationForum?: string; covenants?: string[]; weakestBond?: string; weakestScore?: number; rupture?: number; immunityWaived?: boolean };
+
+/** Fixed pleading heads filled only from what is on the bus; a missing input is named as missing. */
+export function pleadingHeads(s: PleadingInput) {
+  const forum = s.forum || s.litigationForum || "";
+  const heads: { id: string; title: string; body: string; ready: boolean }[] = [
+    { id: "jurisdiction", title: "I. Jurisdictional foundation", ready: !!forum,
+      body: forum ? `Consent to the jurisdiction of ${forum} is founded on the dispute settlement clause of the instrument.${s.immunityWaived === false ? " Immunity is not waived in the clause; anticipate an immunity objection at execution." : ""}` : "No forum chosen. Select a venue on the Forum Matrix or this desk." },
+    { id: "obligations", title: "II. Obligations relied upon", ready: !!s.covenants?.length,
+      body: s.covenants?.length ? `The claimant relies on ${s.covenants.length} covenant(s) of record: ${s.covenants.join("; ")}.` : "No covenants on the bus. Draft them in the Clause Architect." },
+    { id: "breach", title: "III. Breach specification", ready: !!s.weakestBond,
+      body: s.weakestBond ? `The breach is specified against the ${s.weakestBond.toLowerCase()} bond${s.weakestScore !== undefined ? `, scored ${s.weakestScore.toFixed(1)} of 5.0` : ""}, the most exposed bond on the diagnostic.` : "No bond reading. Score the bonds on Desk 1." },
+  ];
+  const r = s.rupture ?? 0;
+  if (r >= PROVISIONAL_THRESHOLD)
+    heads.push({ id: "provisional", title: "IV. Request for provisional measures", ready: true,
+      body: `Urgency: the rupture index stands at ${r}%, at or above the ${PROVISIONAL_THRESHOLD}% threshold. Interim protection of the relational record is requested pending the merits.` });
+  return { heads, ready: heads.filter((h) => h.ready).length, total: heads.length };
+}

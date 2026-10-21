@@ -5,6 +5,7 @@ import { useMission } from "./mission";
 import BondRadar from "./BondRadar";
 import { usePublish, useEngine, round1, bondBand } from "./engine";
 import SyncPanel from "./SyncPanel";
+import { LEGITIMACY_PENALTY } from "./instruments";
 
 type Shock = { id: string; label: string; sev: number; bond: number; breaker: string; absorb: string };
 
@@ -123,6 +124,7 @@ export default function CompoundShockTester() {
   );
   const useLive = linked && liveVector !== undefined;
 
+  const deficitOn = linked && signals.legitimacyDeficit === true;
   const toggle = (id: string) => setOn((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   const [own, setOwn] = useState<Shock[]>([]);
@@ -140,7 +142,8 @@ export default function CompoundShockTester() {
   const { strain, band, bondScores, sequence, deductions, failIndex } = useMemo(() => {
     const base = active.reduce((a, s) => a + s.sev, 0);
     const amp = active.length > 1 ? (active.length - 1) * AMPLIFY * 4 : 0;
-    const total = Math.min(100, round1(base + amp));
+    // Resource covenant: a communal share under the statutory floor adds a fixed legitimacy penalty.
+    const total = Math.min(100, round1(base + amp + (deficitOn ? LEGITIMACY_PENALTY : 0)));
     const b =
       total >= 70 ? "Rupture likely" : total >= 45 ? "Severe strain" : total >= 22 ? "Elevated strain" : "Absorbable";
     // Total shock weight landing on each bond, sum of omega_a over the active shocks on that bond.
@@ -164,7 +167,7 @@ export default function CompoundShockTester() {
       deductions: omega.map((w) => round1(w / 10)),
       failIndex: fail,
     };
-  }, [active, useLive, liveVector]);
+  }, [active, useLive, liveVector, deficitOn]);
 
   // The provision that breaks first: in live mode, the one resting on the weakest post-shock bond.
   const breakerOn = (bond: number) => sequence.find((x) => x.bond === bond)?.breaker;

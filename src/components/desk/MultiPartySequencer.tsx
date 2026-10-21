@@ -4,7 +4,7 @@ import { telemetryLines, useEngine, usePublish, type Signals } from "@/component
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import AsymmetryMatrix from "./AsymmetryMatrix";
 import EscrowWaterfall from "./EscrowWaterfall";
-import { DEFAULT_ESCROW, escrowWaterfall, type EscrowTerms } from "./instruments";
+import { DEFAULT_ESCROW, escrowWaterfall, type EscrowTerms, DEFAULT_RESOURCES, rebalance, resourceReading, RESOURCE_HEADS, COMMUNAL_FLOOR, LEGITIMACY_PENALTY } from "./instruments";
 import { useTheatreSeed } from "./theatres";
 
 type Actor = {
@@ -322,7 +322,12 @@ export default function MultiPartySequencer() {
     survivalScore: signals.survivalScore,
     rupture: linked ? signals.rupture : 0,
   });
+  const [resources, setResources] = useState<[number, number, number]>(DEFAULT_RESOURCES);
+  const res = resourceReading(resources);
   usePublish("multiparty", {
+    resourceCommunalShare: resources[0],
+    resourceParity: res.parity,
+    legitimacyDeficit: res.deficit,
     escrowReleasedPercent: escrow.released,
     escrowFrozen: escrow.frozen,
     escrowTranchesMet: escrow.tranches.filter((t) => t.met).length,
@@ -336,6 +341,7 @@ export default function MultiPartySequencer() {
   const text = useMemo(() => {
     const L: string[] = [];
     L.push("MULTI-PARTY SEQUENCING AND DE-CONFLICTION MATRIX");
+    L.push(`RESOURCE COVENANT: ${RESOURCE_HEADS.map((h, i) => `${h} ${resources[i]}%`).join(", ")}; parity ${res.parity}${res.deficit ? "; LEGITIMACY DEFICIT" : ""}`);
     L.push("Vinculum Security, Diplomatic Engagement Division");
     L.push("");
     L.push(`TABLE: ${theatre.trim() || "Unnamed table"}`);
@@ -388,7 +394,7 @@ export default function MultiPartySequencer() {
     L.push("", `CONDITIONAL ESCROW: ${escrow.frozen ? "FROZEN (rupture at or above 60%)" : `${escrow.released}% of ${escrow.total}% released; clawback ${escrowTerms.clawback}% and performance bond ${escrowTerms.bond}% ${escrow.ceded ? "discharged at Final Cession" : "held until Final Cession"}`}`);
     escrow.tranches.forEach((t) => L.push(`  [${t.met ? "x" : " "}] ${t.label} (${t.share}%): ${t.condition}`));
     return L.join("\n");
-  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow, escrowTerms]);
+  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow, escrowTerms, resources, res]);
 
   return (
     <div className="w-full min-w-0">
@@ -451,6 +457,18 @@ export default function MultiPartySequencer() {
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
         <EscrowWaterfall reading={escrow} terms={escrowTerms} onTerms={setEscrowTerms} />
+        <div className={`mt-4 border bg-background p-4 min-w-0 ${res.deficit ? "border-terracotta/60" : "border-brass/40"}`}>
+          <span className={label}>Resource-sharing covenant · allocation of proceeds</span>
+          {RESOURCE_HEADS.map((h, i) => (
+            <label key={h} className="mt-2 flex items-center gap-3 text-xs">
+              <span className="flex-1 min-w-0 text-primary">{h}{i === 0 && <span className="block text-muted-foreground">Statutory minimum {COMMUNAL_FLOOR}%</span>}</span>
+              <input type="range" min={0} max={100} value={resources[i]} onChange={(e) => setResources(rebalance(resources, i, Number(e.target.value)))} aria-label={`${h} share in per cent`} className="w-28 accent-[hsl(var(--accent))]" />
+              <span className="w-10 text-right font-mono tabular-nums">{resources[i]}%</span>
+            </label>
+          ))}
+          <p className="mt-3 text-xs text-muted-foreground">Parity index {res.parity} of 100 = 100 − 1.5 × (largest − smallest share). Total {res.total}%.</p>
+          {res.deficit && <p role="alert" className="mt-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-terracotta">[Legitimacy deficit] Communal share under {COMMUNAL_FLOOR}%; +{LEGITIMACY_PENALTY} strain on the Compound Shock desk</p>}
+        </div>
       </div>
     </div>
 

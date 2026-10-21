@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, successionDurability, SUCCESSION_TRAP } from "./engine";
-import { decayHorizon, DECAY_HORIZONS } from "./instruments";
+import { decayHorizon, DECAY_HORIZONS, fractureWindow, FRACTURE_LEVEL } from "./instruments";
 import SyncPanel from "./SyncPanel";
 import { AlertTriangle, ShieldCheck } from "lucide-react";
 
@@ -208,12 +208,19 @@ export default function SuccessionSimulator() {
     () => (signals.bonds ? decayHorizon(signals.bonds, r.exposure, linked ? signals.rupture ?? 0 : 0, horizon) : null),
     [signals.bonds, signals.rupture, r.exposure, linked, horizon],
   );
+  const fracture = useMemo(() => {
+    const b = signals.bonds;
+    if (!b || !decay) return null;
+    return fractureWindow((b.interpersonal + b.communal + b.intergenerational + b.institutional) / 4, decay.lambda);
+  }, [signals.bonds, decay]);
   // Publish the canonical S% when linked, otherwise the drafted-text quotient, so Desk 15 always has live data.
   usePublish("succession", {
     survivalScore: canon ? canon.percent : r.q,
     decayConstant: decay ? Math.round(decay.lambda * 10000) / 10000 : 0,
     stabilityHalfLifeDays: decay?.halfLifeDays ? Math.round(decay.halfLifeDays * 10) / 10 : 0,
     projectedDegradation: decay?.meanLoss ?? 0,
+    fractureMonths: fracture?.months ?? 0,
+    fractureSeverity: fracture?.severity ?? "",
   });
 
   const text = useMemo(() => {
@@ -267,11 +274,12 @@ export default function SuccessionSimulator() {
       L.push("", `DECAY HORIZON AND STABILITY HALF-LIFE: lambda = (U + R) / 2000 = ${decay.lambda.toFixed(4)}; t1/2 = ln 2 / lambda = ${decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "no modelled decay"}`);
       decay.bonds.forEach((b) => L.push(`  ${b.name}: ${b.now.toFixed(1)} -> ${b.then.toFixed(2)} at ${decay.days} days (B(t) = max(1.0, B0 x e^(-lambda t)))`));
       L.push(`  Mean bond loss at ${decay.days} days = ${decay.meanLoss.toFixed(2)}`);
+      if (fracture) L.push(`CRITICAL FRACTURE WINDOW: t_f = ln(mean B0 / ${FRACTURE_LEVEL.toFixed(1)}) / lambda = ${fracture.days === null ? "no modelled decay" : `${fracture.days} days (${fracture.months} months)`}; band ${fracture.severity.toUpperCase()}`);
     }
     L.push("", `READING: ${r.b.advice}`);
     L.push("", "Rule-based simulation of the drafted text, not a forecast of events. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon, decay]);
+  }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon, decay, fracture]);
 
   return (
     <section className={panel}>
@@ -288,6 +296,14 @@ export default function SuccessionSimulator() {
               : []
           }
         />
+        {fracture && (
+          <div className={`mt-3 border p-3 text-xs ${fracture.severity === "imminent" || fracture.severity === "acute" ? "border-terracotta/60" : "border-brass/40"}`}>
+            <span className={label}>Critical fracture window</span>
+            <p className="font-serif text-2xl text-primary">{fracture.months === null ? "No decay" : `${fracture.months} months`}
+              <span className="ml-2 text-[10px] uppercase tracking-[0.18em] text-accent">{fracture.severity}</span></p>
+            <p className="mt-1 font-mono text-muted-foreground [overflow-wrap:anywhere]">t_f = ln(mean bond ÷ {FRACTURE_LEVEL.toFixed(1)}) ÷ λ. Months until the mean bond reaches the fracture level if nothing is remedied; a rule on the inputs, not a forecast.</p>
+          </div>
+        )}
         {linked && !signals.bonds && (
           <p className="mt-2 text-xs text-muted-foreground">
             No bond vector is on the bus yet. Score the four bonds in Desk 1 to compute the canonical durability; until then
