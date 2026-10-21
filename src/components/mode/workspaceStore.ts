@@ -164,5 +164,15 @@ export function useWorkspaceStore(uid: string | null, active: boolean, enclave: 
     [persist],
   );
 
-  return { store, loaded, error, status, put };
+  /** Write a whole collection, as an import does after the user's decisions. */
+  const replace = useCallback(
+    (next: WorkspaceStore) => {
+      storeRef.current = next;
+      setStore(next);
+      void persist(next);
+    },
+    [persist],
+  );
+
+  return { store, loaded, error, status, put, replace };
 }

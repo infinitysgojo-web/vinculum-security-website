@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, ChevronDown, BookOpen, ClipboardList, GitBranch, History, Lock, NotebookPen, PanelRight, RotateCcw, ScrollText, ShieldCheck, Sprout, Stamp } from "lucide-react";
+import { ArrowLeft, ChevronDown, BookOpen, HardDrive, ClipboardList, GitBranch, History, Lock, NotebookPen, PanelRight, RotateCcw, ScrollText, ShieldCheck, Sprout, Stamp } from "lucide-react";
 import { deskCanPublish, deskIsLive } from "@/components/desk/MissionChain";
 import type { Signals } from "@/components/desk/engine";
 import { SPINE, stageStatus, type Scenario, type SpineStage } from "./scenarios";
@@ -20,7 +20,8 @@ export type HeaderAction =
   | "lifecycle"
   | "derive"
   | "verify"
-  | "continue";
+  | "continue"
+  | "local-data";
 
 const SAVE_TEXT: Record<SaveStatus, string> = {
   saved: "Locally saved",
@@ -130,6 +131,7 @@ export default function ModeHeader({
             <button type="button" className={btn} onClick={() => onAction("derive")}><Sprout size={13} /> Create training derivative</button>
           </>
         )}
+        <button type="button" className={btn} onClick={() => onAction("local-data")}><HardDrive size={13} /> Backup and import</button>
       </div>
 
       {sealed && (

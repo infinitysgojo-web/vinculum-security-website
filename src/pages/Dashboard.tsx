@@ -37,6 +37,7 @@ import { LexiconDrawer } from "@/components/desk/Lexicon";
 import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 import { canonicalJson, mintChancelleryApostille, verifyChancelleryApostille } from "@/components/desk/registry";
 import MissionFoyer, { type FoyerAction } from "@/components/mode/MissionFoyer";
+import LocalDataDialog from "@/components/mode/LocalDataDialog";
 import ModeHeader, { type HeaderAction } from "@/components/mode/ModeHeader";
 import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
 import DeskGuide from "@/components/mode/DeskGuide";
@@ -669,7 +670,7 @@ export default function Dashboard() {
   const [deskEpoch, setDeskEpoch] = useState(0);
   type DialogId =
     | "library" | "pick-exercise" | "pick-replay" | "pick-draft" | "pick-review" | "pick-sealed"
-    | "new-mission" | "warrant" | "branch" | "replay" | "aar" | "brief" | "lifecycle" | "promote" | "derive";
+    | "new-mission" | "warrant" | "branch" | "replay" | "aar" | "brief" | "lifecycle" | "promote" | "derive" | "local-data";
   const [dialog, setDialog] = useState<DialogId | null>(null);
   const [trayOpen, setTrayOpen] = useState(false);
   const [trayTab, setTrayTab] = useState<TrayTab>("assumptions");
@@ -825,6 +826,7 @@ export default function Dashboard() {
     else if (a.kind === "resume-draft") setDialog("pick-draft");
     else if (a.kind === "review-ready") setDialog("pick-review");
     else if (a.kind === "sealed") setDialog("pick-sealed");
+    else if (a.kind === "local-data") setDialog("local-data");
   };
 
   const toFoyer = () => {
@@ -1062,7 +1064,7 @@ export default function Dashboard() {
       <div className={`container ${focus ? "py-4" : "py-6 sm:py-8"}`}>
         {inFoyer ? (
           <div className="mb-28">
-            <MissionFoyer workspaces={workspaces} lastMode={lastMode} network={network} legacyDraft={legacyDraft} storeError={wsStore.error} onAction={onFoyer} />
+            <MissionFoyer workspaces={workspaces} lastMode={lastMode} network={network} legacyDraft={legacyDraft} storeError={wsStore.error} quarantined={wsStore.store.quarantine.length} onAction={onFoyer} />
           </div>
         ) : opening ? (
           <p role="status" className="mb-28 text-sm text-muted-foreground">Opening the local workspace…</p>
@@ -1462,6 +1464,26 @@ export default function Dashboard() {
           )}
         </>
       )}
+      <LocalDataDialog
+        open={dialog === "local-data"}
+        onOpenChange={(v) => setDialog(v ? "local-data" : null)}
+        store={wsStore.store}
+        activeId={activeId}
+        onImport={(r) => {
+          // Store the open workspace's live state first, so an import never loses it.
+          const cur = activeRef.current;
+          const before = cur ? wsStore.store.workspaces.find((w) => w.id === cur.id) : undefined;
+          const incoming = cur ? r.store.workspaces.find((w) => w.id === cur.id) : undefined;
+          const replacedOpen = !!incoming && incoming !== before;
+          const base = cur && cur.lifecycle !== "sealed" && !replacedOpen
+            ? { ...r.store, workspaces: r.store.workspaces.map((w) => (w.id === cur.id ? { ...cur, state: captureState(), replay: liveReplay(), updatedAt: now() } : w)) }
+            : r.store;
+          wsStore.replace(base);
+          // The open workspace was replaced by the imported copy: reopen it on that state.
+          if (replacedOpen && incoming) bootWorkspace(incoming);
+          logEvent("MISSION_HYDRATED", `Local package imported (${r.added} added, ${r.replaced} replaced, ${r.quarantined} kept aside)`);
+        }}
+      />
       <ImpactDialog impact={impact} onClose={() => setImpact(null)} />
     </div>
     </ChancellerySentinel>
