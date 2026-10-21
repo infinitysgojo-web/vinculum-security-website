@@ -75,15 +75,16 @@ describe("corruption quarantine", () => {
   test("an unreadable record is kept aside, valid ones still load", () => {
     const r = readStore({ schema: 1, workspaces: [preset(), { id: 7 }, "garbage"] });
     expect(r.store.workspaces).toHaveLength(1);
-    expect(r.store.quarantine).toEqual([{ id: 7 }, "garbage"]);
+    expect(r.store.quarantine.map((q) => (q as { record: unknown }).record)).toEqual([{ id: 7 }, "garbage"]);
+    expect((r.store.quarantine[0] as { reason: string }).reason).toContain("schema validation");
     expect(r.error).toContain("kept aside unchanged");
   });
   test("a store that is not a list is kept whole, never erased", () => {
     const r = readStore("not a store");
-    expect(r.store.quarantine).toEqual(["not a store"]);
+    expect((r.store.quarantine[0] as { record: unknown }).record).toBe("not a store");
   });
   test("the quarantine downloads exactly as kept", () => {
-    const q = JSON.parse(quarantineExport({ ...EMPTY_STORE, workspaces: [], quarantine: [{ id: 7 }, "x"] }, "2026-10-21T00:00:00.000Z"));
+    const q = JSON.parse(quarantineExport([{ id: 7 }, "x"], "2026-10-21T00:00:00.000Z"));
     expect(q.records).toEqual([{ id: 7 }, "x"]);
   });
 });
@@ -138,7 +139,7 @@ describe("import validation", () => {
     const raw = { ...p, workspaces: [...p.workspaces, { broken: true }] };
     const r = await readPackage(JSON.stringify(raw));
     expect(r.items).toHaveLength(1);
-    expect(r.quarantined).toEqual([{ broken: true }]);
+    expect((r.quarantined[0] as { record: unknown }).record).toEqual({ broken: true });
   });
   test("a sealed snapshot whose record was altered is kept aside", async () => {
     const s = await sealedMission();
@@ -151,17 +152,19 @@ describe("import validation", () => {
     expect(r.items).toHaveLength(0);
     expect(r.quarantined).toHaveLength(1);
   });
-  test("a newer workspace schema imports with unknown fields preserved", async () => {
-    const p = await buildPackage([{ ...preset(), futureField: "keep" }], "transfer");
+  test("a newer workspace schema is refused safely", async () => {
+    const p = await buildPackage([preset()], "transfer");
     const r = await readPackage(JSON.stringify({ ...p, workspaceSchema: 2 }));
-    expect(r.newer).toBe(true);
-    expect(r.items[0].workspace.futureField).toBe("keep");
+    expect(r.ok).toBe(false);
+    expect(r.error).toContain("newer version");
   });
-  test("hidden characters are reported but imported text is not rewritten", async () => {
+  test("text with hidden characters is kept aside, never rewritten", async () => {
     const w = { ...custom(), title: "Mission\u200b title" };
     const r = await readPackage(JSON.stringify(await buildPackage([w], "handover")));
-    expect(r.items[0].hiddenCharacters).toBe(1);
-    expect(r.items[0].workspace.title).toBe("Mission\u200b title");
+    expect(r.items).toHaveLength(0);
+    const q = r.quarantined[0] as { reason: string; record: { title: string } };
+    expect(q.reason).toContain("U+200B");
+    expect(q.record.title).toBe("Mission\u200b title");
   });
 });
 
@@ -171,35 +174,40 @@ describe("duplicate handling and the import decision", () => {
     const b = { ...a, title: "Changed" };
     const c = { ...a, id: "ms-other" };
     const fresh = preset();
-    const plan = planImport([a, b, c, fresh].map((workspace) => ({ workspace, seal: "none" as const, hiddenCharacters: 0 })), [a]);
+    const plan = planImport([a, b, c, fresh].map((workspace) => ({ workspace, seal: "none" as const })), [a]);
     expect(plan.map((p) => p.duplicate)).toEqual(["identical", "conflict", "same-content", "new"]);
-    expect(plan[1].options).toEqual(["keep-both", "replace", "skip"]);
+    expect(plan[1].options).toEqual(["keep-both", "open", "skip"]);
+    expect(plan.flatMap((p) => p.options)).not.toContain("replace");
     expect(plan[3].options[0]).toBe("restore");
+    expect(plan[0].options[0]).toBe("open");
   });
-  test("restore adds, replace overwrites, keep both copies with import lineage, skip does nothing", () => {
+  test("restore adds, open existing adds nothing, separate copy keeps lineage, skip does nothing, nothing is overwritten", () => {
     const local = custom();
     const changed = { ...local, title: "Changed" };
     const fresh = preset();
-    const items = [changed, fresh].map((workspace) => ({ workspace, seal: "none" as const, hiddenCharacters: 0 }));
+    const items = [changed, fresh].map((workspace) => ({ workspace, seal: "none" as const }));
     const plan = planImport(items, [local]);
-    const replaced = applyImport(storeOf(local), plan, ["replace", "restore"], []);
-    expect(replaced.store.workspaces.find((w) => w.id === local.id)?.title).toBe("Changed");
-    expect(replaced.added).toBe(1);
+    const opened = applyImport(storeOf(local), plan, ["open", "restore"], []);
+    expect(opened.openId).toBe(local.id);
+    expect(opened.store.workspaces.find((w) => w.id === local.id)).toBe(local);
+    expect(opened.added).toBe(1);
     const both = applyImport(storeOf(local), plan, ["keep-both", "skip"], []);
     expect(both.store.workspaces).toHaveLength(2);
     const copy = both.store.workspaces[1];
     expect(copy.id).not.toBe(local.id);
     expect(copy.lineage).toMatchObject({ kind: "import", parentId: local.id });
     expect(both.store.workspaces[0]).toBe(local);
+    // A forged decision outside the offered options is ignored.
+    const forged = applyImport(storeOf(local), plan, ["replace" as never, "skip"], []);
+    expect(forged.store.workspaces[0]).toBe(local);
   });
   test("a sealed local snapshot is never replaced", async () => {
     const s = await sealedMission();
     const incoming = { ...s, title: "Tampered", lifecycle: "draft" as const };
-    const plan = planImport([{ workspace: incoming, seal: "none", hiddenCharacters: 0 }], [s]);
-    expect(plan[0].options).not.toContain("replace");
-    const r = applyImport(storeOf(s), plan, ["replace"], []);
+    const plan = planImport([{ workspace: incoming, seal: "none" }], [s]);
+    const r = applyImport(storeOf(s), plan, ["keep-both"], []);
     expect(r.store.workspaces[0]).toBe(s);
-    expect(r.skipped).toBe(1);
+    expect(r.store.workspaces).toHaveLength(2);
   });
   test("quarantined import records join the local quarantine; nothing local is deleted", () => {
     const local = storeOf(preset());
@@ -263,9 +271,9 @@ describe("guardrails", () => {
     expect(files).not.toMatch(/fetch\(|XMLHttpRequest|supabase|WebSocket|sendBeacon/);
     expect(files).not.toMatch(/usePublish|createContext/);
   });
-  test("no claims of encryption, sync, certification or proof", () => {
-    const claims = files.replace(/Not encrypted|not access-controlled|not a signature, certification or proof|Nothing is synced or backed up|It is not encryption, access control, a signature,\s*\n?\s*\* third-party certification or legal proof/g, "");
-    expect(claims).not.toMatch(/\bencrypted\b|cloud backup|blockchain|certified|legally binding/i);
+  test("no claims of sync, certification, proof or military-grade security", () => {
+    expect(files).not.toMatch(/cloud backup|blockchain|certified|legally binding|military[- ]grade|non-repudiation|tamper-proof/i);
+    expect(files).toContain("Nothing is synced or backed up");
   });
   test("no new routes", () => {
     expect(read("src/App.tsx").match(/<Route /g)?.length).toBe(15);

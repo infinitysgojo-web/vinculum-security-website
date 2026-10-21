@@ -5,6 +5,7 @@ import { bondBand, breachesFloor, holdsFloor, inscriptionLines, stageGateAudit, 
 import { apostille, mintDispatch, type Dispatch } from "./registry";
 import { currentMerkleRoot, useSessionMerkleRoot } from "./ledgerStore";
 import { seal } from "@/lib/chancelleryHaptics";
+import { copyText } from "@/lib/clipboardGuard";
 
 type Mode = "note-verbale" | "demarche" | "aide-memoire";
 const MODES: { id: Mode; label: string; sub: string }[] = [
@@ -117,7 +118,7 @@ export default function NoteVerbale() {
     const d = await mintDispatch(signals, mode);
     setLast(d);
     try {
-      await navigator.clipboard.writeText(`${apostille(d, await currentMerkleRoot())}\n\n${text}`);
+      await copyText(`${apostille(d, await currentMerkleRoot())}\n\n${text}`);
       toast.success(`Transmittal ${d.ref} minted and copied`);
     } catch {
       toast.success(`Transmittal ${d.ref} minted. Select the text to copy.`);

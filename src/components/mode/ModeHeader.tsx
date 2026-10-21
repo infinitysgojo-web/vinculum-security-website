@@ -27,6 +27,7 @@ const SAVE_TEXT: Record<SaveStatus, string> = {
   saved: "Locally saved",
   held: "Held in memory: enclave sealed",
   unavailable: "Not saved: this browser refused storage",
+  full: "Not saved: browser storage is full. Export a backup, then free space",
   idle: "Not yet saved",
 };
 
@@ -59,7 +60,7 @@ export default function ModeHeader({
   const preset = ws.mode === "preset";
   const sealed = ws.lifecycle === "sealed";
   const status = sealed ? "Sealed local snapshot" : SAVE_TEXT[saveStatus];
-  const net = network.online ? "Online" : "Offline";
+  const net = `${network.online ? "Online" : "Offline"} · data stays on this device`;
   const activeStage = SPINE.find((s) => s.desks.includes(desk));
   const read = (s: SpineStage) => stageStatus(s, (d) => deskIsLive(d, signals), deskCanPublish, ws);
   const inSequence = (s: SpineStage) => !!scenario && s.desks.some((d) => scenario.sequence.includes(d));

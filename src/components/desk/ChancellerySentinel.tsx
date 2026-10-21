@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { inspectElement, WATCHED_SELECTOR, type CanaryFinding } from "@/lib/domCanary";
+import { clearAppClipboard } from "@/lib/clipboardGuard";
 
 /** Input that counts as practitioner activity for the inactivity lock. */
 const ACTIVITY = ["mousemove", "mousedown", "keydown", "touchstart", "wheel", "scroll", "visibilitychange"] as const;
@@ -47,7 +48,11 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
     let t: number | null = null;
     const reset = () => {
       if (t) window.clearTimeout(t);
-      t = window.setTimeout(() => idleCb.current(), idleMs);
+      t = window.setTimeout(() => {
+        // Overwrite anything this app copied before the workspace seals or signs out.
+        void clearAppClipboard();
+        idleCb.current();
+      }, idleMs);
     };
     ACTIVITY.forEach((e) => window.addEventListener(e, reset, { passive: true }));
     reset();
@@ -56,6 +61,12 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
       if (t) window.clearTimeout(t);
     };
   }, [idleMs, locked]);
+
+  // On lock the desks unmount (the lock screen replaces them), so sensitive views are
+  // paused and hidden; the clipboard is overwritten where the browser allows.
+  useEffect(() => {
+    if (locked) void clearAppClipboard();
+  }, [locked]);
 
   const panic = useCallback(() => {
     if (fired.current) return;

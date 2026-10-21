@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { statutoryClearances, type BondVector, type Signals } from "./engine";
 import { onDispatch } from "./registry";
 import { auditLogText, formatEntry, logEvent, mintedKind, useSessionLedger } from "./ledgerStore";
+import { copyText } from "@/lib/clipboardGuard";
 
 const DOMAIN_KEYS = ["interpersonal", "communal", "intergenerational", "institutional"] as const satisfies readonly (keyof BondVector)[];
 
@@ -83,7 +84,7 @@ export default function SessionLedgerDrawer() {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(auditLogText(entries));
+      await copyText(auditLogText(entries));
       toast.success(`Audit log copied · ${entries.length} entr${entries.length === 1 ? "y" : "ies"}`);
     } catch {
       toast.error("Copy failed. Open the ledger and select the entries manually.");

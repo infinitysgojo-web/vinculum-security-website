@@ -67,6 +67,37 @@ export function detectSteganographicTokens(input: string): { hasHiddenTokens: bo
 }
 
 /**
+ * The prohibited characters in a text, as code points ("U+202E"): every character
+ * sanitizeInscriptionText would remove (invisible format controls, bidirectional
+ * embeddings, overrides and isolates, stray joiners, ASCII control bytes). Joiners that
+ * are spelling inside a joining script are not prohibited. Used to reject text on paste,
+ * import and restore instead of silently rewriting it.
+ */
+export function prohibitedCharacters(input: string): string[] {
+  if (!input) return [];
+  const n = input.normalize("NFC");
+  const found = new Set<string>();
+  for (const m of n.matchAll(ALWAYS_INVISIBLE)) found.add(m[0]);
+  for (const m of n.matchAll(STRAY_JOINER)) found.add(m[0]);
+  for (const m of n.matchAll(CONTROL_CHARS)) found.add(m[0]);
+  return [...found].map((c) => `U+${c.codePointAt(0)!.toString(16).toUpperCase().padStart(4, "0")}`).sort();
+}
+
+/** Every prohibited code point in any string (keys included) inside a JSON value. */
+export function prohibitedCharactersDeep(value: unknown, depth = 0): string[] {
+  if (depth > 64) return [];
+  if (typeof value === "string") return prohibitedCharacters(value);
+  const out = new Set<string>();
+  if (Array.isArray(value)) for (const v of value) for (const c of prohibitedCharactersDeep(v, depth + 1)) out.add(c);
+  else if (value && typeof value === "object")
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      for (const c of prohibitedCharacters(k)) out.add(c);
+      for (const c of prohibitedCharactersDeep(v, depth + 1)) out.add(c);
+    }
+  return [...out].sort();
+}
+
+/**
  * Sanitize every string inside a JSON value (keys untouched), for archive and
  * file import. Whitespace is preserved inside strings so binder documents keep
  * their layout; only hidden and control characters go.

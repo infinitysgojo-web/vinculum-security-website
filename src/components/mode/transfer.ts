@@ -9,11 +9,16 @@
  */
 import { canonicalJson } from "@/components/desk/registry";
 import { sha256 } from "@/components/desk/integrity";
-import { detectSteganographicTokens } from "@/lib/sanitizer";
-import { WORKSPACE_SCHEMA, newId, readWorkspace, type Workspace, type WorkspaceStore } from "./workspace";
+import { IMPORT_LIMITS, checkPayload, utf8Bytes } from "@/lib/payloadLimits";
+import { openEnvelope, sealEnvelope, type EncryptedPayload } from "@/lib/chancelleryCrypto";
+import { WORKSPACE_SCHEMA, newId, quarantineEntry, validateRecord, type Workspace, type WorkspaceStore } from "./workspace";
 
 export const PACKAGE_FORMAT = "vinculum-workspace-package";
 export const PACKAGE_VERSION = 1;
+/** The app's export format generation, carried for diagnostics. */
+export const APP_FORMAT = "vinculum-two-mode-1";
+/** Envelope fields this build understands. A package may name others as `critical`; unknown critical fields are refused. */
+export const KNOWN_FIELDS = ["format", "packageVersion", "appFormat", "workspaceSchema", "purpose", "exportedAt", "notice", "digest", "workspaces", "lineage", "critical"] as const;
 
 export type PackagePurpose = "backup" | "handover" | "transfer" | "training-derivative";
 
@@ -33,6 +38,11 @@ export const PACKAGE_NOTICE =
 export type WorkspacePackage = {
   format: typeof PACKAGE_FORMAT;
   packageVersion: number;
+  appFormat: string;
+  /** Optional: where the exported workspaces came from, by id and lineage kind only. */
+  lineage?: { id: string; kind?: string; parentId?: string }[];
+  /** Envelope fields a reader must understand to import this package safely. */
+  critical: string[];
   workspaceSchema: number;
   purpose: PackagePurpose;
   exportedAt: string;
@@ -61,9 +71,13 @@ export async function buildPackage(workspaces: Workspace[], purpose: PackagePurp
   const blocker = exportBlocker(workspaces, purpose);
   if (blocker) throw new Error(blocker);
   const list = JSON.parse(JSON.stringify(workspaces)) as Workspace[];
+  const lineage = list.filter((w) => w.lineage).map((w) => ({ id: w.id, kind: w.lineage!.kind, parentId: w.lineage!.parentId }));
   return {
     format: PACKAGE_FORMAT,
     packageVersion: PACKAGE_VERSION,
+    appFormat: APP_FORMAT,
+    critical: ["workspaces", "digest"],
+    ...(lineage.length ? { lineage } : {}),
     workspaceSchema: WORKSPACE_SCHEMA,
     purpose,
     exportedAt: at,
@@ -90,23 +104,21 @@ export type IncomingItem = {
   workspace: Workspace;
   /** For a sealed snapshot: whether its recorded canonical text still hashes to its digest. */
   seal: SealStatus;
-  /** Free-text fields that contain hidden or control characters. Reported, never rewritten. */
-  hiddenCharacters: number;
 };
 
 export type PackageRead = {
   ok: boolean;
   /** Set when the file cannot be imported at all. */
   error?: string;
+  /** The file is a passphrase-encrypted package: open it with decryptPackageText first. */
+  encrypted?: boolean;
   purpose?: PackagePurpose;
   exportedAt?: string;
   digest: DigestStatus;
   recordedDigest?: string;
   computedDigest?: string;
-  /** The package or its workspaces come from a newer build. Unknown fields are carried. */
-  newer: boolean;
   items: IncomingItem[];
-  /** Records that failed validation, kept exactly as found for the quarantine. */
+  /** Records that failed validation, wrapped with a reason for the quarantine. */
   quarantined: unknown[];
   warnings: string[];
 };
@@ -114,12 +126,7 @@ export type PackageRead = {
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === "object" && !Array.isArray(v);
 const PURPOSES: PackagePurpose[] = ["backup", "handover", "transfer", "training-derivative"];
 
-const failed = (error: string): PackageRead => ({ ok: false, error, digest: "missing", newer: false, items: [], quarantined: [], warnings: [] });
-
-function countHidden(w: Workspace): number {
-  const texts: string[] = [w.title, ...Object.values(w.warrant ?? {}), ...w.tray.map((e) => e.text), ...w.decisions.flatMap((d) => [d.what, d.why])];
-  return texts.reduce((n, t) => n + (typeof t === "string" && detectSteganographicTokens(t).stripped > 0 ? 1 : 0), 0);
-}
+const failed = (error: string, extra: Partial<PackageRead> = {}): PackageRead => ({ ok: false, error, digest: "missing", items: [], quarantined: [], warnings: [], ...extra });
 
 async function sealStatus(w: Workspace): Promise<SealStatus> {
   const s = w.sealed;
@@ -128,26 +135,42 @@ async function sealStatus(w: Workspace): Promise<SealStatus> {
   return (await sha256(s.canonical)) === s.digest ? "match" : "mismatch";
 }
 
+export const isEncryptedPackage = (v: unknown): v is EncryptedPayload =>
+  isObj(v) && v.format === "vinculum-cipher-v1" && typeof v.ciphertextHex === "string" && typeof v.ivHex === "string" && typeof v.saltHex === "string" && typeof v.tagHex === "string";
+
 /**
- * Validate an import file. Nothing is written here. A file that is not a package is
- * refused; inside a package, a workspace that fails validation, or a sealed snapshot
- * whose record no longer matches its digest, goes to quarantine instead of being loaded.
+ * Validate an import file as data only: nothing in it is executed, fetched, rendered or
+ * followed. Nothing is written here. A file that is too large, too deep, not a package,
+ * from a newer format or naming a critical field this build does not understand is
+ * refused whole. Inside a package, a workspace that fails validation (limits, schema,
+ * newer version, hidden or bidirectional characters), a sealed snapshot whose record no
+ * longer matches its digest, or a non-derivative in a derivative package is kept aside.
  */
 export async function readPackage(text: string): Promise<PackageRead> {
+  if (utf8Bytes(text) > IMPORT_LIMITS.maxBytes) return failed("This file is larger than 20 MB. Nothing was imported.");
   let raw: unknown;
   try {
     raw = JSON.parse(text);
   } catch {
     return failed("This file is not valid JSON. Nothing was imported.");
   }
+  if (isEncryptedPackage(raw)) return failed("This package is encrypted. Enter its passphrase to open it.", { encrypted: true });
+  const lim = checkPayload(raw, IMPORT_LIMITS);
+  if (!lim.ok) return failed(`This file exceeds the import limits (${lim.reason}). Nothing was imported.`);
   if (!isObj(raw) || raw.format !== PACKAGE_FORMAT) return failed("This file is not a Vinculum workspace package. Nothing was imported.");
   if (typeof raw.packageVersion !== "number" || raw.packageVersion < 1) return failed("The package version is missing. Nothing was imported.");
   if (raw.packageVersion > PACKAGE_VERSION) return failed(`This package was written by a newer version (package v${raw.packageVersion}). Update this app before importing it. Nothing was imported.`);
+  if (raw.critical !== undefined) {
+    if (!Array.isArray(raw.critical) || raw.critical.some((c) => typeof c !== "string")) return failed("The package's critical field list is malformed. Nothing was imported.");
+    const unknown = (raw.critical as string[]).filter((c) => !(KNOWN_FIELDS as readonly string[]).includes(c));
+    if (unknown.length) return failed(`The package requires fields this version does not understand (${unknown.slice(0, 3).join(", ")}). Nothing was imported.`);
+  }
   if (!Array.isArray(raw.workspaces)) return failed("The package holds no workspace list. Nothing was imported.");
   const purpose = PURPOSES.includes(raw.purpose as PackagePurpose) ? (raw.purpose as PackagePurpose) : undefined;
   if (!purpose) return failed("The package purpose is unknown. Nothing was imported.");
-  const schema = typeof raw.workspaceSchema === "number" ? raw.workspaceSchema : 0;
-  const newer = schema > WORKSPACE_SCHEMA;
+  if (typeof raw.workspaceSchema !== "number") return failed("The package does not name its workspace schema. Nothing was imported.");
+  const schema = raw.workspaceSchema;
+  if (schema > WORKSPACE_SCHEMA) return failed(`These workspaces were saved by a newer version (workspace schema ${schema}). Update this app before importing them. Nothing was imported.`);
   const warnings: string[] = [];
 
   const recorded = typeof raw.digest === "string" && /^[0-9a-f]{64}$/.test(raw.digest) ? raw.digest : undefined;
@@ -155,32 +178,29 @@ export async function readPackage(text: string): Promise<PackageRead> {
   const digest: DigestStatus = !recorded ? "missing" : recorded === computed ? "match" : "mismatch";
   if (digest === "mismatch") warnings.push("The package digest does not match its contents: the file changed after it was exported. Review every item before importing.");
   if (digest === "missing") warnings.push("The package carries no digest, so changes after export cannot be detected.");
-  if (newer) warnings.push("These workspaces were saved by a newer version. Unknown fields are preserved.");
 
   const items: IncomingItem[] = [];
   const quarantined: unknown[] = [];
+  const keepAside = (w: unknown, reason: string) => quarantined.push(quarantineEntry(w, reason, "import"));
   for (const w of raw.workspaces) {
-    const ok = readWorkspace(w);
-    if (!ok) {
-      quarantined.push(w);
+    const v = validateRecord(w);
+    if (!v.ok) {
+      keepAside(w, v.reason);
       continue;
     }
+    const ok = v.workspace;
     if (purpose === "training-derivative" && !ok.derived) {
-      quarantined.push(w);
-      warnings.push("A non-derivative workspace was found in a training-derivative package and was kept aside.");
+      keepAside(w, "A non-derivative workspace inside a training-derivative package.");
       continue;
     }
     const seal = await sealStatus(ok);
     if (seal === "mismatch") {
-      quarantined.push(w);
-      warnings.push(`Sealed snapshot "${ok.title}" no longer matches its recorded digest and was kept aside.`);
+      keepAside(w, "Sealed snapshot no longer matches its recorded digest.");
       continue;
     }
-    const hiddenCharacters = countHidden(ok);
-    if (hiddenCharacters) warnings.push(`"${ok.title}" has ${hiddenCharacters} field${hiddenCharacters === 1 ? "" : "s"} with hidden or control characters. They are imported unchanged; edit a field to clean it.`);
-    items.push({ workspace: ok, seal, hiddenCharacters });
+    items.push({ workspace: ok, seal });
   }
-  if (quarantined.length) warnings.push(`${quarantined.length} record${quarantined.length === 1 ? "" : "s"} could not be read and will be kept aside unchanged.`);
+  if (quarantined.length) warnings.push(`${quarantined.length} record${quarantined.length === 1 ? "" : "s"} failed validation and will be kept aside in quarantine, unchanged.`);
   return {
     ok: true,
     purpose,
@@ -188,11 +208,31 @@ export async function readPackage(text: string): Promise<PackageRead> {
     digest,
     recordedDigest: recorded,
     computedDigest: computed,
-    newer,
     items,
     quarantined,
     warnings,
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* Optional passphrase encryption                                      */
+/* ------------------------------------------------------------------ */
+
+export const MIN_PASSPHRASE = 12;
+export const ENCRYPTION_NOTICE =
+  "Optional. AES-256-GCM with a key derived in this browser from your passphrase (PBKDF2-SHA-256, 310,000 iterations). The passphrase is never stored, sent or logged, and cannot be recovered: forget it and this backup cannot be opened by anyone, including you.";
+
+/** Encrypt a built package under a passphrase with the app's existing authenticated envelope. */
+export async function encryptPackage(pkg: WorkspacePackage, passphrase: string): Promise<EncryptedPayload> {
+  if (passphrase.length < MIN_PASSPHRASE) throw new Error(`Use a passphrase of at least ${MIN_PASSPHRASE} characters.`);
+  return sealEnvelope(pkg, passphrase);
+}
+
+/** Decrypt an encrypted package file to the package text, for readPackage. Wrong passphrase or altered bytes throw. */
+export async function decryptPackageText(text: string, passphrase: string): Promise<string> {
+  const raw: unknown = JSON.parse(text);
+  if (!isEncryptedPackage(raw)) throw new Error("This file is not an encrypted package.");
+  return JSON.stringify(await openEnvelope<unknown>(raw, passphrase));
 }
 
 /* ------------------------------------------------------------------ */
@@ -207,7 +247,11 @@ export async function readPackage(text: string): Promise<PackageRead> {
  *  - same-content: different id, identical content (an earlier import or copy).
  */
 export type DuplicateKind = "new" | "identical" | "conflict" | "same-content";
-export type ImportDecision = "restore" | "replace" | "keep-both" | "skip";
+/**
+ * The choice for each incoming item. Nothing ever overwrites a local workspace: an
+ * existing copy can be opened, the incoming one imported as a separate copy, or skipped.
+ */
+export type ImportDecision = "restore" | "open" | "keep-both" | "skip";
 
 /** Content identity ignores the id and the save timestamp, which differ between copies. */
 const contentKey = (w: Workspace) => {
@@ -228,78 +272,62 @@ export function planImport(items: IncomingItem[], current: Workspace[]): ImportP
   return items.map((it) => {
     const same = byId.get(it.workspace.id);
     if (same) {
-      if (contentKey(same) === contentKey(it.workspace)) return { ...it, duplicate: "identical", existing: same, options: ["skip", "keep-both"] };
-      // A sealed local snapshot is immutable: it is never replaced in place.
-      const options: ImportDecision[] = same.lifecycle === "sealed" ? ["keep-both", "skip"] : ["keep-both", "replace", "skip"];
-      return { ...it, duplicate: "conflict", existing: same, options };
+      if (contentKey(same) === contentKey(it.workspace)) return { ...it, duplicate: "identical", existing: same, options: ["open", "keep-both", "skip"] };
+      return { ...it, duplicate: "conflict", existing: same, options: ["keep-both", "open", "skip"] };
     }
     const twin = byContent.get(contentKey(it.workspace));
-    if (twin) return { ...it, duplicate: "same-content", existing: twin, options: ["skip", "keep-both"] };
+    if (twin) return { ...it, duplicate: "same-content", existing: twin, options: ["open", "keep-both", "skip"] };
     return { ...it, duplicate: "new", options: ["restore", "skip"] };
   });
 }
 
 export const DECISION_LABEL: Record<ImportDecision, string> = {
   restore: "Restore",
-  replace: "Replace local copy",
-  "keep-both": "Keep both",
+  open: "Open existing",
+  "keep-both": "Import as separate copy",
   skip: "Skip",
 };
 
-export type ImportResult = { store: WorkspaceStore; added: number; replaced: number; skipped: number; quarantined: number };
+export type ImportResult = { store: WorkspaceStore; added: number; skipped: number; quarantined: number; openId?: string };
 
 /**
- * Apply the user's decisions. Keep both writes the incoming workspace under a new id
- * with import lineage; replace never touches a sealed snapshot; quarantined records are
- * appended to the store's quarantine. Nothing local is deleted.
+ * Apply the user's decisions. Restore adds a workspace that is not here; a separate copy
+ * gets a new id with import lineage; open existing adds nothing and names the local
+ * workspace to open. No local workspace is ever replaced or deleted; quarantined
+ * records join the local quarantine.
  */
 export function applyImport(store: WorkspaceStore, plan: ImportPlanItem[], decisions: ImportDecision[], quarantined: unknown[], at = new Date().toISOString()): ImportResult {
-  let workspaces = [...store.workspaces];
+  const workspaces = [...store.workspaces];
   let added = 0;
-  let replaced = 0;
   let skipped = 0;
+  let openId: string | undefined;
   plan.forEach((it, i) => {
     const d = decisions[i] ?? it.options[0];
+    const w = it.workspace;
     if (!it.options.includes(d) || d === "skip") {
       skipped++;
-      return;
-    }
-    const w = it.workspace;
-    if (d === "restore") {
-      if (workspaces.some((x) => x.id === w.id)) {
-        skipped++;
-        return;
+    } else if (d === "open") {
+      openId = openId ?? it.existing?.id;
+      skipped++;
+    } else if (d === "restore") {
+      if (workspaces.some((x) => x.id === w.id)) skipped++;
+      else {
+        workspaces.push(w);
+        added++;
       }
-      workspaces.push(w);
-      added++;
-    } else if (d === "replace") {
-      const local = workspaces.find((x) => x.id === w.id);
-      if (!local || local.lifecycle === "sealed") {
-        skipped++;
-        return;
-      }
-      workspaces = workspaces.map((x) => (x.id === w.id ? w : x));
-      replaced++;
     } else {
-      const copy: Workspace = {
+      workspaces.push({
         ...w,
         id: newId(w.mode === "preset" ? "ex" : "ms"),
         lineage: { parentId: w.id, kind: "import", note: `Imported copy of ${w.title}.`, at },
         updatedAt: at,
-      };
-      workspaces.push(copy);
+      });
       added++;
     }
   });
-  return {
-    store: { ...store, workspaces, quarantine: [...store.quarantine, ...quarantined] },
-    added,
-    replaced,
-    skipped,
-    quarantined: quarantined.length,
-  };
+  return { store: { ...store, workspaces, quarantine: [...store.quarantine, ...quarantined] }, added, skipped, quarantined: quarantined.length, openId };
 }
 
 /** The quarantine as a downloadable file, exactly as kept. Viewing it changes nothing. */
-export const quarantineExport = (store: WorkspaceStore, at = new Date().toISOString()) =>
-  JSON.stringify({ format: "vinculum-quarantine", exportedAt: at, note: "Records this browser could not read. Kept unchanged.", records: store.quarantine }, null, 2);
+export const quarantineExport = (items: unknown[], at = new Date().toISOString()) =>
+  JSON.stringify({ format: "vinculum-quarantine", exportedAt: at, note: "Records this browser could not read, each with its reason. Kept unchanged. For inspection only: nothing here is executed.", records: items }, null, 2);

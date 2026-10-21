@@ -6,6 +6,7 @@ import { useEngine, hasSignal, telemetryLines } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
 import DeskOutput from "@/components/desk/DeskOutput";
 import NoteVerbale from "@/components/desk/NoteVerbale";
+import { copyText } from "@/lib/clipboardGuard";
 
 /**
  * §12B, the Operational Briefing Desk.
@@ -285,7 +286,7 @@ END OF ${cab.tag}`;
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(memo);
+      await copyText(memo);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {

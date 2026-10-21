@@ -6,6 +6,7 @@ import { sha256, sealText, shortHash } from "./integrity";
 import { inscriptionLines, statutoryClearances, useEngine } from "./engine";
 import { apostille, ledgerSize, mintDispatch, type Dispatch } from "./registry";
 import { currentMerkleRoot, useSessionMerkleRoot } from "./ledgerStore";
+import { copyText } from "@/lib/clipboardGuard";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 export const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
@@ -107,7 +108,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
     try {
       // Every cable that leaves the desk carries its own registry reference and digest.
       const d = await mintDispatch(signals, "cable");
-      await navigator.clipboard.writeText(`${apostille(d, await currentMerkleRoot())}\n\n${toCable(text, d.ref)}`);
+      await copyText(`${apostille(d, await currentMerkleRoot())}\n\n${toCable(text, d.ref)}`);
       toast.success("Diplomatic cable copied");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");
@@ -140,7 +141,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
     const d = minute ?? (await mintDispatch(signals, "minute", meta.id));
     if (!minute) setMinute(d);
     try {
-      await navigator.clipboard.writeText(`${apostille(d, await currentMerkleRoot())}\n\n${text}`);
+      await copyText(`${apostille(d, await currentMerkleRoot())}\n\n${text}`);
       toast.success("Sovereign seal and document copied");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");
@@ -150,7 +151,7 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
   const copy = async () => {
     try {
       const { stamped } = await sealText(text);
-      await navigator.clipboard.writeText(stamped);
+      await copyText(stamped);
       toast.success("Copied with SHA-256 integrity stamp");
     } catch {
       toast.error("Copy failed. Select the text and copy manually.");

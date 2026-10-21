@@ -43,7 +43,8 @@ export default function WallChart() {
       a.remove();
       setTimeout(() => URL.revokeObjectURL(href), 4000);
     } catch (err) {
-      console.error("Wall chart generation failed", err);
+      // Details stay out of production consoles: an error can carry mission text.
+      if (import.meta.env.DEV) console.error("Wall chart generation failed", err);
       toast.error("The chart could not be prepared. Please try again.");
     } finally {
       setBusy(null);

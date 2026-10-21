@@ -51,8 +51,10 @@ test("route scroll memory is gone: no stored scroll positions", () => {
 });
 
 test("mission archive filename and schema validation", () => {
-  expect(archiveFileName("Great Lakes Region", new Date("2026-03-04T23:30:00Z"))).toBe("VINCULUM-MISSION-GREAT-LAKES-REGION-2026-03-04.vinculum");
-  expect(archiveFileName("  ", new Date("2026-03-04T00:00:00Z"))).toBe("VINCULUM-MISSION-UNNAMED-2026-03-04.vinculum");
+  // The theatre stays out of the file name by default; it is included only on request.
+  expect(archiveFileName("Great Lakes Region", new Date("2026-03-04T23:30:00Z"))).toBe("VINCULUM-MISSION-2026-03-04.vinculum");
+  expect(archiveFileName("Great Lakes Region", new Date("2026-03-04T23:30:00Z"), true)).toBe("VINCULUM-MISSION-GREAT-LAKES-REGION-2026-03-04.vinculum");
+  expect(archiveFileName("  ", new Date("2026-03-04T00:00:00Z"))).toBe("VINCULUM-MISSION-2026-03-04.vinculum");
   const good = { format: ARCHIVE_FORMAT, schema: ARCHIVE_SCHEMA, version: ARCHIVE_VERSION, profile: { theatre: "X", bonds: {} }, binder: [], signals: {} };
   expect(validateArchive(good).ok).toBe(true);
   expect(validateArchive({ format: ARCHIVE_FORMAT, version: 3, profile: {} }).ok).toBe(true);

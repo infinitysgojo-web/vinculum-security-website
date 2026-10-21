@@ -27,7 +27,8 @@ export default function DossierDownload({ c }: { c: CaseStudy }) {
       a.remove();
       setTimeout(() => URL.revokeObjectURL(href), 4000);
     } catch (err) {
-      console.error("Dossier generation failed", err);
+      // Details stay out of production consoles: an error can carry mission text.
+      if (import.meta.env.DEV) console.error("Dossier generation failed", err);
       toast.error("The dossier could not be prepared. Please try again.");
     } finally {
       setBusy(false);
