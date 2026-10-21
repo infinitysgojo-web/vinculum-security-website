@@ -18,6 +18,7 @@ import SovereignInscriptionTray from "@/components/desk/SovereignInscriptionTray
 import DeskOutput, { BinderContext, DeskMetaContext, ExportNoticeContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import { PAIRINGS } from "@/content/pairings";
+import { guardSignalPatch } from "@/components/desk/signalGuard";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
 import { EngineContext, useEngine, usePublish, applyInscriptions, bondBand, mathReading, stageGateAudit, telemetryLines, type Signals } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
@@ -285,7 +286,10 @@ export default function Dashboard() {
   // The mission engine: every desk publishes its readings here, and every
   // downstream desk reads them. Held in memory only, like the binder.
   const [signals, setSignals] = useState<Signals>({});
-  const publish = useCallback((_desk: string, patch: Signals) => {
+  const publish = useCallback((desk: string, raw: Signals) => {
+    // Every publication is validated at the bus boundary; refused ones never reach a desk.
+    const patch = guardSignalPatch(desk, raw);
+    if (!patch) return;
     setSignals((prev) => {
       const next = { ...prev, ...patch };
       return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
@@ -1470,18 +1474,18 @@ export default function Dashboard() {
         store={wsStore.store}
         activeId={activeId}
         onImport={(r) => {
-          // Store the open workspace's live state first, so an import never loses it.
+          // Store the open workspace's live state first, so an import never loses it. Imports never replace a workspace.
           const cur = activeRef.current;
-          const before = cur ? wsStore.store.workspaces.find((w) => w.id === cur.id) : undefined;
-          const incoming = cur ? r.store.workspaces.find((w) => w.id === cur.id) : undefined;
-          const replacedOpen = !!incoming && incoming !== before;
-          const base = cur && cur.lifecycle !== "sealed" && !replacedOpen
+          const base = cur && cur.lifecycle !== "sealed"
             ? { ...r.store, workspaces: r.store.workspaces.map((w) => (w.id === cur.id ? { ...cur, state: captureState(), replay: liveReplay(), updatedAt: now() } : w)) }
             : r.store;
           wsStore.replace(base);
-          // The open workspace was replaced by the imported copy: reopen it on that state.
-          if (replacedOpen && incoming) bootWorkspace(incoming);
-          logEvent("MISSION_HYDRATED", `Local package imported (${r.added} added, ${r.replaced} replaced, ${r.quarantined} kept aside)`);
+          logEvent("MISSION_HYDRATED", `Local package imported (${r.added} added, ${r.quarantined} kept aside)`);
+        }}
+        onStoreChange={(next) => wsStore.replace(next)}
+        onOpenWorkspace={(id) => {
+          const w = wsStore.store.workspaces.find((x) => x.id === id);
+          if (w) openWorkspace(w);
         }}
       />
       <ImpactDialog impact={impact} onClose={() => setImpact(null)} />

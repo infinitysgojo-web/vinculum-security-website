@@ -78,8 +78,11 @@ export function validateArchive(data: unknown): ArchiveValidation {
   return { ok: true, version };
 }
 
-/** VINCULUM-MISSION-[THEATRE]-[YYYY-MM-DD].vinculum, the date in UTC. */
-export function archiveFileName(theatre: string, at: Date = new Date()): string {
-  const t = theatre.trim().replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toUpperCase().slice(0, 48) || "UNNAMED";
-  return `VINCULUM-MISSION-${t}-${at.toISOString().slice(0, 10)}.vinculum`;
+/**
+ * VINCULUM-MISSION-[YYYY-MM-DD].vinculum, the date in UTC. Archive file name. The theatre is left out by default, so a file name never reveals the
+ * mission context in a downloads folder, a share sheet or a sync client.
+ */
+export function archiveFileName(theatre: string, at: Date = new Date(), includeTheatre = false): string {
+  const t = theatre.trim().replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "").toUpperCase().slice(0, 48);
+  return includeTheatre && t ? `VINCULUM-MISSION-${t}-${at.toISOString().slice(0, 10)}.vinculum` : `VINCULUM-MISSION-${at.toISOString().slice(0, 10)}.vinculum`;
 }

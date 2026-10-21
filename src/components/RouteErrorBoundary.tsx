@@ -15,7 +15,8 @@ export default class RouteErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error("Route render error:", error, info.componentStack);
+    // Details stay out of production consoles: an error can carry mission text.
+    if (import.meta.env.DEV) console.error("Route render error:", error, info.componentStack);
   }
 
   componentDidUpdate(prev: Props) {

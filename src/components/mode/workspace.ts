@@ -7,7 +7,9 @@
  * computes a desk reading: every figure the shell shows is read from the MissionEngine.
  */
 import type { BinderEntry } from "@/components/desk/DeskOutput";
-import type { Signals } from "@/components/desk/engine";
+import { sanitizeSignals, type Signals } from "@/components/desk/engine";
+import { RECORD_LIMITS, checkPayload } from "@/lib/payloadLimits";
+import { prohibitedCharacters } from "@/lib/sanitizer";
 import { EMPTY_PROFILE, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
 
 export const WORKSPACE_SCHEMA = 1;
@@ -201,7 +203,8 @@ function readState(raw: unknown): DeskState {
   return {
     profile,
     binder,
-    signals: isObj(s.signals) ? (s.signals as Signals) : {},
+    // Restored readings pass the same validation as live publications.
+    signals: isObj(s.signals) ? sanitizeSignals(s.signals) : {},
     division: str(s.division, "assess"),
     desk: str(s.desk, "diagnostics"),
   };
@@ -260,6 +263,59 @@ export function readWorkspace(raw: unknown): Workspace | null {
   } as Workspace;
 }
 
+/**
+ * A record kept aside: the record exactly as found, a minimal diagnostic reason and when.
+ * Earlier builds kept bare records; those are still read and shown as kept by an
+ * earlier version. Quarantined content is never rendered as HTML.
+ */
+export type QuarantineEntry = { quarantined: 1; at: string; reason: string; source: "store" | "import"; record: unknown };
+
+export const isQuarantineEntry = (v: unknown): v is QuarantineEntry =>
+  isObj(v) && v.quarantined === 1 && typeof v.reason === "string" && "record" in v;
+
+export const quarantineEntry = (record: unknown, reason: string, source: QuarantineEntry["source"] = "store", at = new Date().toISOString()): QuarantineEntry => ({
+  quarantined: 1,
+  at,
+  reason,
+  source,
+  record,
+});
+
+/** The record and reason of any quarantine item, wrapped or bare. */
+export const quarantineView = (v: unknown): { reason: string; at?: string; source?: string; record: unknown } =>
+  isQuarantineEntry(v) ? v : { reason: "Kept aside by an earlier version of this app.", record: v };
+
+/** Free text a person writes into a workspace, checked for prohibited characters on restore and import. */
+export function workspaceTexts(w: Workspace): string[] {
+  return [
+    w.title,
+    w.label ?? "",
+    ...Object.values(w.warrant ?? {}),
+    ...w.tray.flatMap((e) => [e.text, typeof e.source === "string" ? e.source : ""]),
+    ...w.decisions.flatMap((d) => [d.what, d.why]),
+    ...w.state.binder.flatMap((b) => [b.title ?? "", b.text]),
+    w.state.profile.theatre,
+    w.state.profile.parties,
+    w.state.profile.officer,
+  ].filter((t): t is string => typeof t === "string" && t.length > 0);
+}
+
+/**
+ * Validate one untrusted record fully: structural limits, schema version, shape and
+ * text policy. Returns the workspace, or the reason it must be kept aside.
+ */
+export function validateRecord(raw: unknown): { ok: true; workspace: Workspace; reason?: undefined } | { ok: false; reason: string; workspace?: undefined } {
+  const lim = checkPayload(raw, RECORD_LIMITS);
+  if (!lim.ok) return { ok: false, reason: `Exceeds the record limits: ${lim.reason}.` };
+  if (isObj(raw) && typeof raw.schema === "number" && raw.schema > WORKSPACE_SCHEMA)
+    return { ok: false, reason: `Saved by a newer version (workspace schema ${raw.schema}). Update this app to open it.` };
+  const w = readWorkspace(raw);
+  if (!w) return { ok: false, reason: "Failed schema validation: a required field is missing or has the wrong type." };
+  const bad = [...new Set(workspaceTexts(w).flatMap(prohibitedCharacters))].sort();
+  if (bad.length) return { ok: false, reason: `Contains hidden or bidirectional characters (${bad.slice(0, 6).join(", ")}).` };
+  return { ok: true, workspace: w };
+}
+
 export type StoreRead = { store: WorkspaceStore; error?: string };
 
 /**
@@ -270,14 +326,17 @@ export type StoreRead = { store: WorkspaceStore; error?: string };
 export function readStore(raw: unknown): StoreRead {
   if (raw === null || raw === undefined) return { store: { ...EMPTY_STORE, workspaces: [], quarantine: [] } };
   if (!isObj(raw) || !Array.isArray(raw.workspaces)) {
-    return { store: { ...EMPTY_STORE, workspaces: [], quarantine: [raw] }, error: "The stored workspace list could not be read. It has been kept aside unchanged." };
+    return {
+      store: { ...EMPTY_STORE, workspaces: [], quarantine: [quarantineEntry(raw, "The stored workspace list is not in a readable shape.")] },
+      error: "The stored workspace list could not be read. It has been kept aside unchanged.",
+    };
   }
   const workspaces: Workspace[] = [];
   const quarantine: unknown[] = Array.isArray(raw.quarantine) ? [...raw.quarantine] : [];
   for (const w of raw.workspaces) {
-    const ok = readWorkspace(w);
-    if (ok) workspaces.push(ok);
-    else quarantine.push(w);
+    const v = validateRecord(w);
+    if (v.ok) workspaces.push(v.workspace);
+    else quarantine.push(quarantineEntry(w, v.reason));
   }
   const bad = quarantine.length - (Array.isArray(raw.quarantine) ? raw.quarantine.length : 0);
   const newer = typeof raw.schema === "number" && raw.schema > WORKSPACE_SCHEMA;

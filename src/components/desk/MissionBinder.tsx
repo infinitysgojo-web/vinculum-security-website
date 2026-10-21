@@ -6,6 +6,7 @@ import { apostilleBody, apostilleCertificate, apostilleFile, canonicalJson, mint
 import { sha256, shortHash } from "./integrity";
 import { toast } from "sonner";
 import DeskOutput, { BinderContext, ExportNoticeContext, field, label, panel, type BinderEntry } from "./DeskOutput";
+import { copyText } from "@/lib/clipboardGuard";
 
 /**
  * Consolidated Mission Binder. Compiles documents added from any desk into one
@@ -72,7 +73,7 @@ export default function MissionBinder({
 
   const copyBinder = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      await copyText(text);
       toast.success("Compiled binder copied");
     } catch {
       toast.error("Copy was blocked. Select the binder text beneath instead.");

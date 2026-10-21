@@ -66,13 +66,13 @@ describe("versioned workspace model and migration", () => {
     const bad = { id: 5, mode: "other" };
     const r = readStore({ schema: 1, workspaces: [preset(), bad] });
     expect(r.store.workspaces).toHaveLength(1);
-    expect(r.store.quarantine).toEqual([bad]);
+    expect(r.store.quarantine.map((q) => (q as { record: unknown }).record)).toEqual([bad]);
     expect(r.error).toMatch(/kept aside unchanged/);
   });
   test("an unreadable collection is kept aside rather than blanking", () => {
     const r = readStore("garbage");
     expect(r.store.workspaces).toEqual([]);
-    expect(r.store.quarantine).toEqual(["garbage"]);
+    expect(r.store.quarantine.map((q) => (q as { record: unknown }).record)).toEqual(["garbage"]);
     expect(r.error).toBeDefined();
   });
   test("a newer schema loads with a notice", () => {

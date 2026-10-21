@@ -25,6 +25,7 @@ import {
   type Workspace,
 } from "./workspace";
 import { btn, btnPrimary, fieldCls, labelCls, localStamp } from "./ui";
+import { copyText } from "@/lib/clipboardGuard";
 
 const wide = "max-h-[90vh] w-[calc(100vw-1.5rem)] max-w-3xl overflow-y-auto";
 
@@ -321,7 +322,7 @@ export function ReplayDialog({ open, onOpenChange, ws }: { open: boolean; onOpen
 export function ReportDialog({ open, onOpenChange, title, text, fileName }: { open: boolean; onOpenChange: (v: boolean) => void; title: string; text: string; fileName: string }) {
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(text);
+      await copyText(text);
       toast.success("Copied");
     } catch {
       toast.error("Copy was blocked. Select the text instead.");

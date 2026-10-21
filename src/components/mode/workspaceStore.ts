@@ -8,6 +8,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { openSnapshot, sealSnapshot } from "@/lib/chancelleryEnclave";
 import { EMPTY_STORE, readStore, type Mode, type Workspace, type WorkspaceStore } from "./workspace";
+import { boundHistory, transactionalRead, transactionalWrite } from "./localPersistence";
 
 export const storeKey = (uid: string) => `vinculum-workspaces:${uid}`;
 const snapshotName = (uid: string) => `workspaces:${uid}`;
@@ -23,6 +24,8 @@ export type SaveStatus =
   | "held"
   /** The browser refused the write. */
   | "unavailable"
+  /** Browser storage is full: the last saved copy is untouched, the change is held in memory. */
+  | "full"
   | "idle";
 
 /** Merge two collections by workspace id; the later local update wins, nothing is dropped. */
@@ -91,14 +94,13 @@ export function useWorkspaceStore(uid: string | null, active: boolean, enclave: 
       let plain: WorkspaceStore | undefined;
       let err: string | undefined;
       try {
-        const t = window.localStorage.getItem(storeKey(uid));
-        if (t) {
-          const r = readStore(JSON.parse(t));
+        const r = transactionalRead(window.localStorage, storeKey(uid));
+        if (r.found) {
           plain = r.store;
           err = r.error;
         }
       } catch {
-        err = "The local workspace list could not be parsed. It has been left in place unchanged.";
+        err = "The local workspace list could not be read. It has been left in place unchanged.";
       }
       let sealed: WorkspaceStore | undefined;
       if (enclave.configured && enclave.unlocked && !openedSealed.current) {
@@ -138,10 +140,15 @@ export function useWorkspaceStore(uid: string | null, active: boolean, enclave: 
             setStatus("held");
             return;
           }
-          await sealSnapshot(snapshotName(uid), next);
-          window.localStorage.removeItem(storeKey(uid));
+          // IndexedDB writes one record atomically; the plaintext copies are removed only after it succeeds.
+          await sealSnapshot(snapshotName(uid), boundHistory(next));
+          for (const k of [storeKey(uid), `${storeKey(uid)}:pending`, `${storeKey(uid)}:last-good`]) window.localStorage.removeItem(k);
         } else {
-          window.localStorage.setItem(storeKey(uid), JSON.stringify(next));
+          const r = transactionalWrite(window.localStorage, storeKey(uid), boundHistory(next));
+          if (!r.ok) {
+            setStatus(r.reason === "quota" ? "full" : "unavailable");
+            return;
+          }
         }
         setStatus("saved");
       } catch {

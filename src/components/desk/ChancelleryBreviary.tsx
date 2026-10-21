@@ -15,6 +15,7 @@ import type { BinderEntry } from "./DeskOutput";
 import { readBreviary } from "./breviary";
 import { Lex } from "./Lexicon";
 import { sha256, sealText, shortHash } from "./integrity";
+import { copyText } from "@/lib/clipboardGuard";
 
 const card = "border border-brass/40 bg-navy-tint/30 p-4 space-y-2 min-w-0";
 const head = "text-[10px] uppercase tracking-[0.18em] font-semibold text-primary/70";
@@ -60,7 +61,7 @@ export function ChancelleryBreviary({
     if (!r) return;
     try {
       const { stamped } = await sealText(r.text);
-      await navigator.clipboard.writeText(stamped);
+      await copyText(stamped);
       toast.success("Breviary copied with SHA-256 integrity stamp");
     } catch {
       toast.error("Copy failed. Use Download instead.");
@@ -73,7 +74,7 @@ export function ChancelleryBreviary({
     const url = URL.createObjectURL(new Blob([stamped], { type: "text/plain;charset=utf-8" }));
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Vinculum-Breviary-${slug}.txt`;
+    a.download = `Vinculum-Breviary-${new Date().toISOString().slice(0, 10)}.txt`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 4000);
     toast.success("Breviary downloaded with integrity seal");

@@ -1,15 +1,16 @@
 /**
  * Cursor-safe sanitizer wiring for free-text fields. Nothing runs per keystroke:
- *  - on paste, hidden and control characters are removed from the pasted text
- *    before it is inserted at the caret (the caret lands after the insertion);
- *  - on blur (the field is committed), the whole value is sanitized once.
+ *  - on paste, text with prohibited hidden, bidirectional or control characters is
+ *    rejected and nothing is inserted; clean text is inserted in NFC form;
+ *  - on blur (the field is committed), the whole value is normalised once, and any
+ *    prohibited character still present is removed with a visible notice.
  * Attached in the capture phase on a container, so every desk, drawer and vault
  * field below it is covered, including Radix portals (React events follow the
  * component tree). Password, number, email and other typed inputs are never touched.
  */
 import type { ClipboardEvent, FocusEvent } from "react";
 import { toast } from "sonner";
-import { detectSteganographicTokens, sanitizeInscriptionText } from "./sanitizer";
+import { prohibitedCharacters, sanitizeInscriptionText } from "./sanitizer";
 
 type Field = HTMLInputElement | HTMLTextAreaElement;
 
@@ -29,26 +30,42 @@ function commitValue(el: Field, value: string) {
   el.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+/**
+ * Paste: text carrying prohibited invisible, bidirectional or control characters is
+ * rejected whole (nothing is inserted) rather than silently rewritten. Clean text is
+ * inserted in NFC form. Joiners that are spelling in a joining script are allowed.
+ */
 export function sanitizeOnPaste(e: ClipboardEvent<HTMLElement>) {
   const el = e.target;
   if (!isFreeText(el)) return;
   const text = e.clipboardData?.getData("text/plain");
   if (!text) return;
-  const clean = sanitizeInscriptionText(text, { trim: false });
+  const bad = prohibitedCharacters(text);
+  if (bad.length) {
+    e.preventDefault();
+    toast.error(`Paste blocked: the copied text contains hidden or bidirectional characters (${bad.slice(0, 4).join(", ")}${bad.length > 4 ? ", …" : ""}). Nothing was inserted.`);
+    return;
+  }
+  const clean = text.normalize("NFC");
   if (clean === text) return;
   e.preventDefault();
   const start = el.selectionStart ?? el.value.length;
   const end = el.selectionEnd ?? start;
   el.setRangeText(clean, start, end, "end");
   el.dispatchEvent(new Event("input", { bubbles: true }));
-  const { stripped } = detectSteganographicTokens(text);
-  toast.warning(`${stripped || "Hidden"} hidden or control character${stripped === 1 ? "" : "s"} removed from the pasted text.`);
 }
 
+/**
+ * Blur: the committed value is normalised to NFC once. Should a prohibited character
+ * still be present (typed through an input method), it is removed and the user is told
+ * which code points went: never a silent rewrite.
+ */
 export function sanitizeOnBlur(e: FocusEvent<HTMLElement>) {
   const el = e.target;
   if (!isFreeText(el)) return;
+  const bad = prohibitedCharacters(el.value);
   // Multi-line drafts keep their leading indentation and closing line breaks.
   const clean = sanitizeInscriptionText(el.value, { trim: !(el instanceof HTMLTextAreaElement) });
   if (clean !== el.value) commitValue(el, clean);
+  if (bad.length) toast.warning(`Removed hidden or bidirectional characters from this field: ${bad.slice(0, 4).join(", ")}${bad.length > 4 ? ", …" : ""}.`);
 }
