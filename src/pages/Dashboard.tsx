@@ -956,6 +956,12 @@ export default function Dashboard() {
           <div className="container flex h-10 items-center gap-2 sm:gap-3 overflow-hidden text-[9px] sm:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.18em] font-semibold text-primary">
             <span className="hidden md:inline shrink-0 text-primary/70">Vinculum Chancellery</span>
             <span className="hidden md:inline text-brass" aria-hidden>·</span>
+            {inFoyer ? (
+              <span className="min-w-0 truncate">
+                Mission Foyer: <span className="text-muted-foreground normal-case tracking-normal font-normal">no mission open</span>
+              </span>
+            ) : (
+            <>
             <span className="min-w-0 truncate">
               Desk {String(position + 1).padStart(2, "0")}: <span className="text-accent">{active.label}</span>
             </span>
@@ -965,6 +971,9 @@ export default function Dashboard() {
             <span className="hidden sm:inline shrink-0 text-muted-foreground">
               Rupture: <span className={(effective.rupture ?? 0) >= 60 ? "text-destructive" : "text-primary"}>{effective.rupture !== undefined ? `${effective.rupture}%` : "—"}</span>
             </span>
+            </>
+            )}
+            {!inFoyer && (
             <label className="relative ml-auto shrink-0 inline-flex items-center">
               <span className="sr-only">Select desk</span>
               <select
@@ -981,10 +990,11 @@ export default function Dashboard() {
               </select>
               <ChevronDown size={12} className="pointer-events-none absolute right-1.5 text-primary/70" />
             </label>
+            )}
             <button
               type="button"
               onClick={() => setFocus(false)}
-              className="shrink-0 inline-flex items-center gap-1 text-accent hover:underline"
+              className={`${inFoyer ? "ml-auto " : ""}shrink-0 inline-flex items-center gap-1 text-accent hover:underline`}
               title="Exit Focus view (Esc)"
             >
               <Minimize2 size={12} /> <span className="hidden sm:inline">Exit focus</span>
