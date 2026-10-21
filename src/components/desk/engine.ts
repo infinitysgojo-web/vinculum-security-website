@@ -371,6 +371,12 @@ export type Signals = {
   escrowReleasedPercent?: number;
   escrowTranchesMet?: number;
   escrowFrozen?: boolean;
+  /** Desk 17 fracture window (months, 0 when no decay) and band; Desk 07 resource covenant communal share and deficit flag. */
+  fractureMonths?: number;
+  fractureSeverity?: string;
+  resourceCommunalShare?: number;
+  resourceParity?: number;
+  legitimacyDeficit?: boolean;
   /** Sovereign Custom Mode inscriptions. Every list rides the bus, the digest and the manifest. */
   customRules?: string[];
   customParties?: CustomParty[];
@@ -389,14 +395,14 @@ const SIGNAL_NUMBERS = [
   "shockSeverity", "trackI", "trackII", "trackGap", "seatedParties", "redlineFlags", "survivalScore",
   "handoverViability", "partyFriction", "presetEpoch", "safeguardCoverage",
   "decayConstant", "stabilityHalfLifeDays", "projectedDegradation", "activeForumScore", "enforcementFriction",
-  "escrowReleasedPercent", "escrowTranchesMet",
+  "escrowReleasedPercent", "escrowTranchesMet", "fractureMonths", "resourceCommunalShare", "resourceParity",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
   "firstToBreak", "gatesCleared", "handoverBand", "oversightBody", "theatre", "vetoHolder", "presetId", "litigationForum", "counterpart",
-  "disputeForum", "disputeForumId",
+  "disputeForum", "disputeForumId", "fractureSeverity",
 ] as const;
-const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen", "immunityWaived", "neutralSeat"] as const;
+const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen", "immunityWaived", "neutralSeat", "legitimacyDeficit"] as const;
 const SIGNAL_STRING_LISTS = ["analogues", "traps", "shocks", "frictionPairs", "covenants", "mirrors", "customRules"] as const;
 
 /**

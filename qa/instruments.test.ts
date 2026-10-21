@@ -57,3 +57,36 @@ describe("escrow waterfall", () => {
     expect(r.frozen).toBe(true);
   });
 });
+
+import { fractureWindow, rebalance, resourceReading, pleadingHeads } from "../src/components/desk/instruments";
+
+describe("fracture window", () => {
+  test("t_f = ln(B̄₀ ÷ 2) ÷ λ", () => {
+    const f = fractureWindow(4, 0.01);
+    expect(f.days).toBe(Math.round(Math.log(2) / 0.01));
+    expect(f.severity).toBe("acute");
+  });
+  test("no decay is stable; mean at or below 2.0 is imminent", () => {
+    expect(fractureWindow(4, 0).severity).toBe("stable");
+    expect(fractureWindow(2, 0.5).days).toBe(0);
+  });
+});
+
+describe("resource covenant", () => {
+  test("rebalance keeps the total at 100", () => {
+    const s = rebalance([40, 35, 25], 0, 20);
+    expect(s[0] + s[1] + s[2]).toBe(100);
+    expect(s[0]).toBe(20);
+  });
+  test("communal under 30 is a deficit", () => {
+    expect(resourceReading([29, 40, 31]).deficit).toBe(true);
+    expect(resourceReading([30, 40, 30]).deficit).toBe(false);
+  });
+});
+
+describe("pleadings bench", () => {
+  test("provisional head appears only at rupture ≥ 40", () => {
+    expect(pleadingHeads({ rupture: 39 }).total).toBe(3);
+    expect(pleadingHeads({ rupture: 40 }).total).toBe(4);
+  });
+});
