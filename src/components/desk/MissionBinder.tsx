@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
 import { ArrowDown, ArrowUp, X } from "lucide-react";
 import { statutoryClearances, telemetryLines, useEngine } from "./engine";
 import { apostilleBody, apostilleCertificate, apostilleFile, canonicalJson, mintChancelleryApostille, mintDispatch, type ChancelleryApostille } from "./registry";
 import { sha256, shortHash } from "./integrity";
 import { toast } from "sonner";
-import DeskOutput, { BinderContext, field, label, panel, type BinderEntry } from "./DeskOutput";
+import DeskOutput, { BinderContext, ExportNoticeContext, field, label, panel, type BinderEntry } from "./DeskOutput";
 
 /**
  * Consolidated Mission Binder. Compiles documents added from any desk into one
@@ -45,9 +45,11 @@ export default function MissionBinder({
   const sealCurrent = !!seal && seal.bodyKey === liveKey;
   const certificate = useMemo(() => (seal ? apostilleCertificate(seal) : ""), [seal]);
 
+  const notice = useContext(ExportNoticeContext);
   const text = useMemo(() => {
     const bar = "=".repeat(64);
     const L = [
+      ...(notice ? [notice, ""] : []),
       "VINCULUM SECURITY · MASTER CHANCELLERY BRIEFING BINDER",
       "Compiled under A Doctrine of Relational Security",
       "",
@@ -63,9 +65,10 @@ export default function MissionBinder({
       L.push("", bar, `TAB ${i + 1} OF ${entries.length}`, bar, "", e.text);
     });
     if (seal && sealCurrent) L.push("", bar, "CHANCELLERY APOSTILLE", bar, "", certificate);
+    if (notice) L.push("", notice);
     L.push("", bar, "END OF BINDER. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [entries, theatre, envoy, signals, seal, sealCurrent, certificate]);
+  }, [entries, theatre, envoy, signals, seal, sealCurrent, certificate, notice]);
 
   const copyBinder = async () => {
     try {

@@ -73,6 +73,20 @@ const PUBLISHES: Record<string, (s: Signals) => boolean> = {
 export function deskIsLive(deskId: string, s: Signals) {
   return PUBLISHES[deskId]?.(s) ?? false;
 }
+/** Whether a desk publishes telemetry of its own to the bus at all. */
+export function deskCanPublish(deskId: string) {
+  return deskId in PUBLISHES;
+}
+/**
+ * The desks that read a given desk's readings from the bus, taken from the same FLOW
+ * table the chain panel shows, so an impact note never names a desk that does not read it.
+ */
+export function downstreamOf(deskId: string): string[] {
+  const sources = Object.entries(DESK_FOR_SOURCE).filter(([, id]) => id === deskId).map(([name]) => name);
+  return Object.entries(FLOW)
+    .filter(([id, f]) => id !== deskId && f.reads.some((r) => sources.includes(r.from)))
+    .map(([id]) => id);
+}
 
 /**
  * Shows, for the active desk, which upstream readings it consumes (and whether
