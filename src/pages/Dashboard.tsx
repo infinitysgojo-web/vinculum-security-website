@@ -15,17 +15,17 @@ import GoldRule from "@/components/GoldRule";
 import { CASES, DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import SovereignInscriptionTray from "@/components/desk/SovereignInscriptionTray";
-import DeskOutput, { BinderContext, DeskMetaContext, type BinderEntry } from "@/components/desk/DeskOutput";
+import DeskOutput, { BinderContext, DeskMetaContext, ExportNoticeContext, type BinderEntry } from "@/components/desk/DeskOutput";
 import { useMission } from "@/components/desk/mission";
 import { PAIRINGS } from "@/content/pairings";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, useEngine, usePublish, applyInscriptions, bondBand, mathReading, stageGateAudit, type Signals } from "@/components/desk/engine";
+import { EngineContext, useEngine, usePublish, applyInscriptions, bondBand, mathReading, stageGateAudit, telemetryLines, type Signals } from "@/components/desk/engine";
 import SyncPanel from "@/components/desk/SyncPanel";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
-import MissionChain, { deskIsLive } from "@/components/desk/MissionChain";
+import MissionChain, { deskIsLive, downstreamOf } from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SessionLedgerDrawer, { useLedgerWatch } from "@/components/desk/SessionLedger";
-import { clearLedger, ledgerEntries, logEvent, restoreLedger } from "@/components/desk/ledgerStore";
+import { clearLedger, ledgerEntries, logEvent, restoreLedger, useSessionLedger } from "@/components/desk/ledgerStore";
 import EnclaveLockScreen from "@/components/desk/EnclaveLockScreen";
 import { ChancellerySentinel } from "@/components/desk/ChancellerySentinel";
 import { SENTINEL_SIGN_OUT_MINUTES, enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
@@ -35,6 +35,47 @@ import SaveSession from "@/components/desk/SaveSession";
 import DeskFinder from "@/components/desk/DeskFinder";
 import { LexiconDrawer } from "@/components/desk/Lexicon";
 import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
+import { canonicalJson, mintChancelleryApostille, verifyChancelleryApostille } from "@/components/desk/registry";
+import MissionFoyer, { type FoyerAction } from "@/components/mode/MissionFoyer";
+import ModeHeader, { type HeaderAction } from "@/components/mode/ModeHeader";
+import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
+import DeskGuide from "@/components/mode/DeskGuide";
+import {
+  BranchDialog,
+  BriefDialog,
+  DerivativeDialog,
+  ImpactDialog,
+  LifecycleDialog,
+  PickerDialog,
+  PromotionDialog,
+  ReplayDialog,
+  ReportDialog,
+  ScenarioLibraryDialog,
+  WarrantDialog,
+  type Impact,
+} from "@/components/mode/ModeDialogs";
+import { DESK_GUIDES, scenarioById, theatreForScenario, type Scenario, type SpineStage } from "@/components/mode/scenarios";
+import {
+  DERIVED_NOTICE,
+  EMPTY_WARRANT,
+  TRAINING_NOTICE,
+  afterActionReview,
+  blankState,
+  branchWorkspace,
+  continueFromSealed,
+  createCustomWorkspace,
+  createPresetWorkspace,
+  deriveTraining,
+  newId,
+  promoteToCustom,
+  warrantToProfile,
+  type ContextEntry,
+  type DeskState,
+  type Warrant,
+  type Workspace,
+} from "@/components/mode/workspace";
+import { readActiveId, readMode, useWorkspaceStore, writeActiveId, writeMode } from "@/components/mode/workspaceStore";
+import { useNetworkState } from "@/components/mode/ui";
 
 // All 18 desks are bundled statically with the dashboard so that mounting or
 // switching desks never fetches a chunk: an air-gapped terminal has every desk
@@ -397,6 +438,7 @@ export default function Dashboard() {
 
   const signOut = useCallback(async () => {
     clearOfflineSession();
+    writeActiveId(null);
     try {
       await supabase.auth.signOut();
     } catch {
@@ -609,6 +651,96 @@ export default function Dashboard() {
     return () => window.removeEventListener("keydown", onKey);
   }, [saveSession]);
 
+
+  /* ---------------------------------------------------------------- */
+  /* Two-mode mission environment: Preset Proving Ground and Custom    */
+  /* Operational Mission. Browser-local workspaces wrap the same desk  */
+  /* state; the desks still share readings only through the bus.       */
+  /* ---------------------------------------------------------------- */
+  const network = useNetworkState();
+  const uid = session?.user.id ?? null;
+  const wsStore = useWorkspaceStore(uid, !!session && !enclave.idleSealed && !purged, enclave);
+  const putWs = wsStore.put;
+  const [activeId, setActiveId] = useState<string | null>(() => readActiveId());
+  const activeWs = wsStore.store.workspaces.find((w) => w.id === activeId);
+  const activeRef = useRef<Workspace | undefined>(activeWs);
+  activeRef.current = activeWs;
+  // Bumped whenever a workspace is opened, so every desk remounts on that workspace's state.
+  const [deskEpoch, setDeskEpoch] = useState(0);
+  type DialogId =
+    | "library" | "pick-exercise" | "pick-replay" | "pick-draft" | "pick-review" | "pick-sealed"
+    | "new-mission" | "warrant" | "branch" | "replay" | "aar" | "brief" | "lifecycle" | "promote" | "derive";
+  const [dialog, setDialog] = useState<DialogId | null>(null);
+  const [trayOpen, setTrayOpen] = useState(false);
+  const [trayTab, setTrayTab] = useState<TrayTab>("assumptions");
+  const [impact, setImpact] = useState<Impact | null>(null);
+  const [sealing, setSealing] = useState(false);
+  const ledgerNow = useSessionLedger();
+  const scenario = activeWs?.scenario ? scenarioById(activeWs.scenario.id) : undefined;
+  const lastMode = useMemo(() => readMode(), [activeId]);
+  const legacyKey = uid ? `vinculum-session:${uid}` : null;
+  const legacyDraft = useMemo(() => {
+    if (!legacyKey) return false;
+    try {
+      return !!window.localStorage.getItem(legacyKey);
+    } catch {
+      return false;
+    }
+  }, [legacyKey, wsStore.loaded, savedAt]);
+  const exportNotice = activeWs?.mode === "preset" ? (activeWs.derived ? `${DERIVED_NOTICE}\n${TRAINING_NOTICE}` : TRAINING_NOTICE) : "";
+
+  const bootWorkspace = useCallback((w: Workspace) => {
+    clearLedger();
+    if (w.replay.length) restoreLedger(w.replay as Parameters<typeof restoreLedger>[0]);
+    const d = DESKS.find((x) => x.id === w.state.desk) ?? DESKS[0];
+    setProfile({ ...EMPTY_PROFILE, ...w.state.profile });
+    setBinder(w.state.binder);
+    setSignals(w.state.signals);
+    setDivision(d.division);
+    setDesk(d.id);
+    setVisited(new Set(w.state.signals.presetId ? DESKS.map((x) => x.id) : [d.id]));
+    setDeskEpoch((e) => e + 1);
+    setActiveId(w.id);
+    writeActiveId(w.id);
+    writeMode(w.mode);
+    setFocus(false);
+    window.scrollTo({ top: 0 });
+  }, []);
+
+  // Reopen this tab's workspace after a reload; forget it if it is no longer stored.
+  const bootedRef = useRef(false);
+  useEffect(() => {
+    if (!wsStore.loaded) return;
+    const w = activeId ? wsStore.store.workspaces.find((x) => x.id === activeId) : undefined;
+    if (activeId && !w) {
+      setActiveId(null);
+      writeActiveId(null);
+      return;
+    }
+    if (!bootedRef.current) {
+      bootedRef.current = true;
+      if (w) bootWorkspace(w);
+    }
+  }, [wsStore.loaded, wsStore.store, activeId, bootWorkspace]);
+
+  // Autosave the open workspace (never a sealed one, never during idle seal or purge).
+  useEffect(() => {
+    const w = activeRef.current;
+    if (!w || w.lifecycle === "sealed" || purged || enclave.idleSealed || !session) return;
+    const t = window.setTimeout(() => {
+      const cur = activeRef.current;
+      if (!cur || cur.id !== w.id || cur.lifecycle === "sealed") return;
+      putWs({
+        ...cur,
+        state: { profile, binder, signals, division, desk },
+        replay: ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail })),
+        updatedAt: new Date().toISOString(),
+      });
+    }, 700);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile, binder, signals, division, desk, ledgerNow.length, activeId, purged, enclave.idleSealed, session]);
+
   if (!ready || !session || purged) return null;
 
   // The desk order is the chancellery lifecycle: assess, engage, draft, govern.
@@ -622,6 +754,182 @@ export default function Dashboard() {
     setDesk(d.id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  const deskLabel = (id: string) => DESKS.find((d) => d.id === id)?.label ?? id;
+  const now = () => new Date().toISOString();
+  const captureState = (): DeskState => ({ profile, binder, signals, division, desk });
+  const liveReplay = () => ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail }));
+  /** Write a change to the open workspace. */
+  const updateWs = (patch: Partial<Workspace>) => {
+    const cur = activeRef.current;
+    if (!cur) return;
+    const next = { ...cur, ...patch, updatedAt: now() } as Workspace;
+    activeRef.current = next;
+    putWs(next);
+  };
+  /** Store the open workspace with its live state, then open another one. */
+  const openWorkspace = (w: Workspace) => {
+    const cur = activeRef.current;
+    if (cur && cur.id !== w.id && cur.lifecycle !== "sealed") putWs({ ...cur, state: captureState(), replay: liveReplay(), updatedAt: now() });
+    putWs(w);
+    setDialog(null);
+    bootWorkspace(w);
+  };
+  const workspaces = wsStore.store.workspaces;
+  const recent = (list: Workspace[]) => [...list].sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+
+  const startScenario = (sc: Scenario) => {
+    const t = theatreForScenario(sc);
+    if (!t) return;
+    const first = DESKS.find((d) => d.id === sc.sequence[0]) ?? DESKS[0];
+    const state: DeskState = {
+      profile: { ...EMPTY_PROFILE, theatre: t.name, parties: t.parties, bonds: { ...t.bonds }, classification: "Training exercise" },
+      binder: [],
+      signals: { presetId: t.id, presetEpoch: 1 },
+      division: first.division,
+      desk: first.id,
+    };
+    openWorkspace(createPresetWorkspace({ id: sc.id, version: sc.version, title: sc.title }, state));
+    logEvent("MISSION_HYDRATED", `${sc.title} (training exercise, scenario v${sc.version})`);
+  };
+
+  const startMission = (warrant: Warrant, added: ContextEntry[]) => {
+    const base = blankState();
+    const w = createCustomWorkspace(warrant, { ...base, profile: warrantToProfile(warrant, base.profile) });
+    openWorkspace({ ...w, tray: added });
+    logEvent("MISSION_HYDRATED", `${w.title} (custom operational mission)`);
+  };
+
+  const importLegacy = () => {
+    if (!legacyKey) return;
+    try {
+      const raw = window.localStorage.getItem(legacyKey);
+      const s = raw ? JSON.parse(raw) : null;
+      if (!s) return;
+      const p: MissionProfile = s.profile ? { ...EMPTY_PROFILE, ...s.profile, ...(s.profile.bonds ? { bonds: sanitizeBonds(s.profile.bonds) } : {}) } : { ...EMPTY_PROFILE };
+      const state: DeskState = { profile: p, binder: Array.isArray(s.binder) ? s.binder : [], signals: s.signals ?? {}, division: s.division ?? "assess", desk: s.desk ?? "diagnostics" };
+      const w = createCustomWorkspace({ ...EMPTY_WARRANT, title: p.theatre.trim() || "Saved browser session", theatre: p.theatre, custodian: p.officer, handling: p.classification }, state);
+      openWorkspace({ ...w, lineage: { kind: "import", note: "Imported from a saved browser session.", at: now() } });
+    } catch {
+      toast.error("The saved browser session could not be read. It has been left in place.");
+    }
+  };
+
+  const onFoyer = (a: FoyerAction) => {
+    const presets = recent(workspaces.filter((w) => w.mode === "preset"));
+    if (a.kind === "continue-exercise") {
+      if (presets[0]) openWorkspace(presets[0]);
+    } else if (a.kind === "library" || a.kind === "new-exercise") setDialog("library");
+    else if (a.kind === "replay") setDialog("pick-replay");
+    else if (a.kind === "new-mission") setDialog("new-mission");
+    else if (a.kind === "resume-draft") setDialog("pick-draft");
+    else if (a.kind === "review-ready") setDialog("pick-review");
+    else if (a.kind === "sealed") setDialog("pick-sealed");
+  };
+
+  const toFoyer = () => {
+    const cur = activeRef.current;
+    if (cur && cur.lifecycle !== "sealed") putWs({ ...cur, state: captureState(), replay: liveReplay(), updatedAt: now() });
+    setTrayOpen(false);
+    setDialog(null);
+    setActiveId(null);
+    writeActiveId(null);
+    window.scrollTo({ top: 0 });
+  };
+
+  const sealActive = async (reason: string) => {
+    const cur = activeRef.current;
+    if (!cur || cur.lifecycle !== "ready") return;
+    setSealing(true);
+    try {
+      const at = now();
+      const decisions = [...cur.decisions, { id: newId("dc"), what: "Sealed this mission as a local snapshot", why: reason, at, status: "active" as const }];
+      const entries = [
+        ...binder.map((e) => ({ id: e.id, title: e.title, text: e.text })),
+        { id: "mission-warrant", title: "Mission Warrant", text: canonicalJson(cur.warrant ?? {}) },
+        { id: "context-tray", title: "Context Tray", text: canonicalJson(cur.tray) },
+        { id: "decision-record", title: "Decision Record", text: canonicalJson(decisions) },
+      ];
+      const a = await mintChancelleryApostille(effective, entries);
+      updateWs({ lifecycle: "sealed", decisions, state: captureState(), replay: liveReplay(), sealed: { ref: a.ref, digest: a.digest, at, canonical: a.canonical } });
+      toast.success(`Sealed local snapshot ${a.ref}`);
+    } catch {
+      toast.error("This browser could not compute the SHA-256 seal. Nothing was sealed.");
+    } finally {
+      setSealing(false);
+      setImpact(null);
+      setDialog(null);
+    }
+  };
+
+  const onHeader = (a: HeaderAction) => {
+    const cur = activeRef.current;
+    if (!cur) return;
+    switch (a) {
+      case "foyer":
+        return toFoyer();
+      case "tray":
+        return setTrayOpen(true);
+      case "reset": {
+        if (!cur.baseline) return;
+        const w = { ...cur, state: JSON.parse(JSON.stringify(cur.baseline)) as DeskState, replay: [], checkpointsRevealed: [], updatedAt: now() };
+        putWs(w);
+        bootWorkspace(w);
+        logEvent("MISSION_HYDRATED", `${cur.title} (exercise reset to its starting state)`);
+        return toast.success("Exercise reset to its starting state. Your notes are kept.");
+      }
+      case "verify":
+        if (!cur.sealed) return;
+        return void verifyChancelleryApostille({ canonical: cur.sealed.canonical, digest: cur.sealed.digest }).then((ok) =>
+          ok ? toast.success(`SHA-256 recomputed: ${cur.sealed!.ref} matches its sealed record.`) : toast.error("The sealed record does not match its digest."),
+        );
+      case "continue":
+        return openWorkspace(continueFromSealed(cur));
+      case "lifecycle":
+        return setDialog("lifecycle");
+      default:
+        return setDialog(a);
+    }
+  };
+
+  const onStage = (st: SpineStage) => {
+    if (st.shell === "warrant") return setDialog(activeWs?.mode === "custom" ? "warrant" : "brief");
+    if (st.shell === "decisions") {
+      setTrayTab("decisions");
+      return setTrayOpen(true);
+    }
+    const pick = (scenario && st.desks.find((d) => scenario.sequence.includes(d))) || st.desks[0];
+    const d = DESKS.find((x) => x.id === pick);
+    if (d) goTo(d);
+  };
+
+  /** Theatre presets overwrite profile, bonds and desk seeds: in a custom mission, preview the impact first. */
+  const requestTheatre = (id: TheatreId | "") => {
+    const t = THEATRES.find((x) => x.id === id);
+    if (!t || activeWs?.mode !== "custom") return hydrateTheatre(id);
+    if (activeWs.lifecycle === "sealed") return toast.error("A sealed local snapshot is read only. Continue in a new draft to change it.");
+    setImpact({
+      title: `Apply the ${t.name} preset to this mission?`,
+      lines: [
+        "Replaces the mission profile's theatre, parties and bond vector with the preset's illustrative training figures, which are not facts about this mission.",
+        `Re-seeds the inputs of ${Object.keys(t.seeds).map(deskLabel).join(", ")}, which then republish their readings.`,
+        `Desks that read the Diagnostics bond readings update with them: ${downstreamOf("diagnostics").map(deskLabel).join(", ")}.`,
+        "The change is recorded in the Decision Record with the reason you give.",
+      ],
+      confirmLabel: "Apply preset",
+      onConfirm: (reason) => {
+        const before = profile.theatre.trim() || "No theatre";
+        hydrateTheatre(id);
+        const c = activeRef.current;
+        if (c) updateWs({ decisions: [...c.decisions, { id: newId("dc"), what: `Applied theatre preset: ${t.name}`, why: reason, desk: "diagnostics", before, after: t.name, at: now(), status: "active" }] });
+        setImpact(null);
+      },
+    });
+  };
+
+  const inFoyer = !activeId;
+  const opening = !!activeId && !activeWs;
+  const guideOn = activeWs?.mode === "preset" && !!DESK_GUIDES[desk] && (scenario ? scenario.sequence.includes(desk) : !!activeWs.derived);
 
   return (
     <ChancellerySentinel
@@ -752,6 +1060,19 @@ export default function Dashboard() {
       </div>
 
       <div className={`container ${focus ? "py-4" : "py-6 sm:py-8"}`}>
+        {inFoyer ? (
+          <div className="mb-28">
+            <MissionFoyer workspaces={workspaces} lastMode={lastMode} network={network} legacyDraft={legacyDraft} storeError={wsStore.error} onAction={onFoyer} />
+          </div>
+        ) : opening ? (
+          <p role="status" className="mb-28 text-sm text-muted-foreground">Opening the local workspace…</p>
+        ) : (
+        <>
+        {activeWs && (
+          <div className={focus ? "hidden" : ""}>
+            <ModeHeader ws={activeWs} scenario={scenario} network={network} saveStatus={wsStore.status} signals={effective} desk={desk} deskLabel={deskLabel} onAction={onHeader} onStage={onStage} />
+          </div>
+        )}
         <div className={`mb-6 sm:mb-8 ${focus ? "hidden" : ""}`}>
           <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
           <div className="mt-3">
@@ -763,7 +1084,7 @@ export default function Dashboard() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Theatre preset · hydrates all desks</p>
             {signals.presetId && (
-              <button type="button" onClick={() => hydrateTheatre("")} className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
+              <button type="button" onClick={() => requestTheatre("")} className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
                 Detach preset
               </button>
             )}
@@ -777,7 +1098,7 @@ export default function Dashboard() {
                   type="button"
                   role="radio"
                   aria-checked={on}
-                  onClick={() => hydrateTheatre(t.id)}
+                  onClick={() => requestTheatre(t.id)}
                   title={t.description}
                   className={`shrink-0 min-h-10 border px-3 py-1.5 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
                     on ? "border-primary bg-primary text-primary-foreground" : "border-border text-primary hover:border-accent"
@@ -788,7 +1109,10 @@ export default function Dashboard() {
               );
             })}
           </div>
-          <p className="mt-1 text-[10px] text-muted-foreground">Training scenarios with illustrative readings, not field measurements.</p>
+          <p className="mt-1 text-[10px] text-muted-foreground">
+            Training scenarios with illustrative readings, not field measurements.
+            {activeWs?.mode === "custom" ? " Applying one to this mission shows its impact first and is recorded in the Decision Record." : ""}
+          </p>
         </div>
 
         <div className={`mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40 scrollbar-none [webkit-overflow-scrolling:touch] ${focus ? "hidden" : ""}`}>
@@ -880,6 +1204,20 @@ export default function Dashboard() {
             </p>
           )}
         </div>
+        {guideOn && activeWs && (
+          <div className={`max-w-3xl ${focus ? "hidden" : ""}`}>
+            <DeskGuide
+              key={`${activeWs.id}:${desk}`}
+              deskId={desk}
+              step={scenario ? scenario.sequence.indexOf(desk) + 1 : undefined}
+              of={scenario?.sequence.length}
+              checkpoints={scenario?.checkpoints.filter((c) => c.desk === desk) ?? []}
+              revealed={activeWs.checkpointsRevealed}
+              signals={effective}
+              onReveal={(id) => updateWs({ checkpointsRevealed: [...new Set([...activeWs.checkpointsRevealed, id])] })}
+            />
+          </div>
+        )}
 
         <EngineContext.Provider value={engineValue}>
           <StatutoryClearanceBar deskId={desk} />
@@ -898,6 +1236,7 @@ export default function Dashboard() {
         <MissionContext.Provider value={profile}>
         <DeskMetaContext.Provider value={{ title: active.title, eyebrow: active.eyebrow, id: active.id }}>
         <BinderContext.Provider value={{ add: addFromDesk }}>
+        <ExportNoticeContext.Provider value={exportNotice}>
         <div
           className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden"
           onInputCapture={(e) => {
@@ -909,7 +1248,7 @@ export default function Dashboard() {
         >
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
-                <div key={id} hidden={desk !== id} className="w-full min-w-0">
+                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="w-full min-w-0">
                   <SovereignInscriptionTray deskId={id} onApplyVector={id === "diagnostics" ? setBonds : undefined} />
                   {id === "briefing" && <CableComposer />}
                   {id === "diagnostics" && (
@@ -942,6 +1281,7 @@ export default function Dashboard() {
               ) : null,
             )}
         </div>
+        </ExportNoticeContext.Provider>
         </BinderContext.Provider>
         </DeskMetaContext.Provider>
         </MissionContext.Provider>
@@ -975,8 +1315,154 @@ export default function Dashboard() {
             </button>
           )}
         </div>
+        </>
+        )}
       </div>
       <ChancelleryWire signals={effective} />
+      <ScenarioLibraryDialog
+        open={dialog === "library"}
+        onOpenChange={(v) => setDialog(v ? "library" : null)}
+        deskIds={DESKS.map((d) => d.id)}
+        deskLabel={deskLabel}
+        localCount={(id) => workspaces.filter((w) => w.scenario?.id === id).length}
+        onStart={startScenario}
+      />
+      <PickerDialog
+        open={dialog === "pick-replay"}
+        onOpenChange={(v) => setDialog(v ? "pick-replay" : null)}
+        title="Replay a prior run"
+        description="Opens the run with its recorded changes."
+        items={workspaces.filter((w) => w.mode === "preset")}
+        onPick={(w) => {
+          openWorkspace(w);
+          setDialog("replay");
+        }}
+      />
+      <PickerDialog
+        open={dialog === "pick-draft"}
+        onOpenChange={(v) => setDialog(v ? "pick-draft" : null)}
+        title="Resume a local draft"
+        items={workspaces.filter((w) => w.mode === "custom" && w.lifecycle === "draft")}
+        legacy={legacyDraft}
+        onPick={openWorkspace}
+        onPickLegacy={importLegacy}
+      />
+      <PickerDialog
+        open={dialog === "pick-review"}
+        onOpenChange={(v) => setDialog(v ? "pick-review" : null)}
+        title="Open review-ready work"
+        description="Missions in Internal Review Preparation or Ready for Local Handover."
+        items={workspaces.filter((w) => w.mode === "custom" && (w.lifecycle === "review" || w.lifecycle === "ready"))}
+        onPick={openWorkspace}
+      />
+      <PickerDialog
+        open={dialog === "pick-sealed"}
+        onOpenChange={(v) => setDialog(v ? "pick-sealed" : null)}
+        title="Open a sealed snapshot"
+        description="Sealed local snapshots open read only."
+        items={workspaces.filter((w) => w.lifecycle === "sealed")}
+        onPick={openWorkspace}
+      />
+      <WarrantDialog
+        open={dialog === "new-mission"}
+        onOpenChange={(v) => setDialog(v ? "new-mission" : null)}
+        title="Start new mission: Mission Warrant"
+        initial={EMPTY_WARRANT}
+        entries={[]}
+        requireKeys={["title", "objective"]}
+        confirmLabel="Open mission draft"
+        onSave={startMission}
+      />
+      {activeWs && (
+        <>
+          <ContextTray
+            open={trayOpen}
+            onOpenChange={setTrayOpen}
+            tab={trayTab}
+            onTab={setTrayTab}
+            ws={activeWs}
+            signals={effective}
+            desks={DESKS.map((d) => ({ id: d.id, label: d.label }))}
+            currentDesk={desk}
+            onChange={(next) => updateWs(next)}
+          />
+          {activeWs.mode === "custom" && (
+            <WarrantDialog
+              open={dialog === "warrant"}
+              onOpenChange={(v) => setDialog(v ? "warrant" : null)}
+              title="Mission Warrant"
+              initial={activeWs.warrant ?? EMPTY_WARRANT}
+              entries={activeWs.tray}
+              readOnly={activeWs.lifecycle === "sealed"}
+              confirmLabel="Save warrant"
+              onSave={(w, added) => {
+                updateWs({ warrant: w, title: w.title.trim() || activeWs.title, tray: [...activeWs.tray, ...added] });
+                setProfile((p) => warrantToProfile(w, p));
+                setDialog(null);
+              }}
+            />
+          )}
+          <BranchDialog
+            open={dialog === "branch"}
+            onOpenChange={(v) => setDialog(v ? "branch" : null)}
+            onBranch={(label) => openWorkspace(branchWorkspace({ ...activeWs, state: captureState(), replay: liveReplay() }, label))}
+          />
+          <ReplayDialog open={dialog === "replay"} onOpenChange={(v) => setDialog(v ? "replay" : null)} ws={{ ...activeWs, replay: liveReplay() }} />
+          <ReportDialog
+            open={dialog === "aar"}
+            onOpenChange={(v) => setDialog(v ? "aar" : null)}
+            title="After-action review"
+            fileName="Vinculum-After-Action-Review"
+            text={
+              dialog === "aar"
+                ? afterActionReview({ ...activeWs, replay: liveReplay() }, { scenarioTitle: scenario?.title, gates: stageGateAudit(effective).gates, telemetry: telemetryLines(effective), notice: exportNotice || TRAINING_NOTICE })
+                : ""
+            }
+          />
+          <BriefDialog open={dialog === "brief"} onOpenChange={(v) => setDialog(v ? "brief" : null)} scenario={scenario} ws={activeWs} deskLabel={deskLabel} />
+          <LifecycleDialog
+            open={dialog === "lifecycle"}
+            onOpenChange={(v) => setDialog(v ? "lifecycle" : null)}
+            ws={activeWs}
+            sealing={sealing}
+            onMove={(to) => updateWs({ lifecycle: to })}
+            onSeal={() =>
+              setImpact({
+                title: "Seal this mission as a local snapshot?",
+                lines: [
+                  `Hashes the live signals, ${binder.length} binder tab${binder.length === 1 ? "" : "s"}, the Mission Warrant, the Context Tray and the Decision Record with SHA-256 in this browser, using the Chancellery apostille.`,
+                  "Draws the next registry reference from the monotonic counter and logs it on the Protocol Wire.",
+                  "After sealing, the snapshot is immutable: desk changes are not recorded into it. Continue in a new draft to keep working.",
+                  "It stays in this browser. Nothing is uploaded, shared or approved.",
+                ],
+                confirmLabel: "Seal local snapshot",
+                onConfirm: (reason) => void sealActive(reason),
+              })
+            }
+          />
+          {activeWs.mode === "preset" && (
+            <PromotionDialog
+              open={dialog === "promote"}
+              onOpenChange={(v) => setDialog(v ? "promote" : null)}
+              ws={{ ...activeWs, state: captureState() }}
+              onConfirm={(w, reviewed) => {
+                const next = promoteToCustom({ ...activeWs, state: captureState() }, w, reviewed);
+                openWorkspace(next);
+                logEvent("MISSION_HYDRATED", `${next.title} (custom draft promoted from a reviewed training run)`);
+              }}
+            />
+          )}
+          {activeWs.mode === "custom" && (
+            <DerivativeDialog
+              open={dialog === "derive"}
+              onOpenChange={(v) => setDialog(v ? "derive" : null)}
+              ws={activeWs}
+              onConfirm={(choices) => openWorkspace(deriveTraining({ ...activeWs, state: captureState() }, choices))}
+            />
+          )}
+        </>
+      )}
+      <ImpactDialog impact={impact} onClose={() => setImpact(null)} />
     </div>
     </ChancellerySentinel>
   );

@@ -20,6 +20,12 @@ export type BinderEntry = { id: string; title: string; text: string; /** Desk th
 export const BinderContext = createContext<{ add: (e: BinderEntry) => void } | null>(null);
 
 /** Identity of the desk currently open, used on the chancellery document header. */
+/**
+ * A notice every export must carry in the current working mode (for example the
+ * training-simulation notice in the Preset Proving Ground). Empty in custom mode.
+ */
+export const ExportNoticeContext = createContext<string>("");
+
 export const DeskMetaContext = createContext<{ title: string; eyebrow: string; id?: string }>({
   title: "Chancellery working document",
   eyebrow: "Operational desk",
@@ -87,11 +93,13 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
   // Stable for the life of the view, so the screen, the PDF and the cable carry one reference.
   const { signals } = useEngine();
   // Every transmittal carries the Sovereign Inscriptions schedule, unless the desk already printed it.
+  const notice = useContext(ExportNoticeContext);
   const text = useMemo(() => {
-    if (body.includes("SOVEREIGN INSCRIPTIONS")) return body;
+    const marked = notice && !body.startsWith(notice) ? `${notice}\n\n${body}\n\n${notice}` : body;
+    if (marked.includes("SOVEREIGN INSCRIPTIONS")) return marked;
     const ins = inscriptionLines(signals);
-    return ins.length ? `${body}\n\n${ins.join("\n").trimEnd()}` : body;
-  }, [body, signals]);
+    return ins.length ? `${marked}\n\n${ins.join("\n").trimEnd()}` : marked;
+  }, [body, signals, notice]);
   const ref = useMemo(() => reference(fileName), [fileName]);
   const [cableMode, setCableMode] = useState(false);
   const cableText = useMemo(() => (cable ? toCable(text, ref) : ""), [cable, text, ref]);
@@ -220,6 +228,9 @@ export default function DeskOutput({ text: body, fileName, cable = false }: { te
           </button>
         )}
       </div>
+      {notice && (
+        <p className="mb-3 border border-dashed border-accent px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-accent">{notice}</p>
+      )}
 
       {cable && cableMode && (
         <div className="relative mb-4 border-2 border-double border-primary/60 bg-background p-4 sm:p-6">
