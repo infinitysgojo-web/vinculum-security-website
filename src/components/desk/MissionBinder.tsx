@@ -16,17 +16,22 @@ export default function MissionBinder({
   entries,
   onRemove,
   onMove,
+  onProfileChange,
 }: {
   entries: BinderEntry[];
   onRemove: (id: string) => void;
   onMove: (id: string, dir: -1 | 1) => void;
+  /** Writes Theatre and Prepared-for back to the mission profile, so every desk and export reads the same names. Absent when the mission is read only. */
+  onProfileChange?: (patch: { theatre?: string; officer?: string }) => void;
 }) {
   const profile = useMission();
-  const [theatre, setTheatre] = useState(profile.theatre);
-  const [envoy, setEnvoy] = useState(profile.officer || "Office of the Special Envoy");
-  // Inherit from the Mission Vault whenever the theatre or officer changes; manual edits remain possible.
-  useEffect(() => setTheatre(profile.theatre), [profile.theatre]);
-  useEffect(() => setEnvoy(profile.officer || "Office of the Special Envoy"), [profile.officer]);
+  const [theatre, setTheatreLocal] = useState(profile.theatre);
+  const [envoy, setEnvoyLocal] = useState(profile.officer || "Office of the Special Envoy");
+  // Inherit from the Mission Vault whenever the theatre or officer changes.
+  useEffect(() => setTheatreLocal(profile.theatre), [profile.theatre]);
+  useEffect(() => setEnvoyLocal(profile.officer || "Office of the Special Envoy"), [profile.officer]);
+  const setTheatre = (v: string) => { setTheatreLocal(v); onProfileChange?.({ theatre: v }); };
+  const setEnvoy = (v: string) => { setEnvoyLocal(v); onProfileChange?.({ officer: v }); };
   const { signals } = useEngine();
 
   const synopsis = useMemo(() => telemetryLines(signals).slice(1).map((l) => l.trim()).filter((l) => l && !/^STANDING ALERTS|^SOVEREIGN INSCRIPTIONS/.test(l)).slice(0, 10), [signals]);

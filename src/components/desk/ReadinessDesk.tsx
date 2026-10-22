@@ -60,7 +60,7 @@ const STAGES: { id: string; label: string; anchor: string; gates: Gate[] }[] = [
   },
 ];
 
-export default function ReadinessDesk() {
+export default function ReadinessDesk({ openQuestions }: { /** Open Questions in the active workspace's Context Tray; undefined when no workspace is open. */ openQuestions?: number } = {}) {
   const profile = useMission();
   const [mission, setMission] = useState(profile.theatre);
   // Follow the Mission Vault when the theatre changes; a manual entry stays until the theatre itself changes.
@@ -78,21 +78,23 @@ export default function ReadinessDesk() {
   const auditLocked = audit?.locked ?? false;
   // Sovereign readiness gates: every inscribed gate must be attested before certification.
   const sovereignOpen = (signals.customGates ?? []).filter((g) => !g.verified);
+  // Evidentiary hygiene: an unresolved Open Question in the Context Tray withholds clearance.
+  const questionsOpen = openQuestions ?? 0;
 
   const r = useMemo(() => {
     const gates = stage.gates;
     const missingCritical = gates.filter((g) => g.critical && !done.includes(g.id));
     const met = gates.filter((g) => done.includes(g.id)).length;
     const pct = Math.round((met / gates.length) * 100);
-    const verdict = missingCritical.length || openLocks.length || auditLocked || sovereignOpen.length ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
+    const verdict = missingCritical.length || openLocks.length || auditLocked || sovereignOpen.length || questionsOpen ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
     const lifecycle = STAGES.map((s) => {
       const mc = s.gates.filter((g) => g.critical && !done.includes(g.id)).length;
       const m = s.gates.filter((g) => done.includes(g.id)).length;
-      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked && sovereignOpen.length === 0 };
+      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked && sovereignOpen.length === 0 && questionsOpen === 0 };
     });
     return { missingCritical, pct, verdict, met, lifecycle };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done, stage, JSON.stringify(openLocks), auditLocked, sovereignOpen.length]);
+  }, [done, stage, JSON.stringify(openLocks), auditLocked, sovereignOpen.length, questionsOpen]);
 
   const clearances = useMemo(() => statutoryClearances(signals), [signals]);
   const [lastRef, setLastRef] = useState("");
@@ -114,6 +116,7 @@ export default function ReadinessDesk() {
       `VERDICT: ${r.verdict}`,
       ...(audit ? [`DISPOSITION: ${audit.locked ? "LOCKED" : "CLEARED"}`] : []),
       `GATES MET AT THIS STAGE: ${r.met} of ${stage.gates.length} (${r.pct}%)`,
+      ...(openQuestions !== undefined ? [`EVIDENTIARY HYGIENE: ${questionsOpen ? `${questionsOpen} open question${questionsOpen === 1 ? "" : "s"} unresolved in the Context Tray. Resolve, verify or formally exclude each before clearance.` : "No open questions in the Context Tray."}`] : []),
       "",
     ];
     let g = "";
@@ -152,7 +155,7 @@ export default function ReadinessDesk() {
     r.lifecycle.forEach((s) => L.push(`  ${s.cleared ? "CLEARED    " : "OUTSTANDING"}  ${s.label} (${s.met}/${s.total})`));
     L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [mission, done, r, stage, locks, linked, signals]);
+  }, [mission, done, r, stage, locks, linked, signals, openQuestions, questionsOpen]);
 
   let group = "";
   const DIVISIONS: { id: string; title: string; note: string; prefixes: string[] }[] = [
@@ -253,6 +256,12 @@ export default function ReadinessDesk() {
             <p className={label}>Mission sign-off · {stage.label}</p>
             <p className={`font-serif text-3xl ${r.verdict === "NOT CLEARED" ? "text-destructive" : "text-primary"}`}>{r.verdict}</p>
             <p className="text-xs text-muted-foreground mt-1">{r.met} of {stage.gates.length} stage gates met</p>
+            {openQuestions !== undefined && (
+              <div className="mt-3 flex justify-between gap-3 border-t border-border pt-3 text-xs">
+                <span className="text-foreground/85">Evidentiary hygiene · Context Tray open questions</span>
+                <span className={questionsOpen ? "text-destructive shrink-0" : "text-primary shrink-0"}>{questionsOpen ? `${questionsOpen} unresolved` : "None open"}</span>
+              </div>
+            )}
             {(signals.customGates?.length ?? 0) > 0 && (
               <ul className="mt-3 space-y-1 border-t border-border pt-3">
                 {signals.customGates!.map((g) => (
