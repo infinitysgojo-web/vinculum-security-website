@@ -4,7 +4,8 @@ import { telemetryLines, useEngine, usePublish, type Signals } from "@/component
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import AsymmetryMatrix from "./AsymmetryMatrix";
 import EscrowWaterfall from "./EscrowWaterfall";
-import { DEFAULT_ESCROW, escrowWaterfall, type EscrowTerms, DEFAULT_RESOURCES, rebalance, resourceReading, RESOURCE_HEADS, COMMUNAL_FLOOR, LEGITIMACY_PENALTY } from "./instruments";
+import { logDecision } from "./ledgerStore";
+import { DEFAULT_ESCROW, escrowWaterfall, type EscrowTerms, type EscrowInput, DEFAULT_RESOURCES, rebalance, resourceReading, RESOURCE_HEADS, COMMUNAL_FLOOR, LEGITIMACY_PENALTY } from "./instruments";
 import { useTheatreSeed } from "./theatres";
 
 type Actor = {
@@ -312,7 +313,7 @@ export default function MultiPartySequencer() {
   // Friction term of the engine's contagion coefficient: 1 + 0.10 per friction pair on the bus.
   const fricMultiplier = 1 + 0.1 * (linked ? signals.frictionPairs?.length ?? frictions.length : frictions.length);
   const [escrowTerms, setEscrowTerms] = useState<EscrowTerms>(DEFAULT_ESCROW);
-  const escrow = escrowWaterfall(escrowTerms, {
+  const escrowInput: EscrowInput = {
     verifierSeated: signals.verifierSeated,
     communal: signals.bonds?.communal,
     institutional: signals.bonds?.institutional,
@@ -321,7 +322,14 @@ export default function MultiPartySequencer() {
     trackTolerance: signals.trackTolerance,
     survivalScore: signals.survivalScore,
     rupture: linked ? signals.rupture : 0,
-  });
+  };
+  const escrow = escrowWaterfall(escrowTerms, escrowInput);
+  // Changes to the tranche schedule, clawback or performance bond are decisions on the Decision Log.
+  const amendEscrow = (t: EscrowTerms) => {
+    const fmt = (x: EscrowTerms) => `tranches ${x.shares.join("/")}%, clawback ${x.clawback}%, bond ${x.bond}%`;
+    if (JSON.stringify(t) !== JSON.stringify(escrowTerms)) logDecision("07", "ESCROW_TERMS", `Escrow terms ${fmt(escrowTerms)} -> ${fmt(t)}`);
+    setEscrowTerms(t);
+  };
   const [resources, setResources] = useState<[number, number, number]>(DEFAULT_RESOURCES);
   const res = resourceReading(resources);
   usePublish("multiparty", {
@@ -456,7 +464,7 @@ export default function MultiPartySequencer() {
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
-        <EscrowWaterfall reading={escrow} terms={escrowTerms} onTerms={setEscrowTerms} />
+        <EscrowWaterfall reading={escrow} terms={escrowTerms} onTerms={amendEscrow} input={escrowInput} />
         <div className={`mt-4 border bg-background p-4 min-w-0 ${res.deficit ? "border-terracotta/60" : "border-brass/40"}`}>
           <span className={label}>Resource-sharing covenant · allocation of proceeds</span>
           {RESOURCE_HEADS.map((h, i) => (

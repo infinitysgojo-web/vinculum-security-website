@@ -3,7 +3,7 @@ import { useTheatreSeed } from "./theatres";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
-import { usePublish, useEngine, TREND_MULT } from "./engine";
+import { usePublish, useEngine, TREND_MULT, inscribedRuptureLoad, ruptureIndex } from "./engine";
 import SyncPanel from "./SyncPanel";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
@@ -119,11 +119,10 @@ export default function SentinelMatrix() {
       custom.reduce((s, c) => s + (cOn.includes(c.id) ? c.w : 0), 0);
     // Sovereign inscriptions: every point of negative bond delta from an inscribed shock adds
     // five points of load, every active inscribed trap adds six, capped at thirty in total.
-    const shockMag = (signals.customShocks ?? []).reduce((n, x) => n + Object.values(x.deltas).reduce((a, d) => a + Math.max(0, -d), 0), 0);
     const trapN = (signals.customTraps ?? []).filter((t) => t.active).length;
-    const inscribed = Math.min(30, Math.round(shockMag * 5 + trapN * 6));
-    const raw = (score / totalMax) * 100 + inscribed;
-    const pct = Math.min(100, Math.round(raw * TREND[trend].mult));
+    const inscribed = inscribedRuptureLoad(signals.customShocks ?? [], trapN);
+    const share = (score / totalMax) * 100;
+    const pct = ruptureIndex(share, inscribed, TREND[trend].mult);
 
     const traps: { name: string; reading: string; counter: string }[] = [];
     if (byBond[1] >= 50 && byBond[2] >= 50 && byBond[0] < 50)
@@ -161,11 +160,12 @@ export default function SentinelMatrix() {
       traps.length >= 2
         ? `Compound exposure: ${traps.map((t) => t.name).join(" together with ")}. Traps in combination fail faster than the sum of their parts; sequence the counter-measures rather than running them in parallel.`
         : "";
-    return { byBond, pct, b: band(pct), traps, compound, inscribed };
+    return { byBond, pct, b: band(pct), traps, compound, inscribed, share };
   }, [on, trend, custom, cOn, signals.customShocks, signals.customTraps]);
 
   usePublish("sentinel", {
     rupture: r.pct,
+    ruptureBase: Math.round(r.share * 10000) / 10000,
     ruptureBand: r.b.name,
     bondStrain: r.byBond,
     traps: r.traps.map((t) => t.name),

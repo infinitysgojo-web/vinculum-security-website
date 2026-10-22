@@ -42,6 +42,15 @@ export function hexToBytes(hex: string): Uint8Array<ArrayBuffer> {
   return out;
 }
 
+/**
+ * SHA-256 of a UTF-8 string through the browser's native SubtleCrypto, as lowercase hex.
+ * Used by the Tamper-Evident Handover Seal and the evidentiary export manifest.
+ */
+export async function sha256HexText(text: string): Promise<string> {
+  const buf = await subtle().digest("SHA-256", new TextEncoder().encode(text));
+  return bytesToHex(new Uint8Array(buf));
+}
+
 export function randomBytes(n: number): Uint8Array<ArrayBuffer> {
   return globalThis.crypto.getRandomValues(new Uint8Array(n));
 }

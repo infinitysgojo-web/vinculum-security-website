@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput from "@/components/desk/DeskOutput";
 import { ADMISSIBILITY, enforceability, pleadingForum, pleadingHeads, pleadingLines, PROVISIONAL_THRESHOLD } from "@/components/desk/instruments";
+import { DoctrineText } from "@/components/DoctrinalTooltip";
 
 /**
  * The Legal & Litigation Preparation Workbench.
@@ -358,8 +359,8 @@ export default function LitigationWorkbench() {
         <ol className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {pleadings.heads.filter((h) => h.id !== "provisional").map((h) => (
             <li key={h.id} className={`border p-3 ${h.ready ? "border-primary/40 bg-navy-tint/30" : "border-dashed border-border"}`}>
-              <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">{h.title}</p>
-              <p className="mt-1.5 text-xs leading-relaxed text-foreground/85 [overflow-wrap:anywhere]">{h.body}</p>
+              <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary"><DoctrineText text={h.title} /></p>
+              <p className="mt-1.5 text-xs leading-relaxed text-foreground/85 [overflow-wrap:anywhere]"><DoctrineText text={h.body} /></p>
             </li>
           ))}
           <li className={`border p-3 ${provisionalActive ? "border-destructive/60 bg-destructive/5" : "border-dashed border-border"}`}>

@@ -114,7 +114,7 @@ export type DeskState = {
   desk: string;
 };
 
-export type ReplayEvent = { at: string; kind: string; detail: string };
+export type ReplayEvent = { at: string; kind: string; detail: string; /** Origin desk number of a decision ("07"), when recorded. */ desk?: string };
 
 export type SealRecord = {
   ref: string;
@@ -242,7 +242,7 @@ export function readWorkspace(raw: unknown): Workspace | null {
       }))
     : [];
   const replay = Array.isArray(raw.replay)
-    ? raw.replay.filter(isObj).map((r) => ({ at: str(r.at), kind: str(r.kind), detail: str(r.detail) }))
+    ? raw.replay.filter(isObj).map((r) => ({ at: str(r.at), kind: str(r.kind), detail: str(r.detail), ...(typeof r.desk === "string" && /^\d{2}$/.test(r.desk) ? { desk: r.desk } : {}) }))
     : [];
   return {
     ...raw,

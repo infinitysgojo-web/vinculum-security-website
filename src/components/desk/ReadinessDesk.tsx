@@ -5,6 +5,7 @@ import SyncPanel from "./SyncPanel";
 import { telemetryLines, useEngine, usePublish, engineLocks, stageGateAudit, statutoryClearances } from "./engine";
 import { mintDispatch } from "./registry";
 import { toast } from "sonner";
+import { logDecision } from "./ledgerStore";
 
 /** Mission lifecycle clearance across four stages. Deterministic; nothing stored. */
 type Gate = { id: string; group: string; text: string; critical: boolean; remedy: string };
@@ -67,7 +68,13 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
   useEffect(() => setMission(profile.theatre), [profile.theatre]);
   const [si, setSi] = useState(0);
   const [done, setDone] = useState<string[]>([]);
-  const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const toggle = (id: string) => {
+    // Satisfying or reopening a statutory readiness gate is a decision on the Mission Decision Log.
+    const g = STAGES.flatMap((st) => st.gates).find((x) => x.id === id);
+    const was = done.includes(id);
+    logDecision("15", was ? "GATE_REOPENED" : "GATE_SATISFIED", `Readiness gate ${g ? `"${g.text}"` : id}: ${was ? "met -> not met" : "not met -> met"}`);
+    setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  };
 
   const stage = STAGES[si];
   const { signals } = useEngine();

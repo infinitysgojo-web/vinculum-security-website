@@ -6,6 +6,8 @@ import BondRadar from "./BondRadar";
 import { usePublish, useEngine, round1, bondBand } from "./engine";
 import SyncPanel from "./SyncPanel";
 import { LEGITIMACY_PENALTY } from "./instruments";
+import { compoundStress, compoundTimeline, COMPOUND_AMPLIFY } from "./shockTimeline";
+import ShockTimelineScrubber from "./ShockTimelineScrubber";
 
 type Shock = { id: string; label: string; sev: number; bond: number; breaker: string; absorb: string };
 
@@ -94,7 +96,7 @@ const SHOCKS: Shock[] = [
   },
 ];
 
-const AMPLIFY = 1.25;
+const AMPLIFY = COMPOUND_AMPLIFY;
 
 /** One-tap shock packages drawn from the registered shock list. */
 const SHOCK_PACKAGES: { label: string; ids: string[] }[] = [
@@ -180,34 +182,25 @@ export default function CompoundShockTester() {
   };
 
   const { strain, band, bondScores, sequence, deductions, failIndex } = useMemo(() => {
-    const base = active.reduce((a, s) => a + s.sev, 0);
-    const amp = active.length > 1 ? (active.length - 1) * AMPLIFY * 4 : 0;
+    // Shared with the Shock Timeline Scrubber, so its final step always equals this reading.
     // Resource covenant: a communal share under the statutory floor adds a fixed legitimacy penalty.
-    const total = Math.min(100, round1(base + amp + (deficitOn ? LEGITIMACY_PENALTY : 0)));
+    const r = compoundStress(active, useLive ? liveVector : undefined, deficitOn ? LEGITIMACY_PENALTY : 0);
+    const total = r.strain;
     const b =
       total >= 70 ? "Rupture likely" : total >= 45 ? "Severe strain" : total >= 22 ? "Elevated strain" : "Absorbable";
-    // Total shock weight landing on each bond, sum of omega_a over the active shocks on that bond.
-    const omega = [0, 1, 2, 3].map((i) => active.filter((x) => x.bond === i).reduce((a, x) => a + x.sev, 0));
-    let perBond: [number, number, number, number];
-    if (useLive && liveVector) {
-      // Live mode: B'_i = max(1.0, round1(B_i - sum(omega_a / 10))) against the Desk 1 vector.
-      perBond = liveVector.map((v, i) => Math.max(1, round1(v - omega[i] / 10))) as [number, number, number, number];
-    } else {
-      // Standalone mode: a fresh 5.0 baseline, as before.
-      perBond = omega.map((s) => Math.max(1, round1(5 - Math.min(4, s / 9)))) as [number, number, number, number];
-    }
     const seq = [...active].sort((a, b2) => b2.sev - a.sev);
     // Phi_fail = argmin_i B'_i, ties to the lower bond index.
-    const fail = perBond.indexOf(Math.min(...perBond));
     return {
       strain: total,
       band: b,
-      bondScores: perBond,
+      bondScores: r.bondScores,
       sequence: seq,
-      deductions: omega.map((w) => round1(w / 10)),
-      failIndex: fail,
+      deductions: r.deductions,
+      failIndex: r.failIndex,
     };
   }, [active, useLive, liveVector, deficitOn]);
+  // The package in the order it was applied, for the temporal scrubber.
+  const ordered = useMemo(() => on.map((id) => ALL.find((x) => x.id === id)).filter((x): x is Shock => !!x), [on, ALL]);
 
   // The provision that breaks first: in live mode, the one resting on the weakest post-shock bond.
   const breakerOn = (bond: number) => sequence.find((x) => x.bond === bond)?.breaker;
@@ -427,6 +420,12 @@ export default function CompoundShockTester() {
         )}
 
         <BondRadar scores={bondScores} caption={useLive ? "Live continuum after the applied shocks" : "Continuum after the applied shocks"} />
+
+        <ShockTimelineScrubber
+          title="Shock timeline · sequential fracture playback"
+          steps={compoundTimeline(signals, ordered, useLive ? liveVector : undefined, deficitOn ? LEGITIMACY_PENALTY : 0)}
+          note="Shocks in the order applied. Bonds and strain follow this desk; R follows the Sentinel rule, where only inscribed shocks add load; λ uses the exposure U carried from Desk 12."
+        />
       </div>
 
     </div>

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ClipboardCopy, ScrollText } from "lucide-react";
 import { toast } from "sonner";
-import { statutoryClearances, type BondVector, type Signals } from "./engine";
+import { statutoryClearances, type BondVector, type CustomCovenant, type Signals } from "./engine";
 import { onDispatch } from "./registry";
-import { auditLogText, formatEntry, logEvent, mintedKind, useSessionLedger } from "./ledgerStore";
+import { auditLogText, formatEntry, logDecision, logEvent, mintedKind, useSessionLedger } from "./ledgerStore";
 import { copyText } from "@/lib/clipboardGuard";
 
 const DOMAIN_KEYS = ["interpersonal", "communal", "intergenerational", "institutional"] as const satisfies readonly (keyof BondVector)[];
@@ -14,6 +14,8 @@ const DOMAIN_LABEL: Record<keyof BondVector, string> = {
   intergenerational: "Intergenerational",
   institutional: "Institutional-Relational",
 };
+
+const covenantBody = (c: CustomCovenant) => JSON.stringify([c.title, c.obligation, c.enforcementMechanism, c.mandatedArticleRef ?? ""]);
 
 const signed = (n: number) => `${n > 0 ? "+" : ""}${n.toFixed(1)}`;
 
@@ -38,6 +40,14 @@ export function useLedgerWatch(signals: Signals) {
     traps: new Set<string>(),
     parties: new Set<string>(),
     cleared: new Set<string>(),
+    covenantBodies: new Map<string, string>(),
+    covenantTitles: new Map<string, string>(),
+    gates: new Map<string, boolean>(),
+    gateLabels: new Map<string, string>(),
+    redlines: undefined as number | undefined,
+    tranches: undefined as number | undefined,
+    frozen: undefined as boolean | undefined,
+    released: undefined as number | undefined,
   });
 
   useEffect(() => onDispatch((d) => logEvent(mintedKind(d.kind), `Ref ${d.ref}`)), []);
@@ -49,6 +59,7 @@ export function useLedgerWatch(signals: Signals) {
     const covenants = new Map((signals.customCovenants ?? []).map((c) => [c.id, c]));
     const traps = new Map((signals.customTraps ?? []).map((t) => [t.id, t]));
     const parties = new Map((signals.customParties ?? []).map((x) => [x.id, x]));
+    const gates = new Map((signals.customGates ?? []).map((g) => [g.id, g.verified]));
     const clearances = statutoryClearances(signals);
     const cleared = new Set(clearances.filter((c) => c.passed).map((c) => c.id));
 
@@ -65,8 +76,37 @@ export function useLedgerWatch(signals: Signals) {
       clearances.forEach((c) => {
         if (c.passed && !p.cleared.has(c.id)) logEvent("GATE_CLEARED", `Statutory Art. ${c.id} · ${c.name}`);
       });
+
+      // Mission Decision Log: user-driven decisions, each with its origin desk and prior vs new value.
+      shocks.forEach((x) => !p.shocks.has(x) && logDecision("03", "INSCRIBE_SHOCK", `Shock applied: ${x} (inactive -> active)`));
+      p.shocks.forEach((x) => !shocks.has(x) && logDecision("03", "LIFT_SHOCK", `Shock lifted: ${x} (active -> inactive)`));
+      covenants.forEach((c, id) => {
+        const body = covenantBody(c);
+        if (!p.covenantBodies.has(id)) logDecision("10", "INSCRIBE_COVENANT", `Covenant inscribed: ${c.title} (${c.enforcementMechanism})`);
+        else if (p.covenantBodies.get(id) !== body) logDecision("10", "AMEND_COVENANT", `Covenant amended: ${p.covenantTitles.get(id)} -> ${c.title}; ${c.obligation.slice(0, 120)}`);
+      });
+      p.covenantBodies.forEach((_, id) => !covenants.has(id) && logDecision("10", "STRIKE_COVENANT", `Covenant struck: ${p.covenantTitles.get(id) ?? id}`));
+      if (p.redlines !== undefined && signals.redlineFlags !== undefined && p.redlines !== signals.redlineFlags)
+        logDecision("11", "REDLINE_COVENANT", `Open redline flags ${p.redlines} -> ${signals.redlineFlags}`);
+      gates.forEach((verified, id) => {
+        const before = p.gates.get(id);
+        if (before !== undefined && before !== verified)
+          logDecision("15", "GATE_OVERRIDE", `Sovereign readiness gate ${p.gateLabels.get(id) ?? id}: ${before ? "attested" : "awaiting attestation"} -> ${verified ? "attested" : "awaiting attestation"}`);
+      });
+      if (p.tranches !== undefined && signals.escrowTranchesMet !== undefined && p.tranches !== signals.escrowTranchesMet)
+        logDecision("07", "TRANCHE_RELEASE", `Escrow tranches met ${p.tranches} -> ${signals.escrowTranchesMet} of 4; released ${p.released ?? 0}% -> ${signals.escrowReleasedPercent ?? 0}%`);
+      if (p.frozen !== undefined && signals.escrowFrozen !== undefined && p.frozen !== signals.escrowFrozen)
+        logDecision("07", "ESCROW_FREEZE", `Escrow ${p.frozen ? "frozen" : "open"} -> ${signals.escrowFrozen ? "frozen (rupture at or above 60)" : "open"}`);
     }
     prev.current = {
+      covenantBodies: new Map([...covenants].map(([id, c]) => [id, covenantBody(c)])),
+      covenantTitles: new Map([...covenants].map(([id, c]) => [id, c.title])),
+      gates,
+      gateLabels: new Map((signals.customGates ?? []).map((g) => [g.id, g.label])),
+      redlines: signals.redlineFlags,
+      tranches: signals.escrowTranchesMet,
+      frozen: signals.escrowFrozen,
+      released: signals.escrowReleasedPercent,
       shocks,
       customShocks: new Set(customShocks.keys()),
       covenants: new Set(covenants.keys()),

@@ -1,13 +1,17 @@
 import { label } from "./DeskOutput";
-import { ESCROW_FREEZE, escrowWaterfall, type EscrowTerms } from "./instruments";
+import { ESCROW_FREEZE, escrowWaterfall, type EscrowInput, type EscrowTerms } from "./instruments";
+import FormulaProof from "./FormulaProof";
+import { escrowProof } from "./formulaProofs";
 
 type Reading = ReturnType<typeof escrowWaterfall>;
 
 const pct = (n: number) => (Number.isInteger(n) ? `${n}` : n.toFixed(1));
 
 /** Desk 07: Conditional Escrow Waterfall, four milestone tranches released in order on conditions read from the bus. */
-export default function EscrowWaterfall({ reading, terms, onTerms }: {
+export default function EscrowWaterfall({ reading, terms, onTerms, input: busInput }: {
   reading: Reading;
+  /** The bus readings the waterfall was computed from, for the [ƒx] proof. */
+  input?: EscrowInput;
   terms: EscrowTerms;
   onTerms: (t: EscrowTerms) => void;
 }) {
@@ -20,7 +24,10 @@ export default function EscrowWaterfall({ reading, terms, onTerms }: {
   const input = "w-16 min-h-9 border border-border bg-background px-2 text-right font-mono tabular-nums text-base sm:text-xs";
   return (
     <div className={`border bg-background p-4 min-w-0 ${reading.frozen ? "border-terracotta/60" : "border-brass/40"}`}>
-      <span className={label}>Conditional escrow · release waterfall</span>
+      <div className="flex items-center justify-between gap-2">
+        <span className={label}>Conditional escrow · release waterfall</span>
+        {busInput && <FormulaProof proof={escrowProof(terms, busInput)} />}
+      </div>
       <p className="font-serif text-3xl text-primary">
         {pct(reading.released)}<span className="text-base text-muted-foreground">% of {reading.total}% released</span>
       </p>
