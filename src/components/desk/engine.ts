@@ -50,6 +50,23 @@ export function bondBand(score: number): BondBandName {
   return (BOND_BANDS.find((b) => v <= b.max) ?? BOND_BANDS[3]).name;
 }
 
+/** Ceiling on the inscribed shock and trap load added to the rupture index. */
+export const INSCRIBED_LOAD_CAP = 30;
+
+/**
+ * Inscribed load on the rupture index (Sentinel Matrix): five points per point of negative
+ * bond delta across the inscribed shocks, six per active inscribed trap, capped at 30.
+ */
+export function inscribedRuptureLoad(shocks: ReadonlyArray<{ deltas: BondVector }>, activeTraps: number): number {
+  const mag = shocks.reduce((n, x) => n + Object.values(x.deltas).reduce((a, d) => a + Math.max(0, -d), 0), 0);
+  return Math.min(INSCRIBED_LOAD_CAP, Math.round(mag * 5 + activeTraps * 6));
+}
+
+/** Composite rupture index R = min(100, round((observed share + inscribed load) × trend multiplier)). */
+export function ruptureIndex(observedShare: number, inscribedLoad: number, trendMultiplier: number): number {
+  return Math.min(100, Math.round((observedShare + inscribedLoad) * trendMultiplier));
+}
+
 /** Canonical trend multipliers applied to the rupture index. */
 export const TREND_MULT = { improving: 0.85, static: 1.0, deteriorating: 1.15 } as const;
 
@@ -358,6 +375,10 @@ export type Signals = {
   counterpart?: string;
   /** Decay Horizon (SuccessionSimulator): decay constant λ = (U + R) ÷ 2000 and stability half-life t½ = ln 2 ÷ λ in days (0 when no decay); mean bond loss at the chosen horizon. */
   decayConstant?: number;
+  /** Desk 12: unmitigated exposure U in points (full severity of each uninsulated shock, a quarter of each insulated one). */
+  unmitigatedExposure?: number;
+  /** Desk 02: the observed-signs share of the rupture index before inscribed load and trend, 0 to 100, four decimals. */
+  ruptureBase?: number;
   stabilityHalfLifeDays?: number;
   projectedDegradation?: number;
   /** Desk 11, Dispute Forum Enforceability Matrix: chosen venue, its fitness score (0 to 100), enforcement friction (100 − fitness), and the clause terms. */
@@ -396,6 +417,7 @@ const SIGNAL_NUMBERS = [
   "handoverViability", "partyFriction", "presetEpoch", "safeguardCoverage",
   "decayConstant", "stabilityHalfLifeDays", "projectedDegradation", "activeForumScore", "enforcementFriction",
   "escrowReleasedPercent", "escrowTranchesMet", "fractureMonths", "resourceCommunalShare", "resourceParity",
+  "unmitigatedExposure", "ruptureBase",
 ] as const;
 const SIGNAL_STRINGS = [
   "weakestBond", "weakestBand", "communalBand", "standing", "analogue", "ruptureBand", "trend",
