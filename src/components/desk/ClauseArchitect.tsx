@@ -102,6 +102,18 @@ export default function ClauseArchitect() {
   const [oLabel, setOLabel] = useState("");
   const [oText, setOText] = useState("");
 
+  // Map Sovereign Custom Mode inscribed covenants into the clause register
+  const inscribedOwn = useMemo<Own[]>(() => {
+    return (signals.customCovenants ?? []).map((c) => ({
+      id: c.id,
+      label: `${c.title} [INSCRIBED]`,
+      clause: `${c.obligation} Enforcement mechanism: ${c.enforcementMechanism}.${c.mandatedArticleRef ? ` Mandated under Article ${c.mandatedArticleRef}.` : ""}`,
+      note: `Inscribed covenant anchored via ${c.enforcementMechanism}.`,
+    }));
+  }, [signals.customCovenants]);
+
+  const allOwn = useMemo(() => [...inscribedOwn, ...own], [inscribedOwn, own]);
+
   // Division I and II decide which fragilities this instrument must insulate against.
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
@@ -155,7 +167,7 @@ export default function ClauseArchitect() {
   const forumTerms: ForumTerms = { immunityWaived: signals.immunityWaived ?? false, neutralSeat: signals.neutralSeat ?? true };
   const forumFit = forumFitness(forum, forumTerms);
   usePublish("clauses", {
-    covenants: [...picked.map((i) => FRAGILITIES[i].label), ...own.map((o) => o.label)],
+    covenants: [...picked.map((i) => FRAGILITIES[i].label), ...allOwn.map((o) => o.label)],
     verifierSeated: picked.includes(4),
   });
 
