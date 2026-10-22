@@ -155,7 +155,7 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
     r.lifecycle.forEach((s) => L.push(`  ${s.cleared ? "CLEARED    " : "OUTSTANDING"}  ${s.label} (${s.met}/${s.total})`));
     L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [mission, done, r, stage, locks, linked, signals]);
+  }, [mission, done, r, stage, locks, linked, signals, openQuestions, questionsOpen]);
 
   let group = "";
   const DIVISIONS: { id: string; title: string; note: string; prefixes: string[] }[] = [
