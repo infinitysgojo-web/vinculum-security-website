@@ -8,7 +8,15 @@ import { telemetryLines, useEngine, usePublish, type Signals } from "./engine";
 /** Covenant anchoring: every covenant drafted upstream becomes a line to verify. */
 function ledgerLines(s: Signals): string[] {
   const L: string[] = [];
-  (s.covenants ?? []).forEach((c, i) => L.push(`  V-${i + 1}. ${c}: verify the provision is in force and observed, with evidence from an independent source.`));
+  let count = 0;
+  (s.covenants ?? []).forEach((c) => {
+    count++;
+    L.push(`  V-${count}. ${c}: verify the provision is in force and observed, with evidence from an independent source.`);
+  });
+  (s.customCovenants ?? []).forEach((cc) => {
+    count++;
+    L.push(`  V-${count}. [INSCRIBED] ${cc.title}: verify obligation (${cc.obligation}) via ${cc.enforcementMechanism}${cc.mandatedArticleRef ? ` [Art. ${cc.mandatedArticleRef}]` : ""}.`);
+  });
   if (s.weakestBond) L.push(`  Priority verification: the ${s.weakestBond.toLowerCase()} bond, the most exposed on the diagnostic bench.`);
   if (s.firstToBreak) L.push(`  Watch item: ${s.firstToBreak}, the first provision to break under compound shock.`);
   return L.length ? ["COVENANT-ANCHORED VERIFICATION LINES (live from the mission engine)", ...L] : [];
