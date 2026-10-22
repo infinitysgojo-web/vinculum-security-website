@@ -129,8 +129,48 @@ export default function CompoundShockTester() {
 
   const [own, setOwn] = useState<Shock[]>([]);
   const [nl, setNl] = useState(""); const [ns, setNs] = useState(18.0); const [nb, setNb] = useState(1); const [nk, setNk] = useState("");
-  const ALL = useMemo(() => [...SHOCKS, ...own], [own]);
+
+  // Map Sovereign Custom Mode inscribed shocks into Desk 09 Shock structures
+  const inscribedShocks = useMemo<Shock[]>(() => {
+    return (signals.customShocks ?? []).map((cs) => {
+      const deltas = [
+        cs.deltas.interpersonal,
+        cs.deltas.communal,
+        cs.deltas.intergenerational,
+        cs.deltas.institutional,
+      ];
+      // Target bond = bond with the most severe negative delta
+      const minD = Math.min(...deltas);
+      const bIdx = deltas.indexOf(minD);
+      // Derived severity ω = sum of negative deltas × 20, bounded [10, 40]
+      const negSum =
+        Math.abs(Math.min(0, cs.deltas.interpersonal)) +
+        Math.abs(Math.min(0, cs.deltas.communal)) +
+        Math.abs(Math.min(0, cs.deltas.intergenerational)) +
+        Math.abs(Math.min(0, cs.deltas.institutional));
+      const sev = Math.max(10, Math.min(40, Math.round(negSum * 20))) || 18;
+      return {
+        id: cs.id,
+        label: `${cs.name} [INSCRIBED]`,
+        sev,
+        bond: bIdx >= 0 ? bIdx : 1,
+        breaker: cs.description || "Inscribed sovereign shock stress point",
+        absorb: "Inscribed sovereign shock: requires covenant protection in draft treaty.",
+      };
+    });
+  }, [signals.customShocks]);
+
+  const ALL = useMemo(() => [...SHOCKS, ...inscribedShocks, ...own], [inscribedShocks, own]);
   const active = ALL.filter((s) => on.includes(s.id));
+
+  // Auto-activate freshly inscribed shocks so they immediately join the strain test
+  useEffect(() => {
+    if (signals.customShocks?.length) {
+      const ids = signals.customShocks.map((s) => s.id);
+      setOn((prev) => Array.from(new Set([...prev, ...ids])));
+    }
+  }, [signals.customShocks]);
+
   const addOwn = () => {
     if (!nl.trim()) return;
     const id = `own-${Date.now()}`;
