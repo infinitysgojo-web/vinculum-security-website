@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, Maximize2, Minimize2, Monitor, Volume2, VolumeX } from "lucide-react";
+import { ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, Search, Shield, ShieldOff, Volume2, VolumeX } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
 import StatutoryClearanceBar from "@/components/desk/StatutoryClearanceBar";
 import { THEATRES, type TheatreId } from "@/components/desk/theatres";
@@ -26,14 +26,27 @@ import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain, { deskIsLive, downstreamOf } from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SessionLedgerDrawer, { useLedgerWatch } from "@/components/desk/SessionLedger";
-import { clearLedger, ledgerEntries, logEvent, restoreLedger, useSessionLedger } from "@/components/desk/ledgerStore";
+import { clearLedger, decisionRecords, ledgerEntries, logDecision, logEvent, restoreLedger, useSessionLedger } from "@/components/desk/ledgerStore";
 import EnclaveLockScreen from "@/components/desk/EnclaveLockScreen";
 import { ChancellerySentinel } from "@/components/desk/ChancellerySentinel";
 import { SENTINEL_SIGN_OUT_MINUTES, enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
 import { executePanicPurge, purgeVolatileState } from "@/lib/panicPurge";
 import { sanitizeOnBlur, sanitizeOnPaste } from "@/lib/sanitizeFields";
 import SaveSession from "@/components/desk/SaveSession";
-import DeskFinder from "@/components/desk/DeskFinder";
+import CommandPalette, { ShortcutSheet } from "@/components/CommandPalette";
+import type { PaletteAction } from "@/components/commandIndex";
+import { DoctrineAnchors } from "@/components/DoctrinalTooltip";
+import { useSovereignHotkeys, stepDesk } from "@/hooks/useSovereignHotkeys";
+import { PrivacyProvider, usePrivacy } from "@/components/desk/PrivacyContext";
+import HandoverSealBadge from "@/components/desk/HandoverSealBadge";
+import { canonicalSeal, clearSeal, computeSealHash, createSeal, readSeal, sealDifferences, sealPayload, sealStatus, writeSeal, type HandoverSeal } from "@/components/desk/handoverSeal";
+import { changedKeys, recordPublication, resetBusMonitor } from "@/components/desk/busMonitor";
+import { execSummary } from "@/components/desk/executiveBrief";
+import { MANIFEST_FORMAT, type ManifestBody } from "@/components/desk/DiplomaticCableExport";
+import { missionSlug } from "@/components/desk/executiveBrief";
+import type { WireTab } from "@/components/desk/ChancelleryWire";
+import RehearsalDrawer, { type RehearsalTab } from "@/components/mode/RehearsalDrawer";
+import { BASELINE_ID, createBranch, deleteBranch, emptyBranchStore, readBranches, switchPosture, writeBranches, type BranchStore, type PostureState } from "@/components/mode/postureBranches";
 import { LexiconDrawer } from "@/components/desk/Lexicon";
 import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 import { canonicalJson, mintChancelleryApostille, verifyChancelleryApostille } from "@/components/desk/registry";
@@ -264,6 +277,44 @@ const DESKS = [
 
 
 
+/** Doctrines each desk relies on, rendered as Breviary tooltips at the head of the desk. */
+const DESK_DOCTRINES: Record<string, string[]> = {
+  multiparty: ["uti-possidetis", "pacta-sunt-servanda"],
+  clauses: ["pacta-sunt-servanda", "rebus-sic-stantibus", "material-breach", "jus-cogens"],
+  redliner: ["pacta-sunt-servanda", "rebus-sic-stantibus", "material-breach", "force-majeure", "new-york-convention-v"],
+  succession: ["rebus-sic-stantibus", "pacta-sunt-servanda"],
+  legal: ["provisional-measures", "new-york-convention-v", "icsid-54", "icsid-55", "sovereign-immunity"],
+  readiness: ["pacta-sunt-servanda", "uti-possidetis", "material-breach"],
+  verification: ["material-breach", "pacta-sunt-servanda"],
+  handover: ["rebus-sic-stantibus", "uti-possidetis"],
+};
+
+/** Lets the command palette toggle the redaction shroud, which lives in context. */
+function PrivacyBridge({ toggleRef }: { toggleRef: React.MutableRefObject<() => void> }) {
+  const { toggle } = usePrivacy();
+  toggleRef.current = toggle;
+  return null;
+}
+
+/** Header shield: Presentation Privacy Mode (Redaction Shroud). */
+function PrivacyButton() {
+  const { masked, toggle } = usePrivacy();
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-pressed={masked}
+      className={`inline-flex items-center gap-1.5 transition-colors ${masked ? "text-accent" : "text-primary hover:text-accent"}`}
+      title={masked ? "Lift the presentation privacy mask" : "Presentation privacy mask: redact confidential identifiers for a screen share"}
+      aria-label={masked ? "Lift the presentation privacy mask" : "Enable the presentation privacy mask"}
+      data-testid="privacy-button"
+    >
+      {masked ? <ShieldOff size={13} /> : <Shield size={13} />}
+      <span className="hidden sm:inline">{masked ? "Masked" : "Mask"}</span>
+    </button>
+  );
+}
+
 function offlineSessionAsSession(): Session | null {
   const o = getOfflineSession();
   return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
@@ -287,10 +338,18 @@ export default function Dashboard() {
   // The mission engine: every desk publishes its readings here, and every
   // downstream desk reads them. Held in memory only, like the binder.
   const [signals, setSignals] = useState<Signals>({});
+  // Mirror of the bus for the Signal Inspector's publisher tracking; never read by a desk.
+  const busRef = useRef<Signals>({});
+  busRef.current = signals;
   const publish = useCallback((desk: string, raw: Signals) => {
     // Every publication is validated at the bus boundary; refused ones never reach a desk.
     const patch = guardSignalPatch(desk, raw);
     if (!patch) return;
+    const moved = changedKeys(busRef.current, patch);
+    if (moved.length) {
+      busRef.current = { ...busRef.current, ...patch };
+      recordPublication(desk, moved);
+    }
     setSignals((prev) => {
       const next = { ...prev, ...patch };
       return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
@@ -482,6 +541,7 @@ export default function Dashboard() {
     setBinder([]);
     setSignals({});
     clearLedger();
+    resetBusMonitor();
   }, [session, signOut]);
   const idleMs = session ? idleTestMs || (idleSealArmed ? enclave.idleMinutes * 60 * 1000 : IDLE_MS) : null;
   const onIdle = idleSealArmed ? () => void sealForIdle() : () => void signOut();
@@ -498,6 +558,7 @@ export default function Dashboard() {
     setSignals({});
     setSavedAt(null);
     workRef.current = { profile: { ...EMPTY_PROFILE }, binder: [], signals: {}, division: "assess", desk: "diagnostics" };
+    resetBusMonitor();
     purgeVolatileState();
     void (async () => {
       const cap = <T,>(p: Promise<T>, ms: number) => Promise.race([p, new Promise<void>((r) => setTimeout(r, ms))]);
@@ -615,47 +676,35 @@ export default function Dashboard() {
     })();
   }, [saveKey, session, enclave.configured, enclave.unlocked]);
 
-  // Power-user shortcuts. Ignored while typing in a field, except Ctrl/Cmd+S.
-  useEffect(() => {
-    const typing = (el: EventTarget | null) => {
-      const t = el as HTMLElement | null;
-      if (!t) return false;
-      return t.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(t.tagName);
-    };
-    const step = (dir: -1 | 1) => {
-      const i = DESKS.findIndex((d) => d.id === deskRef.current);
-      const n = DESKS[i + dir];
-      if (!n) return;
-      setDivision(n.division);
-      setDesk(n.id);
-      tick();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-    const onKey = (e: KeyboardEvent) => {
-      const mod = e.metaKey || e.ctrlKey;
-      if (mod && e.key.toLowerCase() === "s") {
-        e.preventDefault();
-        void saveSession().then((ok) => ok && toast.success("Mission state saved to browser storage"));
-        return;
-      }
-      if (typing(e.target)) return;
-      if (e.key === "Escape") {
-        // Radix closes its own dialogs and drawers; with none open, Escape leaves Focus view.
-        if (!document.querySelector('[role="dialog"][data-state="open"]')) setFocus(false);
-        return;
-      }
-      if (mod) return;
-      if (e.key === "[" || (e.altKey && e.key === "ArrowLeft")) {
-        e.preventDefault();
-        step(-1);
-      } else if (e.key === "]" || (e.altKey && e.key === "ArrowRight")) {
-        e.preventDefault();
-        step(1);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [saveSession]);
+  // Sovereign Navigation Hotkeys: one listener for [, ], ?, Esc, Ctrl/Cmd+K and Ctrl/Cmd+S.
+  // Navigation keys are ignored while typing in a field; the panic keys stay with the Sentinel.
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [wireOpen, setWireOpen] = useState(false);
+  const [wireTab, setWireTab] = useState<WireTab>("wire");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerTab, setDrawerTab] = useState<RehearsalTab>("branches");
+  const privacyToggleRef = useRef<() => void>(() => {});
+  const stepTo = (dir: -1 | 1) => {
+    const n = stepDesk(DESKS, deskRef.current, dir);
+    if (!n) return;
+    setDivision(n.division);
+    setDesk(n.id);
+    tick();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  useSovereignHotkeys({
+    palette: () => setPaletteOpen((o) => !o),
+    save: () => void saveSession().then((ok) => ok && toast.success("Mission state saved to browser storage")),
+    prev: () => stepTo(-1),
+    next: () => stepTo(1),
+    help: () => setShortcutsOpen(true),
+    // Radix closes its own dialogs, drawers and popovers; with none open, Escape leaves Focus view and folds the wire.
+    escape: () => {
+      setFocus(false);
+      setWireOpen(false);
+    },
+  });
 
 
   /* ---------------------------------------------------------------- */
@@ -694,6 +743,64 @@ export default function Dashboard() {
     }
   }, [legacyKey, wsStore.loaded, savedAt]);
   const exportNotice = activeWs?.mode === "preset" ? (activeWs.derived ? `${DERIVED_NOTICE}\n${TRAINING_NOTICE}` : TRAINING_NOTICE) : "";
+
+  /* ---------------------------------------------------------------- */
+  /* 13-point operational suite: posture branches, handover seal and   */
+  /* the decision log of profile amendments. All browser-local.        */
+  /* ---------------------------------------------------------------- */
+  const [branchStore, setBranchStore] = useState<BranchStore>(() => emptyBranchStore(""));
+  useEffect(() => {
+    setBranchStore(activeId ? readBranches(activeId) : emptyBranchStore(""));
+  }, [activeId]);
+  const putBranches = (b: BranchStore) => {
+    setBranchStore(b);
+    writeBranches(b);
+  };
+  const branchActive = branchStore.workspaceId === activeId && branchStore.active !== BASELINE_ID;
+  const livePosture: PostureState = { signals, bonds: profile.bonds };
+
+  // Tamper-Evident Handover Seal: the canonical payload is recomputed on every change and hashed.
+  const decisionsNow = useMemo(() => decisionRecords(ledgerNow), [ledgerNow]);
+  const sealInput = useMemo(
+    () => sealPayload({ profile, sessionId: activeId ?? "", tray: activeWs?.tray ?? [], signals, decisions: decisionsNow }),
+    [profile, activeId, activeWs?.tray, signals, decisionsNow],
+  );
+  const [hSeal, setHSeal] = useState<HandoverSeal | null>(null);
+  useEffect(() => setHSeal(readSeal(activeId)), [activeId]);
+  // On every interaction or publication the current SHA-256 is recomputed and compared with the seal.
+  const [liveHash, setLiveHash] = useState("");
+  useEffect(() => {
+    if (!hSeal) return;
+    let live = true;
+    computeSealHash(sealInput).then((h) => live && setLiveHash(h)).catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [sealInput, hSeal]);
+  const [sealBusy, setSealBusy] = useState(false);
+  // Equal canonical bytes give an equal digest, so the beacon never shows a stale "intact" while the hash computes.
+  const sameBytes = !!hSeal && canonicalSeal(sealInput) === hSeal.canonical;
+  const sealState = sealStatus(hSeal, sameBytes ? hSeal!.sealHash : liveHash === hSeal?.sealHash ? "" : liveHash, () => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : []));
+
+  // Profile metadata (theatre, envoy, parties, handling) amended: one decision per pause in typing.
+  const profileMeta = `${profile.theatre}\u0000${profile.officer}\u0000${profile.parties}\u0000${profile.classification}`;
+  const metaRef = useRef<{ key: string; ws: string | null } | null>(null);
+  useEffect(() => {
+    const prev = metaRef.current;
+    if (!prev || prev.ws !== activeId) {
+      metaRef.current = { key: profileMeta, ws: activeId };
+      return;
+    }
+    if (prev.key === profileMeta) return;
+    const t = window.setTimeout(() => {
+      const [a, b] = [prev.key.split("\u0000"), profileMeta.split("\u0000")];
+      const names = ["Theatre", "Envoy", "Parties", "Handling"];
+      const changes = names.map((n, i) => (a[i] !== b[i] ? `${n} "${a[i] || "—"}" -> "${b[i] || "—"}"` : "")).filter(Boolean);
+      if (changes.length) logDecision("00", "PROFILE_AMENDED", changes.join("; "));
+      metaRef.current = { key: profileMeta, ws: activeId };
+    }, 1200);
+    return () => window.clearTimeout(t);
+  }, [profileMeta, activeId]);
 
   const bootWorkspace = useCallback((w: Workspace) => {
     clearLedger();
@@ -736,16 +843,17 @@ export default function Dashboard() {
     const t = window.setTimeout(() => {
       const cur = activeRef.current;
       if (!cur || cur.id !== w.id || cur.lifecycle === "sealed") return;
+      const base = branchActive ? branchStore.baseline : undefined;
       putWs({
         ...cur,
-        state: { profile, binder, signals, division, desk },
+        state: { profile: base?.bonds ? { ...profile, bonds: base.bonds } : profile, binder, signals: base ? base.signals : signals, division, desk },
         replay: ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail })),
         updatedAt: new Date().toISOString(),
       });
     }, 700);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, binder, signals, division, desk, ledgerNow.length, activeId, purged, enclave.idleSealed, session]);
+  }, [profile, binder, signals, division, desk, ledgerNow.length, activeId, purged, enclave.idleSealed, session, branchActive]);
 
   if (!ready || !session || purged) return null;
 
@@ -763,7 +871,15 @@ export default function Dashboard() {
 
   const deskLabel = (id: string) => DESKS.find((d) => d.id === id)?.label ?? id;
   const now = () => new Date().toISOString();
-  const captureState = (): DeskState => ({ profile, binder, signals, division, desk });
+  // While a posture branch is on the bus, the workspace keeps the baseline posture.
+  const baselinePosture = branchActive ? branchStore.baseline : undefined;
+  const captureState = (): DeskState => ({
+    profile: baselinePosture?.bonds ? { ...profile, bonds: baselinePosture.bonds } : profile,
+    binder,
+    signals: baselinePosture ? baselinePosture.signals : signals,
+    division,
+    desk,
+  });
   const liveReplay = () => ledgerEntries().map(({ at, kind, detail }) => ({ at, kind, detail }));
   /** Write a change to the open workspace. */
   const updateWs = (patch: Partial<Workspace>) => {
@@ -934,6 +1050,154 @@ export default function Dashboard() {
     });
   };
 
+  /* ---------------- Surface 1: handover seal ---------------- */
+  const sealMission = async () => {
+    if (!activeWs) return toast.error("Open a mission before sealing it.");
+    setSealBusy(true);
+    // Mount every desk first, so the sealed bus carries every desk's readings and merely
+    // opening a desk later is not reported as a divergence.
+    setVisited(new Set(DESKS.map((d) => d.id)));
+    await new Promise((r) => window.setTimeout(r, 700));
+    try {
+      const w = workRef.current;
+      const p = sealPayload({ profile: w.profile, sessionId: activeWs.id, tray: activeWs.tray, signals: w.signals, decisions: decisionRecords(ledgerEntries()) });
+      const sl = await createSeal(p, w.profile.officer || activeWs.warrant?.custodian || "");
+      writeSeal(sl);
+      setHSeal(sl);
+      setLiveHash(sl.sealHash);
+      logDecision("00", "HANDOVER_SEAL", `Mission assessment sealed · SHA-256 ${sl.sealHash.slice(0, 8)} by ${sl.sealedBy}`);
+      seal();
+      toast.success(`Sealed · ${sl.sealHash.slice(0, 8)}`);
+    } catch {
+      toast.error("This browser could not compute the SHA-256 seal. Nothing was sealed.");
+    } finally {
+      setSealBusy(false);
+    }
+  };
+  const breakSeal = () => {
+    clearSeal();
+    setHSeal(null);
+    setLiveHash("");
+    toast.success("Handover seal broken. The mission is unsealed.");
+  };
+
+  /* ---------------- Surface 2: posture branching ---------------- */
+  const hydratePosture = (st: PostureState) => {
+    setSignals(st.signals);
+    if (st.bonds) setProfile((p) => ({ ...p, bonds: st.bonds }));
+    setVisited(new Set(DESKS.map((d) => d.id)));
+    setDeskEpoch((e) => e + 1);
+  };
+  const onCreateBranch = (name: string) => {
+    if (!activeWs) return;
+    const next = createBranch(branchStore.workspaceId === activeWs.id ? branchStore : emptyBranchStore(activeWs.id), livePosture, name, newId("br"));
+    if (next === branchStore) return toast.error("Eight branches is the limit for one mission.");
+    putBranches(next);
+    const b = next.branches[next.branches.length - 1];
+    logDecision("00", "POSTURE_BRANCH", `Branch opened: ${b.name} (from ${branchStore.active === BASELINE_ID ? "baseline posture" : branchStore.branches.find((x) => x.id === branchStore.active)?.name ?? "branch"})`);
+    toast.success(`${b.name} is on the bus`);
+  };
+  const onSwitchPosture = (id: string) => {
+    const r = switchPosture(branchStore, livePosture, id);
+    if (!r) return;
+    putBranches(r.store);
+    hydratePosture(r.state);
+    const label = id === BASELINE_ID ? "Baseline posture" : r.store.branches.find((x) => x.id === id)?.name ?? id;
+    logDecision("00", "POSTURE_BRANCH", `Posture switched to ${label}`);
+    toast.success(`${label} re-hydrated on every desk`);
+  };
+  const onDeleteBranch = (id: string) => putBranches(deleteBranch(branchStore, id));
+
+  /* ---------------- Executive summary and the pouch ---------------- */
+  const openQuestions = activeWs ? openQuestionCount(activeWs.tray) : 0;
+  const missionTitle = activeWs?.title || profile.theatre.trim() || "Unnamed mission";
+  const summary = execSummary({
+    title: missionTitle,
+    theatre: profile.theatre,
+    parties: profile.parties,
+    envoy: profile.officer,
+    classification: profile.classification,
+    signals: effective,
+    openQuestions,
+    sealHash: sealState.state === "intact" ? sealState.seal.sealHash : undefined,
+    baselineCovenants: branchActive && branchStore.baseline ? applyInscriptions(branchStore.baseline.signals).covenants ?? [] : undefined,
+    notice: exportNotice || undefined,
+  });
+  const manifestBody = (): ManifestBody => ({
+    format: MANIFEST_FORMAT,
+    mission: { slug: missionSlug(missionTitle), title: missionTitle, theatre: profile.theatre, parties: profile.parties, envoy: profile.officer, classification: profile.classification, sessionId: activeId ?? "" },
+    generatedAt: new Date().toISOString(),
+    summary,
+    signals: effective,
+    decisions: decisionRecords(ledgerEntries()),
+    workspace: activeWs ? { ...activeWs, state: captureState(), replay: liveReplay() } : null,
+    files: [`${missionSlug(missionTitle)}-manifest.json`, `${missionSlug(missionTitle)}-briefing.pdf`, `${missionSlug(missionTitle)}-cable.txt`],
+  });
+
+  /* ---------------- Surface 3: palette actions ---------------- */
+  const PUBLISHER_DESK: Record<string, string> = { shocks: "compound", asymmetry: "multiparty" };
+  const publisherLabel = (id: string) => {
+    if (id === "mission") return "Mission profile";
+    if (id === "preset") return "Theatre preset";
+    const ins = /^inscription:(\w+)$/.exec(id);
+    if (ins) return `Sovereign inscription tray (${ins[1]})`;
+    const k = DESKS.findIndex((d) => d.id === (PUBLISHER_DESK[id] ?? id));
+    return k >= 0 ? `Desk ${String(k + 1).padStart(2, "0")} · ${DESKS[k].label}` : id;
+  };
+  const onPaletteAction = (a: PaletteAction) => {
+    const drawer = (t: RehearsalTab) => {
+      if (!activeWs) return toast.error("Open a mission first.");
+      setDrawerTab(t);
+      setDrawerOpen(true);
+    };
+    const wire = (t: WireTab) => {
+      setWireTab(t);
+      setWireOpen(true);
+    };
+    switch (a) {
+      case "seal":
+        return sealState.state === "unsealed" ? void sealMission() : toast(sealState.state === "intact" ? "Already sealed. Integrity intact." : "Divergence detected. Open the seal badge to inspect or re-seal.");
+      case "wire":
+        return wire("wire");
+      case "inspector":
+        return wire("signals");
+      case "ledger":
+        return wire("decisions");
+      case "export":
+        return drawer("pouch");
+      case "summary":
+        return drawer("summary");
+      case "diff":
+        return drawer("diff");
+      case "branch":
+        return drawer("branches");
+      case "timeline":
+        return drawer("timeline");
+      case "mask":
+        return privacyToggleRef.current();
+      case "shortcuts":
+        return setShortcutsOpen(true);
+      case "panic":
+        if (window.confirm("Panic purge: wipe the working state, browser storage and the vault, then sign out?")) panicPurge();
+        return;
+    }
+  };
+
+  // The redaction shroud's dictionary: the mission's confidential identifiers, never its numbers.
+  const shroudInput = {
+    theatre: profile.theatre,
+    parties: profile.parties,
+    officer: profile.officer,
+    delegates: (effective.customParties ?? []).map((x) => x.name),
+    covenants: (effective.customCovenants ?? []).flatMap((c) => [c.title, c.obligation]),
+    restricted: [
+      ...(activeWs?.tray ?? []).map((e) => e.text),
+      ...(activeWs?.warrant ? [activeWs.warrant.objective, activeWs.warrant.scope, activeWs.warrant.authority, activeWs.warrant.custodian, activeWs.warrant.title] : []),
+      activeWs?.title ?? "",
+      ...(effective.customNotes ?? []).flatMap((n) => [n.title, n.body]),
+    ].filter((t) => t.trim().length >= 4),
+  };
+
   const inFoyer = !activeId;
   const opening = !!activeId && !activeWs;
   const guideOn = activeWs?.mode === "preset" && !!DESK_GUIDES[desk] && (scenario ? scenario.sequence.includes(desk) : !!activeWs.derived);
@@ -952,6 +1216,8 @@ export default function Dashboard() {
       }
     >
     <div onPasteCapture={sanitizeOnPaste} onBlurCapture={sanitizeOnBlur} className="contents">
+    <PrivacyProvider input={shroudInput}>
+      <PrivacyBridge toggleRef={privacyToggleRef} />
       <SEO
         title="The Vinculum Dashboard"
         description="Private working desks for Vinculum practitioners."
@@ -1026,14 +1292,40 @@ export default function Dashboard() {
             </span>
             <ChancelleryBreviary signals={effective} profile={profile} onAddToBinder={addToBinder} />
             <LexiconDrawer />
-            <DeskFinder
-              desks={DESKS}
-              divisions={DIVISIONS}
-              onPick={(id) => {
-                const d = DESKS.find((x) => x.id === id);
-                if (d) goTo(d);
-              }}
-            />
+            <button
+              type="button"
+              onClick={() => setPaletteOpen(true)}
+              className="inline-flex items-center gap-1.5 text-primary hover:text-accent transition-colors"
+              aria-label="Open the command palette"
+              title="Command palette (Ctrl+K)"
+              data-testid="palette-button"
+            >
+              <Search size={13} />
+              <span className="hidden sm:inline">Find</span>
+            </button>
+            <PrivacyButton />
+            {activeWs && (
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className="inline-flex items-center gap-1.5 text-primary hover:text-accent transition-colors"
+                aria-label="Open the rehearsal and handover drawer"
+                title="Rehearsal and handover: branches, diff, timeline, summary, export"
+                data-testid="rehearsal-button"
+              >
+                <GitBranch size={13} />
+                <span className="hidden sm:inline">{branchActive ? "Branch" : "Rehearse"}</span>
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => setShortcutsOpen(true)}
+              className="hidden sm:inline-flex items-center text-primary hover:text-accent transition-colors"
+              aria-label="Keyboard shortcuts"
+              title="Keyboard shortcuts (?)"
+            >
+              <Keyboard size={14} />
+            </button>
             <SaveSession onSave={saveSession} savedAt={savedAt} />
             <button
               type="button"
@@ -1085,6 +1377,16 @@ export default function Dashboard() {
           <p role="status" className="mb-28 text-sm text-muted-foreground">Opening the local workspace…</p>
         ) : (
         <>
+        {activeWs && (
+          <div className={`mb-3 flex flex-wrap items-center gap-2 ${focus ? "hidden" : ""}`} data-testid="seal-row">
+            <HandoverSealBadge status={sealState} differences={() => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : [])} sealing={sealBusy} onSeal={() => void sealMission()} onReseal={() => void sealMission()} onClear={breakSeal} />
+            {branchActive && (
+              <button type="button" onClick={() => { setDrawerTab("branches"); setDrawerOpen(true); }} className="inline-flex min-h-8 items-center gap-1.5 border border-accent bg-accent/10 px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-accent" data-testid="branch-indicator">
+                <GitBranch size={12} /> {branchStore.branches.find((b) => b.id === branchStore.active)?.name ?? "Branch"} · what-if posture
+              </button>
+            )}
+          </div>
+        )}
         {activeWs && (
           <div className={focus ? "hidden" : ""}>
             <ModeHeader ws={activeWs} scenario={scenario} network={network} saveStatus={wsStore.status} signals={effective} desk={desk} deskLabel={deskLabel} onAction={onHeader} onStage={onStage} />
@@ -1211,7 +1513,7 @@ export default function Dashboard() {
               Step {position + 1} of {DESKS.length}
             </span>
           </div>
-          <h1 className="mt-3 font-serif text-primary text-xl sm:text-2xl md:text-3xl leading-tight">{active.title}</h1>
+          <h1 id="vs-desk-title" tabIndex={-1} className="mt-3 font-serif text-primary text-xl sm:text-2xl md:text-3xl leading-tight outline-none">{active.title}</h1>
           <GoldRule className="mt-4 mb-4" />
           <p className="text-sm text-muted-foreground">{active.note}</p>
           {profile.theatre.trim() && (
@@ -1266,6 +1568,11 @@ export default function Dashboard() {
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
                 <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="w-full min-w-0">
+                  {DESK_DOCTRINES[id] && (
+                    <div className="mb-4 border-l-2 border-brass/60 pl-3">
+                      <DoctrineAnchors ids={DESK_DOCTRINES[id]} />
+                    </div>
+                  )}
                   <SovereignInscriptionTray deskId={id} onApplyVector={id === "diagnostics" ? setBonds : undefined} />
                   {id === "briefing" && <CableComposer />}
                   {id === "diagnostics" && (
@@ -1340,7 +1647,15 @@ export default function Dashboard() {
         </>
         )}
       </div>
-      <ChancelleryWire signals={effective} />
+      <ChancelleryWire
+        signals={effective}
+        openQuestions={openQuestions}
+        publisherLabel={publisherLabel}
+        open={wireOpen}
+        onOpenChange={setWireOpen}
+        tab={wireTab}
+        onTab={setWireTab}
+      />
       <ScenarioLibraryDialog
         open={dialog === "library"}
         onOpenChange={(v) => setDialog(v ? "library" : null)}
@@ -1505,6 +1820,38 @@ export default function Dashboard() {
         }}
       />
       <ImpactDialog impact={impact} onClose={() => setImpact(null)} />
+      <CommandPalette
+        open={paletteOpen}
+        onOpenChange={setPaletteOpen}
+        desks={DESKS}
+        onDesk={(id) => {
+          const d = DESKS.find((x) => x.id === id);
+          if (!d) return;
+          goTo(d);
+          window.setTimeout(() => document.getElementById("vs-desk-title")?.focus(), 60);
+        }}
+        onAction={onPaletteAction}
+      />
+      <ShortcutSheet open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
+      {activeWs && (
+        <RehearsalDrawer
+          open={drawerOpen}
+          onOpenChange={setDrawerOpen}
+          tab={drawerTab}
+          onTab={setDrawerTab}
+          branches={branchStore.workspaceId === activeWs.id ? branchStore : emptyBranchStore(activeWs.id)}
+          live={livePosture}
+          startState={activeWs.baseline?.signals}
+          readOnly={activeWs.lifecycle === "sealed"}
+          onCreateBranch={onCreateBranch}
+          onSwitch={onSwitchPosture}
+          onDeleteBranch={onDeleteBranch}
+          rawSignals={signals}
+          summary={summary}
+          manifestBody={manifestBody}
+        />
+      )}
+    </PrivacyProvider>
     </div>
     </ChancellerySentinel>
   );

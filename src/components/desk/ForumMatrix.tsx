@@ -1,4 +1,7 @@
 import { label } from "./DeskOutput";
+import FormulaProof from "./FormulaProof";
+import { forumProof } from "./formulaProofs";
+import { DoctrineText } from "@/components/DoctrinalTooltip";
 import { FORUMS, IMMUNITY_PENALTY, SEAT_PENALTY, forumFitness, type ForumTerms } from "./instruments";
 
 /** Desk 11: Dispute Forum Enforceability Matrix. Ratings are doctrinal ordinal judgements, 1 to 5. */
@@ -66,6 +69,7 @@ export default function ForumMatrix({ value, onChange, terms, onTerms }: {
         <div className="border border-border p-2"><p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground">Enforcement friction</p><p className="font-serif text-2xl text-primary tabular-nums">{fit.friction}</p></div>
       </div>
       <p className="mt-2 text-xs text-primary">
+        <FormulaProof proof={forumProof(chosen, terms)} className="mr-2" />
         {chosen.name}: base {fit.base}{fit.immunity ? `, immunity −${fit.immunity}` : ""}{fit.seat ? `, seat −${fit.seat}` : ""}, venue fitness {fit.fitness} of 100.
       </p>
       <details className="mt-2 border-t border-border pt-2 text-[11px]">
@@ -75,9 +79,9 @@ export default function ForumMatrix({ value, onChange, terms, onTerms }: {
           <li>Fitness F = E − {IMMUNITY_PENALTY} (immunity unaddressed) − {SEAT_PENALTY} (seat not neutral), floor 0</li>
           <li>Enforcement friction = 100 − F</li>
         </ul>
-        <p className="mt-1 text-muted-foreground">Enforcement under the New York Convention 1958 and the ICSID Convention 1965.</p>
+        <p className="mt-1 text-muted-foreground"><DoctrineText text="Enforcement under the New York Convention 1958 and the ICSID Convention 1965; recognition may be refused only on the New York Convention Art. V grounds, and sovereign immunity from execution survives ICSID art. 54 under art. 55." /></p>
       </details>
-      <p className="mt-2 text-[11px] text-muted-foreground">{chosen.basis} · {chosen.route}</p>
+      <p className="mt-2 text-[11px] text-muted-foreground"><DoctrineText text={`${chosen.basis} · ${chosen.route}`} /></p>
       <p className="mt-2 text-[10px] text-muted-foreground">Ratings are doctrinal judgements on a 1 to 5 scale, not measured statistics.</p>
     </div>
   );

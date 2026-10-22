@@ -635,3 +635,52 @@ html.scif [class*="tracking-["] { font-family: ui-monospace, "SFMono-Regular", M
     page-break-after: always;
   }
 }
+
+
+/* ---------- 1-Page Executive Action Summary (print) ----------
+   Printing mounts the sheet in #vs-exec-print; only that node prints, on one portrait
+   sheet (Letter or A4) with 0.5 in margins, exact colours and no breaks inside blocks. */
+@page vs-exec { size: portrait; margin: 0.5in; }
+@media print {
+  html.vs-print-exec body > *:not(#vs-exec-print) { display: none !important; }
+  html.vs-print-exec #vs-exec-print { display: block !important; page: vs-exec; }
+  html.vs-print-exec #vs-exec-print, html.vs-print-exec #vs-exec-print * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html.vs-print-exec .vs-exec-sheet {
+    font-size: 8.5pt !important;
+    line-height: 1.3 !important;
+    max-height: 9.9in;
+    overflow: hidden;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  html.vs-print-exec .vs-exec-sheet table,
+  html.vs-print-exec .vs-exec-sheet svg,
+  html.vs-print-exec .vs-exec-block { break-inside: avoid; page-break-inside: avoid; }
+}
+@media screen { #vs-exec-print { display: none; } }
+
+/* ---------- Presentation Privacy Mask (Redaction Shroud) ----------
+   Free-text fields draw as redaction bars while the shroud is on; numbers, ranges and
+   selects stay readable, and the command palette input is kept. */
+html.vs-shroud textarea:not([data-shroud-keep]),
+html.vs-shroud input[type="text"]:not([data-shroud-keep]),
+html.vs-shroud input[type="search"]:not([data-shroud-keep]),
+html.vs-shroud input:not([type]):not([data-shroud-keep]) {
+  color: transparent !important;
+  caret-color: hsl(var(--primary));
+  background-image: repeating-linear-gradient(180deg, transparent 0 0.35em, hsl(var(--primary) / 0.82) 0.35em 1.05em, transparent 1.05em 1.45em) !important;
+  background-clip: content-box;
+}
+html.vs-shroud textarea:not([data-shroud-keep])::placeholder,
+html.vs-shroud input:not([data-shroud-keep])::placeholder { color: transparent !important; }
+
+/* ---------- Live Bus Signal Inspector: signal freshness pulse (400 ms) ---------- */
+@keyframes vs-signal-pulse {
+  0% { background-color: hsl(var(--ochre) / 0.45); }
+  100% { background-color: transparent; }
+}
+.vs-signal-fresh { animation: vs-signal-pulse 400ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .vs-signal-fresh { animation: none; outline: 1px solid hsl(var(--ochre)); } }
