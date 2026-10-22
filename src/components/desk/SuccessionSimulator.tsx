@@ -4,6 +4,10 @@ import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, successionDurability, SUCCESSION_TRAP } from "./engine";
 import { decayHorizon, DECAY_HORIZONS, fractureWindow, FRACTURE_LEVEL } from "./instruments";
 import SyncPanel from "./SyncPanel";
+import ShockTimelineScrubber from "./ShockTimelineScrubber";
+import FormulaProof from "./FormulaProof";
+import { decayProof, fractureProof, halfLifeProof } from "./formulaProofs";
+import { successionTimeline } from "./shockTimeline";
 import { AlertTriangle, ShieldCheck } from "lucide-react";
 
 /**
@@ -223,6 +227,13 @@ export default function SuccessionSimulator() {
     return { q, b: bandOf(q), first, gaps, unguarded, base, compound, bonds, exposure };
   }, [inForce, shocks, allProvisions, allShocks, bondMap]);
 
+  // Succession shocks in the order applied, for the temporal decay scrubber.
+  const timeline = useMemo(() => {
+    const ins = (sh: Shock) => allProvisions.some((p) => inForce.includes(p.id) && p.guards.includes(sh.id));
+    const ordered = shocks.map((id) => allShocks.find((x) => x.id === id)).filter((x): x is Shock => !!x).map((x) => ({ id: x.id, label: x.label, sev: x.sev, insulated: ins(x) }));
+    return successionTimeline({ ...signals, rupture: linked ? signals.rupture ?? 0 : 0 }, ordered);
+  }, [shocks, allShocks, allProvisions, inForce, signals, linked]);
+
   // Section 4.5 canonical durability, from the live bonds, rupture index and covenants on the bus.
   const canon = useMemo(() => (linked ? successionDurability(signals) : undefined), [linked, signals]);
   const [horizon, setHorizon] = useState<number>(180);
@@ -239,6 +250,7 @@ export default function SuccessionSimulator() {
   usePublish("succession", {
     survivalScore: canon ? canon.percent : r.q,
     decayConstant: decay ? Math.round(decay.lambda * 10000) / 10000 : 0,
+    unmitigatedExposure: Math.round(r.exposure * 100) / 100,
     stabilityHalfLifeDays: decay?.halfLifeDays ? Math.round(decay.halfLifeDays * 10) / 10 : 0,
     projectedDegradation: decay?.meanLoss ?? 0,
     fractureMonths: fracture?.months ?? 0,
@@ -509,7 +521,14 @@ export default function SuccessionSimulator() {
                   {decay.halfLifeDays ? decay.halfLifeDays.toFixed(1) : "∞"}
                   <span className="text-base text-muted-foreground"> days t½</span>
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground font-mono tabular-nums">λ = {decay.lambda.toFixed(4)} per day</p>
+                <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground font-mono tabular-nums">
+                  <span>λ = {decay.lambda.toFixed(4)} per day</span>
+                  <FormulaProof proof={decayProof(r.exposure, linked ? signals.rupture ?? 0 : 0)} />
+                  <FormulaProof proof={halfLifeProof(decay.lambda)} />
+                  {signals.bonds && (
+                    <FormulaProof proof={fractureProof((signals.bonds.interpersonal + signals.bonds.communal + signals.bonds.intergenerational + signals.bonds.institutional) / 4, decay.lambda)} />
+                  )}
+                </p>
                 <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Projection horizon">
                   {DECAY_HORIZONS.map((d) => (
                     <button key={d} type="button" aria-pressed={horizon === d} onClick={() => setHorizon(d)}
@@ -549,6 +568,13 @@ export default function SuccessionSimulator() {
             )}
           </div>
         </div>
+      </div>
+      <div className="mt-6 w-full min-w-0">
+        <ShockTimelineScrubber
+          title="Succession decay timeline · step scrubber"
+          steps={timeline}
+          note="Each step adds one succession shock's exposure to U (a quarter when a provision in force insulates against it); R holds at the bus reading. λ = (U + R) ÷ 2000."
+        />
       </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Succession-Simulation" />
