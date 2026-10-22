@@ -1284,14 +1284,19 @@ export default function Dashboard() {
                   {id === "multiparty" && <MultiPartySequencer />}
                   {id === "compound" && <CompoundShockTester />}
                   {id === "sentinel" && <SentinelMatrix />}
-                  {id === "readiness" && <ReadinessDesk />}
+                  {id === "readiness" && <ReadinessDesk openQuestions={activeWs ? openQuestionCount(activeWs.tray) : undefined} />}
                   {id === "counterpart" && <CounterpartPrompter />}
                   {id === "succession" && <SuccessionSimulator />}
                   {id === "tracks" && <TrackSequencer />}
                   {id === "verification" && <VerificationLedger />}
                   {id === "handover" && <HandoverProtocol />}
                   {id === "binder" && (
-                    <MissionBinder entries={binder} onRemove={(x) => setBinder((p) => p.filter((e) => e.id !== x))} onMove={moveEntry} />
+                    <MissionBinder
+                      entries={binder}
+                      onRemove={(x) => setBinder((p) => p.filter((e) => e.id !== x))}
+                      onMove={moveEntry}
+                      onProfileChange={activeWs?.lifecycle === "sealed" ? undefined : (patch) => setProfile((p) => ({ ...p, ...patch }))}
+                    />
                   )}
                 </div>
               ) : null,
