@@ -429,6 +429,11 @@ export type ReviewFinding = { kind: "warrant" | "question" | "assumption" | "dec
  * Local completeness review. Lists missing required warrant content and unresolved
  * structured items. It reviews what is recorded here; it approves nothing.
  */
+/** Context Tray entries still marked Open Question (resolving means reclassifying as fact, assumption or excluded). */
+export function openQuestionCount(tray: ContextEntry[]): number {
+  return tray.filter((e) => e.status === "question").length;
+}
+
 export function completenessReview(w: Workspace): ReviewFinding[] {
   const out: ReviewFinding[] = [];
   for (const f of WARRANT_FIELDS) if (f.required && !(w.warrant?.[f.key] ?? "").trim()) out.push({ kind: "warrant", text: `Mission Warrant: ${f.label} is empty.` });
