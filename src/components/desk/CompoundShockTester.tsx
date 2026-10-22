@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
@@ -167,7 +167,7 @@ export default function CompoundShockTester() {
   useEffect(() => {
     if (signals.customShocks?.length) {
       const ids = signals.customShocks.map((s) => s.id);
-      setOn((prev) => Array.from(new Set([...prev, ...ids])));
+      setOn((prev) => (ids.every((id) => prev.includes(id)) ? prev : Array.from(new Set([...prev, ...ids]))));
     }
   }, [signals.customShocks]);
 
