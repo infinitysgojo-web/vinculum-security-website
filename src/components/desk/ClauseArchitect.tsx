@@ -102,6 +102,9 @@ export default function ClauseArchitect() {
   const [oLabel, setOLabel] = useState("");
   const [oText, setOText] = useState("");
 
+  // Engine signals are read first: every derived block below depends on them.
+  const { signals } = useEngine();
+
   // Map Sovereign Custom Mode inscribed covenants into the clause register
   const inscribedOwn = useMemo<Own[]>(() => {
     return (signals.customCovenants ?? []).map((c) => ({
@@ -115,7 +118,6 @@ export default function ClauseArchitect() {
   const allOwn = useMemo(() => [...inscribedOwn, ...own], [inscribedOwn, own]);
 
   // Division I and II decide which fragilities this instrument must insulate against.
-  const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
   const live = linked && hasSignal(signals);
   const mandated = useMemo(() => {
@@ -207,11 +209,11 @@ export default function ClauseArchitect() {
       L.push("");
     });
     allOwn.forEach((o) => {
-      L.push(`ARTICLE ${rom(art)}. ${o.label.toUpperCase()}`);
-      L.push(`  ${o.clause}`);
-      L.push(`  [Continuity rule: ${o.note}]`);
+      n += 1;
+      L.push(`Article C.${n} (${o.label})`);
+      L.push(`  ${o.clause || scaffold(o.label, partyName, verifier)}`);
+      L.push(`  Commentary: ${o.note}`);
       L.push("");
-      art++;
     });
     L.push(`Article C.${n + 1} (Independent verification)`);
     L.push(`  ${verifier}, appointed jointly by ${partyName} and not removable by any single Party, shall verify the Articles of this Part. No Party's account of its own compliance shall be treated as self-certifying.`);
@@ -228,7 +230,7 @@ export default function ClauseArchitect() {
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     L.push("", `DISPUTE SETTLEMENT (Desk 11 forum: ${forum.name}; venue fitness ${forumFit.fitness} of 100, enforcement friction ${forumFit.friction}${forumFit.immunity ? "; immunity unaddressed" : ""}${forumFit.seat ? "; seat not neutral" : ""})`, forumClause(forum, forumTerms));
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig, own, ownType, live, signals, mandated, forum]);
+  }, [ag, picked, title, parties, office, rig, allOwn, ownType, live, signals, mandated, forum]);
 
 
   return (
@@ -334,7 +336,7 @@ export default function ClauseArchitect() {
           />
           <div className="border border-brass/40 bg-background p-4">
             <span className={label}>Part C · operative preview</span>
-            {picked.length + own.length === 0 ? (
+            {picked.length + allOwn.length === 0 ? (
               <p className="text-xs text-muted-foreground">Select a fragility or add your own article and its operative wording compiles here.</p>
             ) : (
               <ol className="space-y-3">
@@ -344,7 +346,7 @@ export default function ClauseArchitect() {
                     <span className="text-foreground/85 line-clamp-3">{FRAGILITIES[i].clause}</span>
                   </li>
                 ))}
-                {own.map((o, n) => (
+                {allOwn.map((o, n) => (
                   <li key={o.id} className="text-xs leading-relaxed">
                     <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-accent">Article C.{picked.length + n + 1} · {o.label}</span>
                     <span className="text-foreground/85 line-clamp-3">{o.clause || "Drafted on the continuity rule: the office is bound, not the officeholder."}</span>
