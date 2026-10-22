@@ -60,7 +60,7 @@ const STAGES: { id: string; label: string; anchor: string; gates: Gate[] }[] = [
   },
 ];
 
-export default function ReadinessDesk() {
+export default function ReadinessDesk({ openQuestions }: { /** Open Questions in the active workspace's Context Tray; undefined when no workspace is open. */ openQuestions?: number } = {}) {
   const profile = useMission();
   const [mission, setMission] = useState(profile.theatre);
   // Follow the Mission Vault when the theatre changes; a manual entry stays until the theatre itself changes.
@@ -78,21 +78,23 @@ export default function ReadinessDesk() {
   const auditLocked = audit?.locked ?? false;
   // Sovereign readiness gates: every inscribed gate must be attested before certification.
   const sovereignOpen = (signals.customGates ?? []).filter((g) => !g.verified);
+  // Evidentiary hygiene: an unresolved Open Question in the Context Tray withholds clearance.
+  const questionsOpen = openQuestions ?? 0;
 
   const r = useMemo(() => {
     const gates = stage.gates;
     const missingCritical = gates.filter((g) => g.critical && !done.includes(g.id));
     const met = gates.filter((g) => done.includes(g.id)).length;
     const pct = Math.round((met / gates.length) * 100);
-    const verdict = missingCritical.length || openLocks.length || auditLocked || sovereignOpen.length ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
+    const verdict = missingCritical.length || openLocks.length || auditLocked || sovereignOpen.length || questionsOpen ? "NOT CLEARED" : pct === 100 ? "CLEARED" : "CLEARED WITH CONDITIONS";
     const lifecycle = STAGES.map((s) => {
       const mc = s.gates.filter((g) => g.critical && !done.includes(g.id)).length;
       const m = s.gates.filter((g) => done.includes(g.id)).length;
-      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked && sovereignOpen.length === 0 };
+      return { label: s.label, met: m, total: s.gates.length, cleared: mc === 0 && openLocks.length === 0 && !auditLocked && sovereignOpen.length === 0 && questionsOpen === 0 };
     });
     return { missingCritical, pct, verdict, met, lifecycle };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done, stage, JSON.stringify(openLocks), auditLocked, sovereignOpen.length]);
+  }, [done, stage, JSON.stringify(openLocks), auditLocked, sovereignOpen.length, questionsOpen]);
 
   const clearances = useMemo(() => statutoryClearances(signals), [signals]);
   const [lastRef, setLastRef] = useState("");

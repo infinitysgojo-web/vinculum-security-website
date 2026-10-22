@@ -69,6 +69,7 @@ import {
   createPresetWorkspace,
   deriveTraining,
   newId,
+  openQuestionCount,
   promoteToCustom,
   warrantToProfile,
   type ContextEntry,
