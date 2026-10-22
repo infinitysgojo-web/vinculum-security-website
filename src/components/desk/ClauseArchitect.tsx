@@ -206,12 +206,12 @@ export default function ClauseArchitect() {
       L.push(`  Commentary: ${f.note}`);
       L.push("");
     });
-    own.forEach((o) => {
-      n += 1;
-      L.push(`Article C.${n} (${o.label})`);
-      L.push(`  ${o.clause || scaffold(o.label, partyName, verifier)}`);
-      L.push(`  Commentary: ${o.note}`);
+    allOwn.forEach((o) => {
+      L.push(`ARTICLE ${rom(art)}. ${o.label.toUpperCase()}`);
+      L.push(`  ${o.clause}`);
+      L.push(`  [Continuity rule: ${o.note}]`);
       L.push("");
+      art++;
     });
     L.push(`Article C.${n + 1} (Independent verification)`);
     L.push(`  ${verifier}, appointed jointly by ${partyName} and not removable by any single Party, shall verify the Articles of this Part. No Party's account of its own compliance shall be treated as self-certifying.`);
