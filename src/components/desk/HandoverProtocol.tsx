@@ -12,8 +12,12 @@ function handoverLines(s: Signals): string[] {
     L.push(`  HANDOVER PREMATURE: the ${s.weakestBond.toLowerCase()} bond still reads ${s.weakestScore.toFixed(1)} of 5 (Failing). Restore it to the Fragile band (2.1) or above, and ideally Viable (3.1), before the mandate passes.`);
   if (s.rupture !== undefined && s.rupture >= 35)
     L.push(`  HANDOVER PREMATURE: rupture index at ${s.rupture} per cent. Hand over only once it falls below 35.`);
-  if (s.covenants?.length)
-    L.push(`  Successor office inherits these covenants: ${s.covenants.join("; ")}.`);
+  const allCovenants = [
+    ...(s.covenants ?? []),
+    ...(s.customCovenants ?? []).map((c) => `[Inscribed] ${c.title} (${c.enforcementMechanism})`),
+  ];
+  if (allCovenants.length)
+    L.push(`  Successor office inherits these covenants: ${allCovenants.join("; ")}.`);
   if (s.gatesCleared) L.push(`  Readiness lifecycle stages cleared: ${s.gatesCleared}.`);
   return L.length ? ["BOND RESTORATION GATE (live from the mission engine)", ...L] : [];
 }
