@@ -116,6 +116,7 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
       `VERDICT: ${r.verdict}`,
       ...(audit ? [`DISPOSITION: ${audit.locked ? "LOCKED" : "CLEARED"}`] : []),
       `GATES MET AT THIS STAGE: ${r.met} of ${stage.gates.length} (${r.pct}%)`,
+      ...(openQuestions !== undefined ? [`EVIDENTIARY HYGIENE: ${questionsOpen ? `${questionsOpen} open question${questionsOpen === 1 ? "" : "s"} unresolved in the Context Tray. Resolve, verify or formally exclude each before clearance.` : "No open questions in the Context Tray."}`] : []),
       "",
     ];
     let g = "";
@@ -255,6 +256,12 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
             <p className={label}>Mission sign-off · {stage.label}</p>
             <p className={`font-serif text-3xl ${r.verdict === "NOT CLEARED" ? "text-destructive" : "text-primary"}`}>{r.verdict}</p>
             <p className="text-xs text-muted-foreground mt-1">{r.met} of {stage.gates.length} stage gates met</p>
+            {openQuestions !== undefined && (
+              <div className="mt-3 flex justify-between gap-3 border-t border-border pt-3 text-xs">
+                <span className="text-foreground/85">Evidentiary hygiene · Context Tray open questions</span>
+                <span className={questionsOpen ? "text-destructive shrink-0" : "text-primary shrink-0"}>{questionsOpen ? `${questionsOpen} unresolved` : "None open"}</span>
+              </div>
+            )}
             {(signals.customGates?.length ?? 0) > 0 && (
               <ul className="mt-3 space-y-1 border-t border-border pt-3">
                 {signals.customGates!.map((g) => (
