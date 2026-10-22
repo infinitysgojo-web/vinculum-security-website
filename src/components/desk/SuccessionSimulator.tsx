@@ -133,15 +133,37 @@ export default function SuccessionSimulator() {
   const [sSev, setSSev] = useState(18);
   const [sBond, setSBond] = useState(3);
 
+  const inscribedShocks = useMemo<Shock[]>(() => {
+    return (signals.customShocks ?? []).map((cs) => {
+      const negSum =
+        Math.abs(Math.min(0, cs.deltas.interpersonal)) +
+        Math.abs(Math.min(0, cs.deltas.communal)) +
+        Math.abs(Math.min(0, cs.deltas.intergenerational)) +
+        Math.abs(Math.min(0, cs.deltas.institutional));
+      const sev = Math.max(10, Math.min(30, Math.round(negSum * 20))) || 18;
+      return {
+        id: cs.id,
+        label: `${cs.name} [INSCRIBED]`,
+        sev,
+      };
+    });
+  }, [signals.customShocks]);
+
   const allProvisions = useMemo(() => [...PROVISIONS, ...ownProv], [ownProv]);
-  const allShocks = useMemo<Shock[]>(() => [...SHOCKS, ...ownShock], [ownShock]);
+  const allShocks = useMemo<Shock[]>(() => [...SHOCKS, ...inscribedShocks, ...ownShock], [inscribedShocks, ownShock]);
   const bondMap = useMemo(
     () =>
-      BONDS.map((b, i) => ({
-        name: b.name,
-        shocks: [...b.shocks, ...ownShock.filter((s) => s.id.endsWith(`-b${i}`)).map((s) => s.id)],
-      })),
-    [ownShock]
+      BONDS.map((b, i) => {
+        const matchingInscribed = (signals.customShocks ?? []).filter((cs) => {
+          const deltas = [cs.deltas.interpersonal, cs.deltas.communal, cs.deltas.intergenerational, cs.deltas.institutional];
+          return deltas.indexOf(Math.min(...deltas)) === i;
+        }).map((cs) => cs.id);
+        return {
+          name: b.name,
+          shocks: [...b.shocks, ...matchingInscribed, ...ownShock.filter((s) => s.id.endsWith(`-b${i}`)).map((s) => s.id)],
+        };
+      }),
+    [signals.customShocks, ownShock]
   );
 
   const tp = (id: string) => setInForce((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
