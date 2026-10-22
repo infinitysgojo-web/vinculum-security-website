@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Connect inscribed shocks to compound and succession testing without double-applying bond deltas
+- [ ] Connect inscribed covenants to drafting, verification and handover
+- [ ] Test custom-input propagation and verify the connected desks in the signed-in interface
+
 - [x] Embedded preview restoration: restore embedded Lovable preview without permitting arbitrary foreign frames
 - [x] Desk layout rebalancing: balanced two-column desks across all 18 desks, 12-column splits on the Litigation, Clause Architect, Counterpart, Readiness and Mission Binder desks
 - [x] Great Lakes connected mission verification: preset loaded once and read downstream on every desk, the binder and the transmittal manifest
