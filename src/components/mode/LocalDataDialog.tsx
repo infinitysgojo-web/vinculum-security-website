@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { sanitizeDeep } from "@/lib/sanitizer";
 import {
+  ARCHIVE_CUSTODY_NOTICE,
   DECISION_LABEL,
   ENCRYPTION_NOTICE,
   LOCAL_DATA_NOTICE,
@@ -279,6 +280,7 @@ export default function LocalDataDialog({ open, onOpenChange, store, activeId, o
             </div>
           )}
           {!encrypt && <p className="mt-3 text-[11px] text-muted-foreground">{PACKAGE_NOTICE}</p>}
+          <ArchiveCustodyNotice />
           {blocker && list.length > 0 && <p role="status" className="mt-2 text-[11px] text-destructive">{blocker}</p>}
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <button type="button" className={btnPrimary} disabled={!!blocker || !!passProblem} onClick={() => void doExport()}>
@@ -418,5 +420,17 @@ export default function LocalDataDialog({ open, onOpenChange, store, activeId, o
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/**
+ * Institutional custody advisory for the export section. Shown whether or not the
+ * package is encrypted: either way the file needs a proper archive.
+ */
+export function ArchiveCustodyNotice() {
+  return (
+    <p className="text-[11px] text-muted-foreground border-l-2 border-brass/40 pl-3 py-1 my-3 italic leading-relaxed" data-testid="archive-custody-notice">
+      {ARCHIVE_CUSTODY_NOTICE}
+    </p>
   );
 }

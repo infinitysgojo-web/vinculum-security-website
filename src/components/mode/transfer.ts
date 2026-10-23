@@ -34,6 +34,12 @@ export const LOCAL_DATA_NOTICE =
   "Workspaces are stored only in this browser on this device. Nothing is synced or backed up anywhere. Export a package to keep a copy.";
 export const PACKAGE_NOTICE =
   "Plain JSON. Not encrypted and not access-controlled: anyone holding this file can read it. The SHA-256 digest is a local integrity reference that shows whether the file changed after export. It is not a signature, certification or proof of origin.";
+/**
+ * Custody guidance shown under every export, encrypted or not: the package is the only
+ * copy outside this browser, so it belongs in the organisation's own archive.
+ */
+export const ARCHIVE_CUSTODY_NOTICE =
+  "Exported packages are standalone files. Once saved to your device, move them to your organisation’s encrypted vault, offline media, or designated archive to preserve a permanent copy.";
 
 export type WorkspacePackage = {
   format: typeof PACKAGE_FORMAT;
