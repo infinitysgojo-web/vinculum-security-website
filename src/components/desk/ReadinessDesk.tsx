@@ -6,6 +6,7 @@ import { telemetryLines, useEngine, usePublish, engineLocks, stageGateAudit, sta
 import { mintDispatch } from "./registry";
 import { toast } from "sonner";
 import { logDecision } from "./ledgerStore";
+import { signOffStatus } from "./signOff";
 
 /** Mission lifecycle clearance across four stages. Deterministic; nothing stored. */
 type Gate = { id: string; group: string; text: string; critical: boolean; remedy: string };
@@ -175,6 +176,34 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
   const bindingOpen = clearances.filter((c) => c.binding && !c.passed).length;
   const clearancePct = Math.round((clearedCount / clearances.length) * 100);
   const canSignOff = r.verdict !== "NOT CLEARED" && bindingOpen === 0;
+  // Itemised sign-off status: the five canonical gates are read straight from the
+  // bus (the binding schedule decomposes them exactly), plus every desk-level hold.
+  const signOff = signOffStatus({
+    stageGates: stageGateAudit(signals).gates,
+    bindingOpen,
+    openQuestions: questionsOpen,
+    stageLabel: stage.label,
+    missingCritical: r.missingCritical.map((g) => g.text),
+    sovereignOpen: sovereignOpen.map((g) => g.label),
+    openLocks: openLocks.map((l) => l.name),
+    canSignOff,
+  });
+  const signOffClick = () => {
+    if (signOff.ready) {
+      void mint("attestation");
+      return;
+    }
+    toast.error("Sign-off held: open gates", {
+      description: (
+        <ul className="mt-1 space-y-1">
+          {signOff.holds.map((h) => (
+            <li key={h.name}><span className="font-semibold">{h.name}:</span> {h.reason}</li>
+          ))}
+          {signOff.holds.length === 0 && bindingOpen > 0 && <li>{bindingOpen} binding statutory clearances pending.</li>}
+        </ul>
+      ),
+    });
+  };
 
   return (
     <section className={panel}>
@@ -312,11 +341,19 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
           )}
           <div className="border border-brass/40 bg-navy-tint/40 p-4">
             <p className={label}>Transmittal console</p>
-            <p className="text-xs text-muted-foreground">Mint a numbered readiness minute at any time. The sign-off attestation opens once the verdict clears and every binding article is clear.</p>
+            <p className="text-xs text-muted-foreground">Mint a numbered readiness minute at any time. The sign-off attestation is minted once the verdict clears and every binding article is clear; until then, Sign off lists the open gates.</p>
             <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
               <button type="button" onClick={() => mint("minute")} className="min-h-11 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent">Mint readiness minute</button>
-              <button type="button" disabled={!canSignOff} onClick={() => mint("attestation")} className="min-h-11 border border-accent bg-accent px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-accent-foreground disabled:cursor-not-allowed disabled:opacity-40">Sign off mission</button>
+              <button type="button" aria-describedby="rd-signoff-status" onClick={signOffClick} className="min-h-11 border border-accent bg-accent px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-accent-foreground hover:opacity-90">Sign off mission</button>
             </div>
+            <p
+              id="rd-signoff-status"
+              role="status"
+              aria-live="polite"
+              className={`mt-2 border-l-2 pl-3 text-xs [overflow-wrap:anywhere] ${signOff.ready ? "border-primary text-primary" : "border-destructive text-destructive"}`}
+            >
+              {signOff.text}
+            </p>
             {lastRef && <p className="mt-2 font-mono text-[11px] text-accent [overflow-wrap:anywhere]">{lastRef}</p>}
           </div>
         </div>
