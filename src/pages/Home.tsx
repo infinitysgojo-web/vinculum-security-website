@@ -16,6 +16,7 @@ import {
 import NavCard from "@/components/NavCard";
 import ReadingPathways from "@/components/ReadingPathways";
 import FadeIn from "@/components/FadeIn";
+import DispatchCover from "@/components/DispatchCover";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import Logo from "@/components/Logo";
@@ -94,18 +95,29 @@ const CARDS = [
 ];
 
 function LatestDispatches() {
-  const [articles, setArticles] = useState<MediumArticle[]>([]);
+  const [articles, setArticles] = useState<MediumArticle[]>(() => {
+    try {
+      return (JSON.parse(localStorage.getItem("vs:dispatches-cache") || "[]") as MediumArticle[]).slice(0, 3);
+    } catch {
+      return [];
+    }
+  });
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const { data, error } = await supabase.functions.invoke("medium-feed");
-        if (!cancelled && !error && data?.articles) {
+        if (!cancelled && !error && data?.articles?.length) {
           setArticles(data.articles.slice(0, 3));
+          try {
+            localStorage.setItem("vs:dispatches-cache", JSON.stringify(data.articles));
+          } catch {
+            // storage full: live list still shows
+          }
         }
       } catch {
-        // silent fail on home strip
+        // keep the saved copy on failure
       }
     })();
     return () => {
@@ -131,20 +143,7 @@ function LatestDispatches() {
               rel="noopener noreferrer"
               className="group block h-full bg-background border border-brass/40 overflow-hidden transition-colors duration-500 hover:border-brass"
             >
-              {article.cover_image ? (
-                <div className="aspect-[16/9] overflow-hidden bg-muted">
-                  <img
-                    src={article.cover_image}
-                    alt=""
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-[16/9] bg-gradient-to-br from-navy-tint to-gold-tint flex items-center justify-center">
-                  <span className="font-serif text-3xl text-brass/50">VS</span>
-                </div>
-              )}
+              <DispatchCover src={article.cover_image} />
               <div className="p-5">
                 <time
                   dateTime={article.pub_date}

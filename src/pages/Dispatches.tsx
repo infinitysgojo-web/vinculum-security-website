@@ -5,8 +5,9 @@ import FadeIn from "@/components/FadeIn";
 import GoldRule from "@/components/GoldRule";
 import { AUTHOR_NAME, SITE_URL, personLd, ORG_ID } from "@/lib/seo-entities";
 import { supabase } from "@/integrations/supabase/client";
+import DispatchCover from "@/components/DispatchCover";
 
-const DISPATCH_CACHE = "vs:dispatches-cache";
+export const DISPATCH_CACHE = "vs:dispatches-cache";
 
 interface Article {
   id: string;
@@ -42,20 +43,7 @@ function ArticleCard({ article, index }: { article: Article; index: number }) {
           className="block"
           aria-label={`Read "${article.title}" on Medium`}
         >
-          {article.cover_image ? (
-            <div className="aspect-[16/9] overflow-hidden bg-muted">
-              <img
-                src={article.cover_image}
-                alt=""
-                loading="lazy"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-            </div>
-          ) : (
-            <div className="aspect-[16/9] bg-gradient-to-br from-navy-tint to-gold-tint flex items-center justify-center">
-              <span className="font-serif text-4xl text-brass/50">VS</span>
-            </div>
-          )}
+          <DispatchCover src={article.cover_image} large />
         </a>
         <div className="flex flex-col flex-1 p-6 md:p-8">
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
