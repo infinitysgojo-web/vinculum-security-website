@@ -174,48 +174,64 @@ export async function sealEnvelope(data: unknown, passphrase: string): Promise<E
 /** Open a vinculum-cipher-v1 envelope. A wrong passphrase or any altered byte raises TAG_MISMATCH. */
 export async function openEnvelope<T>(payload: EncryptedPayload, passphrase: string): Promise<T> {
   if (!payload || payload.format !== "vinculum-cipher-v1") throw new Error("Unsupported cipher format.");
-  let combined: Uint8Array<ArrayBuffer>;
-  let key: CryptoKey;
-  let iv: Uint8Array<ArrayBuffer>;
+  let combined: Uint8Array<ArrayBuffer> | null = null;
+  let plain: Uint8Array | null = null;
   try {
-    const ciphertext = hexToBytes(payload.ciphertextHex);
-    const tag = hexToBytes(payload.tagHex);
-    iv = hexToBytes(payload.ivHex);
-    if (tag.length !== TAG_BYTES || iv.length !== IV_BYTES) throw new Error(TAG_MISMATCH);
-    combined = new Uint8Array(ciphertext.length + tag.length);
-    combined.set(ciphertext);
-    combined.set(tag, ciphertext.length);
-    key = await deriveEnclaveKey(passphrase, hexToBytes(payload.saltHex), payload.kdf === undefined ? PBKDF2_ITERATIONS : iterationsFor(payload.kdf));
-  } catch {
-    throw new Error(TAG_MISMATCH);
-  }
-  let plain: Uint8Array;
-  try {
-    plain = new Uint8Array(await subtle().decrypt({ name: "AES-GCM", iv, tagLength: TAG_BYTES * 8 }, key, combined));
-  } catch {
-    throw new Error(TAG_MISMATCH);
-  }
-  try {
+    let key: CryptoKey;
+    let iv: Uint8Array<ArrayBuffer>;
+    try {
+      const ciphertext = hexToBytes(payload.ciphertextHex);
+      const tag = hexToBytes(payload.tagHex);
+      iv = hexToBytes(payload.ivHex);
+      if (tag.length !== TAG_BYTES || iv.length !== IV_BYTES) throw new Error(TAG_MISMATCH);
+      combined = new Uint8Array(ciphertext.length + tag.length);
+      combined.set(ciphertext);
+      combined.set(tag, ciphertext.length);
+      zeroizeBuffer(ciphertext);
+      zeroizeBuffer(tag);
+      key = await deriveEnclaveKey(passphrase, hexToBytes(payload.saltHex), payload.kdf === undefined ? PBKDF2_ITERATIONS : iterationsFor(payload.kdf));
+    } catch {
+      throw new Error(TAG_MISMATCH);
+    }
+    try {
+      plain = new Uint8Array(await subtle().decrypt({ name: "AES-GCM", iv, tagLength: TAG_BYTES * 8 }, key, combined));
+    } catch {
+      throw new Error(TAG_MISMATCH);
+    }
     return JSON.parse(new TextDecoder().decode(plain)) as T;
   } finally {
-    zeroizeBuffer(plain);
+    // Plaintext and the joined ciphertext+tag are overwritten whatever the outcome.
+    if (plain) zeroizeBuffer(plain);
+    if (combined) zeroizeBuffer(combined);
   }
 }
 
 /** AES-GCM with a fresh random 12-byte IV. Returns hex-encoded ciphertext (tag appended) and IV. */
 export async function encryptEnclavePayload(plaintext: string, key: CryptoKey): Promise<{ ciphertextHex: string; ivHex: string }> {
   const iv = randomBytes(IV_BYTES);
-  const ct = await subtle().encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(plaintext));
-  return { ciphertextHex: bytesToHex(new Uint8Array(ct)), ivHex: bytesToHex(iv) };
+  const bytes = new TextEncoder().encode(plaintext);
+  try {
+    const ct = await subtle().encrypt({ name: "AES-GCM", iv }, key, bytes);
+    return { ciphertextHex: bytesToHex(new Uint8Array(ct)), ivHex: bytesToHex(iv) };
+  } finally {
+    // The encoded plaintext is wiped as soon as the cipher has consumed it.
+    zeroizeBuffer(bytes);
+  }
 }
 
 /** AES-GCM decrypt. Any authentication failure (wrong key or altered bytes) raises TAG_MISMATCH. */
 export async function decryptEnclavePayload(ciphertextHex: string, ivHex: string, key: CryptoKey): Promise<string> {
+  let pt: ArrayBuffer;
   try {
-    const pt = await subtle().decrypt({ name: "AES-GCM", iv: hexToBytes(ivHex) }, key, hexToBytes(ciphertextHex));
-    return new TextDecoder().decode(pt);
+    pt = await subtle().decrypt({ name: "AES-GCM", iv: hexToBytes(ivHex) }, key, hexToBytes(ciphertextHex));
   } catch {
     throw new Error(TAG_MISMATCH);
+  }
+  try {
+    return new TextDecoder().decode(pt);
+  } finally {
+    // The decrypted bytes are overwritten once decoded; only the returned string remains.
+    zeroizeBuffer(pt);
   }
 }
 
