@@ -284,6 +284,14 @@ describe("9. CSP and headers keep the preview working", () => {
       for (const src of fa) expect(src === "'self'" || /^https:\/\/(\*\.)?(lovable\.dev|lovable\.app|lovableproject\.com)$/.test(src)).toBe(true);
       expect(c).not.toMatch(/frame-ancestors[^;]*\*(?!\.)/);
       expect(c).toContain("img-src 'self' data: blob:");
+      // Only Medium's photo hosts may appear, and only for Dispatches covers.
+      const imgHosts = /img-src ([^;]+)/.exec(c)![1].split(/\s+/).filter((s) => s.startsWith("https:"));
+      for (const h of imgHosts) expect(["https://cdn-images-1.medium.com", "https://miro.medium.com"]).toContain(h);
+    }
+  });
+  test("dashboard and login load no outside images", () => {
+    for (const h of cfg.headers.filter((x) => x.source === "/dashboard" || x.source === "/login")) {
+      const c = h.headers.find((x) => x.key === "Content-Security-Policy")!.value;
       expect(c).not.toMatch(/img-src[^;]*https:/);
     }
   });
