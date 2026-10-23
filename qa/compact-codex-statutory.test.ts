@@ -31,3 +31,12 @@ describe("Compact and Codex named as statutorily protected works", () => {
     for (const s of [legal.a.join(" "), ...files.map(read)]) expect(bad.test(s)).toBe(false);
   });
 });
+
+describe("Website registered as a statutory work", () => {
+  test("footer, About, AI feeds and legal-status inquiry name The Vinculum Security Website", () => {
+    for (const s of [legal.a[0], ...files.map(read)]) expect(s).toContain("The Vinculum Security Website");
+  });
+  test("certificate number never appears", () => {
+    for (const f of [...files, "src/lib/seo-entities.ts", "src/content/faqs.ts"]) expect(read(f)).not.toContain("RZ106378");
+  });
+});
