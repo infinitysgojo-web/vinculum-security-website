@@ -67,7 +67,7 @@ function bandTone(name: string) {
 export default function SentinelMatrix() {
   // The theatre is inherited from the active mission; typing here overrides it for this desk only.
   const mission = useMission();
-  // Linked: signs that sit on the weakest bond from Desk 1 are flagged. Override: work standalone.
+  // Linked: signs that sit on the weakest bond from Desk 1 are flagged. Unlink Feed: work standalone.
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
   const weakestIdx = linked && signals.weakestBond ? DOMAINS.findIndex((d) => d === signals.weakestBond) : -1;

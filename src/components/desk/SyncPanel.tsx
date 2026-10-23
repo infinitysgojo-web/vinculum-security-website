@@ -8,6 +8,13 @@ const TONE: Record<string, string> = {
   note: "border-border text-muted-foreground",
 };
 
+/** Hover and screen-reader hint on the link toggle, shared by every desk that mounts SyncPanel. */
+export const SYNC_TOGGLE_HINT =
+  "Disconnect upstream division readings to model standalone variations locally without altering the live mission bus.";
+
+/** The link toggle's label: unlinking only cuts this desk's local view of the bus. */
+export const syncToggleLabel = (linked: boolean) => (linked ? "Unlink Feed" : "Relink to Engine");
+
 /**
  * The live link between a downstream desk and the divisions above it.
  * Shows what the engine is feeding this desk, and lets the analyst cut the
@@ -43,10 +50,12 @@ export default function SyncPanel({
         <button
           type="button"
           onClick={() => onToggle(!linked)}
+          title={SYNC_TOGGLE_HINT}
+          aria-pressed={!linked}
           className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-10 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors"
         >
           {linked ? <Link2Off size={12} /> : <Link2 size={12} />}
-          {linked ? "Override" : "Relink"}
+          {syncToggleLabel(linked)}
         </button>
       </div>
 

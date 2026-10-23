@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, hasSignal, telemetryLines, communalTolerance } from "./engine";
@@ -28,6 +28,27 @@ const STEPS: Step[] = [
 ];
 
 const PHASES = Array.from(new Set(STEPS.map((s) => s.phase)));
+
+/** Contiguous depth reached on each track: a phase counts only once every earlier phase on that track is recorded. */
+export function sequenceDepths(done: readonly string[]): { a: number; b: number } {
+  const depthOf = (t: "I" | "II") => {
+    let d = 0;
+    PHASES.forEach((ph, i) => {
+      const s = STEPS.find((x) => x.phase === ph && x.track === t)!;
+      if (done.includes(s.id) && d === i) d = i + 1;
+    });
+    return d;
+  };
+  return { a: depthOf("I"), b: depthOf("II") };
+}
+
+/**
+ * The phase carrying the tolerance badge: the phase Track I has reached while it
+ * leads Track II by more than the communal tolerance. Undefined inside tolerance.
+ */
+export function offendingPhase(a: number, b: number, tolerance: number): string | undefined {
+  return a - b > tolerance ? PHASES[a - 1] : undefined;
+}
 
 /**
  * Kinematic shear: Track I (state principals) on the upper rail, Track II
@@ -88,17 +109,17 @@ function DualRail({ a, b, tolerance }: { a: number; b: number; tolerance: number
   );
 }
 
-export default function TrackSequencer() {
+export default function TrackSequencer({ initialDone = [] }: { /** Steps recorded on first render; theatre presets still seed over it. */ initialDone?: string[] } = {}) {
   const [process, setProcess] = useState("");
   const [linked, setLinked] = useState(true);
   const { signals } = useEngine();
   const live = linked && hasSignal(signals);
-  const [done, setDone] = useState<string[]>([]);
+  const [done, setDone] = useState<string[]>(initialDone);
   useTheatreSeed("tracks", (s) => setDone(s.done));
+  // Every step toggles freely on both tracks. The communal tolerance is
+  // diagnosed, never enforced by intercepting the click: an excess lead is
+  // surfaced as a phase badge, the shear zone and the Elite-Pact alert.
   const toggle = (id: string) => setDone((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
-  // Set when the envoy tries to advance Track I past the communal tolerance; cleared by any change to the sequence.
-  const [mirageAttempt, setMirageAttempt] = useState(false);
-  useEffect(() => setMirageAttempt(false), [done]);
 
   // Communal-bond tolerance: Failing = Track I may not lead, Fragile = one phase,
   // Viable or Fortified = two phases. With no live communal reading, the
@@ -106,19 +127,9 @@ export default function TrackSequencer() {
   const communal = linked ? signals.bonds?.communal : undefined;
   const tol = communal !== undefined ? communalTolerance(communal) : null;
   const tolerance = tol ? tol.phases : 1;
-  const enforced = tol !== null;
 
   const r = useMemo(() => {
-    const depthOf = (t: "I" | "II") => {
-      let d = 0;
-      PHASES.forEach((ph, i) => {
-        const s = STEPS.find((x) => x.phase === ph && x.track === t)!;
-        if (done.includes(s.id) && d === i) d = i + 1;
-      });
-      return d;
-    };
-    const a = depthOf("I");
-    const b = depthOf("II");
+    const { a, b } = sequenceDepths(done);
     const gap = a - b;
     let reading: string;
     let counter: string;
@@ -143,22 +154,19 @@ export default function TrackSequencer() {
     }
     const nextI = STEPS.find((s) => s.track === "I" && !done.includes(s.id));
     const nextII = STEPS.find((s) => s.track === "II" && !done.includes(s.id));
-    const blockedNow = gap >= tolerance;
-    return { a, b, gap, reading, counter, nextI, nextII, blockedNow };
+    const atLimit = gap >= tolerance;
+    const mirage = gap > tolerance;
+    return { a, b, gap, reading, counter, nextI, nextII, atLimit, mirage };
   }, [done, tolerance, tol?.band]);
 
-  /** Would completing this Track I step push the lead beyond the tolerance? */
-  const blockedStep = (s: Step) => {
-    if (!enforced || s.track !== "I" || done.includes(s.id)) return false;
-    const idx = PHASES.indexOf(s.phase);
-    return idx + 1 - r.b > tolerance;
-  };
+  /** The phase Track I has reached while leading beyond the communal tolerance, if any. */
+  const badgePhase = offendingPhase(r.a, r.b, tolerance);
 
   usePublish("tracks", {
     trackI: r.a,
     trackII: r.b,
     trackGap: r.gap,
-    elitePactAlert: r.gap > tolerance,
+    elitePactAlert: r.mirage,
     trackTolerance: tolerance,
     ...(tol ? { communalBand: tol.band } : {}),
   });
@@ -210,16 +218,23 @@ export default function TrackSequencer() {
           </div>
           {PHASES.map((ph) => (
             <div key={ph}>
-              <p className={label}>{ph}</p>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className={label}>{ph}</p>
+                {ph === badgePhase && (
+                  <span data-testid="tolerance-badge" className="mb-2 border border-destructive/60 bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-destructive [overflow-wrap:anywhere]">
+                    Track I · Exceeds Communal Tolerance (+{r.gap})
+                  </span>
+                )}
+              </div>
               <div className="grid gap-2 sm:grid-cols-2">
                 {STEPS.filter((s) => s.phase === ph).map((s) => {
-                  const blocked = blockedStep(s);
+                  const over = s.track === "I" && ph === badgePhase;
                   return (
-                    <label key={s.id} className={`flex gap-3 items-start border border-border bg-background p-3 text-sm ${blocked ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}>
-                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(s.id)} aria-disabled={blocked} onChange={() => (blocked ? setMirageAttempt(true) : toggle(s.id))} />
+                    <label key={s.id} className={`flex gap-3 items-start border bg-background p-3 text-sm cursor-pointer ${over ? "border-destructive/60" : "border-border"}`}>
+                      <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={done.includes(s.id)} onChange={() => toggle(s.id)} />
                       <span>
                         <span className="block text-[10px] uppercase tracking-[0.18em] text-accent mb-1">
-                          Track {s.track}{blocked ? " · Blocked by communal tolerance" : ""}
+                          Track {s.track}
                         </span>
                         <span className="text-foreground/85">{s.text}</span>
                       </span>
@@ -231,9 +246,9 @@ export default function TrackSequencer() {
           ))}
         </div>
         <div className="space-y-4">
-          {(r.gap > tolerance || mirageAttempt) && (
+          {r.mirage && (
             <div role="alert" className="border-2 border-destructive bg-destructive/10 p-4">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-destructive">CRITICAL ALERT: ELITE-PACT MIRAGE DETECTED</p>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-destructive">Critical Alert: Elite-Pact Mirage Detected</p>
               <p className="mt-2 text-sm text-foreground/90">
                 {communal !== undefined && communal <= 2.0
                   ? `The communal bond is ${communal.toFixed(1)} of 5 (Failing), so Track I may not lead Track II by any phase.`
@@ -251,7 +266,7 @@ export default function TrackSequencer() {
             <p className="text-[10px] uppercase tracking-[0.16em] text-accent mt-3">
               Tolerated Track I lead: {tolerance} phase{tolerance === 1 ? "" : "s"}
               {tol ? ` · communal ${tol.band}` : " · baseline"}
-              {r.blockedNow ? " · next Track I step blocked" : ""}
+              {r.atLimit ? " · lead at or beyond the limit" : ""}
             </p>
           </div>
           <SyncPanel
@@ -265,7 +280,7 @@ export default function TrackSequencer() {
                   n.push(
                     `The communal bond scores ${s.bonds.communal.toFixed(1)} of 5 (${t.band}), so ${
                       t.phases === 0
-                        ? "Track I leads are blocked until the communal bond leaves the Failing band"
+                        ? "any Track I lead registers as an Elite-Pact Mirage until the communal bond leaves the Failing band"
                         : `Track I may lead by at most ${t.phases === 1 ? "one phase" : "two phases"}`
                     }.`
                   );

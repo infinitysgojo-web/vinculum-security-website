@@ -106,6 +106,25 @@ export const WARRANT_FIELDS: { key: keyof Warrant; label: string; hint: string; 
   { key: "scope", label: "Scope boundary", hint: "What this mission covers and where it stops.", required: true },
 ];
 
+/** The seven mandatory Mission Warrant fields, in form order. */
+export const WARRANT_MANDATORY: (keyof Warrant)[] = WARRANT_FIELDS.filter((f) => f.required).map((f) => f.key);
+
+/** How much of the Mission Warrant is formulated, and which mandatory fields are still empty. */
+export function warrantProgress(w: Warrant): { filled: number; total: number; missing: (keyof Warrant)[]; complete: boolean } {
+  const missing = WARRANT_MANDATORY.filter((k) => !w[k].trim());
+  const total = WARRANT_MANDATORY.length;
+  return { filled: total - missing.length, total, missing, complete: missing.length === 0 };
+}
+
+export const warrantMeterText = (w: Warrant) => {
+  const p = warrantProgress(w);
+  return `Warrant Formulation: ${p.filled} of ${p.total} mandatory fields completed`;
+};
+
+/** Guidance shown wherever Open Questions hold sign-off: the Context Tray and the lifecycle status. */
+export const OPEN_QUESTION_GUIDANCE =
+  "Open questions represent unresolved evidentiary inquiries and hold mission sign-off. Reclassify as Fact, Working Assumption, or Excluded to clear.";
+
 export type DeskState = {
   profile: MissionProfile;
   binder: BinderEntry[];

@@ -296,7 +296,7 @@ describe("archive custody guidance", () => {
     const html = renderToStaticMarkup(createElement(ArchiveCustodyNotice));
     expect(html).toContain("organisation’s encrypted vault, offline media, or designated archive");
     expect(html).toContain('data-testid="archive-custody-notice"');
-    for (const c of ["text-[11px]", "text-muted-foreground", "border-l-2", "border-brass/40", "pl-3", "py-1", "my-3", "italic", "leading-relaxed"]) expect(html).toContain(c);
+    for (const c of ["text-[11px]", "text-muted-foreground", "border-l-2", "border-brass/50", "pl-3", "py-1", "my-3", "italic", "leading-relaxed"]) expect(html).toContain(c);
   });
   test("it sits in the export section under the package notice, above the export button, outside the encryption branch", () => {
     const src = read("src/components/mode/LocalDataDialog.tsx");

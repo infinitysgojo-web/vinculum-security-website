@@ -17,7 +17,7 @@ type Filter = "all" | Verdict;
 export default function AdversarialChamber() {
   const [panelN, setPanelN] = useState(1);
   const { signals } = useEngine();
-  // Linked: the chamber briefs and the audit memo carry the live mission reading. Override: standalone.
+  // Linked: the chamber briefs and the audit memo carry the live mission reading. Unlink Feed: standalone.
   const [linked, setLinked] = useState(true);
   const sg = useMemo<Signals>(() => (linked ? signals : {}), [linked, signals]);
   const [filter, setFilter] = useState<Filter>("all");

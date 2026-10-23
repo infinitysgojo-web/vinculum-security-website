@@ -116,7 +116,7 @@ export default function CompoundShockTester() {
   const theatre = theatreOverride.trim() || mission.theatre.trim();
   const [on, setOn] = useState<string[]>(["principal", "donor"]);
   useTheatreSeed("compound", (s) => setOn(s.on));
-  // Desk 3 reads the live bond vector scored in Desk 1; Override cuts the feed.
+  // Desk 3 reads the live bond vector scored in Desk 1; Unlink Feed cuts the feed.
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
   const lb = signals.bonds;

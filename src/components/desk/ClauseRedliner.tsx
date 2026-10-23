@@ -7,6 +7,9 @@ import ForumMatrix from "@/components/desk/ForumMatrix";
 import { FORUMS, forumFitness, type ForumTerms } from "@/components/desk/instruments";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 
+/** The audit runs only once the clause carries at least this many characters. */
+const REDLINE_MIN_CHARS = 20;
+
 type Rule = {
   id: string;
   name: string;
@@ -180,7 +183,7 @@ export default function ClauseRedliner() {
   const [body, setBody] = useState("");
 
   const findings = useMemo(
-    () => (body.trim().length < 20 ? [] : RULES.filter((r) => r.test.test(body))),
+    () => (body.trim().length < REDLINE_MIN_CHARS ? [] : RULES.filter((r) => r.test.test(body))),
     [body]
   );
 
@@ -192,7 +195,7 @@ export default function ClauseRedliner() {
     [localOwn, inscBus.customPhrases],
   );
   const [op, setOp] = useState(""); const [ow, setOw] = useState(""); const [os, setOs] = useState("");
-  const ownHits = body.trim().length >= 20 ? own.filter((r) => body.toLowerCase().includes(r.phrase.toLowerCase())) : [];
+  const ownHits = body.trim().length >= REDLINE_MIN_CHARS ? own.filter((r) => body.toLowerCase().includes(r.phrase.toLowerCase())) : [];
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
   const [forumId, setForumId] = useState<string>("pca");
@@ -210,7 +213,7 @@ export default function ClauseRedliner() {
   });
   /** Shock-aware tests: wording that leans on a mechanism the live reading shows is failing. */
   const live: string[] = [];
-  if (linked && body.trim().length >= 20) {
+  if (linked && body.trim().length >= REDLINE_MIN_CHARS) {
     const b = body.toLowerCase();
     if (signals.shocks?.some((x) => /principal/i.test(x)) && /president|minister|leader|his excellency|personally/.test(b) && !/office|successor/.test(b))
       live.push("The draft names a person, while a principal-removal shock is active upstream. Bind the Office and every successor instead.");
@@ -221,8 +224,8 @@ export default function ClauseRedliner() {
     if ((signals.rupture ?? 0) >= 35 && !/verif|monitor|independent/.test(b))
       live.push(`The rupture index reads ${signals.rupture} per cent, yet the draft names no independent verifier. Add one with defined reporting intervals.`);
   }
-  const clean = body.trim().length >= 20 && findings.length === 0;
-  const spans = useMemo(() => (body.trim().length >= 20 ? flaggedSpans(body, own) : []), [body, own]);
+  const clean = body.trim().length >= REDLINE_MIN_CHARS && findings.length === 0;
+  const spans = useMemo(() => (body.trim().length >= REDLINE_MIN_CHARS ? flaggedSpans(body, own) : []), [body, own]);
   const canSanitize = findings.length > 0 || ownHits.some((o) => o.sub);
 
   const text = useMemo(() => {
@@ -322,7 +325,13 @@ export default function ClauseRedliner() {
             value={body}
             onChange={(e) => setBody(e.target.value)}
             placeholder="Paste the draft clause or provision here. Nothing you paste leaves this browser."
+            aria-describedby={body.trim().length < REDLINE_MIN_CHARS ? "rl-min" : undefined}
           />
+          {body.trim().length < REDLINE_MIN_CHARS && (
+            <p id="rl-min" className="mt-1.5 text-[11px] text-accent">
+              Enter at least 20 characters to execute the statutory anti-theatrics audit.
+            </p>
+          )}
           <p className="mt-3 text-xs text-muted-foreground">
             {RULES.length + own.length} tests applied. Everything runs in this browser; nothing is saved or sent.
           </p>
@@ -351,7 +360,7 @@ export default function ClauseRedliner() {
       </div>
 
       <div className="space-y-4 min-w-0">
-        {body.trim().length >= 20 && (
+        {body.trim().length >= REDLINE_MIN_CHARS && (
           <div className="border border-brass/40 bg-background p-4 sm:p-5">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <p className={`${label} mb-0`}>Interactive redline</p>
