@@ -285,7 +285,9 @@ test("CSP is the hardened policy on every route; connect-src allows only self an
   for (const source of ["/(.*)", "/dashboard", "/login"]) {
     const rule = config.headers.find((e: { source: string }) => e.source === source);
     const csp: string = rule.headers.find((h: { key: string }) => h.key === "Content-Security-Policy").value;
-    expect(csp).toBe(EXPECTED_CSP);
+    // Public pages may also show Medium cover photos on Dispatches; private pages stay exact.
+    const expected = source === "/(.*)" ? EXPECTED_CSP.replace("img-src 'self' data: blob:;", "img-src 'self' data: blob: https://cdn-images-1.medium.com https://miro.medium.com;") : EXPECTED_CSP;
+    expect(csp).toBe(expected);
     const d = Object.fromEntries(csp.split(";").map((x) => x.trim().split(/\s+/)).map(([k, ...v]) => [k, v]));
     expect(d["font-src"]).toEqual(["'self'"]);
     expect(d["connect-src"].filter((v: string) => /^(https?|wss?):/.test(v))).toEqual(["https://*.lovable.cloud", "https://*.supabase.co"]);
