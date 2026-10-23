@@ -2,12 +2,14 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { inspectElement, WATCHED_SELECTOR, type CanaryFinding } from "@/lib/domCanary";
-import { clearAppClipboard } from "@/lib/clipboardGuard";
+import { appWroteClipboard, clearAppClipboard, createClipboardEviction } from "@/lib/clipboardGuard";
 
 /** Input that counts as practitioner activity for the inactivity lock. */
 const ACTIVITY = ["mousemove", "mousedown", "keydown", "touchstart", "wheel", "scroll", "visibilitychange"] as const;
 /** Three Escape presses inside this window trigger the panic purge. */
 export const TRIPLE_ESCAPE_WINDOW_MS = 600;
+/** Away from the window this long with app-copied text on the clipboard, and it is evicted. */
+export const CLIPBOARD_EVICT_MS = 60_000;
 
 type Props = {
   /**
@@ -61,6 +63,30 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
       if (t) window.clearTimeout(t);
     };
   }, [idleMs, locked]);
+
+  // Window-blur clipboard eviction. When the operator leaves the window with something this
+  // app copied still on the clipboard, a 60-second eviction is armed; returning in time
+  // disarms it. Browsers refuse clipboard writes from an unfocused page, so where the wipe
+  // cannot run at the 60-second mark it runs the moment the window is focused again,
+  // before anything else can be pasted from this tab.
+  useEffect(() => {
+    const ev = createClipboardEviction({
+      setTimer: (fn, ms) => window.setTimeout(fn, ms),
+      clearTimer: (id) => window.clearTimeout(id),
+      wrote: appWroteClipboard,
+      clear: clearAppClipboard,
+      ms: CLIPBOARD_EVICT_MS,
+    });
+    const onBlur = () => ev.onBlur();
+    const onFocus = () => ev.onFocus();
+    window.addEventListener("blur", onBlur);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      window.removeEventListener("blur", onBlur);
+      window.removeEventListener("focus", onFocus);
+      ev.dispose();
+    };
+  }, []);
 
   // On lock the desks unmount (the lock screen replaces them), so sensitive views are
   // paused and hidden; the clipboard is overwritten where the browser allows.

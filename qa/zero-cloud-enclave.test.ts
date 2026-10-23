@@ -278,7 +278,7 @@ test("enclave: set seals every record (no plaintext), wrong passphrase errors, u
 const EXPECTED_CSP =
   "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.lovable.cloud https://*.supabase.co data: blob:; frame-ancestors 'self' https://lovable.dev https://*.lovable.dev https://lovable.app https://*.lovable.app https://lovableproject.com https://*.lovableproject.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:; manifest-src 'self'; upgrade-insecure-requests";
 const EXPECTED_PP =
-  "camera=(), microphone=(), geolocation=(), payment=(), usb=(), display-capture=(), interest-cohort=(), browsing-topics=(), accelerometer=(), gyroscope=(), magnetometer=()";
+  "camera=(), microphone=(), geolocation=(), payment=(), usb=(), display-capture=(), interest-cohort=(), browsing-topics=(), accelerometer=(), gyroscope=(), magnetometer=(), serial=(), hid=(), midi=(), screen-wake-lock=(), ambient-light-sensor=()";
 
 test("CSP is the hardened policy on every route; connect-src allows only self and the auth host", () => {
   const config = JSON.parse(read("vercel.json"));
@@ -296,7 +296,7 @@ test("CSP is the hardened policy on every route; connect-src allows only self an
   expect(read("index.html")).not.toMatch(/fonts\.googleapis|fonts\.gstatic/);
 });
 
-test("Permissions-Policy is exactly the sensor lockdown plus the zero-sink additions (display-capture, browsing-topics)", () => {
+test("Permissions-Policy is exactly the sensor lockdown, the zero-sink additions (display-capture, browsing-topics) and the hardware lockdown (serial, hid, midi, wake lock, light sensor)", () => {
   const config = JSON.parse(read("vercel.json"));
   const rule = config.headers.find((e: { source: string }) => e.source === "/(.*)");
   expect(rule.headers.find((h: { key: string }) => h.key === "Permissions-Policy").value).toBe(EXPECTED_PP);
