@@ -429,7 +429,7 @@ export default function LocalDataDialog({ open, onOpenChange, store, activeId, o
  */
 export function ArchiveCustodyNotice() {
   return (
-    <p className="text-[11px] text-muted-foreground border-l-2 border-brass/40 pl-3 py-1 my-3 italic leading-relaxed" data-testid="archive-custody-notice">
+    <p className="text-[11px] text-muted-foreground border-l-2 border-brass/50 pl-3 py-1 my-3 italic leading-relaxed" data-testid="archive-custody-notice">
       {ARCHIVE_CUSTODY_NOTICE}
     </p>
   );
