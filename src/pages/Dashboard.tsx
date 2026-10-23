@@ -31,7 +31,7 @@ import EnclaveLockScreen from "@/components/desk/EnclaveLockScreen";
 import { ChancellerySentinel } from "@/components/desk/ChancellerySentinel";
 import { SENTINEL_SIGN_OUT_MINUTES, enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
 import { executePanicPurge, purgeVolatileState } from "@/lib/panicPurge";
-import { sanitizeOnBlur, sanitizeOnPaste } from "@/lib/sanitizeFields";
+import { sanitizeOnBlur, sanitizeOnDrop, sanitizeOnPaste } from "@/lib/sanitizeFields";
 import SaveSession from "@/components/desk/SaveSession";
 import CommandPalette, { ShortcutSheet } from "@/components/CommandPalette";
 import type { PaletteAction } from "@/components/commandIndex";
@@ -296,21 +296,23 @@ function PrivacyBridge({ toggleRef }: { toggleRef: React.MutableRefObject<() => 
   return null;
 }
 
-/** Header shield: Presentation Privacy Mode (Redaction Shroud). */
+/** Header shield: Presentation Privacy Mode (Redaction Shroud). Lifting needs a second click within 4 s. */
 function PrivacyButton() {
-  const { masked, toggle } = usePrivacy();
+  const { masked, toggle, unmaskArmed } = usePrivacy();
+  const label = !masked ? "Enable the presentation privacy mask (Alt+M)" : unmaskArmed ? "Click again to lift the presentation privacy mask" : "Lift the presentation privacy mask (Alt+M, twice)";
   return (
     <button
       type="button"
       onClick={toggle}
       aria-pressed={masked}
       className={`inline-flex items-center gap-1.5 transition-colors ${masked ? "text-accent" : "text-primary hover:text-accent"}`}
-      title={masked ? "Lift the presentation privacy mask" : "Presentation privacy mask: redact confidential identifiers for a screen share"}
-      aria-label={masked ? "Lift the presentation privacy mask" : "Enable the presentation privacy mask"}
+      title={label}
+      aria-label={label}
       data-testid="privacy-button"
+      data-armed={unmaskArmed ? "true" : undefined}
     >
       {masked ? <ShieldOff size={13} /> : <Shield size={13} />}
-      <span className="hidden sm:inline">{masked ? "Masked" : "Mask"}</span>
+      <span className="hidden sm:inline">{masked ? (unmaskArmed ? "Confirm" : "Masked") : "Mask"}</span>
     </button>
   );
 }
@@ -699,6 +701,7 @@ export default function Dashboard() {
     prev: () => stepTo(-1),
     next: () => stepTo(1),
     help: () => setShortcutsOpen(true),
+    mask: () => privacyToggleRef.current(),
     // Radix closes its own dialogs, drawers and popovers; with none open, Escape leaves Focus view and folds the wire.
     escape: () => {
       setFocus(false);
@@ -1215,7 +1218,7 @@ export default function Dashboard() {
         </>
       }
     >
-    <div onPasteCapture={sanitizeOnPaste} onBlurCapture={sanitizeOnBlur} className="contents">
+    <div onPasteCapture={sanitizeOnPaste} onBlurCapture={sanitizeOnBlur} onDropCapture={sanitizeOnDrop} className="contents">
     <PrivacyProvider input={shroudInput}>
       <PrivacyBridge toggleRef={privacyToggleRef} />
       <SEO

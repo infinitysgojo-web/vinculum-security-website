@@ -116,6 +116,7 @@ const SHORTCUTS: [string, string][] = [
   ["?", "This shortcut reference"],
   ["Esc", "Close any modal, drawer, palette or popover; with none open, leave Focus view"],
   ["Ctrl/Cmd + S", "Save the mission state to this browser"],
+  ["Alt + M", "Presentation privacy mask: engage; press twice within 4 s to lift"],
   ["Ctrl + Shift + X, or Esc three times within 600 ms", "Panic purge (Chancellery Sentinel)"],
 ];
 
