@@ -279,3 +279,38 @@ describe("guardrails", () => {
     expect(read("src/App.tsx").match(/<Route /g)?.length).toBe(15);
   });
 });
+
+describe("archive custody guidance", () => {
+  test("ARCHIVE_CUSTODY_NOTICE carries the verbatim wording; the other notices are unchanged", async () => {
+    const t = await import("../src/components/mode/transfer");
+    expect(t.ARCHIVE_CUSTODY_NOTICE).toBe(
+      "Exported packages are standalone files. Once saved to your device, move them to your organisation’s encrypted vault, offline media, or designated archive to preserve a permanent copy.",
+    );
+    expect(t.LOCAL_DATA_NOTICE).toBe("Workspaces are stored only in this browser on this device. Nothing is synced or backed up anywhere. Export a package to keep a copy.");
+    expect(t.PACKAGE_NOTICE.startsWith("Plain JSON. Not encrypted and not access-controlled")).toBe(true);
+  });
+  test("the dialog renders the custody notice with the advisory styling", async () => {
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { createElement } = await import("react");
+    const { ArchiveCustodyNotice } = await import("../src/components/mode/LocalDataDialog");
+    const html = renderToStaticMarkup(createElement(ArchiveCustodyNotice));
+    expect(html).toContain("organisation’s encrypted vault, offline media, or designated archive");
+    expect(html).toContain('data-testid="archive-custody-notice"');
+    for (const c of ["text-[11px]", "text-muted-foreground", "border-l-2", "border-brass/40", "pl-3", "py-1", "my-3", "italic", "leading-relaxed"]) expect(html).toContain(c);
+  });
+  test("it sits in the export section under the package notice, above the export button, outside the encryption branch", () => {
+    const src = read("src/components/mode/LocalDataDialog.tsx");
+    const section = src.slice(src.indexOf('<section aria-labelledby="ld-export"'), src.indexOf('<section aria-labelledby="ld-import"'));
+    expect(section).toContain('<p id="ld-export" className={eyebrowCls}>Export a package</p>');
+    const notice = section.indexOf("<ArchiveCustodyNotice />");
+    expect(notice).toBeGreaterThan(section.indexOf("{!encrypt && <p"));
+    expect(notice).toBeLessThan(section.indexOf("Export package"));
+    // Rendered unconditionally: its own line, not inside {encrypt && …} or {!encrypt && …}.
+    expect(section).toMatch(/\n\s+<ArchiveCustodyNotice \/>\n/);
+  });
+  test("no consumer storage brands or network calls in the export layer", () => {
+    const files = ["src/components/mode/transfer.ts", "src/components/mode/LocalDataDialog.tsx"].map(read).join("\n");
+    expect(files).not.toMatch(/dropbox|google drive|onedrive|icloud|\bbox\.com|mega\.nz|\bs3\b/i);
+    expect(files).not.toMatch(/fetch\(|XMLHttpRequest|sendBeacon|WebSocket|EventSource/);
+  });
+});
