@@ -75,6 +75,9 @@ export const websiteLd = {
     name: "Vinculum Security",
   },
   inLanguage: "en",
+  copyrightHolder: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
+  copyrightNotice:
+    "The Vinculum Security Website, including its original design, visual architecture, interface layout and literary composition, is registered under statutory copyright law as a literary work of James Wesley Ndua. All statutory rights reserved.",
 };
 export const orgRef = { "@id": ORG_ID } as const;
 export const bookRef = { "@id": BOOK_ID } as const;

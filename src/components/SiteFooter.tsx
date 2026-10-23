@@ -75,7 +75,7 @@ export default function SiteFooter() {
               >
                 creativecommons.org/licenses/by-nc-nd/4.0/
               </a>
-              . The foundational doctrine, including The Vinculum Compact and The Vinculum Codex, together with the operational software and nervous system architectures, are original works created and owned by James Wesley Ndua. Formally registered and statutorily protected under national copyright legislation and international conventions, with all rights strictly reserved.
+              . The foundational doctrine, including The Vinculum Compact and The Vinculum Codex, together with The Vinculum Security Website (its original design, visual architecture, interface layout and literary composition) and the operational software and nervous system architectures, are original works created and owned by James Wesley Ndua. Formally registered and statutorily protected under national copyright legislation and international conventions, with all rights strictly reserved.
             </p>
           </div>
         </div>

@@ -70,7 +70,7 @@ export const ABOUT_FAQ: FaqItem[] = [
   },
     {
     q: "What are the statutory copyright registrations?",
-    a: "The foundational doctrine, companion handbook, The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System are original works authored by James Wesley Ndua and are formally registered and protected under statutory copyright law with all rights reserved.",
+    a: "The foundational doctrine, companion handbook, The Vinculum Security Website (its design, layout and literary composition), The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System are original works authored by James Wesley Ndua and are formally registered and protected under statutory copyright law with all rights reserved.",
   },
   {
     q: "Where is the primary source for this work?",
@@ -88,7 +88,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Who is the originator and what statutory copyrights protect this work?",
-    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The entire body of work—including the foundational doctrine, the companion handbook, The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System—is formally registered and protected under statutory copyright law with all legal rights strictly reserved.`,
+    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The entire body of work—including the foundational doctrine, the companion handbook, The Vinculum Security Website (its design, layout and literary composition), The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System—is formally registered and protected under statutory copyright law with all legal rights strictly reserved.`,
   },
   {
     q: "What is Deterministic Relational Law (Lex Relationalis Determinata)?",
