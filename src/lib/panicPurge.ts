@@ -16,6 +16,7 @@ import { forgetEnclave } from "./chancelleryEnclave";
 import { destroyVault } from "./chancelleryDb";
 import { clearLedger } from "@/components/desk/ledgerStore";
 import { purgeRegistrySession } from "@/components/desk/registry";
+import { forgetAppClipboard } from "./clipboardGuard";
 
 /** localStorage keys the purge removes. */
 export const PURGED_LOCAL_KEY = /^(vinculum[-_:]|vs:|sb-.*-auth-token)/;
@@ -24,11 +25,26 @@ export const KEPT_LOCAL_KEYS = new Set(["vs:registry_seq"]);
 
 export type PurgeReport = { localKeys: number; vault: "deleted" | "blocked" | "unavailable"; clipboard: boolean };
 
-/** Synchronous part: memory and Web Storage. Safe to call before anything else. */
+/** Run one purge step; a failing step never stops the ones after it. */
+function step(fn: () => void): void {
+  try {
+    fn();
+  } catch {
+    // A step that throws (storage blocked, store already torn down) is skipped.
+  }
+}
+
+/**
+ * Synchronous part: memory and Web Storage. Safe to call before anything else, and it
+ * never throws: each step runs on its own. The enclave key reference (the
+ * non-extractable PBKDF2 base key) is dropped first, so nothing sealed can be opened
+ * from this tab afterwards.
+ */
 export function purgeVolatileState(): number {
-  forgetEnclave();
-  clearLedger();
-  purgeRegistrySession();
+  step(forgetEnclave);
+  step(clearLedger);
+  step(purgeRegistrySession);
+  step(forgetAppClipboard);
   try {
     window.sessionStorage.clear();
   } catch {
@@ -65,7 +81,19 @@ export async function overwriteClipboard(): Promise<boolean> {
 
 /** The whole purge. Never throws. */
 export async function executePanicPurge(): Promise<PurgeReport> {
-  const localKeys = purgeVolatileState();
-  const [vault, clipboard] = await Promise.all([destroyVault().catch(() => "unavailable" as const), overwriteClipboard()]);
+  let localKeys = 0;
+  try {
+    localKeys = purgeVolatileState();
+  } catch {
+    // purgeVolatileState does not throw; this guards the contract.
+  }
+  const vaultP = (async () => {
+    try {
+      return await destroyVault();
+    } catch {
+      return "unavailable" as const;
+    }
+  })();
+  const [vault, clipboard] = await Promise.all([vaultP, overwriteClipboard().catch(() => false)]);
   return { localKeys, vault, clipboard };
 }

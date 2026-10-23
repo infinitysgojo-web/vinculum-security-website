@@ -670,12 +670,50 @@ html.vs-shroud input[type="text"]:not([data-shroud-keep]),
 html.vs-shroud input[type="search"]:not([data-shroud-keep]),
 html.vs-shroud input:not([type]):not([data-shroud-keep]) {
   color: transparent !important;
-  caret-color: hsl(var(--primary));
   background-image: repeating-linear-gradient(180deg, transparent 0 0.35em, hsl(var(--primary) / 0.82) 0.35em 1.05em, transparent 1.05em 1.45em) !important;
   background-clip: content-box;
 }
 html.vs-shroud textarea:not([data-shroud-keep])::placeholder,
 html.vs-shroud input:not([data-shroud-keep])::placeholder { color: transparent !important; }
+/* Input freeze: narrative fields cannot be clicked, selected or typed into while masked.
+   Dials, sliders, radios and number fields are not matched and stay interactive. */
+html.vs-shroud textarea:not([data-shroud-keep]),
+html.vs-shroud input[type="text"]:not([data-shroud-keep]),
+html.vs-shroud input[type="search"]:not([data-shroud-keep]),
+html.vs-shroud input:not([type]):not([data-shroud-keep]) {
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  caret-color: transparent !important;
+}
+html.vs-shroud [data-shroud-keep] textarea,
+html.vs-shroud [data-shroud-keep] input,
+html.vs-shroud input[type="range"],
+html.vs-shroud input[type="radio"],
+html.vs-shroud input[type="checkbox"],
+html.vs-shroud input[type="number"],
+html.vs-shroud [role="slider"],
+html.vs-shroud [role="radio"] { pointer-events: auto !important; }
+
+/* Print and Save as PDF keep the redaction opaque even with background graphics off. */
+@media print {
+  html.vs-shroud textarea:not([data-shroud-keep]),
+  html.vs-shroud input[type="text"]:not([data-shroud-keep]),
+  html.vs-shroud input[type="search"]:not([data-shroud-keep]),
+  html.vs-shroud input:not([type]):not([data-shroud-keep]) {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #000 !important;
+    background-image: none !important;
+    /* Transparent rather than black: should a printer still drop the fill, nothing is legible. */
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    box-shadow: none !important;
+    outline: 2px solid #000 !important;
+  }
+  html.vs-shroud textarea:not([data-shroud-keep])::placeholder,
+  html.vs-shroud input:not([data-shroud-keep])::placeholder { color: transparent !important; -webkit-text-fill-color: transparent !important; }
+}
 
 /* ---------- Live Bus Signal Inspector: signal freshness pulse (400 ms) ---------- */
 @keyframes vs-signal-pulse {

@@ -2,13 +2,15 @@
  * Cursor-safe sanitizer wiring for free-text fields. Nothing runs per keystroke:
  *  - on paste, text with prohibited hidden, bidirectional or control characters is
  *    rejected and nothing is inserted; clean text is inserted in NFC form;
+ *  - on drop, dragged text gets the same check as a paste: rejected whole when it carries
+ *    prohibited characters, inserted in NFC form when clean (file drops are left alone);
  *  - on blur (the field is committed), the whole value is normalised once, and any
  *    prohibited character still present is removed with a visible notice.
  * Attached in the capture phase on a container, so every desk, drawer and vault
  * field below it is covered, including Radix portals (React events follow the
  * component tree). Password, number, email and other typed inputs are never touched.
  */
-import type { ClipboardEvent, FocusEvent } from "react";
+import type { ClipboardEvent, DragEvent, FocusEvent } from "react";
 import { toast } from "sonner";
 import { prohibitedCharacters, sanitizeInscriptionText } from "./sanitizer";
 
@@ -52,6 +54,46 @@ export function sanitizeOnPaste(e: ClipboardEvent<HTMLElement>) {
   const start = el.selectionStart ?? el.value.length;
   const end = el.selectionEnd ?? start;
   el.setRangeText(clean, start, end, "end");
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+}
+
+const listCodes = (bad: string[]) => `${bad.slice(0, 4).join(", ")}${bad.length > 4 ? ", …" : ""}`;
+
+/** What a drop of this text into a free-text field should do. Pure, for tests. */
+export function dropVerdict(text: string | undefined | null): { action: "ignore" } | { action: "reject"; codes: string[] } | { action: "insert"; text: string } | { action: "default" } {
+  if (!text) return { action: "ignore" };
+  const bad = prohibitedCharacters(text);
+  if (bad.length) return { action: "reject", codes: bad };
+  const clean = text.normalize("NFC");
+  return clean === text ? { action: "default" } : { action: "insert", text: clean };
+}
+
+/**
+ * Drop: dragged text is held to the paste rule. Text with prohibited invisible,
+ * bidirectional or control characters is refused whole, with a warning, and nothing is
+ * inserted. Clean text already in NFC form drops where the browser puts it; text that
+ * needs normalising is inserted in NFC form at the field's caret. Drops of files, and
+ * drops onto anything but a free-text field, pass through untouched (the vault and the
+ * verifier keep their own file drop zones).
+ */
+export function sanitizeOnDrop(e: DragEvent<HTMLElement>) {
+  const el = e.target;
+  if (!isFreeText(el)) return;
+  const dt = e.dataTransfer;
+  if (!dt || (dt.files && dt.files.length > 0)) return;
+  const v = dropVerdict(dt.getData("text/plain"));
+  if (v.action === "reject") {
+    e.preventDefault();
+    e.stopPropagation();
+    toast.warning(`Drop blocked: the dragged text contains hidden or bidirectional characters (${listCodes(v.codes)}). Nothing was inserted.`);
+    return;
+  }
+  if (v.action !== "insert") return;
+  e.preventDefault();
+  el.focus();
+  const start = el.selectionStart ?? el.value.length;
+  const end = el.selectionEnd ?? start;
+  el.setRangeText(v.text, start, end, "end");
   el.dispatchEvent(new Event("input", { bubbles: true }));
 }
 

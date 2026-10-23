@@ -43,7 +43,7 @@ export const PALETTE_ACTIONS: { id: PaletteAction; label: string; detail: string
   { id: "diff", label: "Bilateral posture diff", detail: "Baseline against active delta", words: ["diff", "delta", "compare", "posture"] },
   { id: "branch", label: "Posture branching", detail: "Local what-if sandboxes", words: ["branch", "what-if", "what if", "sandbox", "posture"] },
   { id: "timeline", label: "Shock timeline scrubber", detail: "Sequential fracture playback", words: ["timeline", "scrubber", "playback", "shock"] },
-  { id: "mask", label: "Toggle presentation privacy mask", detail: "Redaction shroud for screen shares", words: ["mask", "privacy", "redact", "shroud", "presentation"] },
+  { id: "mask", label: "Toggle presentation privacy mask", detail: "Redaction shroud for screen shares · Alt+M", words: ["mask", "privacy", "redact", "shroud", "presentation"] },
   { id: "shortcuts", label: "Keyboard shortcut reference", detail: "[ ] ? Esc and Ctrl+K", words: ["shortcuts", "keys", "hotkeys", "help", "?"] },
   { id: "panic", label: "Panic purge", detail: "Wipe memory and browser storage (asks first)", words: ["panic", "purge", "wipe", "zeroize"] },
 ];
