@@ -123,7 +123,7 @@ const LINKS = [
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
   { label: "OSF", href: "https://osf.io/user/7ad5x", Icon: OsfMark },
   { label: "Portfolio", href: "https://jamesndua.kidnexus.or.ke/", Icon: PortfolioMark },
-  { label: "Dataverse", href: "https://dataverse.harvard.edu/dataverse/viculumsecurity", Icon: DataverseMark },
+  { label: "Dataverse", href: "https://dataverse.harvard.edu/dataverse/vinculumsecurity/", Icon: DataverseMark },
   { label: "HAL", href: "https://cv.hal.science/james-wesley-ndua", Icon: HalMark },
   {
     label: "OpenAire",
