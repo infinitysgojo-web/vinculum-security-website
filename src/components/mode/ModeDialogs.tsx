@@ -7,6 +7,7 @@ import {
   DERIVED_NOTICE,
   EMPTY_WARRANT,
   LIFECYCLE_LABEL,
+  OPEN_QUESTION_GUIDANCE,
   PROMOTION_LINEAGE,
   STATUS_LABEL,
   STATUS_MARK,
@@ -16,6 +17,8 @@ import {
   completenessReview,
   derivativeChoices,
   newId,
+  warrantMeterText,
+  warrantProgress,
   type CarriedValue,
   type ContextEntry,
   type DerivativeChoice,
@@ -475,6 +478,9 @@ export function LifecycleDialog({ open, onOpenChange, ws, onMove, onSeal, sealin
             </button>
           </div>
           {!canMove(ws, "ready").ok && ws.lifecycle !== "ready" && <p className="mt-2 text-[11px] text-muted-foreground">{canMove(ws, "ready").reason}</p>}
+          {findings.some((f) => f.kind === "question") && (
+            <p className="mt-2 border-l-2 border-accent pl-3 text-[11px] text-foreground/85">{OPEN_QUESTION_GUIDANCE}</p>
+          )}
         </>
       )}
     </Shell>
@@ -489,15 +495,24 @@ export function PromotionDialog({ open, onOpenChange, ws, onConfirm }: { open: b
   const [step, setStep] = useState(1);
   const [w, setW] = useState<Warrant>(EMPTY_WARRANT);
   const [vals, setVals] = useState<CarriedValue[]>([]);
+  // Set once the envoy tries to advance with mandatory fields still empty; those fields then carry a border accent.
+  const [attempted, setAttempted] = useState(false);
   useEffect(() => {
     if (open) {
       setStep(1);
       setW({ ...EMPTY_WARRANT, theatre: "" });
       setVals(carriedValues(ws));
+      setAttempted(false);
     }
   }, [open, ws]);
-  const required = WARRANT_FIELDS.filter((f) => f.required);
-  const warrantDone = required.every((f) => w[f.key].trim());
+  const progress = warrantProgress(w);
+  const advance = () => {
+    if (step === 1 && !progress.complete) {
+      setAttempted(true);
+      return;
+    }
+    setStep(step + 1);
+  };
   const kept = vals.filter((v) => v.status !== "excluded");
   return (
     <Shell
@@ -509,7 +524,7 @@ export function PromotionDialog({ open, onOpenChange, ws, onConfirm }: { open: b
         <>
           {step > 1 && <button type="button" className={btn} onClick={() => setStep(step - 1)}>Back</button>}
           {step < 3 ? (
-            <button type="button" className={btnPrimary} disabled={step === 1 && !warrantDone} onClick={() => setStep(step + 1)}>Continue</button>
+            <button type="button" className={btnPrimary} aria-describedby={step === 1 ? "pw-meter" : undefined} onClick={advance}>Continue</button>
           ) : (
             <button type="button" className={btnPrimary} onClick={() => onConfirm(w, vals)}>Create custom draft</button>
           )}
@@ -518,14 +533,28 @@ export function PromotionDialog({ open, onOpenChange, ws, onConfirm }: { open: b
     >
       <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Step {step} of 3 · {step === 1 ? "Complete the Mission Warrant" : step === 2 ? "Review every carried value" : "Compatibility summary"}</p>
       {step === 1 && (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {WARRANT_FIELDS.map((f) => (
-            <div key={f.key}>
-              <label htmlFor={`pw-${f.key}`} className={labelCls}>{f.label}</label>
-              <input id={`pw-${f.key}`} type="text" value={w[f.key]} onChange={(e) => setW({ ...w, [f.key]: e.target.value })} className={fieldCls} />
+        <>
+          <div id="pw-meter" role="status" aria-live="polite" className="mb-3">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">{warrantMeterText(w)}</p>
+            <div className="mt-1 h-1.5 bg-border" aria-hidden>
+              <div className={`h-1.5 transition-all ${progress.complete ? "bg-primary" : "bg-accent"}`} style={{ width: `${(progress.filled / progress.total) * 100}%` }} />
             </div>
-          ))}
-        </div>
+            {attempted && !progress.complete && (
+              <p className="mt-1 text-[11px] text-accent">Complete the highlighted fields to continue.</p>
+            )}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {WARRANT_FIELDS.map((f) => {
+              const flag = attempted && progress.missing.includes(f.key);
+              return (
+                <div key={f.key}>
+                  <label htmlFor={`pw-${f.key}`} className={labelCls}>{f.label}</label>
+                  <input id={`pw-${f.key}`} type="text" value={w[f.key]} aria-invalid={flag || undefined} onChange={(e) => setW({ ...w, [f.key]: e.target.value })} className={`${fieldCls} ${flag ? "!border-accent/70 ring-1 ring-accent/30" : ""}`} />
+                </div>
+              );
+            })}
+          </div>
+        </>
       )}
       {step === 2 && (
         <div>

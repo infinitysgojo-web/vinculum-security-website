@@ -3,7 +3,7 @@ import { ArrowLeft, ChevronDown, BookOpen, HardDrive, ClipboardList, GitBranch, 
 import { deskCanPublish, deskIsLive } from "@/components/desk/MissionChain";
 import type { Signals } from "@/components/desk/engine";
 import { SPINE, stageStatus, type Scenario, type SpineStage } from "./scenarios";
-import { LIFECYCLE_SHORT, MODE_LABEL, type Workspace } from "./workspace";
+import { LIFECYCLE_SHORT, MODE_LABEL, OPEN_QUESTION_GUIDANCE, openQuestionCount, type Workspace } from "./workspace";
 import type { SaveStatus } from "./workspaceStore";
 import { btn, type NetworkState } from "./ui";
 
@@ -92,6 +92,11 @@ export default function ModeHeader({
             {ws.lineage ? ` · ${ws.lineage.note}` : ""}
             {sealed && ws.sealed ? ` · ${ws.sealed.ref}` : ""}
           </p>
+          {!sealed && !preset && openQuestionCount(ws.tray) > 0 && (
+            <p role="note" className="mt-1 border-l-2 border-accent pl-2 text-[11px] text-foreground/85 [overflow-wrap:anywhere]">
+              {openQuestionCount(ws.tray)} open question{openQuestionCount(ws.tray) === 1 ? "" : "s"} · {OPEN_QUESTION_GUIDANCE}
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" className={btn} onClick={() => onAction("tray")} aria-label="Open the Context Tray">

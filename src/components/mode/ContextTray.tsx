@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import type { Signals } from "@/components/desk/engine";
 import {
   PANEL_DEFAULT_STATUS,
+  OPEN_QUESTION_GUIDANCE,
   PANEL_LABEL,
   STATUS_LABEL,
   STATUS_MARK,
@@ -125,6 +126,9 @@ export default function ContextTray({
           </TabsList>
           {(["assumptions", "evidence", "questions"] as TrayPanel[]).map((p) => (
             <TabsContent key={p} value={p} className="mt-4">
+              {p === "questions" && (
+                <p className="mb-3 border-l-2 border-accent pl-3 text-[11px] leading-relaxed text-foreground/85">{OPEN_QUESTION_GUIDANCE}</p>
+              )}
               <EntryPanel
                 panel={p}
                 entries={ws.tray.filter((e) => e.panel === p)}
