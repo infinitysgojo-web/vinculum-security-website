@@ -16,6 +16,7 @@ import {
 import NavCard from "@/components/NavCard";
 import ReadingPathways from "@/components/ReadingPathways";
 import FadeIn from "@/components/FadeIn";
+import DispatchCover from "@/components/DispatchCover";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import Logo from "@/components/Logo";
