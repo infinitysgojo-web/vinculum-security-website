@@ -113,11 +113,14 @@ export default function About() {
                 <strong>The Vinculum Unified Operational Nervous System:</strong> Proprietary deterministic signal architecture; statutorily registered and protected.
               </p>
               <p>
+                <strong>The Vinculum Security Website:</strong> Its original design, visual architecture, interface layout and literary corpus are registered as a literary work under statutory copyright. All rights reserved.
+              </p>
+              <p>
                 <strong>Jurisprudential Framework:</strong> Originator of <em>Deterministic Relational Law</em> (<em>Lex Relationalis Determinata</em>), establishing the mathematical and non-linear foundations of treaty durability and relational security.
               </p>
             </div>
             <p>
-              All three works are original intellectual property authored by James Wesley Ndua, fully developed, operational, and protected under statutory copyright law.
+              All these works are original intellectual property authored by James Wesley Ndua, fully developed, operational, and protected under statutory copyright law.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4 mt-6">

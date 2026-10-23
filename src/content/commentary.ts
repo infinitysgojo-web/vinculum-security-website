@@ -537,7 +537,7 @@ export const COMMENTARY: Division[] = [
         id: "legal-status",
         q: "What is the legal status of the doctrine and its systems?",
         a: [
-          `The foundational doctrine, including The Vinculum Compact (the sovereign relational accord and covenantal framework), The Vinculum Codex (the canonical jurisprudential and operational formulations of Deterministic Relational Law), The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System are original works authored by ${A}. They are formally registered and statutorily protected under national copyright legislation and international conventions, with all statutory rights strictly reserved.`,
+          `The foundational doctrine, including The Vinculum Compact (the sovereign relational accord and covenantal framework), The Vinculum Codex (the canonical jurisprudential and operational formulations of Deterministic Relational Law), The Vinculum Security Website (its original design, visual architecture, interface layout and literary composition), The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System are original works authored by ${A}. They are formally registered and statutorily protected under national copyright legislation and international conventions, with all statutory rights strictly reserved.`,
           "The published text is made available under CC BY-NC-ND 4.0 for reading and attributed, non-commercial sharing. Any unauthorised copying of the systems, decompilation, reverse-engineering, algorithmic reproduction, or derivative work is prohibited.",
         ],
       },
