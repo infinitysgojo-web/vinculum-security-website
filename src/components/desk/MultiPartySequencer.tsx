@@ -150,6 +150,22 @@ const FRICTION: { a: string; b: string; text: string }[] = [
 
 const PHASES = ["Opening", "Probing", "Commitment", "Close"] as const;
 
+/** Seating cap for the negotiation table. */
+export const TABLE_CAPACITY = 6;
+
+/** The notice shown in place of silently refusing a seventh delegation. */
+export const capacityNotice = (name: string) =>
+  `Negotiation table at capacity (${TABLE_CAPACITY} delegations seated). Unseat an existing delegation to seat ${name}.`;
+
+/**
+ * Radial seating: delegation i of N sits at θi = 2πi/N on the table's orbit,
+ * measured clockwise from the head of the table (12 o'clock).
+ */
+export function radialSeat(i: number, n: number, cx: number, cy: number, r: number) {
+  const theta = (2 * Math.PI * i) / Math.max(1, n);
+  return { theta, x: cx + r * Math.sin(theta), y: cy - r * Math.cos(theta) };
+}
+
 type Fric = { a: string; b: string; text: string };
 
 /**
@@ -174,8 +190,8 @@ function NegotiationTable({
   const c = S / 2;
   const r = 92;
   const pos = seated.map((a, i) => {
-    const ang = (Math.PI * 2 * i) / Math.max(1, seated.length) - Math.PI / 2;
-    return { a, x: c + r * Math.cos(ang), y: c + r * Math.sin(ang) };
+    const { x, y } = radialSeat(i, seated.length, c, c, r);
+    return { a, x, y };
   });
   const isFric = (x: string, y: string) => frictions.some((f) => (f.a === x && f.b === y) || (f.a === y && f.b === x));
   const pairs: { p: (typeof pos)[number]; q: (typeof pos)[number] }[] = [];
@@ -265,15 +281,22 @@ function inscribedParties(s: Signals) {
   });
 }
 
-export default function MultiPartySequencer() {
+export default function MultiPartySequencer({ initialPicked = ["state", "youth", "armed"] }: { /** Delegations seated on first render; theatre presets still seed over it. */ initialPicked?: string[] } = {}) {
   const [own, setOwn] = useState<Actor[]>([]);
   const [ownFric, setOwnFric] = useState<{ a: string; b: string; text: string }[]>([]);
   const [nl, setNl] = useState(""); const [nb, setNb] = useState(1); const [nc, setNc] = useState(""); const [nf, setNf] = useState("");
   const ACTORS = [...BASE_ACTORS, ...own];
+  const [capacityMsg, setCapacityMsg] = useState("");
   const addParty = () => {
     if (!nl.trim()) return;
-    const id = `own-${Date.now()}`;
     const name = nl.trim();
+    // A seventh delegation is refused visibly; the typed name stays in the field.
+    if (picked.length >= TABLE_CAPACITY) {
+      setCapacityMsg(capacityNotice(name));
+      return;
+    }
+    setCapacityMsg("");
+    const id = `own-${Date.now()}`;
     setOwn((p) => [...p, {
       id, label: name, bond: nb,
       opening: `Open by naming what ${name} stands to lose if the bond fails, before any proposal is tabled.`,
@@ -283,15 +306,21 @@ export default function MultiPartySequencer() {
       caution: nc.trim() || `Analyst-defined party; confirm its standing with the community before seating.`,
     }]);
     if (nf) setOwnFric((p) => [...p, { a: id, b: nf, text: `Analyst-recorded friction between ${name} and ${BASE_ACTORS.find((x) => x.id === nf)?.label ?? "the named party"}. Seat them in separate opening sessions.` }]);
-    setPicked((p) => (p.length >= 4 ? p : [...p, id]));
+    setPicked((p) => (p.length >= TABLE_CAPACITY ? p : [...p, id]));
     setNl(""); setNc(""); setNf("");
   };
   const [theatre, setTheatre] = useState("");
-  const [picked, setPicked] = useState<string[]>(["state", "youth", "armed"]);
+  const [picked, setPicked] = useState<string[]>(() => initialPicked.slice(0, TABLE_CAPACITY));
   useTheatreSeed("multiparty", (x) => setPicked(x.picked));
 
-  const toggle = (id: string) =>
-    setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length >= 4 ? p : [...p, id]));
+  const toggle = (id: string) => {
+    if (!picked.includes(id) && picked.length >= TABLE_CAPACITY) {
+      setCapacityMsg(capacityNotice(ACTORS.find((a) => a.id === id)?.label ?? "this delegation"));
+      return;
+    }
+    setCapacityMsg("");
+    setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length >= TABLE_CAPACITY ? p : [...p, id]));
+  };
 
   const seated = picked.map((id) => ACTORS.find((a) => a.id === id)!).filter(Boolean);
 
@@ -417,7 +446,7 @@ export default function MultiPartySequencer() {
             onChange={(e) => setTheatre(e.target.value)}
             placeholder="Transitional Security Committee, second round"
           />
-          <p className={`${label} mt-5`}>Seat up to four parties</p>
+          <p className={`${label} mt-5`}>Seat up to six parties</p>
           <div className="flex flex-wrap gap-2">
             {ACTORS.map((a) => {
               const on = picked.includes(a.id);
@@ -426,9 +455,8 @@ export default function MultiPartySequencer() {
                   key={a.id}
                   type="button"
                   aria-pressed={on}
-                  disabled={!on && picked.length >= 4}
                   onClick={() => toggle(a.id)}
-                  className={`min-h-11 px-3 py-2 border text-[10px] font-semibold uppercase tracking-[0.16em] transition-all disabled:opacity-40 ${
+                  className={`min-h-11 px-3 py-2 border text-[10px] font-semibold uppercase tracking-[0.16em] transition-all ${
                     on
                       ? "bg-accent text-accent-foreground border-accent"
                       : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
@@ -439,6 +467,11 @@ export default function MultiPartySequencer() {
               );
             })}
           </div>
+          {capacityMsg && (
+            <p role="status" aria-live="polite" data-testid="table-capacity" className="mt-3 border border-terracotta/60 bg-terracotta/10 px-3 py-2 text-xs text-terracotta [overflow-wrap:anywhere]">
+              {capacityMsg}
+            </p>
+          )}
           <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
             <p className={label}>Custom mode: seat your own party</p>
             <input className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Diaspora remittance network" />
