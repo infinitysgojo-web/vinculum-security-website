@@ -111,7 +111,11 @@ def audit(pw, w, h):
     page.get_by_test_id("privacy-button").click()
     page.wait_for_timeout(200)
     c["mask_on"] = page.evaluate("() => document.documentElement.classList.contains('vs-shroud')")
+    # Lifting needs a confirming second click (the unmask safeguard).
     page.get_by_test_id("privacy-button").click()
+    page.wait_for_timeout(150)
+    page.get_by_test_id("privacy-button").click()
+    page.wait_for_timeout(200)
     c["mask_off"] = not page.evaluate("() => document.documentElement.classList.contains('vs-shroud')")
     c["page_no_overflow_end"] = page.evaluate(OVERFLOW) <= 0
     c["no_error_boundary"] = page.get_by_text("This page encountered a display issue.").count() == 0
