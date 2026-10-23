@@ -50,7 +50,7 @@ Archival mirrors (secondary, deposit copies only):
 
 - Zenodo: https://zenodo.org/communities/vinculumsecurity/records/
 - OSF: https://osf.io/user/7ad5x
-- Harvard Dataverse: https://dataverse.harvard.edu/dataverse/viculumsecurity
+- Harvard Dataverse: https://dataverse.harvard.edu/dataverse/vinculumsecurity/
 - HAL Open Science: https://cv.hal.science/james-wesley-ndua
 - OpenAIRE: https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991
 - Knowledge Commons Works: https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest

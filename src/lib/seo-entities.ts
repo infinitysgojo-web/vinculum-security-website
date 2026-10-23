@@ -33,7 +33,7 @@ export const SAME_AS = [
   ORCID_URL,
   "https://zenodo.org/communities/vinculumsecurity/records/",
   "https://osf.io/user/7ad5x",
-  "https://dataverse.harvard.edu/dataverse/viculumsecurity",
+  "https://dataverse.harvard.edu/dataverse/vinculumsecurity/",
   "https://cv.hal.science/james-wesley-ndua",
   "https://explore.openaire.eu/search/result?pid=10.5281/zenodo.21615991",
   "https://works.hcommons.org/collections/vinculumsecurity/records?q=&l=list&p=1&s=10&sort=newest",
