@@ -22,7 +22,7 @@ export default function AuditBench({ parties: base }: { parties: readonly Party[
       `Sovereign inscription. Spoiler risk ${p.spoilerRisk.toLowerCase()}${p.vetoPower ? "; holds a veto, so retaliation safeguards must be confirmed before any assessment that touches its interests is released" : ""}. Confirm the actor was heard directly and that no finding exposes it to retaliation.`,
     ]),
   ];
-  // Linked: the audit prompts follow the live mission reading. Override: the bench works standalone.
+  // Linked: the audit prompts follow the live mission reading. Unlink Feed: the bench works standalone.
   const [linked, setLinked] = useState(true);
   const sg: Signals = linked ? signals : {};
   const [checked, setChecked] = useState<Record<string, boolean[]>>({});
