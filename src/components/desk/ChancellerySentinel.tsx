@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { inspectElement, WATCHED_SELECTOR, type CanaryFinding } from "@/lib/domCanary";
@@ -10,6 +10,27 @@ const ACTIVITY = ["mousemove", "mousedown", "keydown", "touchstart", "wheel", "s
 export const TRIPLE_ESCAPE_WINDOW_MS = 600;
 /** Away from the window this long with app-copied text on the clipboard, and it is evicted. */
 export const CLIPBOARD_EVICT_MS = 60_000;
+
+/**
+ * What the Sentinel lets the dashboard's Sentinel strip read: the time left on the one
+ * inactivity timer, the canary's alert count, and the panic purge itself. The strip only
+ * reads this; the timer, the canary and the panic keys stay owned here.
+ */
+export type SentinelReading = {
+  /** Milliseconds until the idle seal or sign-out; null when disarmed or locked. */
+  idleRemainingMs: number | null;
+  /** Foreign scripts or frames the DOM canary has reported and not yet dismissed. */
+  canaryAlerts: number;
+  /** A clock the strip can compare timestamps against, advanced once a second. */
+  now: number;
+  /** Run the panic purge, exactly as Ctrl+Shift+X or triple Escape does. */
+  panic: () => void;
+};
+
+const SentinelCtx = createContext<SentinelReading>({ idleRemainingMs: null, canaryAlerts: 0, now: 0, panic: () => {} });
+
+/** Read the Sentinel from inside the dashboard (the Sentinel strip). */
+export const useSentinel = () => useContext(SentinelCtx);
 
 type Props = {
   /**
@@ -43,12 +64,16 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
   panicCb.current = onPanic;
   const fired = useRef(false);
   const [findings, setFindings] = useState<CanaryFinding[]>([]);
+  // When the one inactivity timer was last re-armed; read by the strip's countdown.
+  const armedAt = useRef<number | null>(null);
+  const [now, setNow] = useState(() => Date.now());
 
   // One inactivity timer. Disarmed while the lock screen is up.
   useEffect(() => {
     if (locked || idleMs === null || !(idleMs > 0)) return;
     let t: number | null = null;
     const reset = () => {
+      armedAt.current = Date.now();
       if (t) window.clearTimeout(t);
       t = window.setTimeout(() => {
         // Overwrite anything this app copied before the workspace seals or signs out.
@@ -61,7 +86,16 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
     return () => {
       ACTIVITY.forEach((e) => window.removeEventListener(e, reset));
       if (t) window.clearTimeout(t);
+      armedAt.current = null;
     };
+  }, [idleMs, locked]);
+
+  // The strip's display clock: one tick a second while the timer is armed. It only reads
+  // armedAt; it never re-arms, extends or fires the inactivity timer.
+  useEffect(() => {
+    if (locked || idleMs === null || !(idleMs > 0)) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
   }, [idleMs, locked]);
 
   // Window-blur clipboard eviction. When the operator leaves the window with something this
@@ -161,8 +195,18 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
     return () => observer.disconnect();
   }, []);
 
+  const reading = useMemo<SentinelReading>(
+    () => ({
+      idleRemainingMs: locked || idleMs === null || !(idleMs > 0) || armedAt.current === null ? null : Math.max(0, idleMs - (now - armedAt.current)),
+      canaryAlerts: findings.length,
+      now,
+      panic,
+    }),
+    [locked, idleMs, now, findings.length, panic],
+  );
+
   return (
-    <>
+    <SentinelCtx.Provider value={reading}>
       {findings.length > 0 && (
         <div
           role="alert"
@@ -184,7 +228,7 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
         </div>
       )}
       {locked ? lockScreen : children}
-    </>
+    </SentinelCtx.Provider>
   );
 }
 

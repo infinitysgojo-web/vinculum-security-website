@@ -100,7 +100,7 @@ export function ChancelleryBreviary({
           title="Open 90-second executive chancellery briefing"
         >
           <Zap size={13} />
-          <span className="hidden sm:inline">Breviary</span>
+          <span className="hidden 2xl:inline">Breviary</span>
         </button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-xl overflow-y-auto overflow-x-hidden bg-background p-4 sm:p-6">
