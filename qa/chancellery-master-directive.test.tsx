@@ -63,8 +63,8 @@ class El {
     });
   }
   closest(sel: string): El | null {
-    for (let e: El | null = this; e; e = e.parent) if (e.matches(sel)) return e;
-    return null;
+    if (this.matches(sel)) return this;
+    return this.parent ? this.parent.closest(sel) : null;
   }
   querySelectorAll(_: string): El[] {
     const out: El[] = [];
