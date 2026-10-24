@@ -585,6 +585,12 @@
   main:not([data-dashboard]):not([data-portal]) { padding-bottom: 4.5rem; }
 }
 
+/* Suppress the floating consent manager inside the sovereign operational portal */
+body.vs-portal #stcm-wrapper { display: none !important; }
+
+/* Portal routes are exempt from the mobile consent-badge bottom clearance */
+body.vs-portal main { padding-bottom: 0 !important; }
+
 /* SCIF / Amber Field terminal mode: the same semantic tokens, re-pointed to an
    amber-phosphor palette on deep charcoal. Toggled by the .scif class on <html>. */
 html.scif {

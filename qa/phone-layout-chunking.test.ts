@@ -21,6 +21,19 @@ describe("phone layout: scoped consent clearance", () => {
   });
 });
 
+describe("portal consent suppression", () => {
+  const css = read("src/index.css");
+  const app = read("src/App.tsx");
+  test("App toggles body.vs-portal from the portal flag and cleans up", () => {
+    expect(app).toContain('document.body.classList.toggle("vs-portal", portal)');
+    expect(app).toContain('document.body.classList.remove("vs-portal")');
+  });
+  test("consent wrapper hidden and main padding zeroed on portal", () => {
+    expect(css).toContain("body.vs-portal #stcm-wrapper { display: none !important; }");
+    expect(css).toContain("body.vs-portal main { padding-bottom: 0 !important; }");
+  });
+});
+
 describe("build packaging: vendor chunks", () => {
   const cfg = read("vite.config.ts");
 
