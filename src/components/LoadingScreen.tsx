@@ -13,7 +13,13 @@ export default function LoadingScreen({ onDone }: { onDone?: () => void }) {
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let seen = false;
-    try { seen = sessionStorage.getItem("vinculum_intro_seen") === "1"; sessionStorage.setItem("vinculum_intro_seen", "1"); } catch {}
+    try {
+      seen = sessionStorage.getItem("vinculum_intro_seen") === "1";
+      sessionStorage.setItem("vinculum_intro_seen", "1");
+    } catch {
+      // sessionStorage refused (private mode or a storage policy): play the intro, nothing to record.
+      seen = false;
+    }
     const hold = seen ? 0 : reduce ? 200 : 1600;
     const fade = seen || reduce ? 0 : 450;
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Lock, LockOpen } from "lucide-react";
 import { unsealEnclave } from "@/lib/chancelleryEnclave";
 
@@ -10,9 +10,19 @@ export default function EnclaveLockScreen({ onSignOut }: { onSignOut: () => void
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const field = useRef<HTMLInputElement>(null);
+  // On unmount the passphrase field is emptied in the DOM as well, so no typed passphrase
+  // outlives the lock screen in a detached input. (A JavaScript string cannot be zeroized;
+  // the Web Crypto import zeroizes its own encoded bytes.)
+  useEffect(() => {
+    const el = field.current;
+    return () => {
+      if (el) el.value = "";
+    };
+  }, []);
   return (
     <div className="container py-16 sm:py-24" data-testid="enclave-lock-screen">
-      <div className="mx-auto max-w-xl border-2 border-double border-brass bg-card/60 p-6 sm:p-8">
+      <div className="mx-auto max-w-xl border-2 border-double border-brass bg-card/60 p-4 sm:p-5">
         <p className="flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] font-semibold text-accent">
           <Lock size={13} /> Sovereign enclave
         </p>
@@ -44,6 +54,7 @@ export default function EnclaveLockScreen({ onSignOut }: { onSignOut: () => void
             </label>
             <input
               id="enclave-restore"
+              ref={field}
               type="password"
               autoComplete="current-password"
               autoFocus

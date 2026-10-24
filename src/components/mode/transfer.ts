@@ -9,7 +9,7 @@
  */
 import { canonicalJson } from "@/components/desk/registry";
 import { sha256 } from "@/components/desk/integrity";
-import { IMPORT_LIMITS, checkPayload, utf8Bytes } from "@/lib/payloadLimits";
+import { IMPORT_LIMITS, checkPayload, precheckJsonText, utf8Bytes } from "@/lib/payloadLimits";
 import { openEnvelope, sealEnvelope, type EncryptedPayload } from "@/lib/chancelleryCrypto";
 import { WORKSPACE_SCHEMA, newId, quarantineEntry, validateRecord, type Workspace, type WorkspaceStore } from "./workspace";
 
@@ -154,6 +154,9 @@ export const isEncryptedPackage = (v: unknown): v is EncryptedPayload =>
  */
 export async function readPackage(text: string): Promise<PackageRead> {
   if (utf8Bytes(text) > IMPORT_LIMITS.maxBytes) return failed("This file is larger than 20 MB. Nothing was imported.");
+  // Depth, list, key and string limits on the raw text, before the parser allocates anything.
+  const pre = precheckJsonText(text, IMPORT_LIMITS);
+  if (!pre.ok) return failed(`This file exceeds the import limits (${pre.reason}). Nothing was imported.`);
   let raw: unknown;
   try {
     raw = JSON.parse(text);
@@ -236,6 +239,8 @@ export async function encryptPackage(pkg: WorkspacePackage, passphrase: string):
 
 /** Decrypt an encrypted package file to the package text, for readPackage. Wrong passphrase or altered bytes throw. */
 export async function decryptPackageText(text: string, passphrase: string): Promise<string> {
+  const pre = precheckJsonText(text, IMPORT_LIMITS);
+  if (!pre.ok) throw new Error(`This file exceeds the import limits (${pre.reason}).`);
   const raw: unknown = JSON.parse(text);
   if (!isEncryptedPackage(raw)) throw new Error("This file is not an encrypted package.");
   return JSON.stringify(await openEnvelope<unknown>(raw, passphrase));
