@@ -222,7 +222,7 @@ describe("3. window title swap", () => {
     const doc = { title: "The Vinculum Dashboard · Vinculum Security", head: {} } as unknown as Document;
     const off = shroudTitle(doc);
     expect(doc.title).toBe(SHROUD_TITLE);
-    expect(SHROUD_TITLE).toBe("Vinculum Security · Operational Briefing [SHROUDED]");
+    expect(SHROUD_TITLE).toBe("[RESTRICTED CHANCELLERY BRIEFING] · Vinculum Security");
     off();
     expect(doc.title).toBe("The Vinculum Dashboard · Vinculum Security");
     const off2 = shroudTitle(doc);

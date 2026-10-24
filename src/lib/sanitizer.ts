@@ -36,6 +36,10 @@ const STRAY_JOINER = new RegExp(String.raw`(?<![${JOINING}])[\u200C\u200D]|[\u20
 const ANY_HIDDEN = /[\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF]/g;
 
 /** ASCII control bytes other than tab, line feed and carriage return. */
+// Security-critical: this pattern exists to match control bytes so they can be stripped on
+// paste and blur (Trojan Source and log-injection defence). no-control-regex flags exactly
+// that, so the rule is suppressed for this one deliberate pattern only.
+// eslint-disable-next-line no-control-regex
 const CONTROL_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
 
 export type SanitizeOptions = {

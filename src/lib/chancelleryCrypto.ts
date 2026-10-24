@@ -153,9 +153,10 @@ export async function sealEnvelope(data: unknown, passphrase: string): Promise<E
   const plaintext = new TextEncoder().encode(JSON.stringify(data));
   const salt = randomBytes(SALT_BYTES);
   const iv = randomBytes(IV_BYTES);
+  let sealed: Uint8Array | null = null;
   try {
     const key = await deriveEnclaveKey(passphrase, salt, PBKDF2_ITERATIONS);
-    const sealed = new Uint8Array(await subtle().encrypt({ name: "AES-GCM", iv, tagLength: TAG_BYTES * 8 }, key, plaintext));
+    sealed = new Uint8Array(await subtle().encrypt({ name: "AES-GCM", iv, tagLength: TAG_BYTES * 8 }, key, plaintext));
     // Web Crypto appends the 16-byte tag to the ciphertext; carry it on its own.
     return {
       format: "vinculum-cipher-v1",
@@ -167,7 +168,11 @@ export async function sealEnvelope(data: unknown, passphrase: string): Promise<E
       savedAt: new Date().toISOString(),
     };
   } finally {
+    // Plaintext, the working ciphertext buffer, salt and IV are overwritten once encoded.
     zeroizeBuffer(plaintext);
+    if (sealed) zeroizeBuffer(sealed);
+    zeroizeBuffer(salt);
+    zeroizeBuffer(iv);
   }
 }
 
@@ -176,9 +181,10 @@ export async function openEnvelope<T>(payload: EncryptedPayload, passphrase: str
   if (!payload || payload.format !== "vinculum-cipher-v1") throw new Error("Unsupported cipher format.");
   let combined: Uint8Array<ArrayBuffer> | null = null;
   let plain: Uint8Array | null = null;
+  let iv: Uint8Array<ArrayBuffer> | null = null;
+  let salt: Uint8Array<ArrayBuffer> | null = null;
   try {
     let key: CryptoKey;
-    let iv: Uint8Array<ArrayBuffer>;
     try {
       const ciphertext = hexToBytes(payload.ciphertextHex);
       const tag = hexToBytes(payload.tagHex);
@@ -189,7 +195,8 @@ export async function openEnvelope<T>(payload: EncryptedPayload, passphrase: str
       combined.set(tag, ciphertext.length);
       zeroizeBuffer(ciphertext);
       zeroizeBuffer(tag);
-      key = await deriveEnclaveKey(passphrase, hexToBytes(payload.saltHex), payload.kdf === undefined ? PBKDF2_ITERATIONS : iterationsFor(payload.kdf));
+      salt = hexToBytes(payload.saltHex);
+      key = await deriveEnclaveKey(passphrase, salt, payload.kdf === undefined ? PBKDF2_ITERATIONS : iterationsFor(payload.kdf));
     } catch {
       throw new Error(TAG_MISMATCH);
     }
@@ -203,6 +210,8 @@ export async function openEnvelope<T>(payload: EncryptedPayload, passphrase: str
     // Plaintext and the joined ciphertext+tag are overwritten whatever the outcome.
     if (plain) zeroizeBuffer(plain);
     if (combined) zeroizeBuffer(combined);
+    if (iv) zeroizeBuffer(iv);
+    if (salt) zeroizeBuffer(salt);
   }
 }
 
@@ -210,22 +219,34 @@ export async function openEnvelope<T>(payload: EncryptedPayload, passphrase: str
 export async function encryptEnclavePayload(plaintext: string, key: CryptoKey): Promise<{ ciphertextHex: string; ivHex: string }> {
   const iv = randomBytes(IV_BYTES);
   const bytes = new TextEncoder().encode(plaintext);
+  let ct: ArrayBuffer | null = null;
   try {
-    const ct = await subtle().encrypt({ name: "AES-GCM", iv }, key, bytes);
+    ct = await subtle().encrypt({ name: "AES-GCM", iv }, key, bytes);
     return { ciphertextHex: bytesToHex(new Uint8Array(ct)), ivHex: bytesToHex(iv) };
   } finally {
-    // The encoded plaintext is wiped as soon as the cipher has consumed it.
+    // The encoded plaintext is wiped as soon as the cipher has consumed it; the working
+    // ciphertext buffer and the IV once they are hex-encoded.
     zeroizeBuffer(bytes);
+    if (ct) zeroizeBuffer(ct);
+    zeroizeBuffer(iv);
   }
 }
 
 /** AES-GCM decrypt. Any authentication failure (wrong key or altered bytes) raises TAG_MISMATCH. */
 export async function decryptEnclavePayload(ciphertextHex: string, ivHex: string, key: CryptoKey): Promise<string> {
   let pt: ArrayBuffer;
+  let iv: Uint8Array<ArrayBuffer> | null = null;
+  let ct: Uint8Array<ArrayBuffer> | null = null;
   try {
-    pt = await subtle().decrypt({ name: "AES-GCM", iv: hexToBytes(ivHex) }, key, hexToBytes(ciphertextHex));
+    iv = hexToBytes(ivHex);
+    ct = hexToBytes(ciphertextHex);
+    pt = await subtle().decrypt({ name: "AES-GCM", iv }, key, ct);
   } catch {
     throw new Error(TAG_MISMATCH);
+  } finally {
+    // The decoded IV and ciphertext copies are overwritten whatever the outcome.
+    if (iv) zeroizeBuffer(iv);
+    if (ct) zeroizeBuffer(ct);
   }
   try {
     return new TextDecoder().decode(pt);

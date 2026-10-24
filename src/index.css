@@ -686,6 +686,12 @@ html.vs-shroud input:not([type]):not([data-shroud-keep]) {
   -webkit-user-select: none !important;
   caret-color: transparent !important;
 }
+/* Content selects (a party, a bond, a clause type) freeze with the fields; navigation selects carry data-shroud-nav. */
+html.vs-shroud select[data-shroud-locked] {
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
 html.vs-shroud [data-shroud-keep] textarea,
 html.vs-shroud [data-shroud-keep] input,
 html.vs-shroud input[type="range"],
@@ -709,6 +715,14 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
     color: transparent !important;
     -webkit-text-fill-color: transparent !important;
     box-shadow: none !important;
+    outline: 2px solid #000 !important;
+  }
+  html.vs-shroud select[data-shroud-locked] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #000 !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
     outline: 2px solid #000 !important;
   }
   html.vs-shroud textarea:not([data-shroud-keep])::placeholder,

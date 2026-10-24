@@ -31,6 +31,41 @@ const SAVE_TEXT: Record<SaveStatus, string> = {
   idle: "Not yet saved",
 };
 
+/** The truthful local status line: save state, the browser's own network report, lineage. */
+export function modeStatusText(ws: Workspace, saveStatus: SaveStatus, network: NetworkState): string {
+  const sealed = ws.lifecycle === "sealed";
+  const status = sealed ? "Sealed local snapshot" : SAVE_TEXT[saveStatus];
+  const net = `${network.online ? "Online" : "Offline"} · data stays on this device`;
+  return [
+    `${status} · ${net}`,
+    network.cached === false ? " · Offline copy unavailable" : "",
+    ws.lineage ? ` · ${ws.lineage.note}` : "",
+    sealed && ws.sealed ? ` · ${ws.sealed.ref}` : "",
+  ].join("");
+}
+
+/** Mode badge (Preset / Custom), the training stamp for presets, and the lifecycle stage. */
+export function ModeBadges({ ws }: { ws: Workspace }) {
+  const preset = ws.mode === "preset";
+  const sealed = ws.lifecycle === "sealed";
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1.5" data-testid="mode-badges">
+      <span className={`border px-1.5 py-px text-[9px] font-semibold uppercase tracking-[0.16em] ${preset ? "border-brass bg-background text-primary" : "border-primary bg-primary text-primary-foreground"}`}>
+        {MODE_LABEL[ws.mode]}
+      </span>
+      {preset && (
+        <span className="hidden border border-dashed border-accent px-1.5 py-px font-mono text-[9px] uppercase tracking-[0.14em] text-accent 2xl:inline">
+          {ws.derived ? "Derived training" : "Training"}
+        </span>
+      )}
+      <span className="inline-flex items-center gap-1 border border-border px-1.5 py-px text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+        {sealed && <Lock size={9} aria-hidden />}
+        {LIFECYCLE_SHORT[ws.lifecycle]}
+      </span>
+    </span>
+  );
+}
+
 /**
  * The shared mode layer above the desk canvas: mode badge, title, truthful local status,
  * the browser's own network report, a return to the Foyer, the mode's controls, and the
@@ -46,6 +81,7 @@ export default function ModeHeader({
   deskLabel,
   onAction,
   onStage,
+  panel = false,
 }: {
   ws: Workspace;
   scenario?: Scenario;
@@ -56,11 +92,14 @@ export default function ModeHeader({
   deskLabel: (id: string) => string;
   onAction: (a: HeaderAction) => void;
   onStage: (s: SpineStage) => void;
+  /**
+   * Panel view: opened from the Mission Operations Deck, which already carries the mode
+   * badge, title, status, Context and Foyer. Shows the controls, notices and the Spine only.
+   */
+  panel?: boolean;
 }) {
   const preset = ws.mode === "preset";
   const sealed = ws.lifecycle === "sealed";
-  const status = sealed ? "Sealed local snapshot" : SAVE_TEXT[saveStatus];
-  const net = `${network.online ? "Online" : "Offline"} · data stays on this device`;
   const activeStage = SPINE.find((s) => s.desks.includes(desk));
   const read = (s: SpineStage) => stageStatus(s, (d) => deskIsLive(d, signals), deskCanPublish, ws);
   const inSequence = (s: SpineStage) => !!scenario && s.desks.some((d) => scenario.sequence.includes(d));
@@ -68,7 +107,17 @@ export default function ModeHeader({
   const [controlsOpen, setControlsOpen] = useState(false);
 
   return (
-    <section aria-label="Mission mode" className="mb-6 border border-brass/50 bg-card/60">
+    <section aria-label="Mission mode" className={`${panel ? "" : "mb-6 "}border border-brass/50 bg-card/60`}>
+      {panel ? (
+        <div className="border-b border-brass/40 px-3 py-2 sm:px-4">
+          <p className="text-[11px] text-muted-foreground [overflow-wrap:anywhere]">{modeStatusText(ws, saveStatus, network)}</p>
+          {!sealed && !preset && openQuestionCount(ws.tray) > 0 && (
+            <p role="note" className="mt-1 border-l-2 border-accent pl-2 text-[11px] text-foreground/85 [overflow-wrap:anywhere]">
+              {openQuestionCount(ws.tray)} open question{openQuestionCount(ws.tray) === 1 ? "" : "s"} · {OPEN_QUESTION_GUIDANCE}
+            </p>
+          )}
+        </div>
+      ) : (
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-brass/40 px-3 py-3 sm:px-4">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -86,12 +135,7 @@ export default function ModeHeader({
             </span>
           </div>
           <h2 className="mt-2 font-serif text-lg text-primary [overflow-wrap:anywhere] sm:text-xl">{ws.title}</h2>
-          <p className="mt-1 text-[11px] text-muted-foreground [overflow-wrap:anywhere]">
-            {status} · {net}
-            {network.cached === false ? " · Offline copy unavailable" : ""}
-            {ws.lineage ? ` · ${ws.lineage.note}` : ""}
-            {sealed && ws.sealed ? ` · ${ws.sealed.ref}` : ""}
-          </p>
+          <p className="mt-1 text-[11px] text-muted-foreground [overflow-wrap:anywhere]">{modeStatusText(ws, saveStatus, network)}</p>
           {!sealed && !preset && openQuestionCount(ws.tray) > 0 && (
             <p role="note" className="mt-1 border-l-2 border-accent pl-2 text-[11px] text-foreground/85 [overflow-wrap:anywhere]">
               {openQuestionCount(ws.tray)} open question{openQuestionCount(ws.tray) === 1 ? "" : "s"} · {OPEN_QUESTION_GUIDANCE}
@@ -107,14 +151,15 @@ export default function ModeHeader({
           </button>
         </div>
       </div>
+      )}
 
-      <div className="border-b border-brass/40 px-3 py-2 md:hidden">
+      <div className={`border-b border-brass/40 px-3 py-2 md:hidden ${panel ? "hidden" : ""}`}>
         <button type="button" className={`${btn} w-full justify-between`} aria-expanded={controlsOpen} aria-controls="mode-controls" onClick={() => setControlsOpen((v) => !v)}>
           <span>{preset ? "Exercise controls" : "Mission controls"}</span>
           <ChevronDown size={13} className={controlsOpen ? "rotate-180" : ""} aria-hidden />
         </button>
       </div>
-      <div id="mode-controls" className={`${controlsOpen ? "grid grid-cols-2" : "hidden"} gap-2 border-b border-brass/40 px-3 py-2.5 sm:px-4 md:flex md:flex-wrap`} role="toolbar" aria-label={preset ? "Exercise controls" : "Mission controls"}>
+      <div id="mode-controls" className={`${panel ? "flex flex-wrap" : controlsOpen ? "grid grid-cols-2" : "hidden"} gap-2 border-b border-brass/40 px-3 py-2.5 sm:px-4 md:flex md:flex-wrap`} role="toolbar" aria-label={preset ? "Exercise controls" : "Mission controls"}>
         {preset ? (
           <>
             <button type="button" className={btn} onClick={() => onAction("brief")}><BookOpen size={13} /> {scenario ? "Scenario brief" : "Exercise brief"}</button>
@@ -149,7 +194,7 @@ export default function ModeHeader({
       <nav aria-label="Mission Spine" className="px-3 py-3 sm:px-4">
         <label className="md:hidden">
           <span className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/70">Mission Spine</span>
-          <select
+          <select data-shroud-nav
             className="w-full border border-input bg-background px-3 py-2 text-sm"
             value={activeStage?.id ?? ""}
             onChange={(e) => {

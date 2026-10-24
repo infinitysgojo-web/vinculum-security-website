@@ -10,7 +10,7 @@ import { copyText } from "@/lib/clipboardGuard";
 
 export const field = "w-full border border-input bg-background px-3 py-2.5 text-sm";
 export const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
-export const panel = "border border-brass/40 bg-navy-tint/40 p-4 sm:p-5 md:p-7";
+export const panel = "border border-brass/40 bg-navy-tint/40 p-4 sm:p-5";
 
 export function todayStamp() {
   return new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });

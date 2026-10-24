@@ -10,6 +10,7 @@ import { applyInscriptions, breachesFloor, statutoryClearances, VIABLE_FLOOR, ty
 import { APOSTILLE_BOTTOM, APOSTILLE_TOP } from "@/components/desk/registry";
 import { archiveMerkleRoot, archiveStateDigest, sha256, verifySealedText } from "@/components/desk/integrity";
 import { fromBase64Utf8 } from "./chancelleryCrypto";
+import { IMPORT_LIMITS, precheckJsonText } from "@/lib/payloadLimits";
 
 export type CheckStatus = "match" | "mismatch" | "absent";
 export type Check = { label: string; status: CheckStatus; recorded?: string; computed?: string; note?: string };
@@ -137,6 +138,9 @@ export async function verifyArchive(data: unknown): Promise<AttestationReceipt> 
 
 /** Parse a .vinculum file's text. */
 export async function verifyArchiveText(text: string): Promise<AttestationReceipt> {
+  // Structural limits on the raw text first, so a pathological file is refused before parsing.
+  const pre = precheckJsonText(text, IMPORT_LIMITS);
+  if (!pre.ok) return { source: "archive", verdict: "invalid", checks: [], reason: `The file exceeds the import limits (${pre.reason}).` };
   let data: unknown;
   try {
     data = JSON.parse(text);

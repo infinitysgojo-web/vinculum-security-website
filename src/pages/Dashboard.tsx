@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, Search, Shield, ShieldOff, Volume2, VolumeX } from "lucide-react";
+import { Archive, ArrowLeft, ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, MoreHorizontal, PanelRight, ScrollText, Search, Shield, ShieldAlert, ShieldCheck, ShieldOff, Siren, SlidersHorizontal, Timer, Volume2, VolumeX } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
 import StatutoryClearanceBar from "@/components/desk/StatutoryClearanceBar";
 import { THEATRES, type TheatreId } from "@/components/desk/theatres";
@@ -10,25 +10,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { getOfflineSession, clearOfflineSession, raceAuth } from "@/lib/offlineAuth";
 import type { Session } from "@supabase/supabase-js";
 import SEO from "@/components/SEO";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
-import { CASES, DOMAINS } from "@/content/cases";
+import { DOMAINS } from "@/content/cases";
 import { PARTIES } from "@/content/parties";
 import SovereignInscriptionTray from "@/components/desk/SovereignInscriptionTray";
 import DeskOutput, { BinderContext, DeskMetaContext, ExportNoticeContext, type BinderEntry } from "@/components/desk/DeskOutput";
-import { useMission } from "@/components/desk/mission";
-import { PAIRINGS } from "@/content/pairings";
 import { guardSignalPatch } from "@/components/desk/signalGuard";
 import { MissionContext, EMPTY_PROFILE, DEFAULT_BONDS, sanitizeBonds, type MissionProfile } from "@/components/desk/mission";
-import { EngineContext, useEngine, usePublish, applyInscriptions, bondBand, mathReading, stageGateAudit, telemetryLines, type Signals } from "@/components/desk/engine";
-import SyncPanel from "@/components/desk/SyncPanel";
+import { EngineContext, applyInscriptions, breachesFloor, bondBand, mathReading, stageGateAudit, telemetryLines, type Signals } from "@/components/desk/engine";
 import TelemetryStrip from "@/components/desk/TelemetryStrip";
 import MissionChain, { deskIsLive, downstreamOf } from "@/components/desk/MissionChain";
 import MissionVault from "@/components/desk/MissionVault";
 import SessionLedgerDrawer, { useLedgerWatch } from "@/components/desk/SessionLedger";
 import { clearLedger, decisionRecords, ledgerEntries, logDecision, logEvent, restoreLedger, useSessionLedger } from "@/components/desk/ledgerStore";
 import EnclaveLockScreen from "@/components/desk/EnclaveLockScreen";
-import { ChancellerySentinel } from "@/components/desk/ChancellerySentinel";
+import { ChancellerySentinel, useSentinel } from "@/components/desk/ChancellerySentinel";
 import { SENTINEL_SIGN_OUT_MINUTES, enclaveState, lockEnclave, openSnapshot, sealSnapshot, setIdleSealed, useEnclave } from "@/lib/chancelleryEnclave";
 import { executePanicPurge, purgeVolatileState } from "@/lib/panicPurge";
 import { sanitizeOnBlur, sanitizeOnDrop, sanitizeOnPaste } from "@/lib/sanitizeFields";
@@ -52,7 +50,7 @@ import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 import { canonicalJson, mintChancelleryApostille, verifyChancelleryApostille } from "@/components/desk/registry";
 import MissionFoyer, { type FoyerAction } from "@/components/mode/MissionFoyer";
 import LocalDataDialog from "@/components/mode/LocalDataDialog";
-import ModeHeader, { type HeaderAction } from "@/components/mode/ModeHeader";
+import ModeHeader, { ModeBadges, modeStatusText, type HeaderAction } from "@/components/mode/ModeHeader";
 import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
 import DeskGuide from "@/components/mode/DeskGuide";
 import {
@@ -102,7 +100,6 @@ import PatternMatcher from "@/components/PatternMatcher";
 import DeltaSimulator from "@/components/desk/DeltaSimulator";
 import AuditBench from "@/components/AuditBench";
 import LitigationWorkbench from "@/components/LitigationWorkbench";
-import DiagnosticMirror from "@/components/DiagnosticMirror";
 import AdversarialChamber from "@/components/AdversarialChamber";
 import ClauseArchitect from "@/components/desk/ClauseArchitect";
 import SentinelMatrix from "@/components/desk/SentinelMatrix";
@@ -116,6 +113,7 @@ import MultiPartySequencer from "@/components/desk/MultiPartySequencer";
 import CompoundShockTester from "@/components/desk/CompoundShockTester";
 import VerificationLedger from "@/components/desk/VerificationLedger";
 import HandoverProtocol from "@/components/desk/HandoverProtocol";
+import MirrorDesk from "@/components/desk/MirrorDesk";
 
 
 /** Without an unsealed enclave, an idle terminal signs out after the Sentinel's 15 minutes. */
@@ -183,7 +181,7 @@ const DESKS = [
     label: "De-confliction Bench",
     eyebrow: "§9A · Multi-Party",
     title: "Multi-party sequencing and de-confliction",
-    note: "Seat up to four parties at one table, synchronise the four phases, and read the friction between them.",
+    note: "Seat up to six delegations at the table and calculate multi-party friction matrices across all bilateral pairs.",
   },
   {
     id: "tracks",
@@ -317,6 +315,104 @@ function PrivacyButton() {
   );
 }
 
+/** Mission Operations Deck tool button: one height for every tool, so the row never grows. */
+const deckBtn = (on: boolean) =>
+  `inline-flex h-8 min-w-8 shrink-0 items-center justify-center gap-1.5 px-2 transition-colors ${on ? "text-accent" : "text-primary hover:text-accent"}`;
+
+/**
+ * Band 1 · Chancellery Sentinel strip (36 px, pinned): canary status, the minimal bus
+ * reading, the inactivity countdown, the presentation mask and the panic purge. It reads
+ * the Sentinel; the timer, canary and panic keys stay owned by ChancellerySentinel.
+ */
+function SentinelStrip({ inFoyer, deskLabel, bondMean, rupture }: { inFoyer: boolean; deskLabel?: string; bondMean?: number; rupture?: number }) {
+  const { idleRemainingMs, canaryAlerts, now, panic } = useSentinel();
+  // The purge needs a second press inside the same 4 s window as the mask; compared
+  // against the Sentinel's clock, so the strip keeps no timer of its own.
+  const [armedAt, setArmedAt] = useState<number | null>(null);
+  const armed = armedAt !== null && Date.now() - armedAt <= 4000 && now - armedAt <= 4000;
+  const floor = bondMean !== undefined && breachesFloor(bondMean);
+  const mmss = (ms: number) => {
+    const t = Math.ceil(ms / 1000);
+    return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+  };
+  return (
+    <div className="sticky top-0 z-40 h-9 border-b border-brass/60 bg-background/95 backdrop-blur" data-testid="sentinel-strip">
+      <div className="container flex h-9 items-center gap-2 sm:gap-3 overflow-hidden text-[9px] sm:text-[10px] uppercase tracking-[0.14em] font-semibold text-primary">
+        <span className={`inline-flex shrink-0 items-center gap-1 ${canaryAlerts ? "text-destructive" : "text-primary/80"}`} title={canaryAlerts ? `${canaryAlerts} DOM integrity alert(s)` : "DOM canary: no foreign script or frame detected"} data-testid="strip-canary">
+          {canaryAlerts ? <ShieldAlert size={12} aria-hidden /> : <ShieldCheck size={12} aria-hidden />}
+          <span className="hidden sm:inline">{canaryAlerts ? `Canary · ${canaryAlerts}` : "Sentinel"}</span>
+        </span>
+        {inFoyer ? (
+          <span className="min-w-0 truncate text-muted-foreground normal-case tracking-normal font-normal">Mission Foyer: no mission open</span>
+        ) : (
+          <>
+            {deskLabel && <span className="hidden min-w-0 truncate md:inline">{deskLabel}</span>}
+            <span className="shrink-0 text-muted-foreground" data-testid="strip-bond-mean">
+              <span className="normal-case">μ</span>B <span className={floor ? "text-destructive" : "text-primary"}>{bondMean !== undefined ? bondMean.toFixed(2) : "—"}</span>
+            </span>
+            <span className="shrink-0 text-muted-foreground" data-testid="strip-rupture">
+              <span className="hidden sm:inline">Rupture </span><span className="sm:hidden">R </span>
+              <span className={(rupture ?? 0) >= 60 ? "text-destructive" : "text-primary"}>{rupture !== undefined ? `${rupture}%` : "—"}</span>
+            </span>
+          </>
+        )}
+        <span className="ml-auto inline-flex shrink-0 items-center gap-1 font-mono tabular-nums text-muted-foreground" title="Inactivity countdown: the workspace seals or signs out when it reaches zero" data-testid="strip-idle">
+          <Timer size={12} aria-hidden />
+          {idleRemainingMs === null ? "—" : mmss(idleRemainingMs)}
+        </span>
+        <PrivacyButton />
+        <button
+          type="button"
+          onClick={() => {
+            if (armed) {
+              setArmedAt(null);
+              panic();
+              return;
+            }
+            setArmedAt(Date.now());
+          }}
+          className={`inline-flex shrink-0 items-center gap-1 transition-colors ${armed ? "text-destructive" : "text-primary hover:text-destructive"}`}
+          title={armed ? "Press again to purge now" : "Panic purge (Ctrl+Shift+X or Escape three times). Press twice to confirm."}
+          aria-label={armed ? "Confirm the panic purge" : "Panic purge, press twice to confirm"}
+          data-testid="strip-panic"
+          data-armed={armed ? "true" : undefined}
+        >
+          <Siren size={12} aria-hidden />
+          <span className="hidden sm:inline">{armed ? "Confirm purge" : "Panic"}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The integrated theatre preset selector on the deck. A navigation select (data-shroud-nav):
+ * it stays usable under the mask, and its option labels pass through the mask itself.
+ */
+function TheatrePresetSelect({ value, custom, onChange }: { value: string; custom: boolean; onChange: (id: string) => void }) {
+  const { mask } = usePrivacy();
+  return (
+    <label className="relative inline-flex shrink-0 items-center" title={`Theatre preset: hydrates all desks. Training scenarios with illustrative readings, not field measurements.${custom ? " Applying one to this mission shows its impact first and is recorded in the Decision Record." : ""}`}>
+      <span className="sr-only">Theatre preset · hydrates all desks</span>
+      <select
+        data-shroud-nav
+        data-testid="theatre-preset"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="h-8 w-36 sm:w-44 2xl:w-52 appearance-none border border-brass/50 bg-background pl-2 pr-6 font-mono text-[10px] uppercase tracking-[0.1em] text-primary"
+      >
+        <option value="">{value ? "Detach preset" : "Theatre preset…"}</option>
+        {THEATRES.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.sigil} · {mask(t.name)}
+          </option>
+        ))}
+      </select>
+      <ChevronDown size={12} className="pointer-events-none absolute right-1.5 text-primary/70" />
+    </label>
+  );
+}
+
 function offlineSessionAsSession(): Session | null {
   const o = getOfflineSession();
   return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
@@ -438,6 +534,21 @@ export default function Dashboard() {
 
   // Chancellery Focus view and discrete tactile audio (muted by default).
   const [focus, setFocus] = useState(false);
+  // Mission Operations Deck: at most one panel (vault, ledger, controls) open under the deck.
+  const [panel, setPanel] = useState<"vault" | "ledger" | "controls" | null>(null);
+  // The desk's doctrinal note stays collapsed until asked for.
+  const [noteOpen, setNoteOpen] = useState(false);
+  const bandRef = useRef<HTMLDivElement>(null);
+  // Keep the active desk visible in the band's horizontal scroller (phones and tablets).
+  // Only scrollLeft moves, so the page itself never jumps.
+  useEffect(() => {
+    const band = bandRef.current;
+    const el = band?.querySelector<HTMLElement>(`[data-desk="${desk}"]`);
+    if (!band || !el) return;
+    const b = band.getBoundingClientRect();
+    const r = el.getBoundingClientRect();
+    if (r.left < b.left || r.right > b.right) band.scrollLeft += r.left - b.left - (b.width - r.width) / 2;
+  }, [desk, division]);
   const [sound, setSound] = useState(false);
   useEffect(() => {
     setSound(soundEnabled());
@@ -1203,6 +1314,7 @@ export default function Dashboard() {
 
   const inFoyer = !activeId;
   const opening = !!activeId && !activeWs;
+  const missionOpen = !inFoyer && !opening;
   const guideOn = activeWs?.mode === "preset" && !!DESK_GUIDES[desk] && (scenario ? scenario.sequence.includes(desk) : !!activeWs.derived);
 
   return (
@@ -1227,38 +1339,27 @@ export default function Dashboard() {
         path="/dashboard"
         noIndex
       />
+      <SentinelStrip
+        inFoyer={inFoyer}
+        deskLabel={inFoyer || opening ? undefined : `Desk ${String(position + 1).padStart(2, "0")} · ${active.label}`}
+        bondMean={effective.bondMean}
+        rupture={effective.rupture}
+      />
       {focus && (
-        <div className="sticky top-0 z-40 h-10 border-b border-brass/60 bg-background/95 backdrop-blur">
+        <div className="sticky top-9 z-30 h-10 border-b border-brass/60 bg-background/95 backdrop-blur" data-testid="focus-bar">
           <div className="container flex h-10 items-center gap-2 sm:gap-3 overflow-hidden text-[9px] sm:text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.18em] font-semibold text-primary">
-            <span className="hidden md:inline shrink-0 text-primary/70">Vinculum Chancellery</span>
-            <span className="hidden md:inline text-brass" aria-hidden>·</span>
-            {inFoyer ? (
-              <span className="min-w-0 truncate">
-                Mission Foyer: <span className="text-muted-foreground normal-case tracking-normal font-normal">no mission open</span>
-              </span>
-            ) : (
-            <>
-            <span className="min-w-0 truncate">
-              Desk {String(position + 1).padStart(2, "0")}: <span className="text-accent">{active.label}</span>
-            </span>
-            <span className="hidden sm:inline shrink-0 text-muted-foreground">
-              <span className="normal-case">μ</span>B: <span className="text-primary">{effective.bondMean !== undefined ? effective.bondMean.toFixed(2) : "—"}</span>
-            </span>
-            <span className="hidden sm:inline shrink-0 text-muted-foreground">
-              Rupture: <span className={(effective.rupture ?? 0) >= 60 ? "text-destructive" : "text-primary"}>{effective.rupture !== undefined ? `${effective.rupture}%` : "—"}</span>
-            </span>
-            </>
-            )}
+            <span className="hidden md:inline shrink-0 text-primary/70">Focus view</span>
             {!inFoyer && (
             <label className="relative ml-auto shrink-0 inline-flex items-center">
               <span className="sr-only">Select desk</span>
               <select
+                data-shroud-nav
                 value={desk}
                 onChange={(e) => {
                   const d = DESKS.find((x) => x.id === e.target.value);
                   if (d) goTo(d);
                 }}
-                className="h-7 max-w-[9rem] sm:max-w-[13rem] appearance-none border border-brass/50 bg-background pl-2 pr-6 text-[10px] uppercase tracking-[0.12em] text-primary"
+                className="h-7 max-w-[11rem] sm:max-w-[15rem] appearance-none border border-brass/50 bg-background pl-2 pr-6 text-[10px] uppercase tracking-[0.12em] text-primary"
               >
                 {DESKS.map((d, i) => (
                   <option key={d.id} value={d.id}>{String(i + 1).padStart(2, "0")} · {d.label}</option>
@@ -1278,249 +1379,285 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-      <div className={`border-b-2 border-primary bg-background ${focus ? "hidden" : ""}`}>
-        <div className="container flex flex-wrap items-center justify-between gap-x-3 gap-y-2 py-3 sm:py-4">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Logo size={24} />
+
+      {/* Band 2 · Mission Operations Deck: identity, theatre preset and tools in one compact row. */}
+      <header className={`border-b-2 border-primary bg-background ${focus ? "hidden" : ""}`} data-testid="ops-deck">
+        <div className="container flex flex-wrap lg:flex-nowrap items-center gap-x-3 gap-y-1 py-1.5 min-h-[50px]">
+          <div className="flex min-w-0 flex-1 basis-full lg:grow-0 lg:basis-[20rem] lg:min-w-[14rem] items-center gap-2.5">
+            <Logo size={22} />
             <div className="min-w-0">
-              <span className="wordmark text-base sm:text-lg leading-none block truncate">Vinculum Dashboard</span>
-              <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Pro Omni Humanitate
-              </span>
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="wordmark shrink-0 text-sm sm:text-base leading-none">{missionOpen ? "Vinculum" : "Vinculum Dashboard"}</span>
+                {missionOpen && activeWs && (
+                  <>
+                    <span className="text-brass" aria-hidden>·</span>
+                    <span className="min-w-0 truncate font-serif text-sm sm:text-base leading-none text-primary" data-testid="deck-title">{activeWs.title}</span>
+                  </>
+                )}
+              </div>
+              <div className="mt-1 flex min-w-0 items-center gap-2 overflow-hidden">
+                {missionOpen && activeWs ? (
+                  <>
+                    <ModeBadges ws={activeWs} />
+                    <span className="hidden min-w-0 truncate text-[10px] text-muted-foreground md:inline lg:hidden 2xl:inline">{modeStatusText(activeWs, wsStore.status, network)}</span>
+                  </>
+                ) : (
+                  <span className="truncate text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {inFoyer ? "Mission Foyer · no mission open" : "Pro Omni Humanitate"}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-          <div className="flex flex-wrap items-center justify-end gap-x-3 sm:gap-x-4 gap-y-2 min-w-0 max-w-full text-[10px] uppercase tracking-[0.18em] font-semibold">
-            <span className="hidden md:inline text-muted-foreground normal-case tracking-normal text-xs">
-              {session.user.email}
-            </span>
-            <ChancelleryBreviary signals={effective} profile={profile} onAddToBinder={addToBinder} />
-            <LexiconDrawer />
-            <button
-              type="button"
-              onClick={() => setPaletteOpen(true)}
-              className="inline-flex items-center gap-1.5 text-primary hover:text-accent transition-colors"
-              aria-label="Open the command palette"
-              title="Command palette (Ctrl+K)"
-              data-testid="palette-button"
-            >
-              <Search size={13} />
-              <span className="hidden sm:inline">Find</span>
-            </button>
-            <PrivacyButton />
-            {activeWs && (
+          <div className="flex w-full lg:w-auto lg:flex-1 lg:justify-end min-w-0 items-center gap-1" data-testid="deck-tools">
+            <div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-none [webkit-overflow-scrolling:touch]">
+            {missionOpen && (
+              <TheatrePresetSelect value={signals.presetId ?? ""} custom={activeWs?.mode === "custom"} onChange={requestTheatre} />
+            )}
+            <div className="flex shrink-0 items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
+              {missionOpen && activeWs && (
+                <>
+                  <button type="button" onClick={() => setPanel((p) => (p === "vault" ? null : "vault"))} aria-pressed={panel === "vault"} aria-controls="deck-panel-vault" className={deckBtn(panel === "vault")} title="Mission State Vault: details, library, archives, enclave security" data-testid="vault-toggle">
+                    <Archive size={13} /> <span className="hidden 2xl:inline">Vault</span>
+                  </button>
+                  <button type="button" onClick={() => setPanel((p) => (p === "ledger" ? null : "ledger"))} aria-pressed={panel === "ledger"} aria-controls="deck-panel-ledger" className={deckBtn(panel === "ledger")} title="Session Ledger: this session's events, in memory only" data-testid="ledger-toggle">
+                    <ScrollText size={13} /> <span className="hidden 2xl:inline">Ledger</span>
+                  </button>
+                  <button type="button" onClick={() => setPanel((p) => (p === "controls" ? null : "controls"))} aria-pressed={panel === "controls"} aria-controls="deck-panel-controls" className={deckBtn(panel === "controls")} title={activeWs.mode === "preset" ? "Exercise controls and the Mission Spine" : "Mission controls and the Mission Spine"} data-testid="controls-toggle">
+                    <SlidersHorizontal size={13} /> <span className="hidden 2xl:inline">Controls</span>
+                  </button>
+                  <button type="button" onClick={() => onHeader("tray")} className={deckBtn(false)} aria-label="Open the Context Tray" title="Context Tray">
+                    <PanelRight size={13} /> <span className="hidden 2xl:inline">Context</span>
+                    {openQuestions > 0 && (
+                      <span className="inline-flex min-w-4 h-4 items-center justify-center border border-accent px-1 text-[9px] tracking-normal text-accent" title={`${openQuestions} open question${openQuestions === 1 ? "" : "s"} in the Context Tray`} data-testid="deck-open-questions">
+                        {openQuestions}
+                      </span>
+                    )}
+                  </button>
+                </>
+              )}
+              <ChancelleryBreviary signals={effective} profile={profile} onAddToBinder={addToBinder} />
+              <LexiconDrawer />
               <button
                 type="button"
-                onClick={() => setDrawerOpen(true)}
-                className="inline-flex items-center gap-1.5 text-primary hover:text-accent transition-colors"
-                aria-label="Open the rehearsal and handover drawer"
-                title="Rehearsal and handover: branches, diff, timeline, summary, export"
-                data-testid="rehearsal-button"
+                onClick={() => setPaletteOpen(true)}
+                className={deckBtn(false)}
+                aria-label="Open the command palette"
+                title="Command palette (Ctrl+K)"
+                data-testid="palette-button"
               >
-                <GitBranch size={13} />
-                <span className="hidden sm:inline">{branchActive ? "Branch" : "Rehearse"}</span>
+                <Search size={13} />
+                <span className="hidden 2xl:inline">Find</span>
               </button>
-            )}
-            <button
-              type="button"
-              onClick={() => setShortcutsOpen(true)}
-              className="hidden sm:inline-flex items-center text-primary hover:text-accent transition-colors"
-              aria-label="Keyboard shortcuts"
-              title="Keyboard shortcuts (?)"
-            >
-              <Keyboard size={14} />
-            </button>
-            <SaveSession onSave={saveSession} savedAt={savedAt} />
-            <button
-              type="button"
-              onClick={() => setFocus(true)}
-              className="inline-flex items-center gap-1.5 text-primary hover:text-accent transition-colors"
-              title="Focus view: collapse the masthead to a slim status bar"
-              aria-label="Enter Focus view"
-            >
-              <Maximize2 size={13} />
-              <span className="hidden sm:inline">Focus</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setScif((v) => !v)}
-              aria-pressed={scif}
-              className={`inline-flex items-center gap-1.5 transition-colors ${scif ? "text-accent" : "text-primary hover:text-accent"}`}
-              title={scif ? "Leave Amber Field terminal mode" : "Amber Field terminal mode"}
-              aria-label={scif ? "Leave Amber Field terminal mode" : "Enter Amber Field terminal mode"}
-            >
-              <Monitor size={13} />
-              <span className="hidden sm:inline">Amber</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                const on = !sound;
-                setSoundEnabled(on);
-                if (on) tick();
-              }}
-              aria-pressed={sound}
-              className="inline-flex items-center text-primary hover:text-accent transition-colors"
-              title={sound ? "Mute tactile audio" : "Enable tactile audio"}
-              aria-label={sound ? "Mute tactile audio" : "Enable tactile audio"}
-            >
-              {sound ? <Volume2 size={14} /> : <VolumeX size={14} />}
-            </button>
-            <Link to="/" className="text-primary hover:text-accent transition-colors">Site</Link>
-            <button onClick={signOut} className="text-accent hover:underline">Sign out</button>
+              <button
+                type="button"
+                onClick={() => setFocus(true)}
+                className={deckBtn(false)}
+                title="Focus view: collapse the deck to a slim status bar (Alt+Shift+F)"
+                aria-label="Enter Focus view"
+              >
+                <Maximize2 size={13} />
+                <span className="hidden 2xl:inline">Focus</span>
+              </button>
+              {activeWs && (
+                <button
+                  type="button"
+                  onClick={() => setDrawerOpen(true)}
+                  className={deckBtn(false)}
+                  aria-label="Open the rehearsal and handover drawer"
+                  title="Rehearsal and handover: branches, diff, timeline, summary, export"
+                  data-testid="rehearsal-button"
+                >
+                  <GitBranch size={13} />
+                  <span className="hidden 2xl:inline">{branchActive ? "Branch" : "Rehearse"}</span>
+                </button>
+              )}
+              {missionOpen && branchActive && (
+                <button type="button" onClick={() => { setDrawerTab("branches"); setDrawerOpen(true); }} className="inline-flex h-8 shrink-0 items-center gap-1.5 border border-accent bg-accent/10 px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-accent" data-testid="branch-indicator">
+                  <GitBranch size={12} /> {branchStore.branches.find((b) => b.id === branchStore.active)?.name ?? "Branch"} · what-if
+                </button>
+              )}
+            </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
+              {missionOpen && activeWs && (
+                <HandoverSealBadge status={sealState} differences={() => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : [])} sealing={sealBusy} onSeal={() => void sealMission()} onReseal={() => void sealMission()} onClear={breakSeal} />
+              )}
+              <SaveSession onSave={saveSession} savedAt={savedAt} />
+              {missionOpen && activeWs && (
+                <button type="button" onClick={() => onHeader("foyer")} className={deckBtn(false)} aria-label="Return to the Mission Foyer" title="Return to the Mission Foyer">
+                  <ArrowLeft size={13} />
+                </button>
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button type="button" className={deckBtn(false)} aria-label="More: shortcuts, display, audio, site and sign-out" title="More" data-testid="deck-more">
+                    <MoreHorizontal size={15} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-60 rounded-none border-brass/50 text-xs">
+                  <DropdownMenuLabel className="truncate text-[10px] font-normal text-muted-foreground">{session.user.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={() => setShortcutsOpen(true)}>
+                    <Keyboard size={13} className="mr-2" /> Keyboard shortcuts (?)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => setScif((v) => !v)}>
+                    <Monitor size={13} className="mr-2" /> {scif ? "Leave Amber Field terminal mode" : "Amber Field terminal mode"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      const on = !sound;
+                      setSoundEnabled(on);
+                      if (on) tick();
+                    }}
+                  >
+                    {sound ? <Volume2 size={13} className="mr-2" /> : <VolumeX size={13} className="mr-2" />} {sound ? "Mute tactile audio" : "Enable tactile audio"}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/">Return to the public site</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => void signOut()} className="text-accent">
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className={`container ${focus ? "py-4" : "py-6 sm:py-8"}`}>
+      {missionOpen && activeWs && (
+        <div className={focus ? "hidden" : ""}>
+          <div id="deck-panel-vault" className={panel === "vault" ? "container pt-3" : "hidden"} data-testid="deck-panel-vault">
+            <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
+          </div>
+          <div id="deck-panel-ledger" className={panel === "ledger" ? "container pt-3" : "hidden"} data-testid="deck-panel-ledger">
+            <SessionLedgerDrawer />
+          </div>
+          <div id="deck-panel-controls" className={panel === "controls" ? "container pt-3" : "hidden"} data-testid="deck-panel-controls">
+            <ModeHeader ws={activeWs} scenario={scenario} network={network} saveStatus={wsStore.status} signals={effective} desk={desk} deskLabel={deskLabel} onAction={onHeader} onStage={onStage} panel />
+          </div>
+        </div>
+      )}
+
+      {/* Band 3 · Desk navigation: division tabs and the desk stepper in one fixed-height band. */}
+      {missionOpen && (
+        <nav aria-label="Desk navigation" data-testid="desk-band" className={`sticky top-9 z-30 border-b border-brass/40 bg-background/95 backdrop-blur ${focus ? "hidden" : ""}`}>
+          <div ref={bandRef} className="container flex h-12 items-center gap-3 overflow-x-auto scrollbar-none scroll-smooth [webkit-overflow-scrolling:touch]">
+            <div className="flex shrink-0 items-center gap-0.5 border border-brass/50 p-0.5" role="group" aria-label="Divisions">
+              {DIVISIONS.map((dv) => {
+                const on = division === dv.id;
+                return (
+                  <button
+                    key={dv.id}
+                    type="button"
+                    data-division={dv.id}
+                    aria-pressed={on}
+                    title={dv.label}
+                    onClick={() => {
+                      setDivision(dv.id);
+                      const first = DESKS.find((d) => d.division === dv.id);
+                      if (first) setDesk(first.id);
+                    }}
+                    className={`h-8 shrink-0 whitespace-nowrap px-2 sm:px-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                      on ? "bg-primary text-primary-foreground" : "text-primary/70 hover:text-accent"
+                    }`}
+                  >
+                    {dv.short}
+                    <span className="sr-only"> · {dv.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <span className="h-6 w-px shrink-0 bg-brass/50" aria-hidden />
+            <div className="flex shrink-0 items-center gap-1.5" role="group" aria-label="Desks in this division">
+              {deskList.map((d) => {
+                const liveDesk = deskIsLive(d.id, effective);
+                const staged = binder.filter((x) => x.desk === d.id).length;
+                const on = desk === d.id;
+                return (
+                  <button
+                    key={d.id}
+                    type="button"
+                    data-desk={d.id}
+                    aria-pressed={on}
+                    aria-current={on ? "step" : undefined}
+                    onClick={() => setDesk(d.id)}
+                    className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap border px-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] leading-none transition-colors ${
+                      on ? "bg-accent text-accent-foreground border-accent" : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
+                    }`}
+                  >
+                    <span className={`mr-1.5 font-mono ${on ? "opacity-70" : "text-muted-foreground"}`}>{String(DESKS.findIndex((x) => x.id === d.id) + 1).padStart(2, "0")}</span>
+                    {liveDesk && (
+                      <span
+                        className={`mr-1.5 inline-block h-1.5 w-1.5 rounded-full ${on ? "bg-accent-foreground" : "bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.8)]"}`}
+                        title="Live telemetry on the mission bus"
+                        aria-label="Live telemetry"
+                      />
+                    )}
+                    {d.label}
+                    {d.id === "binder" && binder.length > 0 ? ` (${binder.length})` : ""}
+                    {staged > 0 && d.id !== "binder" && (
+                      <span
+                        className={`ml-1.5 inline-flex h-4 min-w-4 items-center justify-center border px-1 text-[9px] tracking-normal ${on ? "border-accent-foreground/70" : "border-brass/70 text-primary/80"}`}
+                        title={`${staged} excerpt${staged === 1 ? "" : "s"} staged in the Mission Binder`}
+                        aria-label={`${staged} staged in binder`}
+                      >
+                        {staged}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </nav>
+      )}
+
+      <div className={`container ${focus ? "py-4" : "py-4 sm:py-5"}`}>
         {inFoyer ? (
-          <div className="mb-28">
+          <div className="mb-8 pb-12">
             <MissionFoyer workspaces={workspaces} lastMode={lastMode} network={network} legacyDraft={legacyDraft} storeError={wsStore.error} quarantined={wsStore.store.quarantine.length} onAction={onFoyer} />
           </div>
         ) : opening ? (
-          <p role="status" className="mb-28 text-sm text-muted-foreground">Opening the local workspace…</p>
+          <p role="status" className="mb-8 pb-12 text-sm text-muted-foreground">Opening the local workspace…</p>
         ) : (
         <>
-        {activeWs && (
-          <div className={`mb-3 flex flex-wrap items-center gap-2 ${focus ? "hidden" : ""}`} data-testid="seal-row">
-            <HandoverSealBadge status={sealState} differences={() => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : [])} sealing={sealBusy} onSeal={() => void sealMission()} onReseal={() => void sealMission()} onClear={breakSeal} />
-            {branchActive && (
-              <button type="button" onClick={() => { setDrawerTab("branches"); setDrawerOpen(true); }} className="inline-flex min-h-8 items-center gap-1.5 border border-accent bg-accent/10 px-2 font-mono text-[10px] uppercase tracking-[0.12em] text-accent" data-testid="branch-indicator">
-                <GitBranch size={12} /> {branchStore.branches.find((b) => b.id === branchStore.active)?.name ?? "Branch"} · what-if posture
-              </button>
-            )}
-          </div>
-        )}
-        {activeWs && (
-          <div className={focus ? "hidden" : ""}>
-            <ModeHeader ws={activeWs} scenario={scenario} network={network} saveStatus={wsStore.status} signals={effective} desk={desk} deskLabel={deskLabel} onAction={onHeader} onStage={onStage} />
-          </div>
-        )}
-        <div className={`mb-6 sm:mb-8 ${focus ? "hidden" : ""}`}>
-          <MissionVault profile={profile} setProfile={setProfile} binder={binder} setBinder={setBinder} signals={signals} setSignals={setSignals} />
-          <div className="mt-3">
-            <SessionLedgerDrawer />
-          </div>
-        </div>
-
-        <div className={`mb-6 border border-border bg-card/60 px-3 sm:px-4 py-3 ${focus ? "hidden" : ""}`}>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground">Theatre preset · hydrates all desks</p>
-            {signals.presetId && (
-              <button type="button" onClick={() => requestTheatre("")} className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
-                Detach preset
-              </button>
-            )}
-          </div>
-          <div className="mt-2 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1 scrollbar-none" role="radiogroup" aria-label="Theatre preset">
-            {THEATRES.map((t) => {
-              const on = signals.presetId === t.id;
-              return (
-                <button
-                  key={t.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={on}
-                  onClick={() => requestTheatre(t.id)}
-                  title={t.description}
-                  className={`shrink-0 min-h-10 border px-3 py-1.5 text-left font-mono text-[10px] uppercase tracking-[0.12em] transition-colors ${
-                    on ? "border-primary bg-primary text-primary-foreground" : "border-border text-primary hover:border-accent"
-                  }`}
-                >
-                  <span className={on ? "opacity-80" : "text-muted-foreground"}>{t.sigil}</span> {t.name}
-                </button>
-              );
-            })}
-          </div>
-          <p className="mt-1 text-[10px] text-muted-foreground">
-            Training scenarios with illustrative readings, not field measurements.
-            {activeWs?.mode === "custom" ? " Applying one to this mission shows its impact first and is recorded in the Decision Record." : ""}
-          </p>
-        </div>
-
-        <div className={`mb-5 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto border-b border-brass/40 scrollbar-none [webkit-overflow-scrolling:touch] ${focus ? "hidden" : ""}`}>
-          <div className="flex w-max min-w-full gap-5 sm:gap-6 pb-3">
-            {DIVISIONS.map((dv) => {
-              const on = division === dv.id;
-              return (
-                <button
-                  key={dv.id}
-                  type="button"
-                  aria-pressed={on}
-                  onClick={() => {
-                    setDivision(dv.id);
-                    const first = DESKS.find((d) => d.division === dv.id);
-                    if (first) setDesk(first.id);
-                  }}
-                  className={`shrink-0 pb-2 -mb-3 border-b-2 text-[10px] font-semibold uppercase tracking-[0.18em] transition-colors ${
-                    on ? "border-accent text-accent" : "border-transparent text-primary/60 hover:text-accent"
-                  }`}
-                >
-                  <span className="sm:hidden">{dv.short}</span>
-                  <span className="hidden sm:inline">{dv.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className={focus ? "hidden" : "-mx-4 px-4 sm:mx-0 sm:px-0 flex overflow-x-auto scrollbar-none sm:overflow-visible sm:flex-wrap gap-2 mb-6 sm:mb-8 w-auto sm:w-full min-w-0 pb-1 sm:pb-0"}>
-          {deskList.map((d) => {
-            const liveDesk = deskIsLive(d.id, effective);
-            const staged = binder.filter((x) => x.desk === d.id).length;
-            return (
-            <button
-              key={d.id}
-              type="button"
-              aria-pressed={desk === d.id}
-              onClick={() => setDesk(d.id)}
-              className={`shrink-0 sm:shrink whitespace-nowrap sm:whitespace-normal min-w-0 break-words px-3 sm:px-4 py-2.5 min-h-11 border text-[10px] font-semibold uppercase tracking-[0.14em] sm:tracking-[0.2em] leading-tight transition-all ${
-                desk === d.id
-                  ? "bg-accent text-accent-foreground border-accent"
-                  : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
-              }`}
-            >
-              <span>
-                <span className={`mr-1.5 font-mono ${desk === d.id ? "opacity-70" : "text-muted-foreground"}`}>{String(DESKS.findIndex((x) => x.id === d.id) + 1).padStart(2, "0")}</span>
-                {liveDesk && (
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full inline-block mr-1.5 align-middle ${
-                      desk === d.id ? "bg-accent-foreground" : "bg-accent shadow-[0_0_6px_hsl(var(--accent)/0.8)]"
-                    }`}
-                    title="Live telemetry on the mission bus"
-                    aria-label="Live telemetry"
-                  />
-                )}
-                {d.label}
-                {d.id === "binder" && binder.length > 0 ? ` (${binder.length})` : ""}
-                {staged > 0 && d.id !== "binder" && (
-                  <span
-                    className={`ml-1.5 inline-flex min-w-4 h-4 items-center justify-center border px-1 align-middle text-[9px] tracking-normal ${
-                      desk === d.id ? "border-accent-foreground/70" : "border-brass/70 text-primary/80"
-                    }`}
-                    title={`${staged} excerpt${staged === 1 ? "" : "s"} staged in the Mission Binder`}
-                    aria-label={`${staged} staged in binder`}
-                  >
-                    {staged}
-                  </span>
-                )}
-              </span>
-            </button>
-            );
-          })}
-        </div>
-
-        <div className={`mb-6 max-w-3xl ${focus ? "hidden" : ""}`}>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <div className={`mb-4 max-w-3xl ${focus ? "hidden" : ""}`} data-testid="desk-heading">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <p className="eyebrow">{active.eyebrow}</p>
-            <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Step {position + 1} of {DESKS.length}
+            <span className="text-brass" aria-hidden>|</span>
+            <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground" data-testid="desk-step">
+              Step {String(position + 1).padStart(2, "0")} of {DESKS.length}
             </span>
           </div>
-          <h1 id="vs-desk-title" tabIndex={-1} className="mt-3 font-serif text-primary text-xl sm:text-2xl md:text-3xl leading-tight outline-none">{active.title}</h1>
-          <GoldRule className="mt-4 mb-4" />
-          <p className="text-sm text-muted-foreground">{active.note}</p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 id="vs-desk-title" tabIndex={-1} className="font-serif text-primary text-xl sm:text-2xl leading-tight outline-none">{active.title}</h1>
+            <button
+              type="button"
+              onClick={() => setNoteOpen((v) => !v)}
+              aria-expanded={noteOpen}
+              aria-controls="vs-desk-note"
+              className="inline-flex h-7 shrink-0 items-center gap-1 border border-brass/50 px-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-primary hover:border-accent hover:text-accent"
+              data-testid="doctrinal-note-toggle"
+            >
+              <span className="font-mono" aria-hidden>[?]</span> Doctrinal note
+            </button>
+          </div>
+          <div
+            id="vs-desk-note"
+            aria-hidden={!noteOpen}
+            className={`grid transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none ${noteOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+            data-testid="doctrinal-note"
+          >
+            <div className="overflow-hidden">
+              <GoldRule className="mt-3 mb-3" />
+              <p className="text-sm text-muted-foreground">{active.note}</p>
+            </div>
+          </div>
           {profile.theatre.trim() && (
-            <p className="mt-3 text-xs text-muted-foreground">
+            <p className="mt-2 text-xs text-muted-foreground">
               Active mission: <span className="text-primary">{profile.theatre}</span>
               {profile.classification ? ` · ${profile.classification}` : ""}
             </p>
@@ -1619,7 +1756,7 @@ export default function Dashboard() {
         </MissionContext.Provider>
         </EngineContext.Provider>
 
-        <div className="mb-28 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5">
+        <div className="mb-8 pb-12 grid gap-3 sm:grid-cols-2 border-t border-brass/40 pt-5" data-testid="desk-prevnext">
           {prev ? (
             <button
               type="button"
@@ -1857,210 +1994,5 @@ export default function Dashboard() {
     </PrivacyProvider>
     </div>
     </ChancellerySentinel>
-  );
-}
-
-function MirrorDesk() {
-  const [picked, setPicked] = useState<string[]>(["kenya", "northern-ireland"]);
-  const { signals } = useEngine();
-  // Linked: the live theatre's own bond vector can be drawn on the radar. Override: historical cases only.
-  const [linked, setLinked] = useState(true);
-  const [showLive, setShowLive] = useState(true);
-  const liveVector =
-    linked && signals.bonds
-      ? [signals.bonds.interpersonal, signals.bonds.communal, signals.bonds.intergenerational, signals.bonds.institutional]
-      : null;
-  const analogue = linked && signals.analogue ? CASES.find((c) => c.shortTitle === signals.analogue) : undefined;
-  // The three nearest documented cases from the live reading, closest first.
-  const nearestThree = linked
-    ? ((signals.analogues ?? (signals.analogue ? [signals.analogue] : []))
-        .map((t) => CASES.find((c) => c.shortTitle === t))
-        .filter(Boolean) as typeof CASES)
-    : [];
-  const topThreeMirrored = nearestThree.length > 0 && nearestThree.every((c) => picked.includes(c.slug)) && picked.length === nearestThree.length;
-
-  const toggle = (slug: string) =>
-    setPicked((prev) =>
-      prev.includes(slug)
-        ? prev.filter((s) => s !== slug)
-        : prev.length >= 3
-          ? prev
-          : [...prev, slug]
-    );
-
-  const selected = picked
-    .map((s) => CASES.find((c) => c.slug === s))
-    .filter(Boolean) as typeof CASES;
-
-  const mission = useMission();
-  // Publish the comparative selection to the mission engine.
-  usePublish("mirror", { mirrors: picked });
-
-  const mirrorText = useMemo(() => {
-    const bar = "-".repeat(64);
-    const fmt = (v: readonly number[]) => v.map((n) => n.toFixed(1)).join(", ");
-    const rank = (c: (typeof CASES)[number]) =>
-      c.scores.map((score, idx) => ({ score, domain: DOMAINS[idx], why: c.rationales[idx] })).sort((a, b) => a.score - b.score);
-    const pairing = PAIRINGS.find((p) => p.slugs.length === picked.length && p.slugs.every((x) => picked.includes(x)));
-    const L = [
-      "VINCULUM SECURITY · COMPARATIVE PRECEDENT MIRROR",
-      "Desk 4 · Cross-Theater Diagnostic Mirror",
-      "",
-      `THEATRE: ${mission.theatre.trim() || "Unnamed theatre"}`,
-      `DRAFTING OFFICER: ${mission.officer.trim() || "Not recorded"}`,
-      `CLASSIFICATION: ${mission.classification.trim() || "Unrestricted, working draft"}`,
-      "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.",
-      "",
-      bar,
-      "I. SELECTED THEATRES (Interpersonal, Communal, Intergenerational, Institutional)",
-      bar,
-      ...(liveVector ? [`  Live theatre: (${fmt(liveVector)})`] : ["  Live theatre: not linked or not yet scored"]),
-      ...selected.map((c) => {
-        const d = liveVector ? Math.sqrt(c.scores.reduce((a, v, i) => a + (v - liveVector[i]) ** 2, 0)) : null;
-        return `  ${c.shortTitle} (§ VII.${c.ref}): (${fmt(c.scores)})${d !== null ? ` · distance from live ${d.toFixed(2)}` : ""}`;
-      }),
-      "",
-      bar,
-      "II. CURATED PAIRING",
-      bar,
-      pairing ? `  ${pairing.label}: ${pairing.note}` : "  No curated pairing; a custom comparison.",
-      "",
-      bar,
-      "III. THE FOUR DOCTRINAL INQUIRIES",
-      bar,
-    ];
-    selected.forEach((c) => {
-      const r = rank(c);
-      L.push(
-        "",
-        `  ${c.shortTitle.toUpperCase()}`,
-        `  Inquiry I · Primary rupture point: ${r[0].domain} (${r[0].score.toFixed(1)}). ${r[0].why}`,
-        `  Inquiry II · Intervention mechanism: ${r[3].domain} (${r[3].score.toFixed(1)}). ${r[3].why}`,
-        `  Inquiry III · Unresolved vulnerability: ${r[1].domain} (${r[1].score.toFixed(1)}). ${r[1].why}`,
-        `  Inquiry IV · Transferable lesson: ${c.takeaway}`
-      );
-    });
-    L.push(
-      "",
-      bar,
-      "IV. CAUTIONARY NOTES",
-      bar,
-      "  · A precedent is a mirror, not a template. Institutions do not transfer between theatres; only tested relational lessons do.",
-      "  · Resemblance in scores is not resemblance in history. Verify each lesson against the live theatre's own sources.",
-      "  · Do not stage a precedent's ceremony without its substance. Anti-theatrics: an outcome test applies to every borrowed mechanism.",
-      "",
-      "Pro Omni Humanitate."
-    );
-    return L.join("\n");
-  }, [mission, picked, selected, liveVector]);
-
-  return (
-    <div className="space-y-8">
-      <SyncPanel
-        linked={linked}
-        onToggle={setLinked}
-        summary={(x) =>
-          x.bonds
-            ? [
-                `The live theatre vector (${[x.bonds.interpersonal, x.bonds.communal, x.bonds.intergenerational, x.bonds.institutional].map((n) => n.toFixed(1)).join(", ")}) is available to plot on the radar beside the selected cases.`,
-                ...(x.analogues?.length
-                  ? [`Nearest documented cases by Euclidean distance: ${x.analogues.join(", ")}.`]
-                  : x.analogue
-                    ? [`Closest documented case by Euclidean distance: ${x.analogue}.`]
-                    : []),
-              ]
-            : []
-        }
-      />
-      {liveVector && (
-        <label className="flex min-h-11 cursor-pointer items-center gap-3 border border-brass/40 bg-background/70 px-4 py-2 text-xs text-foreground/85">
-          <input
-            type="checkbox"
-            checked={showLive}
-            onChange={(e) => setShowLive(e.target.checked)}
-            className="accent-[hsl(var(--accent))]"
-          />
-          Plot the live theatre vector on the radar
-        </label>
-      )}
-      {nearestThree.length > 0 && !topThreeMirrored && (
-        <div className="border border-brass/40 bg-background/70 p-4 flex flex-wrap items-center justify-between gap-3" data-testid="mirror-top-three">
-          <p className="text-xs text-foreground/85 min-w-0 [overflow-wrap:anywhere]">
-            Your live bond reading sits closest to{" "}
-            {nearestThree.map((c, i) => (
-              <span key={c.slug}>
-                {i > 0 && (i === nearestThree.length - 1 ? ", then " : ", ")}
-                <span className="font-semibold">{c.shortTitle}</span>
-              </span>
-            ))}
-            .
-          </p>
-          <button type="button" onClick={() => setPicked(nearestThree.map((c) => c.slug).slice(0, 3))}
-            className="min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent">
-            {nearestThree.length > 1 ? "Mirror top three" : "Mirror it"}
-          </button>
-        </div>
-      )}
-      <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6">
-        <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">
-          Select two or three theatres
-        </p>
-        <div className="flex gap-2 flex-wrap">
-          {CASES.map((c) => {
-            const on = picked.includes(c.slug);
-            return (
-              <button
-                key={c.slug}
-                type="button"
-                aria-pressed={on}
-                onClick={() => toggle(c.slug)}
-                disabled={!on && picked.length >= 3}
-                className={`px-3 py-1.5 border text-[10px] font-semibold uppercase tracking-[0.2em] transition-all disabled:opacity-40 ${
-                  on
-                    ? "bg-accent text-accent-foreground border-accent"
-                    : "bg-transparent text-primary border-brass/50 hover:border-accent hover:text-accent"
-                }`}
-              >
-                {c.shortTitle}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-      <DiagnosticMirror cases={selected} onSelectPairing={setPicked} live={showLive ? liveVector : null} custom={signals.customPrecedents ?? []} />
-      {(signals.customPrecedents?.length ?? 0) > 0 && (
-        <div className="w-full min-w-0 overflow-x-auto border border-brass/40 bg-background p-4">
-          <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">Inscribed precedents against the live vector</p>
-          <table className="w-full min-w-[420px] border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-border text-left text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                <th className="py-2 pr-3 whitespace-nowrap">Precedent</th>
-                <th className="py-2 pr-3 whitespace-nowrap">Vector</th>
-                <th className="py-2 pr-3 whitespace-nowrap">Distance</th>
-                <th className="py-2 whitespace-nowrap">Resonance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {signals.customPrecedents!.map((p) => {
-                const d = liveVector ? Math.sqrt(p.scores.reduce((a, v, i) => a + (v - liveVector[i]) ** 2, 0)) : null;
-                return (
-                  <tr key={p.id} className="border-b border-border/60">
-                    <td className="py-2 pr-3 text-primary">{p.name}</td>
-                    <td className="py-2 pr-3 font-mono">({p.scores.map((x) => x.toFixed(1)).join(", ")})</td>
-                    <td className="py-2 pr-3 font-mono">{d === null ? "not linked" : d.toFixed(2)}</td>
-                    <td className="py-2 font-mono">{d === null ? "not linked" : `${Math.round((1 - d / 8) * 100)}%`}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {selected.length >= 2 && (
-        <div className="w-full min-w-0">
-          <DeskOutput text={mirrorText} fileName="Vinculum-Comparative-Mirror" />
-        </div>
-      )}
-    </div>
   );
 }

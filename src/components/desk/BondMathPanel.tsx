@@ -27,7 +27,7 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
   const ranked = table.filter((r) => r.rank !== null).sort((a, b) => a.rank! - b.rank!);
 
   return (
-    <div className="bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full overflow-hidden">
+    <div className="bg-background border border-brass/40 p-4 sm:p-5 min-w-0 w-full max-w-full overflow-hidden">
       <p className="eyebrow">Mathematical reading</p>
       <hr className="gold-rule gold-rule-short mt-4 mb-4" />
 

@@ -74,7 +74,7 @@ def audit(pw, w, h):
     page.wait_for_timeout(400)
     c["altm_engages"] = page.evaluate("() => document.documentElement.classList.contains('vs-shroud')")
     c["aria_pressed"] = page.get_by_test_id("privacy-button").get_attribute("aria-pressed") == "true"
-    c["title_shrouded"] = page.title() == "Vinculum Security · Operational Briefing [SHROUDED]"
+    c["title_shrouded"] = page.title() == "[RESTRICTED CHANCELLERY BRIEFING] · Vinculum Security"
     low = theatre.lower()
     c["theatre_gone_from_text"] = low not in page.evaluate("() => document.body.innerText.toLowerCase()")
     c["theatre_gone_from_attrs"] = not any(low in (v or "").lower() for row in page.evaluate(ATTRS) for v in row[1:])

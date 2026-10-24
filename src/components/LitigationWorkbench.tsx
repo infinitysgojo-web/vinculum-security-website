@@ -247,7 +247,7 @@ export default function LitigationWorkbench() {
   const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
 
   return (
-    <section className="border border-brass/40 bg-navy-tint/40 p-5 md:p-7">
+    <section className="border border-brass/40 bg-navy-tint/40 p-4 sm:p-5">
       <div className="mb-6"><SyncPanel linked={linked} onToggle={setLinked} summary={(x) => x.weakestBond ? [`Harmed bond set to ${x.weakestBond}, the most exposed bond on the diagnostic bench.`] : []} /></div>
       <p className="mb-7 max-w-3xl text-muted-foreground text-sm leading-relaxed">
         Enter the facts of a new matter and the desk compiles a preparation checklist from the doctrine's
@@ -255,8 +255,9 @@ export default function LitigationWorkbench() {
         or transmitted, and no model is involved.
       </p>
 
-      <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-12 w-full min-w-0 [&>*]:min-w-0">
-        <div className="space-y-5 lg:col-span-6">
+      {/* 60/40 workbench: the matter intake on the wider side, the live evidentiary ledger beside it. */}
+      <div className="grid grid-cols-1 gap-5 items-start lg:grid-cols-[3fr_2fr] w-full min-w-0 [&>*]:min-w-0" data-testid="litigation-workbench-split">
+        <div className="space-y-5">
           <div>
             <label className={label} htmlFor="lit-matter">Matter or caption</label>
             <input
@@ -307,7 +308,7 @@ export default function LitigationWorkbench() {
         </div>
 
         {/* Right column: live evidentiary ledger beside the intake form. */}
-        <div className="space-y-4 min-w-0 lg:col-span-6">
+        <div className="space-y-4 min-w-0">
           <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-accent">Evidentiary ledger · live preview</p>
           <div className="border border-border bg-background p-4">
             <p className={label}>Evidence to secure · {DOMAINS[bond]} bond</p>
@@ -350,7 +351,7 @@ export default function LitigationWorkbench() {
               <span className="border border-brass/50 px-2 py-1 font-mono text-[10px] text-primary">Teeth {pleadingVenue.teeth}/5 · E {enforceability(pleadingVenue)}</span>
             </>
           ) : (
-            <span className="text-[11px] text-muted-foreground">No dispute forum on the bus. Select a venue on the Forum Matrix (Desk 11).</span>
+            <span className="text-[11px] text-muted-foreground">No dispute forum on the bus. Select a venue on the Forum Matrix in the Clause Redliner (Desk 11).</span>
           )}
         </div>
         {pleadingVenue && (

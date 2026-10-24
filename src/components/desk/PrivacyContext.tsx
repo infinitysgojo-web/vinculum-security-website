@@ -6,6 +6,7 @@ import {
   KEEP,
   SHROUD_ATTRS,
   UNMASK_CONFIRM_MS,
+  createAttrStore,
   liftAll,
   maskCopyEvent,
   selectedText,
@@ -15,6 +16,7 @@ import {
   unmaskDecision,
   type AttrStore,
   type FieldStore,
+  type SelectStore,
 } from "./privacyDom";
 
 /**
@@ -147,24 +149,25 @@ export function PrivacyProvider({ input, children }: { input: ShroudInput; child
   useEffect(() => {
     if (!masked || typeof document === "undefined") return;
     const m = (t: string) => (matcher ? maskText(t, dict, matcher) : t);
-    const attrs: AttrStore = new Map();
+    const attrs: AttrStore = createAttrStore();
     const fields: FieldStore = new Map();
+    const selects: SelectStore = new Map();
     // A focused narrative field is blurred first, so its sanitiser commits before it freezes.
     const active = document.activeElement as HTMLElement | null;
     if (active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT") && !active.closest("[data-shroud-keep]")) active.blur();
-    shroudSubtree(document.body, m, attrs, fields);
+    shroudSubtree(document.body, m, attrs, fields, selects);
     const mo = new MutationObserver((records) => {
       for (const r of records) {
         if (r.type === "attributes") {
           const el = r.target as Element;
-          if (!el.closest(KEEP)) shroudElement(el, m, attrs, fields);
-        } else r.addedNodes.forEach((n) => n.nodeType === Node.ELEMENT_NODE && shroudSubtree(n as Element, m, attrs, fields));
+          if (!el.closest(KEEP)) shroudElement(el, m, attrs, fields, selects);
+        } else r.addedNodes.forEach((n) => n.nodeType === Node.ELEMENT_NODE && shroudSubtree(n as Element, m, attrs, fields, selects));
       }
     });
     mo.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: [...SHROUD_ATTRS, "type"] });
     return () => {
       mo.disconnect();
-      liftAll(attrs, fields);
+      liftAll(attrs, fields, selects);
     };
   }, [masked, matcher, dict]);
 

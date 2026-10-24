@@ -78,7 +78,7 @@ export function LexiconDrawer() {
           aria-label="Open the working lexicon"
           className="inline-flex items-center gap-1.5 min-h-9 text-primary hover:text-accent transition-colors"
         >
-          <BookOpen size={14} /> <span className="hidden sm:inline">Lexicon</span>
+          <BookOpen size={14} /> <span className="hidden 2xl:inline">Lexicon</span>
         </button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">

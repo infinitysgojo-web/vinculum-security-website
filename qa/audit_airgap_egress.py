@@ -2,8 +2,9 @@
 """
 Vinculum Security - air-gap egress and header audit.
 
-Drives a real headless Chromium through public pages and the full 18-desk
-dashboard chain, then fires the panic purge, and fails on any request to a host
+Drives a real headless Chromium through public pages, the Mission Foyer, a
+Preset Proving Ground exercise and the full 18-desk dashboard chain, then fires
+the panic purge, and fails on any request to a host
 outside the allow-list, any CSP violation, any page error or a Sentinel canary
 false positive.
 
@@ -130,9 +131,21 @@ async def run(base: str, require_headers: bool) -> int:
         await page.wait_for_selector("text=Vinculum Dashboard", timeout=15000)
         await dismiss_consent()
 
-        # Hydrate every desk from the first theatre preset, then walk the whole chain with ].
-        preset = page.locator('[role="radiogroup"][aria-label="Theatre preset"] [role="radio"]').first
-        await preset.click()
+        # Two-mode architecture: the dashboard opens on the Mission Foyer. Start a Preset Proving
+        # Ground exercise from the Scenario Library before the desks (and the preset selector) exist.
+        await page.get_by_role("button", name="Open Scenario Library").click()
+        await page.get_by_role("button", name="Start exercise").first.click()
+        await page.wait_for_selector("#vs-desk-title", timeout=15000)
+        print("    [+] Mission Foyer -> Scenario Library -> Preset Proving Ground exercise")
+
+        # Hydrate every desk from the first theatre preset on the Mission Operations Deck's
+        # integrated selector, then walk the whole chain with ].
+        preset = page.locator('select[data-testid="theatre-preset"]')
+        options = await preset.locator("option").evaluate_all("els => els.map(e => e.value).filter(Boolean)")
+        if not options:
+            failures.append("theatre preset selector carries no presets")
+        else:
+            await preset.select_option(options[0])
         await page.wait_for_timeout(800)
         await page.locator("body").click(position={"x": 5, "y": 5})
         for _ in range(DESK_COUNT - 1):

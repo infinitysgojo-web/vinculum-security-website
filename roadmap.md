@@ -1,8 +1,13 @@
 # Roadmap
 
-- [ ] Connect inscribed shocks to compound and succession testing without double-applying bond deltas
-- [ ] Connect inscribed covenants to drafting, verification and handover
-- [ ] Test custom-input propagation and verify the connected desks in the signed-in interface
+- [ ] Master Architecture Family Tree PDF
+
+- [x] Connect inscribed shocks to compound and succession testing without double-applying bond deltas
+- [x] Connect inscribed covenants to drafting, verification and handover
+- [x] Test custom-input propagation and verify the connected desks (telemetry continuity across all 18 desks, bus monitor and ledger)
+- [x] Multi-party seating: six delegations, radial seats at 2π/N, friction across every bilateral pair, a visible notice for a seventh
+- [x] Presentation privacy hardening: Alt+M mask with two-press unmask, frozen narrative fields and content selects, tooltip and title redaction, masked copy, Trojan Source drop barrier, opaque print
+- [x] Chancellery ergonomic unification: Sentinel strip, Mission Operations Deck, fixed-height desk band, collapsed doctrinal notes, no phantom void above the Chancellery Wire
 
 - [x] Embedded preview restoration: restore embedded Lovable preview without permitting arbitrary foreign frames
 - [x] Desk layout rebalancing: balanced two-column desks across all 18 desks, 12-column splits on the Litigation, Clause Architect, Counterpart, Readiness and Mission Binder desks
@@ -39,6 +44,6 @@
 - [x] Dashboard audit: expose decimal bond scoring, formulas, thresholds, and stage-to-stage consequences clearly on screen
 - [x] Dashboard integrity: harmonize scoring bands, trend terminology, track tolerance, and readiness locks with the documented mathematics
 - [x] Case Studies: restore the score matrix directly beneath the Relational Atlas and make each case row actionable
-- [ ] Run an authenticated end-to-end mission and responsive visual verification; exclude the master PDF
-- [ ] Six linked additions: Chancellery Breviary desk, multi-theatre mission library, What-If simulator, SHA-256 integrity stamps, in-desk lexicon, offline field mode
+- [x] Run an end-to-end mission (offline field session through the Mission Foyer and all 18 desks) and responsive visual verification; the master PDF is tracked separately above
+- [x] Six linked additions: Chancellery Breviary desk, multi-theatre mission library, What-If simulator, SHA-256 integrity stamps, in-desk lexicon, offline field mode
 - [x] Offline: saved Dispatches, offline dashboard sign-in, clearer Google sitelink titles/descriptions

@@ -25,11 +25,11 @@ export default function HandoverSealBadge({
   onClear: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const base = "inline-flex min-h-8 max-w-full items-center gap-1.5 border px-2 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors";
+  const base = "inline-flex min-h-8 max-w-[16rem] shrink-0 whitespace-nowrap items-center gap-1.5 border px-2 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors";
   if (status.state === "unsealed")
     return (
       <button type="button" onClick={onSeal} disabled={sealing} className={`${base} border-brass/50 text-primary hover:border-accent hover:text-accent disabled:opacity-50`} title="Seal the mission assessment with SHA-256 before a briefing or a handover" data-testid="seal-badge">
-        <Stamp size={12} /> <span>{sealing ? "Sealing…" : "Seal assessment"}</span>
+        <Stamp size={12} /> <span className="hidden 2xl:inline">{sealing ? "Sealing…" : "Seal assessment"}</span>
       </button>
     );
   const diffs = open && status.state === "diverged" ? differences() : [];
@@ -45,7 +45,7 @@ export default function HandoverSealBadge({
         data-seal-state={status.state}
       >
         {status.state === "intact" ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-        <span className="truncate">
+        <span className="hidden truncate 2xl:inline">
           {status.state === "intact"
             ? `Sealed · ${sha8(status.seal.sealHash)}`
             : `Divergence detected · ${status.parameters.slice(0, 2).join(", ")}${status.parameters.length > 2 ? ` +${status.parameters.length - 2}` : ""}`}

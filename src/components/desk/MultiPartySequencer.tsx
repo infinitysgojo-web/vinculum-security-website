@@ -513,8 +513,33 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
       </div>
     </div>
 
+      {/* Seated delegations: up to six in a responsive grid, each at its radial seat 2πi/N. */}
+      {seated.length > 0 && (
+        <div className="mt-6 w-full min-w-0" data-testid="seated-delegations">
+          <p className={label}>
+            Seated delegations · {seated.length} of {TABLE_CAPACITY} · {frictions.length} of {(seated.length * (seated.length - 1)) / 2} bilateral pair{seated.length * (seated.length - 1) === 2 ? "" : "s"} with recorded friction
+          </p>
+          <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+            {seated.map((a, i) => {
+              const deg = Math.round((radialSeat(i, seated.length, 0, 0, 1).theta * 180) / Math.PI);
+              const pairs = frictions.filter((f) => f.a === a.id || f.b === a.id).length;
+              return (
+                <li key={a.id} className="min-w-0 border border-brass/40 bg-card/60 p-3">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="min-w-0 text-xs font-semibold text-primary [overflow-wrap:anywhere]">{a.label}</span>
+                    <span className="shrink-0 font-mono text-[10px] text-muted-foreground">Seat {i + 1} · {deg}°</span>
+                  </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">Carries: {BONDS[a.bond]} · {pairs} friction pair{pairs === 1 ? "" : "s"}</p>
+                  <p className="mt-1.5 text-[11px] leading-relaxed text-foreground/80 [overflow-wrap:anywhere]">{a.caution}</p>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       {/* Tier 2: the asymmetry and leverage matrix needs the full width to read. */}
-      <div className="mt-8 w-full min-w-0">
+      <div className="mt-6 w-full min-w-0">
         <AsymmetryMatrix
           parties={[
             ...seated.map((a) => ({ id: a.id, label: a.label, bond: a.bond })),

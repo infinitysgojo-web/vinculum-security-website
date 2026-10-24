@@ -23,7 +23,7 @@ export default function RelationalDynamicsPanel({ scores }: { scores: [number, n
   const tone = d.character === "Systemic" ? "text-terracotta" : d.character === "None" ? "text-primary" : "text-brass";
 
   return (
-    <div className="mt-6 bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full overflow-hidden">
+    <div className="mt-6 bg-background border border-brass/40 p-4 sm:p-5 min-w-0 w-full max-w-full overflow-hidden">
       <p className="eyebrow">Relational dynamics</p>
       <hr className="gold-rule gold-rule-short mt-4 mb-4" />
 

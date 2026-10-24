@@ -446,7 +446,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
       {/* Tier 1: working bench and primary gauge, balanced halves. */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         {/* ---- input column ---- */}
-        <div className="bg-navy-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
+        <div className="bg-navy-tint border border-border p-4 sm:p-5 min-w-0 w-full max-w-full">
           <label htmlFor="bench-context" className="eyebrow block">
             Theatre or process
           </label>
@@ -478,7 +478,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
 
           <hr className="gold-rule gold-rule-short mt-8 mb-7" />
 
-          <div className="space-y-8">
+          <div className="space-y-5">
             {LEVELS.map((l) => {
               const v = scores[l.key];
               return (
@@ -530,7 +530,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
 
         {/* ---- reading column ---- */}
         <div className="space-y-4 min-w-0">
-          <div className="bg-background border border-brass/40 p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
+          <div className="bg-background border border-brass/40 p-4 sm:p-5 min-w-0 w-full max-w-full">
             <p className="eyebrow">Reading</p>
             <h4 className="mt-3 font-serif text-primary text-2xl leading-tight">{standing.label}</h4>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -656,7 +656,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
             )}
           </div>
 
-          <div className="bg-navy-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
+          <div className="bg-navy-tint border border-border p-4 sm:p-5 min-w-0 w-full max-w-full">
             <p className="eyebrow">Most exposed bond</p>
             <h4 className="mt-3 font-serif text-primary text-xl">
               {weakest.name} &middot; {scores[weakest.key].toFixed(1)} of 5 &middot; {bondBand(scores[weakest.key])}
@@ -672,7 +672,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
           </div>
 
           <RelationalDynamicsPanel scores={values} />
-          <div className="bg-background border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full" data-testid="nearest-cases">
+          <div className="bg-background border border-border p-4 sm:p-5 min-w-0 w-full max-w-full" data-testid="nearest-cases">
             <p className="eyebrow">Nearest documented cases</p>
             {shockCount > 0 && (
               <p className="mt-2 text-[11px] text-muted-foreground" data-testid="nearest-cases-live">
@@ -712,7 +712,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
           <BondMathPanel scores={liveVector} />
         </div>
         <div className="space-y-6 min-w-0">
-          <div className="bg-gold-tint border border-border p-4 sm:p-6 md:p-8 min-w-0 w-full max-w-full">
+          <div className="bg-gold-tint border border-border p-4 sm:p-5 min-w-0 w-full max-w-full">
             <p className="eyebrow">Boundary rules in force</p>
             <hr className="gold-rule gold-rule-short mt-4 mb-4" />
             <ul className="space-y-3">

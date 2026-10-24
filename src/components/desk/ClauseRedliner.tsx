@@ -325,10 +325,19 @@ export default function ClauseRedliner() {
             value={body}
             onChange={(e) => setBody(e.target.value)}
             placeholder="Paste the draft clause or provision here. Nothing you paste leaves this browser."
-            aria-describedby={body.trim().length < REDLINE_MIN_CHARS ? "rl-min" : undefined}
+            aria-describedby={body.trim().length < REDLINE_MIN_CHARS ? "rl-count rl-min" : "rl-count"}
           />
+          <p
+            id="rl-count"
+            aria-live="polite"
+            data-testid="redline-char-count"
+            className={`mt-1.5 font-mono text-[10px] tabular-nums ${body.trim().length >= REDLINE_MIN_CHARS ? "text-primary" : "text-accent"}`}
+          >
+            {Math.min(body.trim().length, REDLINE_MIN_CHARS)} / {REDLINE_MIN_CHARS} characters
+            {body.trim().length >= REDLINE_MIN_CHARS ? ` · threshold met · ${body.trim().length} characters audited` : ` · ${REDLINE_MIN_CHARS - body.trim().length} more to run the audit`}
+          </p>
           {body.trim().length < REDLINE_MIN_CHARS && (
-            <p id="rl-min" className="mt-1.5 text-[11px] text-accent">
+            <p id="rl-min" className="mt-1 text-[11px] text-accent">
               Enter at least 20 characters to execute the statutory anti-theatrics audit.
             </p>
           )}

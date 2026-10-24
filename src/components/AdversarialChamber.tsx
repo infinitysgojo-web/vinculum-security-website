@@ -161,7 +161,7 @@ export default function AdversarialChamber() {
           </ol>
         </nav>
 
-        <div className="p-4 sm:p-5 md:p-8">
+        <div className="p-4 sm:p-5">
           <p className="eyebrow">Panel {panel.n} · {panel.lens}</p>
           <h3 className="mt-2 font-serif text-primary text-2xl md:text-3xl">{panel.title}</h3>
           <hr className="gold-rule gold-rule-short mt-4 mb-6" />
