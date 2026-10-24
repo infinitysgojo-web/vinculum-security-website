@@ -73,12 +73,26 @@ export default function App() {
   const { pathname } = useLocation();
   const portal = pathname === "/login" || pathname.startsWith("/dashboard");
 
+  // Sovereign portal: flag the document so the public consent manager is suppressed
+  // there (see index.css) and the Chancellery Wire keeps the full bottom edge.
+  useEffect(() => {
+    document.body.classList.toggle("vs-portal", portal);
+    return () => {
+      document.body.classList.remove("vs-portal");
+    };
+  }, [portal]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {loading && !portal && <LoadingScreen onDone={() => setLoading(false)} />}
       <ScrollToTop />
       {!portal && <SiteHeader />}
-      <main className="flex-1" role="main">
+      <main
+        className={portal ? "flex-1 pb-0" : "flex-1"}
+        role="main"
+        data-portal={portal ? "true" : undefined}
+        data-dashboard={pathname.startsWith("/dashboard") ? "true" : undefined}
+      >
         <RouteErrorBoundary resetKey={pathname}>
         <Routes>
           <Route path="/" element={<Home />} />
