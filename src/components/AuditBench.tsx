@@ -73,7 +73,7 @@ export default function AuditBench({ parties: base }: { parties: readonly Party[
         (sg.rupture ?? 0) >= 35 && `With the rupture index at ${sg.rupture} per cent, treat any unchecked safeguard as blocking, not advisory.`,
         (sg.frictionPairs?.length ?? 0) > 0 && `Friction at the table: ${sg.frictionPairs!.join("; ")}. Confirm retaliation safeguards for each side separately.`,
       ]} />
-      <p className="mb-8 max-w-3xl text-muted-foreground">Review one party at a time before a bond assessment is treated as ready for use.</p>
+      <p className="mb-5 max-w-3xl text-muted-foreground">Review one party at a time before a bond assessment is treated as ready for use.</p>
       <label htmlFor="audit-party" className="eyebrow block mb-2 md:hidden">Affected party</label>
       <select id="audit-party" value={active} onChange={(event) => setActive(Number(event.target.value))} className="mb-5 w-full border border-input bg-background px-3 py-2.5 text-sm md:hidden">
         {parties.map(([name], index) => <option key={name} value={index}>{name}</option>)}
@@ -104,6 +104,35 @@ export default function AuditBench({ parties: base }: { parties: readonly Party[
             <Button type="button" variant="ghost" size="sm" onClick={() => setChecked({})}><RotateCcw /> Reset</Button>
           </div>
         </div>
+      </div>
+      {/* Comparative audit: every affected party's safeguard coverage side by side, two columns. */}
+      <div className="mt-6 w-full min-w-0" aria-labelledby="audit-compare">
+        <p id="audit-compare" className="eyebrow mb-3">Comparative audit · {complete} of {parties.length} parties complete</p>
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2" data-testid="audit-comparative">
+          {parties.map(([name], index) => {
+            const done = (checked[name] ?? []).filter(Boolean).length;
+            const full = done === CHECKS.length;
+            return (
+              <li key={name} className="min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setActive(index)}
+                  aria-pressed={active === index}
+                  className={cn("w-full border p-3 text-left transition-colors hover:border-accent", active === index ? "border-accent bg-background" : "border-brass/40 bg-card/60")}
+                >
+                  <span className="flex items-baseline justify-between gap-3">
+                    <span className="min-w-0 truncate text-sm text-primary">{name}</span>
+                    <span className={cn("shrink-0 font-mono text-[10px]", full ? "text-primary" : "text-accent")}>{done}/{CHECKS.length}</span>
+                  </span>
+                  <span className="mt-2 block h-1 w-full bg-border" aria-hidden>
+                    <span className={cn("block h-1", full ? "bg-primary" : "bg-accent")} style={{ width: `${Math.round((done / CHECKS.length) * 100)}%` }} />
+                  </span>
+                  <span className="mt-1.5 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{full ? "Safeguards complete" : `${CHECKS.length - done} outstanding`}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
       </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={record} fileName="Vinculum-Field-Audit" />

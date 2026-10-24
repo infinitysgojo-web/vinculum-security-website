@@ -73,7 +73,7 @@ export default function DeltaSimulator({
   const statLabel = "block text-[9px] uppercase tracking-[0.18em] text-muted-foreground";
 
   return (
-    <section className="border border-brass/50 bg-background/80 p-4 sm:p-6 w-full min-w-0 max-w-full">
+    <section className="border border-brass/50 bg-background/80 p-4 sm:p-5 w-full min-w-0 max-w-full">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-brass/30 pb-3">
         <div className="flex items-center gap-2 min-w-0">
           <Sliders size={16} className="text-accent shrink-0" />
