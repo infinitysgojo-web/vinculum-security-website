@@ -78,7 +78,12 @@ export default function App() {
       {loading && !portal && <LoadingScreen onDone={() => setLoading(false)} />}
       <ScrollToTop />
       {!portal && <SiteHeader />}
-      <main className="flex-1" role="main">
+      <main
+        className={portal ? "flex-1 pb-0" : "flex-1"}
+        role="main"
+        data-portal={portal ? "true" : undefined}
+        data-dashboard={pathname.startsWith("/dashboard") ? "true" : undefined}
+      >
         <RouteErrorBoundary resetKey={pathname}>
         <Routes>
           <Route path="/" element={<Home />} />

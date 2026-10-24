@@ -578,8 +578,12 @@
   .scrollbar-none::-webkit-scrollbar { display: none; }
 }
 
-/* Keep floating consent badge from covering last content on mobile */
-@media (max-width: 640px) { main { padding-bottom: 4.5rem; } }
+/* Keep floating consent badge from covering last content on mobile, on public routes
+   only. The dashboard and login portal carry no consent badge and dock their own
+   bottom bands, so their <main> (data-portal) takes no artificial void. */
+@media (max-width: 640px) {
+  main:not([data-dashboard]):not([data-portal]) { padding-bottom: 4.5rem; }
+}
 
 /* SCIF / Amber Field terminal mode: the same semantic tokens, re-pointed to an
    amber-phosphor palette on deep charcoal. Toggled by the .scif class on <html>. */

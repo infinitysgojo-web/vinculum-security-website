@@ -38,6 +38,28 @@ function offlineManifest() {
   };
 }
 
+/**
+ * Vendor partitioning. Matches on exact node_modules package paths so that
+ * packages merely containing "react" in their name (react-hook-form,
+ * @react-pdf/*, lucide-react, ...) never land in the core chunk.
+ */
+function vendorChunk(id: string): string | undefined {
+  // Rollup's CommonJS interop helpers are shared by React (CJS) and @react-pdf. Pin them
+  // to the always-loaded core chunk so the lazy PDF vendor chunk is never pulled into
+  // the entry's static imports (and modulepreloaded on every public page).
+  if (id.includes("commonjsHelpers")) return "vendor-react-core";
+  const m = id.replace(/\\/g, "/").match(/\/node_modules\/((?:@[^/]+\/)?[^/]+)\//g);
+  if (!m) return undefined;
+  const pkg = m[m.length - 1].replace(/^\/node_modules\//, "").replace(/\/$/, "");
+  if (pkg.startsWith("@react-pdf/")) return "vendor-pdf";
+  if (pkg === "lucide-react") return "vendor-icons";
+  if (pkg.startsWith("@radix-ui/")) return "vendor-radix";
+  if (["react", "react-dom", "react-router", "react-router-dom", "scheduler", "@remix-run/router"].includes(pkg)) {
+    return "vendor-react-core";
+  }
+  return undefined;
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -48,6 +70,15 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  build: {
+    // Offline analytical workstation: client-side PDF synthesis and crypto ship in the bundle.
+    chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks: vendorChunk,
+      },
     },
   },
 }));
