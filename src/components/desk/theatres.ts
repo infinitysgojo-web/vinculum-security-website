@@ -29,6 +29,7 @@ export type TheatrePreset = {
   name: string;
   description: string;
   parties: string;
+  coords: { lat: number; lng: number };
   bonds: MissionBonds;
   seeds: DeskSeeds;
 };
@@ -42,6 +43,8 @@ export const THEATRES: TheatrePreset[] = [
     parties: "Two governments; armed movement; corridor communities; regional guarantor",
     bonds: { interpersonal: 2.6, communal: 2.2, intergenerational: 2.4, institutional: 2.8 },
     seeds: {
+      parties: "Two governments; armed movement; corridor communities; regional guarantor",
+      coords: { lat: -1.68, lng: 29.23 }, // Goma / Kivu corridor
       sentinel: { on: [0, 2, 6, 7, 9, 12, 15, 18, 20], trend: 0 },
       tracks: { done: ["i1", "ii1", "i2", "i3"] },
       compound: { on: ["displacement", "currency", "capture"] },
@@ -60,6 +63,8 @@ export const THEATRES: TheatrePreset[] = [
     parties: "Littoral state; armed movement; coastal communities; external patrons",
     bonds: { interpersonal: 2.9, communal: 2.5, intergenerational: 2.3, institutional: 2.6 },
     seeds: {
+      parties: "Littoral state; armed movement; coastal communities; external patrons",
+      coords: { lat: 11.59, lng: 43.15 }, // Bab el-Mandeb littoral
       sentinel: { on: [1, 6, 8, 12, 13, 19, 21], trend: 0 },
       tracks: { done: ["i1", "ii1", "i2"] },
       compound: { on: ["theatre", "attention", "donor"] },
@@ -78,6 +83,8 @@ export const THEATRES: TheatrePreset[] = [
     parties: "Two governments; devolved executive; unionist and nationalist communities; victims' groups",
     bonds: { interpersonal: 3.4, communal: 2.8, intergenerational: 3.1, institutional: 3.3 },
     seeds: {
+      parties: "Two governments; devolved executive; unionist and nationalist communities; victims' groups",
+      coords: { lat: 54.60, lng: -5.93 }, // Belfast
       sentinel: { on: [7, 10, 16, 22], trend: 1 },
       tracks: { done: ["i1", "ii1", "i2", "ii2", "i3", "ii3", "i4", "ii4", "i5", "ii5"] },
       compound: { on: ["election", "attention"] },
@@ -96,6 +103,8 @@ export const THEATRES: TheatrePreset[] = [
     parties: "Government; former insurgency; dissident fronts; rural communities; guarantor states",
     bonds: { interpersonal: 3.1, communal: 2.7, intergenerational: 2.6, institutional: 2.9 },
     seeds: {
+      parties: "Government; former insurgency; dissident fronts; rural communities; guarantor states",
+      coords: { lat: 4.71, lng: -74.07 }, // Bogotá
       sentinel: { on: [3, 8, 12, 14, 19], trend: 2 },
       tracks: { done: ["i1", "ii1", "i2", "ii2", "i3", "ii3", "i4"] },
       compound: { on: ["capture", "youth", "currency"] },
@@ -114,6 +123,8 @@ export const THEATRES: TheatrePreset[] = [
     parties: "National government; autonomous authority; decommissioning combatants; clan elders; third-party monitors",
     bonds: { interpersonal: 3.2, communal: 3.0, intergenerational: 3.0, institutional: 3.1 },
     seeds: {
+      parties: "National government; autonomous authority; decommissioning combatants; clan elders; third-party monitors",
+      coords: { lat: 7.22, lng: 124.25 }, // Cotabato City
       sentinel: { on: [9, 13, 20], trend: 2 },
       tracks: { done: ["i1", "ii1", "i2", "ii2", "i3", "ii3", "i4", "ii4", "i5"] },
       compound: { on: ["principal", "election"] },
