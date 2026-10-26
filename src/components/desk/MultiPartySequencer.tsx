@@ -7,6 +7,8 @@ import EscrowWaterfall from "./EscrowWaterfall";
 import { logDecision } from "./ledgerStore";
 import { DEFAULT_ESCROW, escrowWaterfall, type EscrowTerms, type EscrowInput, DEFAULT_RESOURCES, rebalance, resourceReading, RESOURCE_HEADS, COMMUNAL_FLOOR, LEGITIMACY_PENALTY } from "./instruments";
 import { useTheatreSeed } from "./theatres";
+import { theatreById } from "./theatres";
+import { sphericalCentroid } from "./theatreGeodesy";
 
 type Actor = {
   id: string;
@@ -537,7 +539,34 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
           </ul>
         </div>
       )}
-
+      
+      {/* Multilateral Diplomatic Barycentre */}
+      {(() => {
+        const theatre = theatreById(signals.presetId);
+        if (!theatre?.coords) return null;
+        // Distribute seated parties in relation to the active theatre anchor
+        const points = seated.map((s, idx) => ({
+          lat: theatre.coords.lat + (idx % 2 === 0 ? 0.8 : -0.8) * Math.sin((idx + 1) * 1.2),
+          lng: theatre.coords.lng + (idx % 2 === 0 ? 1.1 : -1.1) * Math.cos((idx + 1) * 1.2),
+          weight: s.bond + 1,
+        }));
+        const bary = sphericalCentroid(points);
+        if (!bary) return null;
+        return (
+          <div className="mt-4 p-3 border border-brass/40 bg-background/50 font-mono text-xs flex flex-wrap items-center justify-between gap-3">
+            <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground font-semibold">
+              Diplomatic Barycentre ({theatre.sigil})
+            </span>
+            <span className="text-foreground font-medium">
+              {bary.lat > 0 ? `${bary.lat}°N` : `${Math.abs(bary.lat)}°S`}, {bary.lng > 0 ? `${bary.lng}°E` : `${Math.abs(bary.lng)}°W`}
+            </span>
+            <span className="text-[11px] text-muted-foreground">
+              ±{bary.dispersionNm} NM delegation dispersion
+            </span>
+          </div>
+        );
+      })()}
+      
       {/* Tier 2: the asymmetry and leverage matrix needs the full width to read. */}
       <div className="mt-6 w-full min-w-0">
         <AsymmetryMatrix
