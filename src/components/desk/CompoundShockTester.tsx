@@ -8,6 +8,7 @@ import SyncPanel from "./SyncPanel";
 import { LEGITIMACY_PENALTY } from "./instruments";
 import { compoundStress, compoundTimeline, COMPOUND_AMPLIFY } from "./shockTimeline";
 import ShockTimelineScrubber from "./ShockTimelineScrubber";
+import { ruptureShockRadiusNm } from "./theatreGeodesy";
 
 type Shock = { id: string; label: string; sev: number; bond: number; breaker: string; absorb: string };
 
@@ -376,8 +377,13 @@ export default function CompoundShockTester() {
             <div className="h-full bg-accent transition-all" style={{ width: `${strain}%` }} />
           </div>
           <p className="mt-3 text-xs uppercase tracking-[0.18em] font-semibold text-accent">{band}</p>
-        </div>
-
+          <div className="mt-2 text-[11px] font-mono text-muted-foreground flex items-center justify-between border-t border-border/40 pt-2">
+            <span className="uppercase tracking-wider text-[10px]">Contagion Envelope:</span>
+            <span className="font-semibold text-foreground">
+              {ruptureShockRadiusNm(strain).toLocaleString()} NM reach
+            </span>
+          </div>
+      
         {useLive && liveVector && (
           <div className="border border-brass/40 bg-background p-5 min-w-0">
             <p className={label}>Live vector after shock · B′ᵢ = max(1.0, Bᵢ − Σ ωₐ ÷ 10)</p>
