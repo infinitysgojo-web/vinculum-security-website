@@ -87,6 +87,14 @@ export default function Login() {
       return;
     }
 
+    // Preset or device credential matches locally: enter without waiting on the cloud.
+    if (await verifyOffline(email, password)) {
+      setBusy(false);
+      setAttempts(0);
+      navigate("/dashboard", { replace: true });
+      return;
+    }
+
     // A sign-in that throws, or hangs past SIGN_IN_RACE_MS on a dead link, goes
     // straight to offline verification instead of waiting out retries.
     const race = await raceAuth(supabase.auth.signInWithPassword({ email: email.trim(), password }), SIGN_IN_RACE_MS);
