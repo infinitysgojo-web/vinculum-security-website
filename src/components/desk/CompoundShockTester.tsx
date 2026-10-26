@@ -383,7 +383,7 @@ export default function CompoundShockTester() {
               {ruptureShockRadiusNm(strain).toLocaleString()} NM reach
             </span>
           </div>
-      
+         </div>
         {useLive && liveVector && (
           <div className="border border-brass/40 bg-background p-5 min-w-0">
             <p className={label}>Live vector after shock · B′ᵢ = max(1.0, Bᵢ − Σ ωₐ ÷ 10)</p>
