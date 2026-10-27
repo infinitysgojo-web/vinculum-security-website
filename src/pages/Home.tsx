@@ -16,36 +16,12 @@ import {
 import NavCard from "@/components/NavCard";
 import ReadingPathways from "@/components/ReadingPathways";
 import FadeIn from "@/components/FadeIn";
-import DispatchCover from "@/components/DispatchCover";
 import DiplomatBadge from "@/components/DiplomatBadge";
 import Cite from "@/components/Cite";
 import Logo from "@/components/Logo";
 import { useParallax } from "@/hooks/useParallax";
 import { Link } from "react-router-dom";
 import { COMMENTARY_COUNT } from "@/content/commentary";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
-
-interface MediumArticle {
-  id: string;
-  title: string;
-  link: string;
-  pub_date: string;
-  cover_image: string | null;
-  excerpt: string | null;
-}
-
-function formatDate(iso: string): string {
-  try {
-    return new Date(iso).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-}
 
 const SITELINKS = [
   {
@@ -95,80 +71,40 @@ const CARDS = [
 ];
 
 function LatestDispatches() {
-  const [articles, setArticles] = useState<MediumArticle[]>(() => {
-    try {
-      return (JSON.parse(localStorage.getItem("vs:dispatches-cache") || "[]") as MediumArticle[]).slice(0, 3);
-    } catch {
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch("https://medium-feed.james-nduan.workers.dev/");
-        const data = res.ok ? await res.json() : null;
-        if (!cancelled && data?.articles?.length) {
-          setArticles(data.articles.slice(0, 3));
-          try {
-            localStorage.setItem("vs:dispatches-cache", JSON.stringify(data.articles));
-          } catch {
-            // storage full: live list still shows
-          }
-        }
-      } catch {
-        // keep the saved copy on failure
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  if (articles.length === 0) return null;
-
   return (
     <section className="container pb-20">
       <FadeIn>
-        <p className="eyebrow">Dispatches</p>
-        <h2 className="mt-3 font-serif text-primary">Latest Commentary</h2>
-        <div className="mt-6 h-px w-16 bg-accent" />
-      </FadeIn>
-      <div className="mt-10 grid gap-6 md:gap-8 md:grid-cols-3">
-        {articles.map((article, i) => (
-          <FadeIn key={article.id} delay={i * 80}>
+        <div className="p-8 border border-brass/50 bg-card/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="space-y-2">
+            <p className="text-[10px] uppercase font-semibold tracking-[0.2em] text-accent">
+              Field Commentary & Analysis
+            </p>
+            <h3 className="font-serif text-2xl text-primary font-medium">
+              Dispatches on Medium
+            </h3>
+            <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
+              Examine live world affairs and international security developments through the lens of Vinculum Security. All dispatches and field commentaries by James Wesley Ndua are published directly on Medium.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+            <Link
+              to="/dispatches"
+              className="inline-flex items-center justify-center border border-brass/60 px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-primary hover:border-brass hover:text-accent transition-colors"
+            >
+              Editorial Overview
+            </Link>
             <a
-              href={article.link}
+              href="https://medium.com/@jamesndua"
               target="_blank"
               rel="noopener noreferrer"
-              className="group block h-full bg-background border border-brass/40 overflow-hidden transition-colors duration-500 hover:border-brass"
+              className="inline-flex items-center justify-center gap-2 border border-accent bg-accent/10 px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
             >
-              <DispatchCover src={article.cover_image} />
-              <div className="p-5">
-                <time
-                  dateTime={article.pub_date}
-                  className="text-[10px] uppercase tracking-[0.2em] font-semibold text-muted-foreground"
-                >
-                  {formatDate(article.pub_date)}
-                </time>
-                <h3 className="mt-2 font-serif text-lg text-primary group-hover:text-accent transition-colors leading-snug">
-                  {article.title}
-                </h3>
-              </div>
+              Open on Medium
+              <span aria-hidden>↗</span>
             </a>
-          </FadeIn>
-        ))}
-      </div>
-      <div className="mt-8">
-        <Link
-          to="/dispatches"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-accent transition-colors"
-        >
-          View all dispatches
-          <span aria-hidden>→</span>
-        </Link>
-      </div>
+          </div>
+        </div>
+      </FadeIn>
     </section>
   );
 }
@@ -373,8 +309,6 @@ export default function Home() {
       </section>
       
       <ReadingPathways />
-
-      <LatestDispatches />
 
     </>
   );
