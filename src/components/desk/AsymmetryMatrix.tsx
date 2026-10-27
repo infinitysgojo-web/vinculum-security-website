@@ -3,7 +3,7 @@ import { useEngine, usePublish, VIABLE_FLOOR } from "./engine";
 import { theatreById } from "./theatres";
 import { bilateralGeodesic } from "./theatreGeodesy";
 import { bilateralGeodesic } from "./theatreGeodesy";
-import { FormulaProof } from "./FormulaProof";
+import FormulaProof from "./FormulaProof";
 import { frictionProof } from "./formulaProofs";
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"] as const;
@@ -83,6 +83,7 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
         <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary">Asymmetry and leverage matrix</p>
         <FormulaProof proof={frictionProof(maxF, signals.trackTolerance ?? 0.25, geo)} />
       </div>
+    
       <p className="mb-3 text-xs text-muted-foreground">
         Tolerance is the minimum each delegation will accept on each bond. Coefficients are Euclidean distance over the maximum (0 to 1).
       </p>
