@@ -9,6 +9,9 @@ import { LEGITIMACY_PENALTY } from "./instruments";
 import { compoundStress, compoundTimeline, COMPOUND_AMPLIFY } from "./shockTimeline";
 import ShockTimelineScrubber from "./ShockTimelineScrubber";
 import { ruptureShockRadiusNm } from "./theatreGeodesy";
+import { ruptureShockRadiusNm } from "./theatreGeodesy";
+import FormulaProof from "./FormulaProof";
+import { compoundShockProof } from "./formulaProofs";
 
 type Shock = { id: string; label: string; sev: number; bond: number; breaker: string; absorb: string };
 
@@ -367,10 +370,20 @@ export default function CompoundShockTester() {
         </div>
       </div>
       {/* Right column: strain, the shocked vector and the continuum radar. */}
-      <div className="space-y-6 min-w-0">
-        <div className="border border-brass/40 p-5">
+      <div className="border border-brass/40 p-5">
           <div className="flex items-baseline justify-between mb-3">
-            <p className={label}>Compound strain</p>
+            <div className="flex items-center gap-2">
+              <p className={label}>Compound strain</p>
+              <FormulaProof
+                proof={compoundShockProof(
+                  active.length,
+                  active.reduce((acc, s) => acc + s.sev, 0),
+                  active.length > 1 ? (active.length - 1) * AMPLIFY * 4 : 0,
+                  deficitOn ? LEGITIMACY_PENALTY : 0,
+                  strain,
+                )}
+              />
+            </div>
             <span className="font-serif text-2xl text-primary">{fmt(strain)}/100</span>
           </div>
           <div className="h-2 bg-brass/20">
