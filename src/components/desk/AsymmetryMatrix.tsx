@@ -3,7 +3,7 @@ import { useEngine, usePublish, VIABLE_FLOOR } from "./engine";
 import { theatreById } from "./theatres";
 import { bilateralGeodesic } from "./theatreGeodesy";
 import { bilateralGeodesic } from "./theatreGeodesy";
-import FormulaProof from "./FormulaProof";
+import { FormulaProof } from "./FormulaProof";
 import { frictionProof } from "./formulaProofs";
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"] as const;
