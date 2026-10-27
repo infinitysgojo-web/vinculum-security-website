@@ -151,3 +151,95 @@ export function escrowProof(terms: EscrowTerms, input: EscrowInput): FormulaProo
 export function proofText(p: FormulaProof): string {
   return [p.title.toUpperCase(), `  ${p.equation}`, `  ${p.substitution}`, ...p.steps.map((s, i) => `  ${i + 1}. ${s}`), `  = ${p.result}`, `  Source: ${p.citation}`].join("\n");
 }
+
+/* ------------------------------------------------------------------ */
+/* Desk 01 · Assessment Bench — state vector & mean proof            */
+/* ------------------------------------------------------------------ */
+
+/** μB = ¼ Σ Bᵢ and σB² = ¼ Σ (Bᵢ − μB)² (Desk 01, BondMathPanel). */
+export function meanBondProof(scores: [number, number, number, number]): FormulaProof {
+  const sum = scores.reduce((a, b) => a + b, 0);
+  const mean = sum / 4;
+  const variance = scores.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / 4;
+  const sd = Math.sqrt(variance);
+
+  return {
+    id: "desk01-mean-bond",
+    title: "Composite Bond Mean & Variance",
+    equation: "μB = ¼ Σ Bᵢ ;  σB² = ¼ Σ (Bᵢ − μB)² ;  σB = √(σB²)",
+    substitution: `B = (${scores.map((s) => s.toFixed(1)).join(", ")}), Σ Bᵢ = ${sum.toFixed(1)}`,
+    steps: [
+      `Sum of bond dimensions: ${scores.map((s) => s.toFixed(1)).join(" + ")} = ${sum.toFixed(2)}`,
+      `Arithmetic mean: ${sum.toFixed(2)} ÷ 4 = ${mean.toFixed(3)}`,
+      `Squared deviations: ${scores.map((s) => `(${s.toFixed(1)} − ${mean.toFixed(2)})² = ${Math.pow(s - mean, 2).toFixed(3)}`).join(", ")}`,
+      `Variance σB²: (${scores.map((s) => Math.pow(s - mean, 2).toFixed(2)).join(" + ")}) ÷ 4 = ${variance.toFixed(3)}`,
+      `Standard deviation σB: √${variance.toFixed(3)} = ${sd.toFixed(3)}`,
+    ],
+    result: `μB = ${mean.toFixed(3)} (variance σB² = ${variance.toFixed(3)})`,
+    citation: `${CODEX}, Part III §3.1 (Bond Vector Quantification and State Space): all four dimensions carry equal weight; the arithmetic mean forms the baseline composite state.`,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Desk 02 · Asymmetry Matrix — bilateral friction & geodesic axis     */
+/* ------------------------------------------------------------------ */
+
+/** Asymmetry friction F = max |Bᵢ₁ − Bᵢ₂| and geodesic distance (Desk 02, AsymmetryMatrix). */
+export function frictionProof(
+  friction: number,
+  tolerance: number,
+  geo?: { distanceNm: number; distanceKm: number; bearingDeg: number } | null,
+): FormulaProof {
+  const breached = friction > tolerance;
+  const steps: string[] = [
+    `Observed peak inter-party bond divergence: F = ${friction.toFixed(2)}`,
+    `Communal tolerance limit: τ = ${tolerance.toFixed(2)}`,
+    breached
+      ? `F (${friction.toFixed(2)}) > τ (${tolerance.toFixed(2)}): Asymmetry breach detected. Hold principals until divergence narrows.`
+      : `F (${friction.toFixed(2)}) ≤ τ (${tolerance.toFixed(2)}): Divergence is within viable communal tolerance floor.`,
+  ];
+  if (geo) {
+    steps.push(
+      `Great-circle geodesic axis: ${geo.distanceNm.toLocaleString()} NM (${geo.distanceKm.toLocaleString()} km) along bearing ${geo.bearingDeg}°T.`,
+    );
+  }
+
+  return {
+    id: "desk02-friction",
+    title: "Bilateral Bond Friction & Geodesic Axis",
+    equation: "F = max_{i} |B_i,1 − B_i,2|  with constraint  F ≤ τ_communal",
+    substitution: `F = ${friction.toFixed(2)}, τ = ${tolerance.toFixed(2)}${geo ? `, d = ${geo.distanceNm} NM` : ""}`,
+    steps,
+    result: `Friction = ${friction.toFixed(2)} · ${breached ? "Tolerance Breached" : "Viable Tolerance"}`,
+    citation: `${CODEX}, Part IV §4.1 (Bilateral Asymmetry and Friction Bounds): divergence exceeding communal tolerance introduces destabilising leverage.`,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Desk 05 · Compound Shock Tester — compound strain arithmetic       */
+/* ------------------------------------------------------------------ */
+
+/** Compound strain = min(100, Σ ω + (k − 1) × 1.25 × 4 + penalty) (Desk 05). */
+export function compoundShockProof(
+  shockCount: number,
+  baseSeverity: number,
+  amplification: number,
+  legitimacyPenalty: number,
+  strain: number,
+): FormulaProof {
+  return {
+    id: "desk05-compound-strain",
+    title: "Compound Shock Strain Amplification",
+    equation: "Strain = min(100, Σ ω + (k − 1) × 1.25 × 4 + L_penalty)",
+    substitution: `k = ${shockCount}, Base Σ ω = ${baseSeverity}, Amp = ${amplification.toFixed(1)}, L_pen = ${legitimacyPenalty}`,
+    steps: [
+      `Base severity sum across ${shockCount} shock(s): Σ ω = ${baseSeverity}`,
+      `Nonlinear compounding: (${shockCount} − 1) × 1.25 × 4 levels = +${amplification.toFixed(1)} strain points`,
+      `Legitimacy structural penalty: +${legitimacyPenalty} strain points`,
+      `Gross sum: ${baseSeverity} + ${amplification.toFixed(1)} + ${legitimacyPenalty} = ${(baseSeverity + amplification + legitimacyPenalty).toFixed(1)}`,
+      `Clamped to [0, 100]: min(100, ${(baseSeverity + amplification + legitimacyPenalty).toFixed(1)}) = ${strain}`,
+    ],
+    result: `Compound Strain = ${strain}%`,
+    citation: `${CODEX}, Part VI §6.2 (Compound Shock Cascade and Nonlinear Amplification): multiple simultaneous shocks compound nonlinearly across all four bond dimensions.`,
+  };
+}
