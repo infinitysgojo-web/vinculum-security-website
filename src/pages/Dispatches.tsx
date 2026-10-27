@@ -61,7 +61,7 @@ export default function Dispatches() {
             <div className="border-t border-brass/30 pt-3 flex flex-wrap items-center justify-center sm:justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               <div className="flex items-center gap-2">
                 <DiplomatBadge variant="doctrine-core">Continuous Edition</DiplomatBadge>
-                <DiplomatBadge variant="jurisprudence">Four Bond Domains</DiplomatBadge>
+                <DiplomatBadge variant="foundation">Four Bond Domains</DiplomatBadge>
               </div>
               <div className="flex items-center gap-4 text-xs tracking-normal font-normal">
                 <Link to="/doctrine" className="hover:text-accent transition-colors">
