@@ -82,7 +82,6 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
     <div className="border border-brass/40 bg-background p-4 sm:p-5">
       <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary mb-1">Asymmetry and leverage matrix</p>
       <FormulaProof proof={frictionProof(maxF, signals.trackTolerance ?? 0.25, geo)} />
-    </div>
       <p className="mb-3 text-xs text-muted-foreground">
         Tolerance is the minimum each delegation will accept on each bond. Coefficients are Euclidean distance over the maximum (0 to 1).
       </p>
