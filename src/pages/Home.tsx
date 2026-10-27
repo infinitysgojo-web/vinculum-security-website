@@ -107,8 +107,9 @@ function LatestDispatches() {
     let cancelled = false;
     (async () => {
       try {
-        const { data, error } = await supabase.functions.invoke("medium-feed");
-        if (!cancelled && !error && data?.articles?.length) {
+        const res = await fetch("https://medium-feed.james-nduan.workers.dev/");
+        const data = res.ok ? await res.json() : null;
+        if (!cancelled && data?.articles?.length) {
           setArticles(data.articles.slice(0, 3));
           try {
             localStorage.setItem("vs:dispatches-cache", JSON.stringify(data.articles));
