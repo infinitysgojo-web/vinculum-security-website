@@ -1,3 +1,5 @@
+import FormulaProof from "./FormulaProof";
+import { meanBondProof } from "./formulaProofs";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { AlertTriangle, ShieldCheck } from "lucide-react";
@@ -38,7 +40,10 @@ export default function BondMathPanel({ scores }: { scores: [number, number, num
 
       <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-4 text-sm">
         <div>
-          <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Composite mean μB</dt>
+          <dt className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground flex items-center justify-between">
+            <span>Composite mean μB</span>
+            <FormulaProof proof={meanBondProof(scores)} />
+          </dt>
           <dd className="font-serif text-primary text-xl">{m.mean.toFixed(3)}</dd>
           <dd className="text-[11px] text-muted-foreground">μB = ¼ Σ Bᵢ · {bondBand(m.mean)} band</dd>
         </div>
