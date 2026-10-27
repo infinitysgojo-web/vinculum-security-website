@@ -383,7 +383,6 @@ export default function CompoundShockTester() {
                   strain,
                 )}
               />
-            </div>
             <span className="font-serif text-2xl text-primary">{fmt(strain)}/100</span>
           </div>
           <div className="h-2 bg-brass/20">
