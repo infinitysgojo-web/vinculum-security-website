@@ -121,8 +121,9 @@ export default function Dispatches() {
     }
     (async () => {
       try {
-        const { data, error: fnError } = await supabase.functions.invoke("medium-feed");
-        if (fnError) throw fnError;
+        const res = await fetch("https://medium-feed.james-nduan.workers.dev/");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
         const fresh: Article[] = data?.articles ?? [];
         if (!cancelled) {
           setArticles(fresh);
