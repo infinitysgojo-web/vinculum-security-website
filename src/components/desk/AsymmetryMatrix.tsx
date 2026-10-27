@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { useEngine, usePublish, VIABLE_FLOOR } from "./engine";
+import { theatreById } from "./theatres";
+import { bilateralGeodesic } from "./theatreGeodesy";
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"] as const;
 const SHORT = ["Inter.", "Comm.", "Gen.", "Inst."];
@@ -52,6 +54,20 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
     return { maxF, veto, vetoGap };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parties, tol, limIdx, liveLim]);
+
+  const theatre = theatreById(signals.presetId);
+  const geo = useMemo(() => {
+    if (!theatre?.coords || parties.length < 2) return null;
+    const p1 = {
+      lat: theatre.coords.lat + 0.8 * Math.sin(1.2),
+      lng: theatre.coords.lng + 1.1 * Math.cos(1.2),
+    };
+    const p2 = {
+      lat: theatre.coords.lat - 0.8 * Math.sin(2.4),
+      lng: theatre.coords.lng - 1.1 * Math.cos(2.4),
+    };
+    return bilateralGeodesic(p1, p2);
+  }, [theatre, parties]);
 
   usePublish("asymmetry", { partyFriction: parties.length >= 2 ? maxF : 0, vetoHolder: veto?.label ?? "" });
 
@@ -133,6 +149,20 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
           </tbody>
         </table>
       </div>
+
+      {geo && (
+        <div className="mt-4 p-3 border border-brass/40 bg-background/50 font-mono text-xs flex flex-wrap items-center justify-between gap-3">
+          <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground font-semibold">
+            Bilateral Geodesic Axis ({theatre?.sigil})
+          </span>
+          <span className="text-foreground font-medium">
+            {geo.distanceNm.toLocaleString()} NM ({geo.distanceKm.toLocaleString()} km) · {geo.bearingDeg}°T
+          </span>
+          <span className="text-[11px] text-muted-foreground">
+            Flight: {geo.flightHoursMach082}h (Mach 0.82) · Fiber latency: {geo.fiberLatencyMs}ms
+          </span>
+        </div>
+      )}
 
       <div className="mt-4 space-y-2 text-xs">
         <p className="[overflow-wrap:anywhere]">
