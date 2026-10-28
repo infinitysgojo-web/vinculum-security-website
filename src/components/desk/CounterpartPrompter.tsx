@@ -3,6 +3,9 @@ import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { phaseQuestions, counterpartTactics } from "./questioning";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
@@ -47,6 +50,13 @@ const SCRIPT: Record<number, [string, string, string, string]> = {
   ],
 };
 
+const FOLLOW_UPS = [
+  ["Who authorised your participation, and how can that mandate be independently checked?", "Who is absent from this conversation whose standing must be protected?"],
+  ["What dated record supports that answer, and who can verify it independently?", "Who would dispute that account, and what safe channel lets them be heard?", "What would change your answer, and what remains unverified?"],
+  ["Which office owns the obligation, and by what date must it act?", "What evidence will demonstrate performance, and what happens if it fails?"],
+  ["Which points remain disputed or unanswered in the written record?", "Who receives the record, and when will the parties review it?"],
+] as const;
+
 const AUDIT = [
   "Did any answer name an office rather than a person?",
   "Was a single altered decision identified, with a date?",
@@ -59,6 +69,8 @@ export default function CounterpartPrompter() {
   const [cp, setCp] = useState(0);
   const [bond, setBond] = useState(0);
   const [phase, setPhase] = useState(0);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [tacticId, setTacticId] = useState("");
 
   // Division I decides which bond this meeting is actually about.
   const { signals } = useEngine();
@@ -92,20 +104,33 @@ export default function CounterpartPrompter() {
   }, [cp, customOn, cLabel, cCaution, cPivot]);
 
   const questions = useMemo(
-    () => SCRIPT[bond].map((q, i) => (customOn && cQ[i].trim() ? cQ[i].trim() : q)) as [string, string, string, string],
+    () => SCRIPT[bond].map((q, i) => phaseQuestions(customOn ? cQ[i] : "", [q, ...FOLLOW_UPS[i]])),
     [bond, customOn, cQ]
   );
 
+  const tactics = counterpartTactics(linked ? signals.customNotes : []);
+  const selectedTactic = tactics.find((note) => note.id === tacticId);
+  const currentIndex = Math.min(questionIndex, questions[phase].length - 1);
+  useEffect(() => setQuestionIndex(0), [phase, bond, customOn, cQ]);
+
   const text = useMemo(() => {
     const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
-    PHASES.forEach((p, i) => L.push(`${i + 1}. ${p.toUpperCase()}`, `   "${questions[i]}"`, ""));
+    PHASES.forEach((p, i) => {
+      L.push(`${i + 1}. ${p.toUpperCase()}`);
+      questions[i].forEach((q, j) => L.push(`   ${j + 1}. "${q}"`));
+      L.push("");
+    });
+    if (tactics.length) {
+      L.push("INSCRIBED COUNTERPART TACTICS");
+      tactics.forEach((note) => L.push(`  ${note.title}`, note.body, ""));
+    }
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
     if (live) L.push("", ...telemetryLines(signals));
     L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [active, bond, questions, live, signals]);
+  }, [active, bond, questions, live, signals, tactics]);
 
 
   return (
@@ -131,22 +156,22 @@ export default function CounterpartPrompter() {
           <div className="border border-brass/40 bg-background p-4">
             <div className="flex items-center justify-between gap-3">
               <span className={`${label} mb-0`}>Own counterpart and own wording</span>
-              <button type="button" aria-pressed={customOn} onClick={() => setCustomOn(!customOn)}
+              <Button variant="ghost" type="button" aria-pressed={customOn} onClick={() => setCustomOn(!customOn)}
                 className={`min-h-9 px-3 border text-[10px] uppercase tracking-[0.18em] font-semibold ${customOn ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
                 {customOn ? "On" : "Off"}
-              </button>
+              </Button>
             </div>
             {customOn && (
               <div className="mt-4 space-y-3">
                 <p className="text-xs text-muted-foreground">
                   Anything you leave blank falls back to the selected archetype above.
                 </p>
-                <input className={`${field} text-base sm:text-sm min-h-11`} value={cLabel} onChange={(e) => setCLabel(e.target.value)} placeholder="Counterpart, for example: diaspora elders' council" />
-                <input className={`${field} text-base sm:text-sm min-h-11`} value={cCaution} onChange={(e) => setCCaution(e.target.value)} placeholder="Standing caution to carry into the room" />
-                <input className={`${field} text-base sm:text-sm min-h-11`} value={cPivot} onChange={(e) => setCPivot(e.target.value)} placeholder="Pivot if they deflect or attack" />
+                <input aria-label="Custom counterpart name" className={`${field} text-base sm:text-sm min-h-11`} value={cLabel} onChange={(e) => setCLabel(e.target.value)} placeholder="Counterpart, for example: diaspora elders' council" />
+                <textarea rows={3} aria-label="Custom standing caution" className={`${field} text-base sm:text-sm min-h-11`} value={cCaution} onChange={(e) => setCCaution(e.target.value)} placeholder="Standing caution to carry into the room" />
+                <textarea rows={3} aria-label="Custom tactical pivot" className={`${field} text-base sm:text-sm min-h-11`} value={cPivot} onChange={(e) => setCPivot(e.target.value)} placeholder="Pivot if they deflect or attack" />
                 <div className="grid gap-2">
                   {PHASES.map((p, i) => (
-                    <input key={p} className={`${field} text-base sm:text-sm min-h-11`} value={cQ[i]} onChange={(e) => setQ(i, e.target.value)} placeholder={`${p} question, your own wording`} />
+                    <label key={p} className="block"><span className={label}>{p} questions</span><textarea rows={3} aria-label={`${p} questions`} className={`${field} text-base sm:text-sm min-h-11 resize-y`} value={cQ[i]} onChange={(e) => setQ(i, e.target.value)} placeholder={`${p}: one examination question per line`} /></label>
                   ))}
                 </div>
               </div>
@@ -167,10 +192,10 @@ export default function CounterpartPrompter() {
             <ol className="space-y-2">
               {PHASES.map((p, k) => (
                 <li key={p} className="text-xs leading-relaxed">
-                  <button type="button" onClick={() => setPhase(k)} className={`text-left ${phase === k ? "text-accent" : "text-foreground/85 hover:text-accent"}`}>
+                  <Button variant="ghost" type="button" onClick={() => setPhase(k)} className={`text-left ${phase === k ? "text-accent" : "text-foreground/85 hover:text-accent"}`}>
                     <span className="block font-mono text-[10px] uppercase tracking-[0.14em]">{k + 1}. {p}</span>
-                    <span className="font-serif italic">“{questions[k]}”</span>
-                  </button>
+                    <span className="font-serif italic">“{questions[k][0]}” · {questions[k].length} questions</span>
+                  </Button>
                 </li>
               ))}
             </ol>
@@ -193,23 +218,39 @@ export default function CounterpartPrompter() {
           <div>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-1 mb-4">
               {PHASES.map((p, i) => (
-                <button key={p} type="button" aria-pressed={phase === i} onClick={() => setPhase(i)}
+                <Button variant="ghost" key={p} type="button" aria-pressed={phase === i} onClick={() => setPhase(i)}
                   className={`w-full min-h-11 px-2 py-2 border text-[10px] font-semibold uppercase tracking-[0.12em] sm:tracking-[0.18em] leading-tight ${phase === i ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
                   {p}
-                </button>
+                </Button>
               ))}
             </div>
             <blockquote className="border-l-2 border-accent bg-background p-4 sm:p-5 font-serif text-lg sm:text-xl md:text-2xl text-primary leading-snug break-words">
-              "{questions[phase]}"
+              “{questions[phase][currentIndex]}”
             </blockquote>
+            <div className="mt-3 flex items-center justify-between gap-3" aria-label="Question navigation">
+              <Button variant="outline" size="icon" aria-label="Previous question" disabled={currentIndex === 0} onClick={() => setQuestionIndex(currentIndex - 1)}><ChevronLeft /></Button>
+              <span className="text-xs font-mono text-muted-foreground">Question {currentIndex + 1} / {questions[phase].length}</span>
+              <Button variant="outline" size="icon" aria-label="Next question" disabled={currentIndex === questions[phase].length - 1} onClick={() => setQuestionIndex(currentIndex + 1)}><ChevronRight /></Button>
+            </div>
+            <ol className="mt-4 space-y-2" aria-label={`${PHASES[phase]} examination sequence`}>
+              {questions[phase].map((q, i) => <li key={i}><Button variant="ghost" aria-pressed={currentIndex === i} onClick={() => setQuestionIndex(i)} className={`h-auto min-h-11 w-full justify-start whitespace-normal text-left text-xs ${currentIndex === i ? "text-accent" : "text-foreground"}`}><span className="shrink-0 font-mono">{i + 1}.</span><span className="min-w-0 [overflow-wrap:anywhere]">{q}</span></Button></li>)}
+            </ol>
+            {tactics.length > 0 && <div className="mt-4 border-t border-border pt-4">
+              <label htmlFor="cp-tactic" className={label}>Inscribed counterpart tactic</label>
+              <select id="cp-tactic" className={field} value={selectedTactic?.id ?? ""} onChange={(e) => setTacticId(e.target.value)}>
+                <option value="">Select recorded tactic</option>
+                {tactics.map((note) => <option key={note.id} value={note.id}>{note.title}</option>)}
+              </select>
+              {selectedTactic && <p className="mt-3 whitespace-pre-wrap text-sm text-foreground [overflow-wrap:anywhere]">{selectedTactic.body || "No examination detail recorded."}</p>}
+            </div>}
             <div className="border border-brass/40 bg-background p-4 mt-3">
               <p className={label}>If they deflect or attack</p>
               <p className="text-sm text-foreground/85 break-words">{active.pivot}</p>
             </div>
             <div className="flex justify-between items-center gap-3 mt-3">
-              <button type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</button>
+              <Button variant="ghost" type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</Button>
               <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{phase + 1} / 4</span>
-              <button type="button" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</button>
+              <Button variant="ghost" type="button" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</Button>
             </div>
           </div>
         </div>
