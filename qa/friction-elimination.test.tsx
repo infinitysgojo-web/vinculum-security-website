@@ -7,7 +7,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { EngineContext, communalTolerance, stageGateAudit, statutoryClearances, type Signals } from "../src/components/desk/engine";
 import TrackSequencer, { offendingPhase, sequenceDepths } from "../src/components/desk/TrackSequencer";
-import MultiPartySequencer, { TABLE_CAPACITY, capacityNotice, radialSeat } from "../src/components/desk/MultiPartySequencer";
+import MultiPartySequencer, { seatingSelection, radialSeat } from "../src/components/desk/MultiPartySequencer";
 import ReadinessDesk from "../src/components/desk/ReadinessDesk";
 import SyncPanel, { SYNC_TOGGLE_HINT, syncToggleLabel } from "../src/components/desk/SyncPanel";
 import ClauseRedliner from "../src/components/desk/ClauseRedliner";
@@ -106,23 +106,13 @@ describe("pillar 2 · six-seat negotiation table", () => {
   const src = read("src/components/desk/MultiPartySequencer.tsx");
   const SIX = ["state", "armed", "youth", "elders", "civil", "donor"];
 
-  test("capacity is six and the seventh delegation gets a visible notice", () => {
-    expect(TABLE_CAPACITY).toBe(6);
-    expect(capacityNotice("Diaspora remittance network")).toBe(
-      "Negotiation table at capacity (6 delegations seated). Unseat an existing delegation to seat Diaspora remittance network.",
-    );
-    expect(src).not.toMatch(/>= 4\b/);
-    expect(src).not.toContain("disabled={!on && picked.length");
-    expect(src).toContain("Seat up to six parties");
+  test("all available delegations can be selected without truncation", () => {
+    const roster = [...SIX, "guarantor", "spoiler"];
+    expect(seatingSelection(roster, roster)).toEqual(roster);
   });
 
-  test("the typed name is kept when the table is full", () => {
-    const add = src.slice(src.indexOf("const addParty"), src.indexOf("const [theatre"));
-    const guard = add.indexOf("if (picked.length >= TABLE_CAPACITY)");
-    expect(guard).toBeGreaterThan(-1);
-    expect(add.indexOf("setCapacityMsg(capacityNotice(name));\n      return;")).toBeGreaterThan(guard);
-    expect(add.indexOf('setNl("")')).toBeGreaterThan(add.indexOf("return;"));
-    expect(src).toContain('data-testid="table-capacity"');
+  test("stale and duplicate selections cannot inflate the seated count", () => {
+    expect(seatingSelection(["state", "state", "missing", "youth"], SIX)).toEqual(["state", "youth"]);
   });
 
   test("radial layout θi = 2πi/N, starting at the head of the table", () => {
@@ -149,9 +139,9 @@ describe("pillar 2 · six-seat negotiation table", () => {
       expect(html).toContain(pair);
   });
 
-  test("a seventh seed is trimmed to the cap", () => {
+  test("a seventh valid delegation remains seated", () => {
     const html = mount(createElement(MultiPartySequencer, { initialPicked: [...SIX, "guarantor"] }));
-    expect(html.match(/r="13"/g)?.length).toBe(6);
+    expect(html.match(/r="13"/g)?.length).toBe(7);
   });
 
   test("the asymmetry matrix (coalition balance and veto) receives every seated party", () => {
