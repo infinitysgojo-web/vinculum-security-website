@@ -173,7 +173,7 @@ const DESKS = [
     label: "Counterpart Prompter",
     eyebrow: "§9A · Meeting",
     title: "Counterpart protocol prompter",
-    note: "Walk a meeting phase by phase with the scripted question for each counterpart and bond.",
+    note: "Walk a meeting phase by phase with examination questions, custom wording and recorded counterpart tactics.",
   },
   {
     id: "multiparty",
@@ -181,7 +181,7 @@ const DESKS = [
     label: "De-confliction Bench",
     eyebrow: "§9A · Multi-Party",
     title: "Multi-party sequencing and de-confliction",
-    note: "Seat up to six delegations at the table and calculate multi-party friction matrices across all bilateral pairs.",
+    note: "Seat delegations at the table and calculate multi-party friction matrices across all bilateral pairs.",
   },
   {
     id: "tracks",
