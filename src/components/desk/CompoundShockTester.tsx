@@ -9,7 +9,6 @@ import { LEGITIMACY_PENALTY } from "./instruments";
 import { compoundStress, compoundTimeline, COMPOUND_AMPLIFY } from "./shockTimeline";
 import ShockTimelineScrubber from "./ShockTimelineScrubber";
 import { ruptureShockRadiusNm } from "./theatreGeodesy";
-import { ruptureShockRadiusNm } from "./theatreGeodesy";
 import FormulaProof from "./FormulaProof";
 import { compoundShockProof } from "./formulaProofs";
 

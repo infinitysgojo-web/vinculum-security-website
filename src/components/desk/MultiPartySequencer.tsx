@@ -9,6 +9,8 @@ import { DEFAULT_ESCROW, escrowWaterfall, type EscrowTerms, type EscrowInput, DE
 import { useTheatreSeed } from "./theatres";
 import { theatreById } from "./theatres";
 import { sphericalCentroid } from "./theatreGeodesy";
+import { Button } from "@/components/ui/button";
+import { questionLines } from "./questioning";
 
 type Actor = {
   id: string;
@@ -152,12 +154,11 @@ const FRICTION: { a: string; b: string; text: string }[] = [
 
 const PHASES = ["Opening", "Probing", "Commitment", "Close"] as const;
 
-/** Seating cap for the negotiation table. */
-export const TABLE_CAPACITY = 6;
-
-/** The notice shown in place of silently refusing a seventh delegation. */
-export const capacityNotice = (name: string) =>
-  `Negotiation table at capacity (${TABLE_CAPACITY} delegations seated). Unseat an existing delegation to seat ${name}.`;
+/** Ignore stale or duplicate IDs, but never truncate available delegations. */
+export function seatingSelection(ids: readonly string[], available: readonly string[]) {
+  const roster = new Set(available);
+  return [...new Set(ids)].filter((id) => roster.has(id));
+}
 
 /**
  * Radial seating: delegation i of N sits at θi = 2πi/N on the table's orbit,
@@ -205,12 +206,12 @@ function NegotiationTable({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className={`${label} mb-0`}>Negotiation table · tension web</p>
         {focusPair && (
-          <button type="button" onClick={() => onPick(null)} className="text-[10px] uppercase tracking-[0.16em] font-semibold text-accent hover:underline">
+          <Button variant="ghost" type="button" onClick={() => onPick(null)} className="text-[10px] uppercase tracking-[0.16em] font-semibold text-accent hover:underline">
             Show all pairs
-          </button>
+          </Button>
         )}
       </div>
-      <svg viewBox={`0 0 ${S} ${S}`} className="mx-auto mt-2 w-full max-w-[300px] h-auto" role="group" aria-label="Seated delegations and the cords between them">
+      <div className="w-full overflow-x-auto"><svg viewBox={`0 0 ${S} ${S}`} className={`mx-auto mt-2 h-auto ${seated.length > 6 ? "w-[520px] max-w-none" : "w-full max-w-[300px]"}`} role="group" aria-label="Seated delegations and the cords between them">
         <circle cx={c} cy={c} r={r} fill="hsl(var(--navy-tint) / 0.5)" stroke="hsl(var(--brass) / 0.6)" strokeDasharray="2 4" />
         {pairs.map(({ p, q }) => {
           const fric = isFric(p.a.id, q.a.id);
@@ -260,7 +261,7 @@ function NegotiationTable({
             </text>
           </g>
         ))}
-      </svg>
+      </svg></div>
       <p className="mt-2 text-[10px] text-muted-foreground">
         Brass cords are synchronised pairs; dashed terracotta cords are friction pairs, marked with the engine's friction multiplier. Select a cord to read the de-confliction script for that pair.
       </p>
@@ -288,43 +289,33 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
   const [ownFric, setOwnFric] = useState<{ a: string; b: string; text: string }[]>([]);
   const [nl, setNl] = useState(""); const [nb, setNb] = useState(1); const [nc, setNc] = useState(""); const [nf, setNf] = useState("");
   const ACTORS = [...BASE_ACTORS, ...own];
-  const [capacityMsg, setCapacityMsg] = useState("");
+  const [draftQuestions, setDraftQuestions] = useState<[string, string, string, string]>(["", "", "", ""]);
   const addParty = () => {
     if (!nl.trim()) return;
     const name = nl.trim();
-    // A seventh delegation is refused visibly; the typed name stays in the field.
-    if (picked.length >= TABLE_CAPACITY) {
-      setCapacityMsg(capacityNotice(name));
-      return;
-    }
-    setCapacityMsg("");
     const id = `own-${Date.now()}`;
     setOwn((p) => [...p, {
       id, label: name, bond: nb,
-      opening: `Open by naming what ${name} stands to lose if the bond fails, before any proposal is tabled.`,
-      probing: `Ask ${name} which commitment it could keep if its own leadership changed tomorrow.`,
-      commitment: `Record one verifiable step ${name} will take before the next session.`,
-      close: `Close by reading back ${name}'s commitment in its own words.`,
+      opening: draftQuestions[0].trim() || `Open by naming what ${name} stands to lose if the bond fails, before any proposal is tabled.`,
+      probing: draftQuestions[1].trim() || `Ask ${name} which commitment it could keep if its own leadership changed tomorrow.`,
+      commitment: draftQuestions[2].trim() || `Record one verifiable step ${name} will take before the next session.`,
+      close: draftQuestions[3].trim() || `Close by reading back ${name}'s commitment in its own words.`,
       caution: nc.trim() || `Analyst-defined party; confirm its standing with the community before seating.`,
     }]);
-    if (nf) setOwnFric((p) => [...p, { a: id, b: nf, text: `Analyst-recorded friction between ${name} and ${BASE_ACTORS.find((x) => x.id === nf)?.label ?? "the named party"}. Seat them in separate opening sessions.` }]);
-    setPicked((p) => (p.length >= TABLE_CAPACITY ? p : [...p, id]));
+    if (nf) setOwnFric((p) => [...p, { a: id, b: nf, text: `Analyst-recorded friction between ${name} and ${ACTORS.find((x) => x.id === nf)?.label ?? "the named party"}. Seat them in separate opening sessions.` }]);
+    setPicked((p) => [...p, id]);
     setNl(""); setNc(""); setNf("");
+    setDraftQuestions(["", "", "", ""]);
   };
   const [theatre, setTheatre] = useState("");
-  const [picked, setPicked] = useState<string[]>(() => initialPicked.slice(0, TABLE_CAPACITY));
-  useTheatreSeed("multiparty", (x) => setPicked(x.picked));
+  const [picked, setPicked] = useState<string[]>(() => seatingSelection(initialPicked, BASE_ACTORS.map((actor) => actor.id)));
+  useTheatreSeed("multiparty", (x) => setPicked(seatingSelection(x.picked, BASE_ACTORS.map((actor) => actor.id))));
 
   const toggle = (id: string) => {
-    if (!picked.includes(id) && picked.length >= TABLE_CAPACITY) {
-      setCapacityMsg(capacityNotice(ACTORS.find((a) => a.id === id)?.label ?? "this delegation"));
-      return;
-    }
-    setCapacityMsg("");
-    setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : p.length >= TABLE_CAPACITY ? p : [...p, id]));
+    setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
   };
 
-  const seated = picked.map((id) => ACTORS.find((a) => a.id === id)!).filter(Boolean);
+  const seated = picked.map((id) => ACTORS.find((a) => a.id === id)).filter((actor): actor is Actor => actor !== undefined);
 
   const frictions = useMemo(
     () => [...FRICTION, ...ownFric].filter((f) => picked.includes(f.a) && picked.includes(f.b)),
@@ -399,7 +390,7 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
       L.push(`PHASE ${pi + 1}. ${p.toUpperCase()}`);
       seated.forEach((a) => {
         const q = [a.opening, a.probing, a.commitment, a.close][pi];
-        L.push(`   ${a.label}: "${q}"`);
+        questionLines(q).forEach((line, i) => L.push(`   ${a.label} · ${i + 1}: "${line}"`));
       });
       L.push("");
     });
@@ -409,8 +400,8 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
       L.push("No recorded friction between the parties as seated. Re-run this ledger if the seating changes.");
     } else {
       frictions.forEach((f, i) => {
-        const an = ACTORS.find((x) => x.id === f.a)!.label;
-        const bn = ACTORS.find((x) => x.id === f.b)!.label;
+        const an = ACTORS.find((x) => x.id === f.a)?.label ?? "Unseated party";
+        const bn = ACTORS.find((x) => x.id === f.b)?.label ?? "Unseated party";
         L.push(`${i + 1}. ${an} / ${bn}`);
         L.push(`   ${f.text}`);
         L.push("");
@@ -448,12 +439,12 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
             onChange={(e) => setTheatre(e.target.value)}
             placeholder="Transitional Security Committee, second round"
           />
-          <p className={`${label} mt-5`}>Seat up to six parties</p>
+          <p className={`${label} mt-5`}>Seat delegations</p>
           <div className="flex flex-wrap gap-2">
             {ACTORS.map((a) => {
               const on = picked.includes(a.id);
               return (
-                <button
+                <Button variant="ghost"
                   key={a.id}
                   type="button"
                   aria-pressed={on}
@@ -465,30 +456,26 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
                   }`}
                 >
                   {a.label}
-                </button>
+                </Button>
               );
             })}
           </div>
-          {capacityMsg && (
-            <p role="status" aria-live="polite" data-testid="table-capacity" className="mt-3 border border-terracotta/60 bg-terracotta/10 px-3 py-2 text-xs text-terracotta [overflow-wrap:anywhere]">
-              {capacityMsg}
-            </p>
-          )}
           <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
             <p className={label}>Custom mode: seat your own party</p>
-            <input className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Diaspora remittance network" />
-            <input className={field} value={nc} onChange={(e) => setNc(e.target.value)} placeholder="Caution to carry into the room (optional)" />
+            <input aria-label="Custom delegation name" className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Diaspora remittance network" />
+            <textarea rows={3} aria-label="Custom delegation caution" className={field} value={nc} onChange={(e) => setNc(e.target.value)} placeholder="Caution to carry into the room (optional)" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <select className={field} value={nb} onChange={(e) => setNb(Number(e.target.value))} aria-label="Bond it carries">
                 {BONDS.map((b, i) => <option key={b} value={i}>Carries: {b}</option>)}
               </select>
               <select className={field} value={nf} onChange={(e) => setNf(e.target.value)} aria-label="Friction with">
                 <option value="">No known friction</option>
-                {BASE_ACTORS.map((a) => <option key={a.id} value={a.id}>Friction with: {a.label}</option>)}
+                {ACTORS.map((a) => <option key={a.id} value={a.id}>Friction with: {a.label}</option>)}
               </select>
             </div>
-            <button type="button" disabled={!nl.trim()} onClick={addParty}
-              className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add party</button>
+            {PHASES.map((phase, i) => <label key={phase} className="block"><span className={label}>{phase} questions</span><textarea rows={3} aria-label={`Custom delegation ${phase.toLowerCase()} questions`} className={`${field} resize-y`} value={draftQuestions[i]} onChange={(e) => setDraftQuestions((previous) => previous.map((value, j) => i === j ? e.target.value : value) as [string, string, string, string])} placeholder={`${phase}: one question per line (optional)`} /></label>)}
+            <Button variant="ghost" type="button" disabled={!nl.trim()} onClick={addParty}
+              className="min-h-11 w-full border border-brass/50 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent disabled:opacity-40">Add party</Button>
           </div>
         </div>
 
@@ -515,11 +502,11 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
       </div>
     </div>
 
-      {/* Seated delegations: up to six in a responsive grid, each at its radial seat 2πi/N. */}
+      {/* Seated delegations: in a responsive grid, each at its radial seat 2πi/N. */}
       {seated.length > 0 && (
         <div className="mt-6 w-full min-w-0" data-testid="seated-delegations">
           <p className={label}>
-            Seated delegations · {seated.length} of {TABLE_CAPACITY} · {frictions.length} of {(seated.length * (seated.length - 1)) / 2} bilateral pair{seated.length * (seated.length - 1) === 2 ? "" : "s"} with recorded friction
+            Seated delegations · {seated.length} · {frictions.length} of {(seated.length * (seated.length - 1)) / 2} bilateral pair{seated.length * (seated.length - 1) === 2 ? "" : "s"} with recorded friction
           </p>
           <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
             {seated.map((a, i) => {
@@ -578,24 +565,25 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
-        {pairOk && (
+        {seated.length > 0 && (
           <div className="border border-accent/50 bg-background p-5">
-            <p className={label}>De-confliction script · {pairOk.map((id) => ACTORS.find((x) => x.id === id)?.label).join(" / ")}</p>
+            <p className={label}>De-confliction script · {(pairOk ?? picked).map((id) => ACTORS.find((x) => x.id === id)?.label).join(" / ")}</p>
             {PHASES.map((ph, pi) => (
               <div key={ph} className="mt-3">
                 <p className="text-[10px] uppercase tracking-[0.16em] font-semibold text-accent">Phase {pi + 1} · {ph}</p>
-                {pairOk.map((id) => {
+                {(pairOk ?? picked).map((id) => {
                   const a = ACTORS.find((x) => x.id === id);
                   if (!a) return null;
                   return (
-                    <p key={id} className="mt-1 text-xs text-foreground/85 [overflow-wrap:anywhere]">
-                      <span className="font-semibold text-primary">{a.label}:</span> “{[a.opening, a.probing, a.commitment, a.close][pi]}”
-                    </p>
+                    <div key={id} className="mt-2 text-xs text-foreground/85 [overflow-wrap:anywhere]">
+                      <span className="font-semibold text-primary">{a.label}</span>
+                      <ol className="mt-1 list-decimal pl-5 space-y-1">{questionLines([a.opening, a.probing, a.commitment, a.close][pi]).map((q, i) => <li key={i}>{q}</li>)}</ol>
+                    </div>
                   );
                 })}
               </div>
             ))}
-            {shownFrictions.length === 0 && (
+            {pairOk && shownFrictions.length === 0 && (
               <p className="mt-3 text-xs text-muted-foreground">No recorded friction between this pair; the cord is synchronised.</p>
             )}
           </div>
@@ -612,7 +600,7 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
               {shownFrictions.map((f, i) => (
                 <li key={i} className="text-xs leading-relaxed">
                   <span className="text-accent font-semibold uppercase tracking-[0.16em] text-[10px] block mb-1">
-                    {ACTORS.find((x) => x.id === f.a)!.label} / {ACTORS.find((x) => x.id === f.b)!.label}
+                    {ACTORS.find((x) => x.id === f.a)?.label ?? "Unseated party"} / {ACTORS.find((x) => x.id === f.b)?.label ?? "Unseated party"}
                   </span>
                   <span className="text-muted-foreground">{f.text}</span>
                 </li>

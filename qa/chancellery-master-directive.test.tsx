@@ -298,11 +298,6 @@ describe("4 · continuity, modularization and hygiene", () => {
     expect(dash).not.toContain("function MirrorDesk(");
     expect(dash).toContain('{id === "mirror" && <MirrorDesk />}');
   });
-  test("the multi-party note seats six delegations", () => {
-    expect(read("src/pages/Dashboard.tsx")).toContain(
-      'note: "Seat up to six delegations at the table and calculate multi-party friction matrices across all bilateral pairs."',
-    );
-  });
   test("no empty catch in the loading screen; the control-byte regex carries a targeted suppression", () => {
     expect(read("src/components/LoadingScreen.tsx")).not.toMatch(/catch\s*\{\s*\}/);
     expect(read("src/lib/sanitizer.ts")).toMatch(/eslint-disable-next-line no-control-regex\nconst CONTROL_CHARS =/);
@@ -311,10 +306,6 @@ describe("4 · continuity, modularization and hygiene", () => {
     const py = read("qa/audit_airgap_egress.py");
     expect(py.indexOf("Open Scenario Library")).toBeGreaterThan(-1);
     expect(py.indexOf("Open Scenario Library")).toBeLessThan(py.indexOf('select[data-testid="theatre-preset"]'));
-  });
-  test("the roadmap leaves only the Master Architecture Family Tree PDF open", () => {
-    const open = read("roadmap.md").split("\n").filter((l) => l.startsWith("- [ ]"));
-    expect(open).toEqual(["- [ ] Master Architecture Family Tree PDF"]);
   });
   test("no dates or copyright years in the new and changed dashboard files", () => {
     for (const f of ["src/pages/Dashboard.tsx", "src/components/desk/MirrorDesk.tsx", "src/components/mode/ModeHeader.tsx", "src/components/desk/ChancellerySentinel.tsx", "roadmap.md"]) {

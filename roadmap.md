@@ -1,6 +1,10 @@
 # Roadmap
 
-- [ ] Master Architecture Family Tree PDF
+- [x] Master Architecture Family Tree PDF (completed by user)
+
+- [x] Improve counterpart phase question depth, multiline custom scripts and bus-linked tactics
+- [x] Improve multi-party custom questioning and seating ergonomics
+- [x] Verify questioning flows, privacy safeguards and desk regressions; clear existing preview errors
 
 - [x] Connect inscribed shocks to compound and succession testing without double-applying bond deltas
 - [x] Connect inscribed covenants to drafting, verification and handover
