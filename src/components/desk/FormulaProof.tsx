@@ -26,7 +26,7 @@ export default function FormulaProof({ proof, className = "" }: { proof: Proof; 
         <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">2 · Substituted from this mission</p>
         <p className="font-mono text-[11px] text-foreground/90 [overflow-wrap:anywhere]">{proof.substitution}</p>
         <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">3 · Arithmetic</p>
-        <ol className="list-decimal space-y-0.5 pl-4 font-mono text-[11px] text-foreground/90">
+        <ol aria-live="polite" className="list-decimal space-y-0.5 pl-4 font-mono text-[11px] text-foreground/90">
           {proof.steps.map((s, i) => (
             <li key={i} className="[overflow-wrap:anywhere]">{s}</li>
           ))}
