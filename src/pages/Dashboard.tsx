@@ -1709,6 +1709,7 @@ export default function Dashboard() {
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
                 <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="w-full min-w-0">
+                  <p className="sr-only" aria-live="polite">{desk === id ? `Desk ${String(DESKS.findIndex((x) => x.id === id) + 1).padStart(2, "0")}, ${DESKS.find((x) => x.id === id)?.label ?? ""}` : ""}</p>
                   <DeskErrorBoundary label={DESKS.find((x) => x.id === id)?.label ?? "This desk"}>
                   {DESK_DOCTRINES[id] && (
                     <div className="mb-4 border-l-2 border-brass/60 pl-3">

@@ -174,7 +174,9 @@
   #stcm-wrapper,
   #stcm-icon,
   [id^="stcm-"],
-  [class^="stcm-"] { display: none !important; }
+  [class^="stcm-"],
+  [role="tablist"],
+  main button:not([aria-expanded]) { display: none !important; }
 
   body {
     font-family: 'Cormorant Garamond', Georgia, serif !important;
@@ -746,3 +748,9 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
 }
 .vs-signal-fresh { animation: vs-signal-pulse 400ms ease-out; }
 @media (prefers-reduced-motion: reduce) { .vs-signal-fresh { animation: none; outline: 1px solid hsl(var(--ochre)); } }
+
+/* Keyboard operators: a clear, high-contrast focus ring on every control. */
+:where(button, a, select, input, textarea, [role="tab"], [tabindex]):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}

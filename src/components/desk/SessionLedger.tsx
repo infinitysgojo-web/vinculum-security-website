@@ -165,7 +165,7 @@ export default function SessionLedgerDrawer() {
               reference or moving an archive is recorded here with a UTC stamp. The ledger is cleared when the tab closes.
             </p>
           ) : (
-            <ol className="max-h-64 overflow-y-auto space-y-1 font-mono text-[11px] tabular-nums leading-relaxed text-foreground/85">
+            <ol aria-live="polite" aria-relevant="additions" className="max-h-64 overflow-y-auto space-y-1 font-mono text-[11px] tabular-nums leading-relaxed text-foreground/85">
               {[...entries].reverse().map((e) => (
                 <li key={e.seq} className="[overflow-wrap:anywhere]">
                   {formatEntry(e)}

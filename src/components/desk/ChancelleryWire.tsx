@@ -332,7 +332,7 @@ function SignalInspector({ signals, openQuestions, publisherLabel }: { signals: 
       <p className={`${k} mt-3`}>customShocks [{t.customShocks.length}]</p>
       <Fresh seq={seqOf("customShocks")} className="block">
         {t.customShocks.length === 0 ? <span className="text-muted-foreground">[]</span> : (
-          <ul className="space-y-0.5">
+          <ul aria-live="polite" aria-relevant="additions" className="space-y-0.5">
             {t.customShocks.map((x) => (
               <li key={x.id} className="[overflow-wrap:anywhere]"><span className="text-muted-foreground">{x.id}</span> <span className="text-primary">{x.title}</span> <span className="text-muted-foreground">Δ {signed1(x.deltas.interpersonal)} / {signed1(x.deltas.communal)} / {signed1(x.deltas.intergenerational)} / {signed1(x.deltas.institutional)}</span></li>
             ))}
