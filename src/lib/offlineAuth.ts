@@ -42,30 +42,42 @@ export async function rememberCredential(email: string, password: string, userId
   }
 }
 
-/**
- * Preset practitioner credential, built into the app so the dashboard opens
- * without cloud auth. Same email and password as the cloud account; only a
- * salted PBKDF2 digest is shipped, never the password.
- */
-const PRESET: StoredCred = {
-  salt: "7dbf597fcfc0a403c4aac372bc165525",
-  digest: "71cf7871fe3b942850bb19357ccd94118c2fd4b42b410365e80186174820a766",
-  userId: "preset-practitioner",
-  email: "vinculumsecurity@gmail.com",
-};
-
+/** True only when this device holds a credential enrolled by a real online sign-in. */
 export function hasOfflineCredential() {
-  return true;
+  try { return localStorage.getItem(CRED_KEY) !== null; } catch { return false; }
 }
 
-/** Returns the user id on a match, otherwise null. Checks the device credential, then the preset. */
+/**
+ * Returns the user id on a match, otherwise null. Only the device-enrolled
+ * credential is checked: no credential material is ever shipped in the app.
+ */
 export async function verifyOffline(email: string, password: string): Promise<string | null> {
   const raw = (() => { try { return localStorage.getItem(CRED_KEY); } catch { return null; } })();
-  if (raw) {
-    const hit = await verifyAgainst(JSON.parse(raw) as StoredCred, email, password);
-    if (hit) return hit;
+  if (!raw) return null;
+  try {
+    return await verifyAgainst(JSON.parse(raw) as StoredCred, email, password);
+  } catch {
+    return null;
   }
-  return verifyAgainst(PRESET, email, password);
+}
+
+/* Persistent, escalating sign-in hold: survives reloads, doubles per lockout, caps at 15 min. */
+const LOCK_KEY = "vs:login-lock";
+type LockRec = { until: number; strikes: number };
+const readLock = (): LockRec => {
+  try { return JSON.parse(localStorage.getItem(LOCK_KEY) ?? "") as LockRec; } catch { return { until: 0, strikes: 0 }; }
+};
+export function lockSecondsLeft(now = Date.now()) {
+  return Math.max(0, Math.ceil((readLock().until - now) / 1000));
+}
+export function registerLockout(baseSeconds: number, now = Date.now()) {
+  const strikes = readLock().strikes + 1;
+  const secs = Math.min(900, baseSeconds * 2 ** (strikes - 1));
+  try { localStorage.setItem(LOCK_KEY, JSON.stringify({ until: now + secs * 1000, strikes })); } catch { /* storage off */ }
+  return secs;
+}
+export function clearLockout() {
+  try { localStorage.removeItem(LOCK_KEY); } catch { /* storage off */ }
 }
 
 async function verifyAgainst(rec: StoredCred, email: string, password: string): Promise<string | null> {

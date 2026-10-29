@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Logo from "@/components/Logo";
 import GoldRule from "@/components/GoldRule";
 import SEO from "@/components/SEO";
-import { rememberCredential, verifyOffline, hasOfflineCredential, clearOfflineSession, getOfflineSession, isNetworkFailure, raceAuth, SIGN_IN_RACE_MS } from "@/lib/offlineAuth";
+import { rememberCredential, verifyOffline, hasOfflineCredential, clearOfflineSession, getOfflineSession, isNetworkFailure, raceAuth, SIGN_IN_RACE_MS, lockSecondsLeft, registerLockout, clearLockout } from "@/lib/offlineAuth";
 
 const MAX_ATTEMPTS = 3;
 const LOCK_SECONDS = 60;
@@ -17,7 +17,7 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
-  const [lockLeft, setLockLeft] = useState(0);
+  const [lockLeft, setLockLeft] = useState(() => lockSecondsLeft());
   const mountedAt = useRef(Date.now());
   const navigate = useNavigate();
 
@@ -61,8 +61,9 @@ export default function Login() {
       setAttempts(next);
       if (next >= MAX_ATTEMPTS) {
         setAttempts(0);
-        setLockLeft(LOCK_SECONDS);
-        setError("Too many failed attempts. This terminal is held for one minute.");
+        const secs = registerLockout(LOCK_SECONDS);
+        setLockLeft(secs);
+        setError(`Too many failed attempts. This terminal is held for ${Math.ceil(secs / 60)} minute${secs > 60 ? "s" : ""}.`);
       } else {
         setError("Those credentials were not recognised. Please check and try again.");
       }
