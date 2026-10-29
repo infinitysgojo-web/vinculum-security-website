@@ -4,6 +4,7 @@
 - [ ] Verify page preservation, pagination, navigation and every rendered PDF page before delivery
 - [ ] Add concise, detailed supplementary glossary and formula/symbol appendices with units, worked examples and interpretation limits
 - [ ] Remove em dashes throughout the expanded PDF using appropriate punctuation; preserve all pages and substantive wording
+- [ ] Typeset supplementary equations as scholarly mathematics with proper symbols, fractions, superscripts and subscripts, not code blocks
 
 - [x] Master Architecture Family Tree PDF (completed by user)
 
