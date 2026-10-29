@@ -6,7 +6,7 @@ import { AlertTriangle, ShieldCheck } from "lucide-react";
 import { BOND_BANDS, BOND_NAMES, bondBand, distanceTable, facadeSyndrome, mathReading } from "./engine";
 
 const sub = "text-[10px] uppercase tracking-[0.18em] font-semibold text-muted-foreground";
-const mono = "font-mono tabular-nums";
+const mono = "font-mono tabular-nums tabular-nums";
 
 /**
  * The full mathematical derivation of a bond profile (Section III of the deposition).
