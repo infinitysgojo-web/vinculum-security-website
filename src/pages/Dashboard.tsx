@@ -1,3 +1,4 @@
+import DeskErrorBoundary from "@/components/desk/DeskErrorBoundary";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Archive, ArrowLeft, ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, MoreHorizontal, PanelRight, ScrollText, Search, Shield, ShieldAlert, ShieldCheck, ShieldOff, Siren, SlidersHorizontal, Timer, Volume2, VolumeX } from "lucide-react";
@@ -1708,6 +1709,7 @@ export default function Dashboard() {
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
                 <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="w-full min-w-0">
+                  <DeskErrorBoundary label={DESKS.find((x) => x.id === id)?.label ?? "This desk"}>
                   {DESK_DOCTRINES[id] && (
                     <div className="mb-4 border-l-2 border-brass/60 pl-3">
                       <DoctrineAnchors ids={DESK_DOCTRINES[id]} />
@@ -1746,6 +1748,7 @@ export default function Dashboard() {
                       onProfileChange={activeWs?.lifecycle === "sealed" ? undefined : (patch) => setProfile((p) => ({ ...p, ...patch }))}
                     />
                   )}
+                  </DeskErrorBoundary>
                 </div>
               ) : null,
             )}
