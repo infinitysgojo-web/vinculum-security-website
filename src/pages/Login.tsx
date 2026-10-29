@@ -80,6 +80,7 @@ export default function Login() {
         return;
       }
       setAttempts(0);
+      clearLockout();
       navigate("/dashboard", { replace: true });
     };
 
@@ -88,10 +89,11 @@ export default function Login() {
       return;
     }
 
-    // Preset or device credential matches locally: enter without waiting on the cloud.
+    // Device-enrolled credential matches locally: enter without waiting on the cloud.
     if (await verifyOffline(email, password)) {
       setBusy(false);
       setAttempts(0);
+      clearLockout();
       navigate("/dashboard", { replace: true });
       return;
     }
@@ -119,6 +121,7 @@ export default function Login() {
     clearOfflineSession();
     setBusy(false);
     setAttempts(0);
+    clearLockout();
     navigate("/dashboard", { replace: true });
   };
 
