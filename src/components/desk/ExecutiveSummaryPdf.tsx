@@ -1,6 +1,7 @@
 import { Document, Page, Text, View, StyleSheet, Font, Svg, Polygon, Line, pdf } from "@react-pdf/renderer";
 import serifRegular from "@/assets/fonts/CormorantGaramond-Regular.ttf";
 import serifSemiBold from "@/assets/fonts/CormorantGaramond-SemiBold.ttf";
+import serifItalic from "@/assets/fonts/CormorantGaramond-Italic.ttf";
 import sansRegular from "@/assets/fonts/Inter-Regular.ttf";
 import sansSemiBold from "@/assets/fonts/Inter-SemiBold.ttf";
 import { Neatline, NEAT_BRASS, NEAT_NAVY } from "@/components/pdf/Neatline";
@@ -11,7 +12,7 @@ import { radarPoints, type ExecSummary } from "./executiveBrief";
  * institutional PDF style (classical double neatline), generated in the browser.
  */
 
-Font.register({ family: "ExecSerif", fonts: [{ src: serifRegular, fontWeight: 400 }, { src: serifSemiBold, fontWeight: 600 }] });
+Font.register({ family: "ExecSerif", fonts: [{ src: serifRegular, fontWeight: 400 }, { src: serifSemiBold, fontWeight: 600 }, { src: serifItalic, fontWeight: 400, fontStyle: "italic" }] });
 Font.register({ family: "ExecSans", fonts: [{ src: sansRegular, fontWeight: 400 }, { src: sansSemiBold, fontWeight: 600 }] });
 Font.registerHyphenationCallback((w) => [w]);
 
@@ -29,7 +30,7 @@ const s = StyleSheet.create({
   title: { fontFamily: "ExecSerif", fontSize: 19, color: "#FFFFFF", marginTop: 2 },
   metaRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 6, borderBottomWidth: 0.6, borderBottomColor: NEAT_BRASS, paddingBottom: 6 },
   meta: { width: "33%", marginBottom: 3 },
-  metaK: { fontSize: 5.6, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase" },
+  metaK: { fontSize: 6.4, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase" },
   metaV: { fontSize: 7.5 },
   cols: { flexDirection: "row", marginTop: 10 },
   left: { width: "40%", paddingRight: 10 },
@@ -38,8 +39,8 @@ const s = StyleSheet.create({
   row: { flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 0.3, borderBottomColor: RULE, paddingVertical: 2 },
   big: { fontFamily: "ExecSerif", fontSize: 16, color: NEAT_NAVY },
   cell: { fontSize: 7 },
-  badge: { fontSize: 5.8, fontWeight: 600, letterSpacing: 0.8 },
-  foot: { marginTop: 10, borderTopWidth: 0.6, borderTopColor: NEAT_BRASS, paddingTop: 5, fontSize: 5.8, color: MUTED },
+  badge: { fontSize: 6.4, fontWeight: 600, letterSpacing: 0.8 },
+  foot: { marginTop: 10, borderTopWidth: 0.6, borderTopColor: NEAT_BRASS, paddingTop: 5, fontSize: 6.4, color: MUTED },
 });
 
 function Radar({ scores }: { scores: (number | null)[] }) {
