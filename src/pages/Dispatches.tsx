@@ -59,7 +59,7 @@ export default function Dispatches() {
 
             {/* Bottom Masthead Rule with Badges */}
             <div className="border-t border-brass/30 pt-3 flex flex-wrap items-center justify-center sm:justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-2 [&>*]:whitespace-nowrap">
                 <DiplomatBadge variant="doctrine-core">Continuous Edition</DiplomatBadge>
                 <DiplomatBadge variant="foundation">Four Bond Domains</DiplomatBadge>
               </div>
@@ -171,7 +171,7 @@ export default function Dispatches() {
                 <div>
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio I · Multilateral Reform</span>
-                    <span className="font-mono text-muted-foreground">REF: UNSC-VETO</span>
+                    <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: UNSC-VETO</span>
                   </div>
                   <h4 className="font-serif text-xl text-primary font-medium">
                     Security Council Veto Mechanics & Structural Legitimacy
@@ -200,7 +200,7 @@ export default function Dispatches() {
                 <div>
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio II · Transitional Justice</span>
-                    <span className="font-mono text-muted-foreground">REF: JURIS-UBUNTU</span>
+                    <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: JURIS-UBUNTU</span>
                   </div>
                   <h4 className="font-serif text-xl text-primary font-medium">
                     Indigenous Dispute Resolution & Ubuntu Jurisprudence
@@ -229,7 +229,7 @@ export default function Dispatches() {
                 <div>
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio III · Climate Sovereignty</span>
-                    <span className="font-mono text-muted-foreground">REF: SIDS-UNCLOS</span>
+                    <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: SIDS-UNCLOS</span>
                   </div>
                   <h4 className="font-serif text-xl text-primary font-medium">
                     Ecological Displacement & Inundated Statehood
@@ -258,7 +258,7 @@ export default function Dispatches() {
                 <div>
                   <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio IV · Frontier Governance</span>
-                    <span className="font-mono text-muted-foreground">REF: AI-CUSTODY</span>
+                    <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: AI-CUSTODY</span>
                   </div>
                   <h4 className="font-serif text-xl text-primary font-medium">
                     Autonomous Intelligence & Diplomatic Custody
