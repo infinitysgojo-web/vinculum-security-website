@@ -372,3 +372,37 @@ The public doctrine, published papers, and comparative frameworks are shared und
 
 The operational instruments and dashboard remain the protected work of the author, formally registered under statutory copyright law with all rights reserved. Enquiries about uses beyond the licence are welcomed through the institutional correspondence channel.
 
+
+## 7. Dashboard Instrument Formulations (Canonical Wording)
+These definitions match the public Glossary and the formulas the Vinculum Dashboard desks compute. They describe illustrative instruments, not predictions.
+
+### Compound Stress
+The combined strain on a settlement when several shocks land together. Concurrent shocks amplify one another, and each bond loses a tenth of the severity aimed at it, never falling below the 1.0 sovereign baseline.
+- Compound strain: S = min(100, Σ sev_k + (n − 1) × 1.25 × 4 + P_legitimacy), for n active shocks; the amplification term is zero when n ≤ 1.
+- Per-bond load: Ω_i = Σ sev_k over the shocks aimed at bond i.
+- Bond after shock: B_i′ = max(1.0, B_i − Ω_i ÷ 10); the lowest B_i′ names the failing bond.
+
+### Bilateral Geodesic
+The great-circle distance and initial bearing between two capitals of record, read on a spherical Earth. It describes geography only and makes no claim about influence or intent.
+- Haversine: a = sin²(Δφ ÷ 2) + cos φ1 cos φ2 sin²(Δλ ÷ 2); c = 2 atan2(√a, √(1 − a)).
+- Distance: d = R c, with R = 6,371 km; nautical miles = d × 0.539957.
+- Initial bearing: θ = atan2(sin Δλ cos φ2, cos φ1 sin φ2 − sin φ1 cos φ2 cos Δλ), normalised to 0° to 360° true.
+
+### Spherical Barycentre
+The weighted geographic centre of every seated party in a multilateral theatre, with the mean geodesic distance of each party from that centre as its dispersion.
+- Unit vectors: X = Σ w_j cos φ_j cos λ_j ÷ Σ w_j; Y = Σ w_j cos φ_j sin λ_j ÷ Σ w_j; Z = Σ w_j sin φ_j ÷ Σ w_j.
+- Centre: φ = atan2(Z, √(X² + Y²)); λ = atan2(Y, X).
+- Dispersion: the mean bilateral geodesic from each party to the centre, in nautical miles.
+
+### Rupture Shock Radius
+A heuristic envelope that scales the rupture index into a distance, used only to illustrate how far a rupture's effects could plausibly reach. It is a scaling rule, not a prediction.
+- r = round(4,200 × (R ÷ 100)^1.4) nautical miles, with R clamped to 0 to 100 per cent.
+
+### Formula Proof [ƒx]
+An inspectable working beside a desk reading that shows each input, each intermediate value and the result, computed by the same function the desk uses, so the proof always equals what is displayed.
+
+### Handover Seal
+A SHA-256 digest of the mission record written in canonical form (keys sorted, no whitespace), computed on the device, so a successor can confirm the record arrived unaltered.
+
+### Phase Question Script
+In the questioning desks, every nonblank line of a custom script becomes an ordered question for its phase, and counterpart tactics are read from the mission notes. Seating is limited only by the roster available.

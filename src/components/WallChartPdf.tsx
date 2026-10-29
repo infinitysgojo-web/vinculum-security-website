@@ -114,13 +114,13 @@ const s = StyleSheet.create({
   wordmark: { fontSize: 17, letterSpacing: 4.5, color: NAVY, textTransform: "uppercase" },
   headSub: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 2.2, color: MUTED, textTransform: "uppercase", marginTop: 3 },
   headRight: { width: 180, flexShrink: 0, alignItems: "flex-end" },
-  headRightLine: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", textAlign: "right", lineHeight: 1.5 },
+  headRightLine: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", textAlign: "right", lineHeight: 1.5 },
   brassRule: { height: 1.6, backgroundColor: BRASS, marginBottom: 10 },
 
   definition: { borderWidth: 0.6, borderColor: RULE, backgroundColor: CREAM, padding: 10, marginBottom: 10 },
-  defLabel: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 2, color: NAVY, textTransform: "uppercase", marginBottom: 5 },
+  defLabel: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 2, color: NAVY, textTransform: "uppercase", marginBottom: 5 },
   defText: { fontSize: 11.5, lineHeight: 1.4, color: NAVY },
-  defCite: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase", marginTop: 5 },
+  defCite: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase", marginTop: 5 },
 
   row: { flexDirection: "row", marginBottom: 10 },
   col: { flex: 1 },
@@ -142,7 +142,7 @@ const s = StyleSheet.create({
 
   pRow: { marginBottom: 4.5 },
   pName: { fontSize: 10, color: NAVY },
-  pLens: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 1.1, color: BRASS, textTransform: "uppercase", marginTop: 1 },
+  pLens: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 1.1, color: BRASS, textTransform: "uppercase", marginTop: 1 },
   pNote: { fontSize: 8.4, color: INK, lineHeight: 1.3, marginTop: 1 },
 
   weight: { borderLeftWidth: 1.4, borderLeftColor: BRASS, paddingLeft: 8, marginTop: 6 },
@@ -164,14 +164,14 @@ const s = StyleSheet.create({
   qName: { fontSize: 10, color: NAVY, marginTop: 2 },
   qNote: { fontSize: 8.6, color: INK, lineHeight: 1.35, marginTop: 1 },
   qWeight: { fontSize: 9.2, fontStyle: "italic", color: NAVY, lineHeight: 1.35 },
-  quadLabel: { fontFamily: "InterDoc", fontSize: 5.8, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginTop: 8, marginBottom: 2.5 },
+  quadLabel: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginTop: 8, marginBottom: 2.5 },
   band: { flexDirection: "row", marginTop: 0 },
   panel: { borderWidth: 0.6, borderColor: BRASS, backgroundColor: CREAM, padding: 9, flexGrow: 1 },
   notice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginTop: 6, paddingTop: 5, borderTopWidth: 0.5, borderTopColor: RULE },
   foot: { marginTop: "auto", borderTopWidth: 0.6, borderTopColor: RULE, paddingTop: 7 },
   footNotice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginBottom: 7 },
   footRow: { flexDirection: "row", justifyContent: "space-between" },
-  footText: { fontFamily: "InterDoc", fontSize: 5.6, letterSpacing: 0.6, color: MUTED, textTransform: "uppercase", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
+  footText: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 0.6, color: MUTED, textTransform: "uppercase", minHeight: 14, maxHeight: 28, overflow: "hidden", position: "relative" },
 });
 
 /** Party lenses filed under the domain each is primarily assessed in (the first lens named). */
