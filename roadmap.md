@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Export expanded Codex PDF: preserve every original page, integrate verified mathematics and questioning/security updates, add statutory notice and refined supplementary design
+- [ ] Verify page preservation, pagination, navigation and every rendered PDF page before delivery
+
 - [x] Master Architecture Family Tree PDF (completed by user)
 
 - [x] Improve counterpart phase question depth, multiline custom scripts and bus-linked tactics
