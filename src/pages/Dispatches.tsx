@@ -169,7 +169,7 @@ export default function Dispatches() {
             <FadeIn delay={50}>
               <div className="h-full border border-brass/40 bg-card/25 p-6 hover:border-brass/70 transition-colors flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
+                  <div className="flex items-start justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio I · Multilateral Reform</span>
                     <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: UNSC-VETO</span>
                   </div>
@@ -198,7 +198,7 @@ export default function Dispatches() {
             <FadeIn delay={100}>
               <div className="h-full border border-brass/40 bg-card/25 p-6 hover:border-brass/70 transition-colors flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
+                  <div className="flex items-start justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio II · Transitional Justice</span>
                     <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: JURIS-UBUNTU</span>
                   </div>
@@ -227,7 +227,7 @@ export default function Dispatches() {
             <FadeIn delay={150}>
               <div className="h-full border border-brass/40 bg-card/25 p-6 hover:border-brass/70 transition-colors flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
+                  <div className="flex items-start justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio III · Climate Sovereignty</span>
                     <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: SIDS-UNCLOS</span>
                   </div>
@@ -256,7 +256,7 @@ export default function Dispatches() {
             <FadeIn delay={200}>
               <div className="h-full border border-brass/40 bg-card/25 p-6 hover:border-brass/70 transition-colors flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
+                  <div className="flex items-start justify-between gap-3 text-[10px] uppercase tracking-[0.2em] text-accent mb-2">
                     <span>Folio IV · Frontier Governance</span>
                     <span className="font-mono text-muted-foreground whitespace-nowrap shrink-0">REF: AI-CUSTODY</span>
                   </div>
