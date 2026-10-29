@@ -1,10 +1,10 @@
 # Roadmap
 
-- [ ] Export expanded Codex PDF: preserve every original page, integrate verified mathematics and questioning/security updates, add statutory notice and refined supplementary design
-- [ ] Verify page preservation, pagination, navigation and every rendered PDF page before delivery
-- [ ] Add concise, detailed supplementary glossary and formula/symbol appendices with units, worked examples and interpretation limits
-- [ ] Remove em dashes throughout the expanded PDF using appropriate punctuation; preserve all pages and substantive wording
-- [ ] Typeset supplementary equations as scholarly mathematics with proper symbols, fractions, superscripts and subscripts, not code blocks
+- [x] Export expanded Codex PDF: all 235 original pages retained with 30 supplementary pages, verified mathematics and questioning/security updates, statutory notice and refined supplementary design
+- [x] Verify page preservation, pagination, navigation and every rendered PDF page before delivery
+- [x] Add concise, detailed supplementary glossary and formula/symbol appendices with units, worked examples and interpretation limits
+- [x] Remove em dashes throughout the expanded PDF using appropriate punctuation; preserve all pages and substantive wording
+- [x] Typeset supplementary equations as scholarly mathematics with proper symbols, fractions, superscripts and subscripts, not code blocks
 
 - [x] Master Architecture Family Tree PDF (completed by user)
 
