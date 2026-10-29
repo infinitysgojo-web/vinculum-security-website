@@ -24,8 +24,9 @@ const GREEN = "#2F6B4F";
 const s = StyleSheet.create({
   page: { padding: 36, fontFamily: "ExecSans", fontSize: 7.5, color: INK },
   inner: { padding: 14 },
-  eyebrow: { fontSize: 6, letterSpacing: 1.6, color: MUTED, textTransform: "uppercase" },
-  title: { fontFamily: "ExecSerif", fontSize: 18, color: NEAT_NAVY, marginTop: 2 },
+  band: { backgroundColor: NEAT_NAVY, marginHorizontal: -14, marginTop: -14, paddingHorizontal: 14, paddingTop: 10, paddingBottom: 9, borderBottomWidth: 2, borderBottomColor: NEAT_BRASS },
+  eyebrow: { fontSize: 6, letterSpacing: 1.6, color: NEAT_BRASS, textTransform: "uppercase" },
+  title: { fontFamily: "ExecSerif", fontSize: 19, color: "#FFFFFF", marginTop: 2 },
   metaRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 6, borderBottomWidth: 0.6, borderBottomColor: NEAT_BRASS, paddingBottom: 6 },
   meta: { width: "33%", marginBottom: 3 },
   metaK: { fontSize: 5.6, letterSpacing: 1.2, color: MUTED, textTransform: "uppercase" },
@@ -33,7 +34,7 @@ const s = StyleSheet.create({
   cols: { flexDirection: "row", marginTop: 10 },
   left: { width: "40%", paddingRight: 10 },
   right: { width: "60%", paddingLeft: 10, borderLeftWidth: 0.4, borderLeftColor: RULE },
-  h: { fontSize: 6.4, letterSpacing: 1.4, color: NEAT_NAVY, textTransform: "uppercase", fontWeight: 600, marginBottom: 4, marginTop: 6 },
+  h: { fontSize: 6.4, letterSpacing: 1.4, color: NEAT_NAVY, textTransform: "uppercase", fontWeight: 600, marginBottom: 4, marginTop: 8, borderLeftWidth: 2, borderLeftColor: NEAT_BRASS, paddingLeft: 4 },
   row: { flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 0.3, borderBottomColor: RULE, paddingVertical: 2 },
   big: { fontFamily: "ExecSerif", fontSize: 16, color: NEAT_NAVY },
   cell: { fontSize: 7 },
@@ -68,8 +69,10 @@ function BriefingDoc({ m }: { m: ExecSummary }) {
     <Document title={`${m.masthead.title} · Executive Action Summary`} author="Vinculum Chancellery">
       <Page size="A4" orientation="portrait" style={s.page} wrap={false}>
         <Neatline inner={s.inner}>
-          <Text style={s.eyebrow}>Vinculum Chancellery · Executive Action Summary</Text>
-          <Text style={s.title}>{m.masthead.title}</Text>
+          <View style={s.band}>
+            <Text style={s.eyebrow}>Vinculum Chancellery · Executive Action Summary</Text>
+            <Text style={s.title}>{m.masthead.title}</Text>
+          </View>
           <View style={s.metaRow}>
             {meta.map(([k, v]) => (
               <View key={k} style={s.meta}>

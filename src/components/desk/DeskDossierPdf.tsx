@@ -37,6 +37,7 @@ const INK = "#2B2B2B";
 const BRASS = "#D4A24C";
 const RULE = "#C9CBD1";
 const MUTED = "#5F6470";
+const SLATE = "#2F3A4A";
 
 const s = StyleSheet.create({
   cover: { fontFamily: "Cormorant", color: INK, backgroundColor: "#FFFFFF" },
@@ -52,7 +53,7 @@ const s = StyleSheet.create({
   emblemSm: { width: 44, height: 44, objectFit: "contain", marginBottom: 14 },
   wordmark: { fontSize: 22, letterSpacing: 6, color: NAVY, textTransform: "uppercase" },
   motto: { fontSize: 10.5, fontStyle: "italic", color: MUTED, marginTop: 9 },
-  hair: { width: 180, borderBottomWidth: 0.6, borderBottomColor: BRASS, marginVertical: 20 },
+  hair: { width: 220, borderBottomWidth: 2.2, borderBottomColor: SLATE, marginVertical: 20 },
   series: {
     fontFamily: "InterDoc",
     fontSize: 7,
@@ -105,8 +106,8 @@ const s = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderBottomWidth: 0.5,
-    borderBottomColor: RULE,
+    borderBottomWidth: 0.8,
+    borderBottomColor: SLATE,
     paddingBottom: 4,
   },
   runText: {
