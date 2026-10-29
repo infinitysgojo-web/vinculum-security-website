@@ -3,6 +3,7 @@
 - [ ] Export expanded Codex PDF: preserve every original page, integrate verified mathematics and questioning/security updates, add statutory notice and refined supplementary design
 - [ ] Verify page preservation, pagination, navigation and every rendered PDF page before delivery
 - [ ] Add concise, detailed supplementary glossary and formula/symbol appendices with units, worked examples and interpretation limits
+- [ ] Remove em dashes throughout the expanded PDF using appropriate punctuation; preserve all pages and substantive wording
 
 - [x] Master Architecture Family Tree PDF (completed by user)
 
