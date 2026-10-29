@@ -57,4 +57,4 @@
 - [x] Run an end-to-end mission (offline field session through the Mission Foyer and all 18 desks) and responsive visual verification; the master PDF is tracked separately above
 - [x] Six linked additions: Chancellery Breviary desk, multi-theatre mission library, What-If simulator, SHA-256 integrity stamps, in-desk lexicon, offline field mode
 - [x] Offline: saved Dispatches, offline dashboard sign-in, clearer Google sitelink titles/descriptions
-- [ ] Codex v3: remove code file names, deep privacy sweep of whole PDF, richer explanations where shallow, improved contents page and restrained design polish
+- [x] Codex v3: remove code file names, deep privacy sweep of whole PDF, richer explanations where shallow, improved contents page and restrained design polish
