@@ -72,7 +72,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 0,
     fontFamily: "Cormorant",
     color: INK,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: PARCHMENT,
   },
   frameOuter: { margin: 26 },
   coverFrame: {
@@ -120,10 +120,10 @@ const s = StyleSheet.create({
     marginBottom: 20,
   },
   coverTitleWrap: {
-    borderTopWidth: 1.1,
-    borderBottomWidth: 1.1,
-    borderColor: NAVY,
-    paddingVertical: 20,
+    borderTopWidth: 1.6,
+    borderBottomWidth: 1.6,
+    borderColor: CRIMSON,
+    paddingVertical: 22,
     width: "100%",
   },
   coverTitle: {
