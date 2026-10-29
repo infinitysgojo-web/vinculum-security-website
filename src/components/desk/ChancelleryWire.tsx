@@ -248,10 +248,10 @@ export default function ChancelleryWire({
                   </button>
                 </span>
               </div>
-              <p className="mb-1 font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]">
+              <p className="mb-1 font-mono text-[10px] tabular-nums uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]">
                 Live state digest · <span className="text-primary normal-case">{digest ? digest : "computing"}</span>
               </p>
-              <div ref={box} className="h-48 sm:h-56 overflow-y-auto border border-border bg-background p-2 font-mono text-[10px] leading-relaxed">
+              <div ref={box} className="h-48 sm:h-56 overflow-y-auto border border-border bg-background p-2 font-mono text-[10px] tabular-nums leading-relaxed">
                 {shown.length === 0 ? (
                   <p className="text-muted-foreground">No entries in this class yet. Adjust a bond or mint a dispatch.</p>
                 ) : (
@@ -307,7 +307,7 @@ function SignalInspector({ signals, openQuestions, publisherLabel }: { signals: 
   const cell = "border border-border p-2 min-w-0";
   const k = "block text-[9px] uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]";
   return (
-    <div className="max-h-[50vh] overflow-y-auto font-mono text-xs" data-testid="signal-inspector">
+    <div className="max-h-[50vh] overflow-y-auto font-mono text-xs tabular-nums" data-testid="signal-inspector">
       <p className="mb-2 text-[10px] text-muted-foreground [overflow-wrap:anywhere]" data-testid="active-publisher">
         Active publisher ·{" "}
         {mon.last ? (
@@ -399,7 +399,7 @@ function DecisionLog() {
         {rows.length === 0 ? (
           <p className="p-2 font-mono text-[10px] text-muted-foreground">No decisions yet. Inscribing or lifting a shock, inscribing, amending or striking a covenant, a redline, a readiness gate, an escrow change or a profile amendment is recorded here.</p>
         ) : (
-          <table className="w-full min-w-[36rem] border-collapse font-mono text-[10px]">
+          <table className="w-full min-w-[36rem] border-collapse font-mono text-[10px] tabular-nums">
             <thead className="sticky top-0 bg-background">
               <tr className="text-left text-muted-foreground">
                 <th className="px-2 py-1 font-semibold">id</th>

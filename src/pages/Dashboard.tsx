@@ -317,7 +317,7 @@ function PrivacyButton() {
 
 /** Mission Operations Deck tool button: one height for every tool, so the row never grows. */
 const deckBtn = (on: boolean) =>
-  `inline-flex h-8 min-w-8 shrink-0 items-center justify-center gap-1.5 px-2 transition-colors ${on ? "text-accent" : "text-primary hover:text-accent"}`;
+  `inline-flex h-8 min-w-8 shrink-0 items-center justify-center gap-1.5 border px-2 transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brass/60 ${on ? "border-accent/40 bg-accent/10 text-accent" : "border-transparent text-primary hover:border-border hover:text-accent"}`;
 
 /**
  * Band 1 · Chancellery Sentinel strip (36 px, pinned): canary status, the minimal bus
@@ -1402,7 +1402,7 @@ export default function Dashboard() {
                     <span className="hidden min-w-0 truncate text-[10px] text-muted-foreground md:inline lg:hidden 2xl:inline">{modeStatusText(activeWs, wsStore.status, network)}</span>
                   </>
                 ) : (
-                  <span className="truncate text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  <span className="truncate text-[10px] uppercase tracking-[0.16em] font-semibold text-muted-foreground">
                     {inFoyer ? "Mission Foyer · no mission open" : "Pro Omni Humanitate"}
                   </span>
                 )}
@@ -1429,7 +1429,7 @@ export default function Dashboard() {
                   <button type="button" onClick={() => onHeader("tray")} className={deckBtn(false)} aria-label="Open the Context Tray" title="Context Tray">
                     <PanelRight size={13} /> <span className="hidden 2xl:inline">Context</span>
                     {openQuestions > 0 && (
-                      <span className="inline-flex min-w-4 h-4 items-center justify-center border border-accent px-1 text-[9px] tracking-normal text-accent" title={`${openQuestions} open question${openQuestions === 1 ? "" : "s"} in the Context Tray`} data-testid="deck-open-questions">
+                      <span className="inline-flex min-w-4 h-4 items-center justify-center border border-accent px-1 font-mono text-[10px] tabular-nums tracking-normal text-accent" title={`${openQuestions} open question${openQuestions === 1 ? "" : "s"} in the Context Tray`} data-testid="deck-open-questions">
                         {openQuestions}
                       </span>
                     )}
