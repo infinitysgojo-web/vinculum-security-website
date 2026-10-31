@@ -797,10 +797,6 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
 .desk-surface .instrument-pair > * { min-width: 0; }
 @container (min-width: 58rem) {
   .desk-surface .instrument-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .desk-surface .instrument-pair > :not(.instrument-wide):not(p):not(label) {
-    aspect-ratio: 1;
-    align-self: start;
-  }
 }
 @container (min-width: 64rem) {
   .desk-surface .instrument-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

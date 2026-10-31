@@ -1,7 +1,7 @@
 # Roadmap
 
 - [ ] Correct mission-entry and active-dashboard header clipping across screen widths; verify all top controls remain reachable
-- [ ] Give every desk section roomier, balanced square-like presentation without fixed heights or constrained text
+- [ ] Keep text-heavy desk sections landscape and pair small instruments only with sufficient width; avoid forced square heights
 
 - [x] Unify all 18 desks with landscape sections and compact paired instruments, without altering state or formulas
 - [x] Calibrate desk typography, numerical stability, control spacing and formula-proof presentation
