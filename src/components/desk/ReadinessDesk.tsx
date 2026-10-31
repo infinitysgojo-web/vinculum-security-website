@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useMission } from "./mission";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, usePublish, engineLocks, stageGateAudit, statutoryClearances } from "./engine";
+import { telemetryLines, useEngine, usePublish, engineLocks, stageGateAudit, statutoryClearances, dominumIndex } from "./engine";
+import FormulaProof from "./FormulaProof";
+import { dominumProof } from "./formulaProofs";
 import { mintDispatch } from "./registry";
 import { toast } from "sonner";
 import { logDecision } from "./ledgerStore";
@@ -114,6 +116,7 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
   }, [done, stage, JSON.stringify(openLocks), auditLocked, sovereignOpen.length, questionsOpen]);
 
   const clearances = useMemo(() => statutoryClearances(signals), [signals]);
+  const dominum = useMemo(() => dominumIndex(signals), [signals]);
   const [lastRef, setLastRef] = useState("");
   const mint = async (kind: "minute" | "attestation") => {
     const d = await mintDispatch(signals, kind, "readiness");
@@ -270,6 +273,21 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
               <div className={`h-2 transition-all ${bindingOpen ? "bg-accent" : "bg-primary"}`} style={{ width: `${clearancePct}%` }} />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{bindingOpen ? `${bindingOpen} binding article${bindingOpen === 1 ? "" : "s"} still locked.` : "Every binding article is clear."}</p>
+            <div className="mt-3 border-t border-border pt-3">
+              <div className="flex items-baseline justify-between gap-3">
+                <p className={label}>The Dominum Effect · Dominum Index</p>
+                {"index" in dominum && <span className="font-mono text-xs text-primary">D {dominum.index}%</span>}
+              </div>
+              {"index" in dominum ? (
+                <>
+                  <p className="font-serif text-lg text-primary">{dominum.phase}</p>
+                  {!dominum.floorHeld && <p className="text-xs text-muted-foreground">Self-Reinforcing Dominium is withheld while a bond sits at or below the 3.0 viable floor.</p>}
+                  <FormulaProof proof={dominumProof(dominum)} />
+                </>
+              ) : (
+                <p className="text-xs text-muted-foreground">Not yet assessed. Awaiting: {dominum.missing.join("; ")}.</p>
+              )}
+            </div>
           </div>
           <div className={`border-2 p-4 ${canSignOff ? "border-primary/50 bg-background" : "border-destructive/60 bg-destructive/5"}`}>
             <p className={label}>Mission sign-off · {stage.label}</p>
