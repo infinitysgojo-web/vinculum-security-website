@@ -345,12 +345,13 @@ export default function SuccessionSimulator() {
           </p>
         )}
       </div>
-      <div className="instrument-layout w-full min-w-0">
-        <div className="space-y-5">
+      <div className="space-y-6 w-full min-w-0">
           <div>
             <label className={label} htmlFor="ss-t">Instrument under test</label>
             <input id="ss-t" className={`${field} text-base sm:text-sm min-h-11`} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Draft Accord on Northern Rift Disengagement" />
           </div>
+        <div className="instrument-pair w-full min-w-0">
+          <div className="space-y-5 min-w-0">
           <div>
             <span className={label}>Provisions actually in the draft</span>
             <div className="space-y-2">
@@ -368,24 +369,6 @@ export default function SuccessionSimulator() {
               ))}
             </div>
           </div>
-          <div>
-            <span className={label}>Shocks to apply</span>
-            <div className="space-y-2">
-              {allShocks.map((s) => (
-                <div key={s.id} className="flex gap-3 items-start text-sm">
-                  <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={shocks.includes(s.id)} onChange={() => ts(s.id)} id={`ss-s-${s.id}`} />
-                  <label htmlFor={`ss-s-${s.id}`} className="text-foreground/85 flex-1 cursor-pointer">
-                    {s.label}
-                    {s.id.startsWith("own-") && <span className="text-[10px] uppercase tracking-[0.18em] text-accent ml-2">own · severity {s.sev}</span>}
-                  </label>
-                  {s.id.startsWith("own-") && (
-                    <button type="button" onClick={() => dropShock(s.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
           <div className="border border-brass/40 bg-background p-4 space-y-3">
             <span className={label}>Add a provision of your own</span>
             <input className={`${field} text-base sm:text-sm min-h-11`} value={pLabel} onChange={(e) => setPLabel(e.target.value)} placeholder="e.g. County assembly must ratify every boundary variation" />
@@ -408,6 +391,26 @@ export default function SuccessionSimulator() {
             </div>
           </div>
 
+          </div>
+          <div className="space-y-5 min-w-0">
+          <div>
+            <span className={label}>Shocks to apply</span>
+            <div className="space-y-2">
+              {allShocks.map((s) => (
+                <div key={s.id} className="flex gap-3 items-start text-sm">
+                  <input type="checkbox" className="mt-1 accent-[hsl(var(--accent))]" checked={shocks.includes(s.id)} onChange={() => ts(s.id)} id={`ss-s-${s.id}`} />
+                  <label htmlFor={`ss-s-${s.id}`} className="text-foreground/85 flex-1 cursor-pointer">
+                    {s.label}
+                    {s.id.startsWith("own-") && <span className="text-[10px] uppercase tracking-[0.18em] text-accent ml-2">own · severity {s.sev}</span>}
+                  </label>
+                  {s.id.startsWith("own-") && (
+                    <button type="button" onClick={() => dropShock(s.id)} className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-accent">Remove</button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="border border-brass/40 bg-background p-4 space-y-3">
             <span className={label}>Add a shock of your own</span>
             <input className={`${field} text-base sm:text-sm min-h-11`} value={sLabel} onChange={(e) => setSLabel(e.target.value)} placeholder="e.g. Drought displaces a third of the pastoral population" />
@@ -423,9 +426,25 @@ export default function SuccessionSimulator() {
               </button>
             </div>
           </div>
+          </div>
         </div>
-        <div className="space-y-4 min-w-0">
+        <div className="instrument-pair w-full min-w-0">
+          <div className="space-y-4 min-w-0">
           <DurabilityDial score={signals.survivalScore ?? (canon ? canon.percent : r.q)} />
+          <div className="border border-border bg-background p-4">
+            <p className={label}>{canon ? "Drafted-text provision quotient (supplementary)" : "Agreement survival quotient"}</p>
+            <p className="font-serif text-4xl text-primary">{r.q}<span className="text-lg text-muted-foreground">/100</span> <span className="text-lg text-accent">{r.b.name}</span></p>
+            <div className="h-1 bg-border mt-3"><div className="h-1 bg-accent transition-all" style={{ width: `${r.q}%` }} /></div>
+          </div>
+          {r.first && (
+            <div className="border border-brass/40 bg-background p-4">
+              <p className={label}>First clause to break</p>
+              <p className="font-serif text-lg text-primary leading-tight">{r.first.label}</p>
+              <p className="text-xs text-muted-foreground mt-1">{r.first.breaks}</p>
+            </div>
+          )}
+          </div>
+          <div className="space-y-4 min-w-0">
           {canon && (
             <div className={`border bg-background p-4 ${canon.trap ? "border-terracotta/60" : "border-brass/40"}`}>
               <p className={label}>Succession durability S% · Section 4.5</p>
@@ -488,11 +507,6 @@ export default function SuccessionSimulator() {
             </div>
           )}
           <div className="border border-border bg-background p-4">
-            <p className={label}>{canon ? "Drafted-text provision quotient (supplementary)" : "Agreement survival quotient"}</p>
-            <p className="font-serif text-4xl text-primary">{r.q}<span className="text-lg text-muted-foreground">/100</span> <span className="text-lg text-accent">{r.b.name}</span></p>
-            <div className="h-1 bg-border mt-3"><div className="h-1 bg-accent transition-all" style={{ width: `${r.q}%` }} /></div>
-          </div>
-          <div className="border border-border bg-background p-4">
             <p className={label}>Compound strain across the four bonds</p>
             <div className="space-y-2">
               {r.bonds.map((b) => (
@@ -504,13 +518,8 @@ export default function SuccessionSimulator() {
             </div>
             {r.compound > 0 && <p className="text-xs text-accent mt-3">Compound amplification: {r.compound} points lost to simultaneous uninsulated shocks.</p>}
           </div>
-          {r.first && (
-            <div className="border border-brass/40 bg-background p-4">
-              <p className={label}>First clause to break</p>
-              <p className="font-serif text-lg text-primary leading-tight">{r.first.label}</p>
-              <p className="text-xs text-muted-foreground mt-1">{r.first.breaks}</p>
-            </div>
-          )}
+          </div>
+        </div>
           <div className="border border-brass/40 bg-background p-4 min-w-0">
             <p className={label}>Decay horizon · stability half-life</p>
             {!decay ? (
@@ -567,7 +576,6 @@ export default function SuccessionSimulator() {
               </>
             )}
           </div>
-        </div>
       </div>
       <div className="mt-6 w-full min-w-0">
         <ShockTimelineScrubber

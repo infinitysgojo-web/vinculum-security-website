@@ -193,29 +193,7 @@ export default function HandoverProtocol() {
             placeholder="Office of the National Peace Secretariat"
           />
 
-          {GROUPS.map((g) => (
-            <div key={g} className="mt-5">
-              <p className={label}>{g}</p>
-              <div className="space-y-2">
-                {TESTS.filter((t) => t.group === g).map((t) => (
-                  <label key={t.id} className="flex items-start gap-3 text-sm cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={cleared.includes(t.id)}
-                      onChange={() => toggle(cleared, t.id, setCleared)}
-                      className="mt-1 accent-[hsl(var(--accent))]"
-                    />
-                    <span className="flex-1">
-                      <span className="text-foreground/90">{t.text}</span>
-                      {t.critical && (
-                        <span className="block text-[10px] uppercase tracking-[0.16em] text-accent">Critical gate</span>
-                      )}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
+
         </div>
 
       </div>
@@ -250,6 +228,32 @@ export default function HandoverProtocol() {
 
       </div>
     </div>
+
+      <div className="mt-6 instrument-pair w-full min-w-0">
+          {GROUPS.map((g) => (
+            <div key={g} className="border-t border-brass/40 pt-4 min-w-0">
+              <p className={label}>{g}</p>
+              <div className="space-y-2">
+                {TESTS.filter((t) => t.group === g).map((t) => (
+                  <label key={t.id} className="flex items-start gap-3 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={cleared.includes(t.id)}
+                      onChange={() => toggle(cleared, t.id, setCleared)}
+                      className="mt-1 accent-[hsl(var(--accent))]"
+                    />
+                    <span className="flex-1">
+                      <span className="text-foreground/90">{t.text}</span>
+                      {t.critical && (
+                        <span className="block text-[10px] uppercase tracking-[0.16em] text-accent">Critical gate</span>
+                      )}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+      </div>
 
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Handover-Protocol" />

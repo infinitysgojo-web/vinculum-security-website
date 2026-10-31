@@ -438,14 +438,17 @@ export default function CompoundShockTester() {
 
         <BondRadar scores={bondScores} caption={useLive ? "Live continuum after the applied shocks" : "Continuum after the applied shocks"} />
 
+
+      </div>
+
+    </div>
+      <div className="w-full min-w-0">
         <ShockTimelineScrubber
           title="Shock timeline · sequential fracture playback"
           steps={compoundTimeline(signals, ordered, useLive ? liveVector : undefined, deficitOn ? LEGITIMACY_PENALTY : 0)}
           note="Shocks in the order applied. Bonds and strain follow this desk; R follows the Sentinel rule, where only inscribed shocks add load; λ uses the exposure U carried from Desk 12."
         />
       </div>
-
-    </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Compound-Stress-Test" />
       </div>
