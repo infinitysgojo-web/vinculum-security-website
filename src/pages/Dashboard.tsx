@@ -1544,7 +1544,7 @@ export default function Dashboard() {
 
       {/* Band 3 · Desk navigation: division tabs and the desk stepper in one fixed-height band. */}
       {missionOpen && (
-        <nav aria-label="Desk navigation" data-testid="desk-band" className={`diplomatic-navigation sticky top-9 z-30 border-b border-brass/40 bg-background/95 backdrop-blur ${focus ? "hidden" : ""}`}>
+        <nav aria-label="Desk navigation" data-testid="desk-band" className={`sticky top-9 z-30 diplomatic-navigation border-b border-brass/40 bg-background/95 backdrop-blur ${focus ? "hidden" : ""}`}>
           <div ref={bandRef} className="container flex h-12 items-center gap-3 overflow-x-auto scrollbar-none scroll-smooth [webkit-overflow-scrolling:touch]">
             <div className="flex shrink-0 items-center gap-0.5 border border-brass/50 p-0.5" role="group" aria-label="Divisions">
               {DIVISIONS.map((dv) => {
