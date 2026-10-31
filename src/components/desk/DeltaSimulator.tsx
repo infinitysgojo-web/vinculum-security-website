@@ -96,13 +96,13 @@ export default function DeltaSimulator({
         from 1.4 to 2.4. The live bond scores above do not change until you apply.
       </p>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="delta-controls mt-4 grid gap-3">
         {KEYS.map(({ key, name }) => {
           const d = Math.round((sim[key] - baseline[key]) * 10) / 10;
           return (
             <div key={key} className={stat}>
               <div className="flex justify-between items-baseline gap-2 mb-1">
-                <label htmlFor={`ds-${key}`} className="text-[10px] uppercase tracking-[0.14em] font-semibold text-primary min-w-0 [overflow-wrap:anywhere]">
+                <label htmlFor={`ds-${key}`} className="text-[10px] uppercase tracking-[0.14em] font-semibold text-primary min-w-0 [overflow-wrap:normal] [hyphens:none]">
                   {name}
                 </label>
                 <span className="font-mono text-xs text-accent font-semibold shrink-0">{sim[key].toFixed(1)}</span>
@@ -133,7 +133,7 @@ export default function DeltaSimulator({
         })}
       </div>
 
-      <div className="mt-4 border-t border-brass/30 pt-4 grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-3 text-center">
+      <div className="delta-readings mt-4 border-t border-brass/30 pt-4 grid gap-3 text-center">
         <div className={stat}>
           <span className={statLabel}><Lex term="liebig">Limiting factor</Lex></span>
           <p className="mt-1 font-serif text-sm [overflow-wrap:anywhere]">

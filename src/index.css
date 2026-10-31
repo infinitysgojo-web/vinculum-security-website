@@ -795,10 +795,16 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
   align-items: stretch;
 }
 .desk-surface .instrument-pair > * { min-width: 0; }
+.delta-controls, .delta-readings {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+.desk-surface .delta-controls label { hyphens: none; overflow-wrap: normal; }
 @container (min-width: 58rem) {
   .desk-surface .instrument-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @container (min-width: 64rem) {
+  .desk-surface .delta-readings { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .desk-surface .delta-readings > :nth-child(n + 5) { grid-column: span 2; }
   .desk-surface .instrument-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .desk-surface .instrument-layout.litigation-layout { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 }

@@ -208,7 +208,7 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
   return (
     <section className="w-full min-w-0">
       <div className="instrument-layout w-full min-w-0">
-        {/* Left: the mission, the stage checklist and the twenty statutory clearances by division. */}
+        {/* Left: mission inputs and the stage checklist. */}
         <div className="space-y-4">
           <div>
             <label className={label} htmlFor="rd-m">Mission</label>
@@ -246,33 +246,7 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
               );
             })}
           </div>
-          <div>
-            <p className={label}>Statutory clearances · Articles 1.1 to 5.4</p>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {DIVISIONS.map((d) => {
-                const rows = clearances.filter((c) => d.prefixes.some((p) => c.id.startsWith(p)));
-                const ok = rows.filter((c) => c.passed).length;
-                return (
-                  <div key={d.id} className="border border-border bg-background p-4 min-w-0">
-                    <div className="flex items-baseline justify-between gap-2">
-                      <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">{d.title}</p>
-                      <span className={`font-mono text-[10px] ${ok === rows.length ? "text-primary" : "text-accent"}`}>{ok}/{rows.length}</span>
-                    </div>
-                    <p className="text-[11px] text-muted-foreground mb-2">{d.note}</p>
-                    <ul className="space-y-1.5">
-                      {rows.map((c) => (
-                        <li key={c.id} className="flex gap-2 text-xs leading-snug">
-                          <span className="w-7 shrink-0 font-mono text-accent">{c.id}</span>
-                          <span className="min-w-0 flex-1 text-foreground/85">{c.name}{!c.binding && <span className="ml-1 text-[10px] text-muted-foreground">(advisory)</span>}</span>
-                          <span className={`shrink-0 text-[10px] uppercase tracking-[0.12em] ${c.passed ? "text-primary" : c.binding ? "text-destructive" : "text-muted-foreground"}`}>{c.passed ? "Clear" : c.binding ? "Locked" : "Open"}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+
         </div>
 
         {/* Right: live link, clearance meter, sign-off, audit, locks and the transmittal console. */}
@@ -300,7 +274,7 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
             )}
             {(signals.customGates?.length ?? 0) > 0 && (
               <ul className="mt-3 space-y-1 border-t border-border pt-3">
-                {signals.customGates!.map((g) => (
+                {signals.customGates?.map((g) => (
                   <li key={g.id} className="flex justify-between gap-3 text-xs">
                     <span className="text-foreground/85 [overflow-wrap:anywhere]">Sovereign gate · {g.label}</span>
                     <span className={g.verified ? "text-emerald shrink-0" : "text-destructive shrink-0"}>{g.verified ? "Attested" : "Awaiting"}</span>
@@ -358,6 +332,33 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
           </div>
         </div>
       </div>
+          <div className="mt-6 w-full min-w-0">
+            <p className={label}>Statutory clearances · Articles 1.1 to 5.4</p>
+            <div className="instrument-pair">
+              {DIVISIONS.map((d) => {
+                const rows = clearances.filter((c) => d.prefixes.some((p) => c.id.startsWith(p)));
+                const ok = rows.filter((c) => c.passed).length;
+                return (
+                  <div key={d.id} className="border border-border bg-background p-4 min-w-0">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">{d.title}</p>
+                      <span className={`font-mono text-[10px] ${ok === rows.length ? "text-primary" : "text-accent"}`}>{ok}/{rows.length}</span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mb-2">{d.note}</p>
+                    <ul className="space-y-1.5">
+                      {rows.map((c) => (
+                        <li key={c.id} className="flex gap-2 text-xs leading-snug">
+                          <span className="w-7 shrink-0 font-mono text-accent">{c.id}</span>
+                          <span className="min-w-0 flex-1 text-foreground/85">{c.name}{!c.binding && <span className="ml-1 text-[10px] text-muted-foreground">(advisory)</span>}</span>
+                          <span className={`shrink-0 text-[10px] uppercase tracking-[0.12em] ${c.passed ? "text-primary" : c.binding ? "text-destructive" : "text-muted-foreground"}`}>{c.passed ? "Clear" : c.binding ? "Locked" : "Open"}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Mission-Readiness" />
       </div>

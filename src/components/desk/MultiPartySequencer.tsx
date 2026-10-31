@@ -486,7 +486,6 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
-        <EscrowWaterfall reading={escrow} terms={escrowTerms} onTerms={amendEscrow} input={escrowInput} />
         <div className={`mt-4 border bg-background p-4 min-w-0 ${res.deficit ? "border-terracotta/60" : "border-brass/40"}`}>
           <span className={label}>Resource-sharing covenant · allocation of proceeds</span>
           {RESOURCE_HEADS.map((h, i) => (
@@ -501,6 +500,10 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
         </div>
       </div>
     </div>
+
+      <div className="mt-6 w-full min-w-0">
+        <EscrowWaterfall reading={escrow} terms={escrowTerms} onTerms={amendEscrow} input={escrowInput} />
+      </div>
 
       {/* Seated delegations: in a responsive grid, each at its radial seat 2πi/N. */}
       {seated.length > 0 && (
