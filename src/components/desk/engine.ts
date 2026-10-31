@@ -610,6 +610,8 @@ export function inscriptionLines(s: Signals): string[] {
 export type Engine = {
   signals: Signals;
   publish: (desk: string, patch: Signals) => void;
+  /** Bumps when a desk is first engaged by the operator, so held readings are offered again. */
+  epoch?: number;
 };
 
 export const EngineContext = createContext<Engine>({ signals: {}, publish: () => {} });
@@ -620,12 +622,12 @@ export function useEngine() {
 
 /** Publish a desk's readings onto the bus whenever they change. */
 export function usePublish(desk: string, patch: Signals) {
-  const { publish } = useEngine();
+  const { publish, epoch } = useEngine();
   const key = JSON.stringify(patch);
   useEffect(() => {
     publish(desk, JSON.parse(key) as Signals);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [desk, key]);
+  }, [desk, key, epoch]);
 }
 
 /* ------------------------------------------------------------------ */

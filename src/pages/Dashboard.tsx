@@ -419,6 +419,9 @@ function offlineSessionAsSession(): Session | null {
   return o ? ({ user: { id: o.userId, email: o.email } } as unknown as Session) : null;
 }
 
+/** Bus publishers whose name differs from the desk that hosts them. */
+const BUS_PUBLISHER_DESK: Record<string, string> = { shocks: "compound", asymmetry: "multiparty" };
+
 export default function Dashboard() {
   // Hydrated synchronously: an offline field session (or a disconnected terminal)
   // renders on the first frame instead of waiting on cloud auth.
@@ -440,7 +443,19 @@ export default function Dashboard() {
   // Mirror of the bus for the Signal Inspector's publisher tracking; never read by a desk.
   const busRef = useRef<Signals>({});
   busRef.current = signals;
+  // Custom missions record nothing from a desk until the operator has worked it:
+  // a desk's starting values are not an assessment. Preset missions publish at once.
+  const customRef = useRef(false);
+  const engagedRef = useRef<Set<string>>(new Set());
+  const [engageEpoch, setEngageEpoch] = useState(0);
+  const engageDesk = useCallback((id: string) => {
+    if (!customRef.current || engagedRef.current.has(id)) return;
+    engagedRef.current.add(id);
+    setEngageEpoch((n) => n + 1);
+  }, []);
   const publish = useCallback((desk: string, raw: Signals) => {
+    const owner = BUS_PUBLISHER_DESK[desk] ?? desk;
+    if (customRef.current && DESKS.some((d) => d.id === owner) && !engagedRef.current.has(owner)) return;
     // Every publication is validated at the bus boundary; refused ones never reach a desk.
     const patch = guardSignalPatch(desk, raw);
     if (!patch) return;
@@ -456,7 +471,7 @@ export default function Dashboard() {
   }, []);
   // The effective state every desk reads: raw publications with Sovereign inscriptions applied.
   const effective = useMemo(() => applyInscriptions(signals), [signals]);
-  const engineValue = useMemo(() => ({ signals: effective, publish }), [effective, publish]);
+  const engineValue = useMemo(() => ({ signals: effective, publish, epoch: engageEpoch }), [effective, publish, engageEpoch]);
   // Session ledger: real operational events from the bus and the dispatch registry, in memory only.
   useLedgerWatch(effective);
   // The bond scores live on the mission profile, so presets, archives and saved
@@ -833,6 +848,10 @@ export default function Dashboard() {
   const putWs = wsStore.put;
   const [activeId, setActiveId] = useState<string | null>(() => readActiveId());
   const activeWs = wsStore.store.workspaces.find((w) => w.id === activeId);
+  customRef.current = activeWs?.mode === "custom";
+  useEffect(() => {
+    engagedRef.current = new Set();
+  }, [activeId]);
   const activeRef = useRef<Workspace | undefined>(activeWs);
   activeRef.current = activeWs;
   // Bumped whenever a workspace is opened, so every desk remounts on that workspace's state.
@@ -1250,7 +1269,7 @@ export default function Dashboard() {
   });
 
   /* ---------------- Surface 3: palette actions ---------------- */
-  const PUBLISHER_DESK: Record<string, string> = { shocks: "compound", asymmetry: "multiparty" };
+  const PUBLISHER_DESK = BUS_PUBLISHER_DESK;
   const publisherLabel = (id: string) => {
     if (id === "mission") return "Mission profile";
     if (id === "preset") return "Theatre preset";
@@ -1707,7 +1726,13 @@ export default function Dashboard() {
         >
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
-                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="desk-surface w-full min-w-0" data-desk={id}>
+                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="desk-surface w-full min-w-0" data-desk={id}
+                  onInputCapture={() => engageDesk(id)}
+                  onChangeCapture={() => engageDesk(id)}
+                  onClickCapture={(e) => {
+                    if ((e.target as HTMLElement).closest("button, input, select, [role='slider'], [role='checkbox'], [role='switch'], [role='option']")) engageDesk(id);
+                  }}
+                >
                   <p className="sr-only" aria-live="polite">{desk === id ? `Desk ${String(DESKS.findIndex((x) => x.id === id) + 1).padStart(2, "0")}, ${DESKS.find((x) => x.id === id)?.label ?? ""}` : ""}</p>
                   <DeskErrorBoundary label={DESKS.find((x) => x.id === id)?.label ?? "This desk"}>
                   {DESK_DOCTRINES[id] && (
