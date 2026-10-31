@@ -117,7 +117,7 @@ export default function AdversarialChamber() {
         ))}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[18rem_1fr] border border-border bg-background">
+      <div className="review-layout grid gap-6 lg:grid-cols-[18rem_1fr] border border-border bg-background">
         {/* Mobile: compact panel menu */}
         <div className="lg:hidden border-b border-border bg-navy-tint/60 p-4">
           <label htmlFor="panel-menu" className="eyebrow block mb-2">Review panel</label>
