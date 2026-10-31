@@ -3,6 +3,8 @@ import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { usePublish, useEngine, hasSignal, telemetryLines, communalTolerance } from "./engine";
 import SyncPanel from "./SyncPanel";
+import FormulaProof from "./FormulaProof";
+import { trackShearProof } from "./formulaProofs";
 
 /**
  * §9B, the Track I and Track II sequencing workbench.
@@ -257,6 +259,7 @@ export default function TrackSequencer({ initialDone = [] }: { /** Steps recorde
               </p>
             </div>
           )}
+          <FormulaProof proof={trackShearProof(r.a, r.b, tolerance, communal, tol?.band)} />
           <DualRail a={r.a} b={r.b} tolerance={tolerance} />
           <div className="border border-border bg-background p-4">
             <p className={label}>Synchronisation</p>

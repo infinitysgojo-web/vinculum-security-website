@@ -1734,7 +1734,7 @@ export default function Dashboard() {
                   {id === "multiparty" && <MultiPartySequencer />}
                   {id === "compound" && <CompoundShockTester />}
                   {id === "sentinel" && <SentinelMatrix />}
-                  {id === "readiness" && <ReadinessDesk openQuestions={activeWs ? openQuestionCount(activeWs.tray) : undefined} />}
+                  {id === "readiness" && <ReadinessDesk onOpenDesk={(target) => { const n = DESKS.find((x) => x.id === target); if (!n) return; setDivision(n.division); setDesk(n.id); window.scrollTo({ top: 0, behavior: "smooth" }); }} openQuestions={activeWs ? openQuestionCount(activeWs.tray) : undefined} />}
                   {id === "counterpart" && <CounterpartPrompter />}
                   {id === "succession" && <SuccessionSimulator />}
                   {id === "tracks" && <TrackSequencer />}

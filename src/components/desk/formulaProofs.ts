@@ -243,3 +243,45 @@ export function compoundShockProof(
     citation: `${CODEX}, Part VI §6.2 (Compound Shock Cascade and Nonlinear Amplification): multiple simultaneous shocks compound nonlinearly across all four bond dimensions.`,
   };
 }
+
+/** R = min(100, round((observed share + inscribed load) × trend multiplier)) (Desk 02, Sentinel Matrix). */
+export function sentinelRuptureProof(score: number, totalMax: number, inscribed: number, mult: number, result: number): FormulaProof {
+  const share = totalMax > 0 ? (score / totalMax) * 100 : 0;
+  const raw = (share + inscribed) * mult;
+  return {
+    id: "rupture-index",
+    title: "Rupture index R",
+    equation: "R = min(100, round((100 · w_obs ÷ w_max + L_ins) × m_trend))",
+    substitution: `R = min(100, round((100 · ${score} ÷ ${totalMax} + ${inscribed}) × ${mult.toFixed(2)}))`,
+    steps: [
+      `Observed share = 100 · ${score} ÷ ${totalMax} = ${f2(share)}`,
+      `Inscribed load L_ins = ${inscribed} (5 per point of negative inscribed delta, 6 per active inscribed trap, capped at 30)`,
+      `(${f2(share)} + ${inscribed}) × ${mult.toFixed(2)} = ${f2(raw)}`,
+      `min(100, round(${f2(raw)})) = ${result}`,
+    ],
+    result: `R = ${result}%`,
+    citation: `${CODEX}, Part VI §6.1 (Early-Warning Sentinel Matrix). Trend multipliers: improving ×0.85, static ×1.00, deteriorating ×1.15. A rule-based reading, not a prediction.`,
+  };
+}
+
+/** Δ = d_I − d_II against τ(B_communal) (Desk 08, Track Sequencing). */
+export function trackShearProof(a: number, b: number, tolerance: number, communal?: number, band?: string): FormulaProof {
+  const gap = a - b;
+  const shear = gap > tolerance;
+  return {
+    id: "track-shear",
+    title: "Track lead Δ and communal tolerance τ",
+    equation: "Δ = d_I − d_II;  shear ⇔ Δ > τ(B_communal), with τ = 0 (Failing), 1 (Fragile), 2 (Viable, Fortified)",
+    substitution: `Δ = ${a} − ${b};  τ = ${tolerance}`,
+    steps: [
+      communal !== undefined && band
+        ? `B_communal = ${communal.toFixed(1)} → band ${band} → τ = ${tolerance}`
+        : `No live communal reading: baseline τ = ${tolerance}, advisory only`,
+      `d_I = ${a}, d_II = ${b} (contiguous phases recorded on each track)`,
+      `Δ = ${a} − ${b} = ${gap}`,
+      shear ? `${gap} > ${tolerance}: Elite-Pact shear` : `${gap} ≤ ${tolerance}: within tolerance`,
+    ],
+    result: shear ? `Δ = ${gap} > τ = ${tolerance} · shear` : `Δ = ${gap} ≤ τ = ${tolerance} · in step`,
+    citation: `${CODEX}, Handbook §9B (Track I and Track II sequencing); communal tolerance rule of the MissionEngine.`,
+  };
+}

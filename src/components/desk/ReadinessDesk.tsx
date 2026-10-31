@@ -62,7 +62,16 @@ const STAGES: { id: string; label: string; anchor: string; gates: Gate[] }[] = [
   },
 ];
 
-export default function ReadinessDesk({ openQuestions }: { /** Open Questions in the active workspace's Context Tray; undefined when no workspace is open. */ openQuestions?: number } = {}) {
+/** Host desk that resolves each canonical stage-gate. */
+const GATE_DESK: Record<string, { id: string; label: string }> = {
+  "Vector Integrity": { id: "diagnostics", label: "Desk 01 · Diagnostics" },
+  "Rupture Containment": { id: "verification", label: "Desk 16 · Verification Ledger" },
+  "Track Synchronization": { id: "tracks", label: "Desk 08 · Track Sequencing" },
+  "Structural Covenants": { id: "clauses", label: "Desk 10 · Clause Architect" },
+  "Succession Durability": { id: "succession", label: "Desk 12 · Succession Simulator" },
+};
+
+export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens a desk by id; supplied by the dashboard. */ onOpenDesk?: (id: string) => void;  /** Open Questions in the active workspace's Context Tray; undefined when no workspace is open. */ openQuestions?: number } = {}) {
   const profile = useMission();
   const [mission, setMission] = useState(profile.theatre);
   // Follow the Mission Vault when the theatre changes; a manual entry stays until the theatre itself changes.
@@ -309,6 +318,11 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
                 <div key={g.name} className={`border-l-2 pl-3 ${g.passed ? "border-primary/40" : "border-destructive"}`}>
                   <p className="text-xs font-semibold text-foreground/90">Gate {i + 1} · {g.name} <span className={g.passed ? "text-primary" : "text-destructive"}>{g.passed ? "Passed" : "Failed"}</span></p>
                   {!g.passed && <p className="text-xs text-muted-foreground mt-0.5">{g.directive}</p>}
+                  {!g.passed && onOpenDesk && GATE_DESK[g.name] && (
+                    <button type="button" onClick={() => onOpenDesk(GATE_DESK[g.name].id)} className="mt-1.5 min-h-9 border border-brass/50 px-2.5 text-[10px] uppercase tracking-[0.14em] font-semibold text-primary hover:border-accent hover:text-accent">
+                      Open {GATE_DESK[g.name].label}
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
