@@ -1383,39 +1383,38 @@ export default function Dashboard() {
 
       {/* Band 2 · Mission Operations Deck: identity, theatre preset and tools in one compact row. */}
       <header className={`diplomatic-deck border-b-2 border-primary bg-background ${focus ? "hidden" : ""}`} data-testid="ops-deck">
-        <div className="container flex flex-wrap xl:flex-nowrap items-center gap-x-4 gap-y-2 py-2.5 min-h-[50px]">
-          <div className="flex min-w-0 flex-1 basis-full xl:grow-0 xl:basis-[20rem] xl:min-w-[14rem] items-center gap-3">
+        <div className="container flex flex-wrap items-center gap-x-4 gap-y-3 py-3 min-h-[50px]">
+          <div className={`flex min-w-0 flex-1 ${missionOpen ? "basis-full" : "basis-[16rem]"} items-start gap-3`}>
             <Logo size={22} />
             <div className="min-w-0">
-              <div className="flex min-w-0 items-center gap-2">
-                <span className="wordmark shrink-0 text-sm sm:text-base leading-none">{missionOpen ? "Vinculum" : "Vinculum Dashboard"}</span>
+              <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="wordmark text-sm sm:text-base leading-snug">{missionOpen ? "Vinculum" : "Vinculum Dashboard"}</span>
                 {missionOpen && activeWs && (
                   <>
                     <span className="text-brass" aria-hidden>·</span>
-                    <span className="min-w-0 truncate font-serif text-sm sm:text-base leading-none text-primary" data-testid="deck-title">{activeWs.title}</span>
+                    <span className="min-w-0 font-serif text-sm sm:text-base leading-snug text-primary [overflow-wrap:anywhere]" data-testid="deck-title">{activeWs.title}</span>
                   </>
                 )}
               </div>
-              <div className="mt-1 flex min-w-0 items-center gap-2 overflow-hidden">
+              <div className="mt-1 flex min-w-0 flex-wrap items-center gap-2">
                 {missionOpen && activeWs ? (
                   <>
                     <ModeBadges ws={activeWs} />
-                    <span className="hidden min-w-0 truncate text-[10px] text-muted-foreground md:inline lg:hidden 2xl:inline">{modeStatusText(activeWs, wsStore.status, network)}</span>
                   </>
                 ) : (
-                  <span className="truncate text-[10px] uppercase tracking-[0.16em] font-semibold text-muted-foreground">
+                  <span className="text-[10px] uppercase tracking-[0.16em] font-semibold text-muted-foreground">
                     {inFoyer ? "Mission Foyer · no mission open" : "Pro Omni Humanitate"}
                   </span>
                 )}
               </div>
             </div>
           </div>
-          <div className="flex w-full xl:w-auto xl:flex-1 xl:justify-end min-w-0 items-center gap-2" data-testid="deck-tools">
-            <div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-none [webkit-overflow-scrolling:touch]">
+          <div className={`flex ${missionOpen ? "w-full" : "flex-1 basis-[16rem]"} min-w-0 flex-wrap items-center gap-2`} data-testid="deck-tools">
+            <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
             {missionOpen && (
               <TheatrePresetSelect value={signals.presetId ?? ""} custom={activeWs?.mode === "custom"} onChange={requestTheatre} />
             )}
-            <div className="flex shrink-0 items-center gap-0.5 border-l border-brass/40 pl-2 text-[10px] uppercase tracking-[0.16em] font-semibold">
+            <div className="flex min-w-0 flex-wrap items-center gap-0.5 border-l border-brass/40 pl-2 text-[10px] uppercase tracking-[0.16em] font-semibold">
               {missionOpen && activeWs && (
                 <>
                   <button type="button" onClick={() => setPanel((p) => (p === "vault" ? null : "vault"))} aria-pressed={panel === "vault"} aria-controls="deck-panel-vault" className={deckBtn(panel === "vault")} title="Mission State Vault: details, library, archives, enclave security" data-testid="vault-toggle">
@@ -1480,7 +1479,7 @@ export default function Dashboard() {
               )}
             </div>
             </div>
-            <div className="flex shrink-0 items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
+            <div className="ml-auto flex max-w-full flex-wrap items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
               {missionOpen && activeWs && (
                 <HandoverSealBadge status={sealState} differences={() => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : [])} sealing={sealBusy} onSeal={() => void sealMission()} onReseal={() => void sealMission()} onClear={breakSeal} />
               )}
