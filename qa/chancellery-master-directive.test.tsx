@@ -143,7 +143,7 @@ describe("2 · three-band header, fixed desk band, no phantom void", () => {
   });
   test("the desk heading is one eyebrow line plus a title with a collapsed doctrinal note", () => {
     expect(dash).toContain("Step {String(position + 1).padStart(2, \"0\")} of {DESKS.length}");
-    expect(dash).toContain("const [noteOpen, setNoteOpen] = useState(false);");
+    expect(dash).toContain(`sessionStorage.getItem("vs:noteOpen") === "1"; } catch { return false; }`);
     expect(dash).toContain('aria-controls="vs-desk-note"');
     expect(dash).toContain("Doctrinal note");
     expect(dash).toContain('noteOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"');

@@ -251,7 +251,7 @@ export default function ChancelleryWire({
               <p className="mb-1 font-mono text-[10px] tabular-nums uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]">
                 Live state digest · <span className="text-primary normal-case">{digest ? digest : "computing"}</span>
               </p>
-              <div ref={box} className="h-48 sm:h-56 overflow-y-auto border border-border bg-background p-2 font-mono text-[10px] tabular-nums leading-relaxed">
+              <div ref={box} className="h-48 sm:h-56 [@media(max-height:720px)]:h-32 overflow-y-auto border border-border bg-background p-2 font-mono text-[10px] tabular-nums leading-relaxed">
                 {shown.length === 0 ? (
                   <p className="text-muted-foreground">No entries in this class yet. Adjust a bond or mint a dispatch.</p>
                 ) : (
@@ -307,7 +307,7 @@ function SignalInspector({ signals, openQuestions, publisherLabel }: { signals: 
   const cell = "border border-border p-2 min-w-0";
   const k = "block text-[9px] uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]";
   return (
-    <div className="max-h-[50vh] overflow-y-auto font-mono text-xs tabular-nums" data-testid="signal-inspector">
+    <div className="max-h-[50vh] [@media(max-height:720px)]:max-h-[38vh] overflow-y-auto font-mono text-xs tabular-nums" data-testid="signal-inspector">
       <p className="mb-2 text-[10px] text-muted-foreground [overflow-wrap:anywhere]" data-testid="active-publisher">
         Active publisher ·{" "}
         {mon.last ? (
@@ -395,7 +395,7 @@ function DecisionLog() {
           )}
         </span>
       </div>
-      <div className="h-48 sm:h-56 overflow-auto border border-border bg-background">
+      <div className="h-48 sm:h-56 [@media(max-height:720px)]:h-32 overflow-auto border border-border bg-background">
         {rows.length === 0 ? (
           <p className="p-2 font-mono text-[10px] text-muted-foreground">No decisions yet. Inscribing or lifting a shock, inscribing, amending or striking a covenant, a redline, a readiness gate, an escrow change or a profile amendment is recorded here.</p>
         ) : (
