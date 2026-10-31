@@ -428,8 +428,8 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
 
   return (
     <div className="w-full min-w-0">
-    <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
-      <div className="space-y-6 min-w-0">
+    <div className="instrument-pair w-full min-w-0">
+      <div className="instrument-wide min-w-0">
         <div className={panel}>
           <label className={label} htmlFor="mp-theatre">Table or theatre</label>
           <input
@@ -460,8 +460,8 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
               );
             })}
           </div>
-          <div className="mt-5 border-t border-brass/30 pt-4 space-y-2">
-            <p className={label}>Custom mode: seat your own party</p>
+          <div className="mt-5 border-t border-brass/30 pt-4 instrument-pair">
+            <p className={`${label} instrument-wide`}>Custom mode: seat your own party</p>
             <input aria-label="Custom delegation name" className={field} value={nl} onChange={(e) => setNl(e.target.value)} placeholder="e.g. Diaspora remittance network" />
             <textarea rows={3} aria-label="Custom delegation caution" className={field} value={nc} onChange={(e) => setNc(e.target.value)} placeholder="Caution to carry into the room (optional)" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -481,8 +481,8 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
 
       </div>
 
-      <div className="space-y-6 min-w-0">
-        <SyncPanel linked={linked} onToggle={setLinked} summary={() => [spoiler || `${frictions.length} friction pair(s) at the table; no spoiler coalition flagged by the live reading.`]} />
+      <div className="contents">
+        <div className="instrument-wide"><SyncPanel linked={linked} onToggle={setLinked} summary={() => [spoiler || `${frictions.length} friction pair(s) at the table; no spoiler coalition flagged by the live reading.`]} /></div>
         {seated.length >= 2 && (
           <NegotiationTable seated={seated} frictions={frictions} multiplier={fricMultiplier} focusPair={pairOk} onPick={setFocusPair} />
         )}
@@ -564,7 +564,7 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
         />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
+      <div className="mt-8 instrument-layout w-full min-w-0">
         {seated.length > 0 && (
           <div className="border border-accent/50 bg-background p-5">
             <p className={label}>De-confliction script · {(pairOk ?? picked).map((id) => ACTORS.find((x) => x.id === id)?.label).join(" / ")}</p>

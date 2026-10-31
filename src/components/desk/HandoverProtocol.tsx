@@ -173,7 +173,7 @@ export default function HandoverProtocol() {
 
   return (
     <div className="w-full min-w-0">
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+    <div className="instrument-layout w-full min-w-0">
       <div className="space-y-6 min-w-0">
         <div className={panel}>
           <label className={label} htmlFor="hp-m">Mandate under handover</label>

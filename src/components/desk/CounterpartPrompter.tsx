@@ -134,9 +134,9 @@ export default function CounterpartPrompter() {
 
 
   return (
-    <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
-        <div className="space-y-5 lg:col-span-5">
+    <section className="w-full min-w-0">
+      <div className="instrument-layout w-full min-w-0">
+        <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
               <label className={label} htmlFor="cp-c">Counterpart</label>
@@ -192,7 +192,7 @@ export default function CounterpartPrompter() {
             <ol className="space-y-2">
               {PHASES.map((p, k) => (
                 <li key={p} className="text-xs leading-relaxed">
-                  <Button variant="ghost" type="button" onClick={() => setPhase(k)} className={`text-left ${phase === k ? "text-accent" : "text-foreground/85 hover:text-accent"}`}>
+                  <Button variant="ghost" type="button" onClick={() => setPhase(k)} className={`h-auto min-h-11 w-full flex-col items-start whitespace-normal text-left ${phase === k ? "text-accent" : "text-foreground/85 hover:text-accent"}`}>
                     <span className="block font-mono text-[10px] uppercase tracking-[0.14em]">{k + 1}. {p}</span>
                     <span className="font-serif italic">“{questions[k][0]}” · {questions[k].length} questions</span>
                   </Button>
@@ -202,7 +202,7 @@ export default function CounterpartPrompter() {
           </div>
         </div>
 
-        <div className="space-y-4 min-w-0 lg:col-span-7">
+        <div className="space-y-4 min-w-0">
           <SyncPanel
             linked={linked}
             onToggle={setLinked}

@@ -116,9 +116,9 @@ export default function MissionBinder({
   };
 
   return (
-    <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
-        <div className="space-y-5 lg:col-span-6">
+    <section className="w-full min-w-0">
+      <div className="instrument-layout w-full min-w-0">
+        <div className="space-y-5">
           <div>
             <label className={label} htmlFor="mb-t">Theatre</label>
             <input id="mb-t" className={`${field} text-base sm:text-sm min-h-11`} value={theatre} onChange={(e) => setTheatre(e.target.value)} placeholder="e.g. Northern Rift disengagement" />
@@ -174,7 +174,7 @@ export default function MissionBinder({
           </div>
         </div>
         {/* Right column: live master dossier, contents, synopsis and clearance hash. */}
-        <div className="space-y-5 min-w-0 lg:col-span-6">
+        <div className="space-y-5 min-w-0">
           <div className="border border-brass/40 bg-background p-4 sm:p-5">
             <p className={label}>Master dossier · table of contents</p>
             <p className="font-serif text-lg text-primary leading-tight [overflow-wrap:anywhere]">{theatre.trim() || "Unspecified theatre"}</p>

@@ -444,7 +444,7 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
       </FadeIn>
 
       {/* Tier 1: working bench and primary gauge, balanced halves. */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+      <div className="diagnostic-layout grid grid-cols-1 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
         {/* ---- input column ---- */}
         <div className="bg-navy-tint border border-border p-4 sm:p-5 min-w-0 w-full max-w-full">
           <label htmlFor="bench-context" className="eyebrow block">
@@ -478,11 +478,11 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
 
           <hr className="gold-rule gold-rule-short mt-8 mb-7" />
 
-          <div className="space-y-5">
+          <div className="instrument-pair mt-5">
             {LEVELS.map((l) => {
               const v = scores[l.key];
               return (
-                <div key={l.key}>
+                <div key={l.key} className="min-w-0 border-t border-brass/40 pt-4">
                   <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
                     <div className="flex items-baseline gap-3">
                       <span className="font-serif text-accent text-sm">§ {l.ref}</span>
@@ -529,8 +529,8 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
         </div>
 
         {/* ---- reading column ---- */}
-        <div className="space-y-4 min-w-0">
-          <div className="bg-background border border-brass/40 p-4 sm:p-5 min-w-0 w-full max-w-full">
+        <div className="diagnostic-readings instrument-pair min-w-0">
+          <div className="instrument-wide bg-background border border-brass/40 p-4 sm:p-5 min-w-0 w-full max-w-full">
             <p className="eyebrow">Reading</p>
             <h4 className="mt-3 font-serif text-primary text-2xl leading-tight">{standing.label}</h4>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -672,16 +672,16 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
           </div>
 
           <RelationalDynamicsPanel scores={values} />
-          <div className="bg-background border border-border p-4 sm:p-5 min-w-0 w-full max-w-full" data-testid="nearest-cases">
+          <div className="instrument-wide bg-background border border-border p-4 sm:p-5 min-w-0 w-full max-w-full" data-testid="nearest-cases">
             <p className="eyebrow">Nearest documented cases</p>
             {shockCount > 0 && (
               <p className="mt-2 text-[11px] text-muted-foreground" data-testid="nearest-cases-live">
                 Ranked against the live vector after {shockCount} inscribed shock{shockCount === 1 ? "" : "s"}.
               </p>
             )}
-            <ol className="mt-3 space-y-5">
+            <ol className="mt-3 grid gap-5 xl:grid-cols-3">
               {topThree.map(({ c, m }, i) => (
-                <li key={c.slug} className={i > 0 ? "border-t border-border pt-5" : undefined}>
+                <li key={c.slug} className="min-w-0 border-t border-border pt-4">
                   <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-muted-foreground">
                     {i + 1 === 1 ? "1st" : i + 1 === 2 ? "2nd" : "3rd"} · d = {m.distance.toFixed(2)} · {m.resonance}% resonance
                   </p>
@@ -707,11 +707,11 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
       </div>
 
       {/* Tier 2: analytical deep dive, side by side. */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
-        <div className="space-y-6 min-w-0">
+      <div className="mt-8 instrument-pair w-full min-w-0">
+        <div className="instrument-wide min-w-0">
           <BondMathPanel scores={liveVector} />
         </div>
-        <div className="space-y-6 min-w-0">
+        <div className="contents">
           <div className="bg-gold-tint border border-border p-4 sm:p-5 min-w-0 w-full max-w-full">
             <p className="eyebrow">Boundary rules in force</p>
             <hr className="gold-rule gold-rule-short mt-4 mb-4" />

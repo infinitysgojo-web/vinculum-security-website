@@ -235,7 +235,7 @@ export default function SentinelMatrix() {
           }
         />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+      <div className="instrument-layout w-full min-w-0">
         <div className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
@@ -326,7 +326,7 @@ export default function SentinelMatrix() {
         </div>
       </div>
       {/* Tier 2a: the twenty-four tripwires, one quadrant per bond, across both halves. */}
-      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-6 lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
+      <div className="mt-8 instrument-pair w-full min-w-0">
             {DOMAINS.map((d, b) => (filter === -1 || filter === b || (filter === -2 && b === weakestIdx)) && (
               <div key={d} className={b === weakestIdx ? "border-l-2 border-destructive pl-3" : ""}>
                 <button type="button" onClick={() => setFilter(filter === b ? -1 : b)} className="w-full text-left" aria-label={`Show only ${d} tripwires`}>

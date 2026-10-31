@@ -316,7 +316,7 @@ export default function SuccessionSimulator() {
   }, [title, inForce, shocks, r, allProvisions, allShocks, ownProv, ownShock, canon, decay, fracture]);
 
   return (
-    <section className={panel}>
+    <section className="w-full min-w-0">
       <div className="mb-6">
         <SyncPanel
           linked={linked}
@@ -345,7 +345,7 @@ export default function SuccessionSimulator() {
           </p>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+      <div className="instrument-layout w-full min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="ss-t">Instrument under test</label>

@@ -198,8 +198,8 @@ export default function TrackSequencer({ initialDone = [] }: { /** Steps recorde
   }, [process, done, r, live, signals, tolerance, tol, communal]);
 
   return (
-    <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+    <section className="w-full min-w-0">
+      <div className="instrument-layout w-full min-w-0">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="tk-p">Process</label>

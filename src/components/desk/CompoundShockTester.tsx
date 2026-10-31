@@ -297,7 +297,7 @@ export default function CompoundShockTester() {
         until then this desk tests against a 5.0 baseline.
       </p>
     )}
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+    <div className="instrument-layout w-full min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="cs-theatre">Theatre under test</label>
@@ -369,9 +369,9 @@ export default function CompoundShockTester() {
         </div>
       </div>
       {/* Right column: strain, the shocked vector and the continuum radar. */}
-      <div className="border border-brass/40 p-5">
-          <div className="flex items-baseline justify-between mb-3">
-            <div className="flex items-center gap-2">
+      <div className="space-y-5 min-w-0">
+          <div className="border border-brass/40 p-4 sm:p-5">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               <p className={label}>Compound strain</p>
               <FormulaProof
                 proof={compoundShockProof(
