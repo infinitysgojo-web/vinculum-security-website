@@ -104,7 +104,7 @@ import LitigationWorkbench from "@/components/LitigationWorkbench";
 import AdversarialChamber from "@/components/AdversarialChamber";
 import ClauseArchitect from "@/components/desk/ClauseArchitect";
 import SentinelMatrix from "@/components/desk/SentinelMatrix";
-import ReadinessDesk from "@/components/desk/ReadinessDesk";
+import ReadinessDesk, { GATE_DESK } from "@/components/desk/ReadinessDesk";
 import CounterpartPrompter from "@/components/desk/CounterpartPrompter";
 import SuccessionSimulator from "@/components/desk/SuccessionSimulator";
 import MissionBinder from "@/components/desk/MissionBinder";
@@ -553,7 +553,16 @@ export default function Dashboard() {
   // Mission Operations Deck: at most one panel (vault, ledger, controls) open under the deck.
   const [panel, setPanel] = useState<"vault" | "ledger" | "controls" | null>(null);
   // The desk's doctrinal note stays collapsed until asked for.
-  const [noteOpen, setNoteOpen] = useState(false);
+  // Remembered for this browser session only, so the operator's choice survives desk switches and reloads.
+  const [noteOpen, setNoteOpenRaw] = useState(() => {
+    try { return sessionStorage.getItem("vs:noteOpen") === "1"; } catch { return false; }
+  });
+  const setNoteOpen = (f: (v: boolean) => boolean) =>
+    setNoteOpenRaw((v) => {
+      const n = f(v);
+      try { sessionStorage.setItem("vs:noteOpen", n ? "1" : "0"); } catch { /* storage unavailable */ }
+      return n;
+    });
   const bandRef = useRef<HTMLDivElement>(null);
   // Keep the active desk visible in the band's horizontal scroller (phones and tablets).
   // Only scrollLeft moves, so the page itself never jumps.
@@ -572,7 +581,14 @@ export default function Dashboard() {
   }, []);
 
   // A stage-gate audit that clears (every gate passing) sounds the seal chime once.
-  const gatesLocked = stageGateAudit(effective).locked;
+  const gateAudit = stageGateAudit(effective);
+  const gatesLocked = gateAudit.locked;
+  // Desks that resolve a failed stage-gate; flagged in the desk band once Mission Readiness has been opened.
+  const remedialDesks = new Map<string, string[]>();
+  for (const g of gateAudit.gates) {
+    const host = GATE_DESK[g.name];
+    if (!g.passed && host) remedialDesks.set(host.id, [...(remedialDesks.get(host.id) ?? []), g.name]);
+  }
   const wasLocked = useRef(gatesLocked);
   useEffect(() => {
     if (wasLocked.current && !gatesLocked) seal();
@@ -1595,6 +1611,7 @@ export default function Dashboard() {
                 const liveDesk = deskIsLive(d.id, effective);
                 const staged = binder.filter((x) => x.desk === d.id).length;
                 const on = desk === d.id;
+                const remedial = visited.has("readiness") ? remedialDesks.get(d.id) : undefined;
                 return (
                   <button
                     key={d.id}
@@ -1617,6 +1634,15 @@ export default function Dashboard() {
                     )}
                     {d.label}
                     {d.id === "binder" && binder.length > 0 ? ` (${binder.length})` : ""}
+                    {remedial && (
+                      <span
+                        className={`ml-1.5 inline-flex h-4 items-center border px-1 text-[9px] tracking-normal ${on ? "border-accent-foreground/70" : "border-destructive/70 text-destructive"}`}
+                        title={`Resolves failed gate: ${remedial.join(", ")}`}
+                        aria-label={`Resolves ${remedial.length} failed readiness gate${remedial.length === 1 ? "" : "s"}`}
+                      >
+                        Gate
+                      </span>
+                    )}
                     {staged > 0 && d.id !== "binder" && (
                       <span
                         className={`ml-1.5 inline-flex h-4 min-w-4 items-center justify-center border px-1 text-[9px] tracking-normal ${on ? "border-accent-foreground/70" : "border-brass/70 text-primary/80"}`}

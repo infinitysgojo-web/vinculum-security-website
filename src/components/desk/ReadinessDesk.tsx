@@ -63,7 +63,7 @@ const STAGES: { id: string; label: string; anchor: string; gates: Gate[] }[] = [
 ];
 
 /** Host desk that resolves each canonical stage-gate. */
-const GATE_DESK: Record<string, { id: string; label: string }> = {
+export const GATE_DESK: Record<string, { id: string; label: string }> = {
   "Vector Integrity": { id: "diagnostics", label: "Desk 01 · Diagnostics" },
   "Rupture Containment": { id: "verification", label: "Desk 16 · Verification Ledger" },
   "Track Synchronization": { id: "tracks", label: "Desk 08 · Track Sequencing" },
