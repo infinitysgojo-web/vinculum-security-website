@@ -1382,9 +1382,9 @@ export default function Dashboard() {
       )}
 
       {/* Band 2 · Mission Operations Deck: identity, theatre preset and tools in one compact row. */}
-      <header className={`border-b-2 border-primary bg-background ${focus ? "hidden" : ""}`} data-testid="ops-deck">
-        <div className="container flex flex-wrap lg:flex-nowrap items-center gap-x-3 gap-y-1 py-1.5 min-h-[50px]">
-          <div className="flex min-w-0 flex-1 basis-full lg:grow-0 lg:basis-[20rem] lg:min-w-[14rem] items-center gap-2.5">
+      <header className={`diplomatic-deck border-b-2 border-primary bg-background ${focus ? "hidden" : ""}`} data-testid="ops-deck">
+        <div className="container flex flex-wrap xl:flex-nowrap items-center gap-x-4 gap-y-2 py-2.5 min-h-[50px]">
+          <div className="flex min-w-0 flex-1 basis-full xl:grow-0 xl:basis-[20rem] xl:min-w-[14rem] items-center gap-3">
             <Logo size={22} />
             <div className="min-w-0">
               <div className="flex min-w-0 items-center gap-2">
@@ -1410,12 +1410,12 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="flex w-full lg:w-auto lg:flex-1 lg:justify-end min-w-0 items-center gap-1" data-testid="deck-tools">
+          <div className="flex w-full xl:w-auto xl:flex-1 xl:justify-end min-w-0 items-center gap-2" data-testid="deck-tools">
             <div className="flex min-w-0 items-center gap-2 overflow-x-auto scrollbar-none [webkit-overflow-scrolling:touch]">
             {missionOpen && (
               <TheatrePresetSelect value={signals.presetId ?? ""} custom={activeWs?.mode === "custom"} onChange={requestTheatre} />
             )}
-            <div className="flex shrink-0 items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
+            <div className="flex shrink-0 items-center gap-0.5 border-l border-brass/40 pl-2 text-[10px] uppercase tracking-[0.16em] font-semibold">
               {missionOpen && activeWs && (
                 <>
                   <button type="button" onClick={() => setPanel((p) => (p === "vault" ? null : "vault"))} aria-pressed={panel === "vault"} aria-controls="deck-panel-vault" className={deckBtn(panel === "vault")} title="Mission State Vault: details, library, archives, enclave security" data-testid="vault-toggle">
@@ -1544,7 +1544,7 @@ export default function Dashboard() {
 
       {/* Band 3 · Desk navigation: division tabs and the desk stepper in one fixed-height band. */}
       {missionOpen && (
-        <nav aria-label="Desk navigation" data-testid="desk-band" className={`sticky top-9 z-30 border-b border-brass/40 bg-background/95 backdrop-blur ${focus ? "hidden" : ""}`}>
+        <nav aria-label="Desk navigation" data-testid="desk-band" className={`sticky top-9 z-30 diplomatic-navigation border-b border-brass/40 bg-background/95 backdrop-blur ${focus ? "hidden" : ""}`}>
           <div ref={bandRef} className="container flex h-12 items-center gap-3 overflow-x-auto scrollbar-none scroll-smooth [webkit-overflow-scrolling:touch]">
             <div className="flex shrink-0 items-center gap-0.5 border border-brass/50 p-0.5" role="group" aria-label="Divisions">
               {DIVISIONS.map((dv) => {
@@ -1625,7 +1625,7 @@ export default function Dashboard() {
           <p role="status" className="mb-8 pb-12 text-sm text-muted-foreground">Opening the local workspace…</p>
         ) : (
         <>
-        <div className={`mb-4 max-w-3xl ${focus ? "hidden" : ""}`} data-testid="desk-heading">
+        <div className={`diplomatic-heading mb-5 border-l-2 border-brass pl-4 ${focus ? "hidden" : ""}`} data-testid="desk-heading">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
             <p className="eyebrow">{active.eyebrow}</p>
             <span className="text-brass" aria-hidden>|</span>
@@ -1698,7 +1698,7 @@ export default function Dashboard() {
         <BinderContext.Provider value={{ add: addFromDesk }}>
         <ExportNoticeContext.Provider value={exportNotice}>
         <div
-          className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden"
+          className="diplomatic-workspace pb-10 w-full min-w-0 max-w-full"
           onInputCapture={(e) => {
             if ((e.target as HTMLInputElement).type === "range") tick();
           }}
@@ -1708,7 +1708,7 @@ export default function Dashboard() {
         >
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
-                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="w-full min-w-0">
+                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="desk-surface w-full min-w-0" data-desk={id}>
                   <p className="sr-only" aria-live="polite">{desk === id ? `Desk ${String(DESKS.findIndex((x) => x.id === id) + 1).padStart(2, "0")}, ${DESKS.find((x) => x.id === id)?.label ?? ""}` : ""}</p>
                   <DeskErrorBoundary label={DESKS.find((x) => x.id === id)?.label ?? "This desk"}>
                   {DESK_DOCTRINES[id] && (

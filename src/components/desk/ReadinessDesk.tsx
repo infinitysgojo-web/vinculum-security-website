@@ -206,10 +206,10 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
   };
 
   return (
-    <section className={panel}>
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start w-full min-w-0 [&>*]:min-w-0">
+    <section className="w-full min-w-0">
+      <div className="instrument-layout w-full min-w-0">
         {/* Left: the mission, the stage checklist and the twenty statutory clearances by division. */}
-        <div className="space-y-4 lg:col-span-7">
+        <div className="space-y-4">
           <div>
             <label className={label} htmlFor="rd-m">Mission</label>
             <input id="rd-m" className={field} value={mission} onChange={(e) => setMission(e.target.value)} placeholder="e.g. Lake Region mediation support mission" />
@@ -276,7 +276,7 @@ export default function ReadinessDesk({ openQuestions }: { /** Open Questions in
         </div>
 
         {/* Right: live link, clearance meter, sign-off, audit, locks and the transmittal console. */}
-        <div className="space-y-4 min-w-0 lg:col-span-5">
+        <div className="space-y-4 min-w-0">
           <SyncPanel linked={linked} onToggle={setLinked} summary={() => locks.length ? [`${locks.length - openLocks.length} of ${locks.length} engine conditions satisfied; ${openLocks.length} still locked.`] : ["No upstream condition currently locks clearance."]} />
           <div className="border border-brass/40 bg-background p-4">
             <div className="flex items-baseline justify-between gap-3">

@@ -247,7 +247,7 @@ export default function LitigationWorkbench() {
   const label = "text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-2 block";
 
   return (
-    <section className="border border-brass/40 bg-navy-tint/40 p-4 sm:p-5">
+    <section className="w-full min-w-0">
       <div className="mb-6"><SyncPanel linked={linked} onToggle={setLinked} summary={(x) => x.weakestBond ? [`Harmed bond set to ${x.weakestBond}, the most exposed bond on the diagnostic bench.`] : []} /></div>
       <p className="mb-7 max-w-3xl text-muted-foreground text-sm leading-relaxed">
         Enter the facts of a new matter and the desk compiles a preparation checklist from the doctrine's
@@ -256,7 +256,7 @@ export default function LitigationWorkbench() {
       </p>
 
       {/* 60/40 workbench: the matter intake on the wider side, the live evidentiary ledger beside it. */}
-      <div className="grid grid-cols-1 gap-5 items-start lg:grid-cols-[3fr_2fr] w-full min-w-0 [&>*]:min-w-0" data-testid="litigation-workbench-split">
+      <div className="instrument-layout litigation-layout lg:grid-cols-[3fr_2fr] w-full min-w-0" data-testid="litigation-workbench-split">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="lit-matter">Matter or caption</label>

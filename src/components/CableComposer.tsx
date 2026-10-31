@@ -379,7 +379,7 @@ END OF ${cab.tag}`;
         </div>
       )}
 
-      <div className="border border-brass/40 bg-navy-tint/40 p-5 md:p-6 grid gap-4 md:grid-cols-2">
+      <div className="briefing-fields border border-brass/40 bg-navy-tint/40 p-5 md:p-6 grid gap-4 md:grid-cols-2">
         <label className="block">
           <span className={lab}>{ownOn ? "Comparison case of record" : "Case of record"}</span>
           <select className={`${field} mt-2`} value={ci} onChange={(e) => setCi(Number(e.target.value))}>

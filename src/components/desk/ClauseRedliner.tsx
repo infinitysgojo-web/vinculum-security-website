@@ -285,7 +285,7 @@ export default function ClauseRedliner() {
 
   return (
     <div className="w-full min-w-0">
-    <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-2 w-full min-w-0 [&>*]:min-w-0">
+    <div className="instrument-layout w-full min-w-0">
       <div className="space-y-6">
         <div className={panel}>
           <label className={label} htmlFor="rl-title">Instrument or article title</label>

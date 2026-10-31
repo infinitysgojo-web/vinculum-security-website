@@ -1,5 +1,10 @@
 # Roadmap
 
+- [x] Unify all 18 desks with landscape sections and compact paired instruments, without altering state or formulas
+- [x] Calibrate desk typography, numerical stability, control spacing and formula-proof presentation
+- [x] Refine dashboard top bands while preserving pinned security and desk navigation
+- [x] Verify authenticated mission flow, desktop/mobile layouts and desk regression tests
+
 - [x] Export expanded Codex PDF: all 235 original pages retained with 30 supplementary pages, verified mathematics and questioning/security updates, statutory notice and refined supplementary design
 - [x] Verify page preservation, pagination, navigation and every rendered PDF page before delivery
 - [x] Add concise, detailed supplementary glossary and formula/symbol appendices with units, worked examples and interpretation limits
