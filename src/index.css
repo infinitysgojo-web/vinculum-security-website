@@ -762,6 +762,7 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
   .diplomatic-deck [data-testid="deck-tools"] > div:first-child { flex: 1 0 auto; overflow: visible; }
 }
 .diplomatic-deck button { border-radius: var(--radius); }
+.diplomatic-navigation button { position: relative; letter-spacing: 0; }
 .diplomatic-heading h1 { font-size: 1.75rem; line-height: 1.2; }
 .diplomatic-workspace {
   container-type: inline-size;
