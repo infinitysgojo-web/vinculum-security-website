@@ -453,6 +453,24 @@ export const COMMENTARY: Division[] = [
           "Read together, they answer three practical questions about one settlement: how fast it erodes if left alone, whether its money is tied to verified bonds, and whether its promises can be enforced if the bonds give way.",
         ],
       },
+      {
+        id: "dominum-effect",
+        q: "What is the Dominum Effect, and why does the Codex need it?",
+        a: [
+          "The Dominum Effect, formally the Law of Sovereign Custodial Inversion, names the moment a settlement stops being held together by the command of the people who made it and starts being held by verified custody of its bonds, its assets and its offices. In classical terms it is the passage from imperium, the right to command, to dominium, true title and stewardship.",
+          "Most of the Codex is written against failure: rupture, decay, contagion and the succession trap. The Dominum Effect supplies the positive condition those instruments work toward. It gives the doctrine an explicit measure of success, so that a mission can tell a fragile ceasefire from a peace that has begun to sustain itself.",
+          "It unfolds in three phases. In the Fiduciary Anchor, guarantees and revenues are tied to verified relational conditions. In Custodial Inversion, custody passes from discretionary politics to offices that outlast any officeholder. In Self-Reinforcing Dominium, keeping the settlement has become the rational course for every party, because its benefits are held in trust and released only while the bonds hold.",
+        ],
+      },
+      {
+        id: "dominum-index",
+        q: "How is the Dominum Index read on the dashboard?",
+        a: [
+          "The Dominum Index D is a derived reading of four values the desks already publish: the bond anchor from Diagnostics, the escrow released from the De-confliction Bench, succession durability from the Succession Simulator, and rupture containment from the Sentinel Matrix. It is computed as D = 100 × (0.30 A + 0.25 F + 0.25 S + 0.20 C), and every term can be inspected through its formula proof on Mission Readiness.",
+          "D is not shown until all four readings exist, and a frozen escrow counts as nothing released. Self-Reinforcing Dominium is withheld while any bond sits at or below the 3.0 viable floor, however high D may be, because no custody arrangement can compensate for a failing bond.",
+          "Like every reading in the dashboard, the index is a rule applied to the practitioner's own assessment. It is not a forecast, and it does not replace judgement.",
+        ],
+      },
     ],
   },
   {
@@ -619,6 +637,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
     "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
     "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
     "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall", "instruments-together",
+    "dominum-effect", "dominum-index",
   ],
   // Confidentiality, integrity, auditability, legal status, attribution and citation.
   statutory: [

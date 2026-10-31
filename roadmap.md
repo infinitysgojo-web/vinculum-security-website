@@ -71,3 +71,5 @@
 - [x] Offline: saved Dispatches, offline dashboard sign-in, clearer Google sitelink titles/descriptions
 - [x] Codex v3: remove code file names, deep privacy sweep of whole PDF, richer explanations where shallow, improved contents page and restrained design polish
 - [x] Polish pass: AI feed formulas, print cleanup, Dispatches mobile fit, per-desk safety net, screen reader updates, focus rings, PDF micro-labels
+
+- [x] Dominum Effect: index on Desk 15, handover telemetry, lexicon, glossary, commentary
