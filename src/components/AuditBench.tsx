@@ -108,7 +108,7 @@ export default function AuditBench({ parties: base }: { parties: readonly Party[
       {/* Comparative audit: every affected party's safeguard coverage side by side, two columns. */}
       <div className="mt-6 w-full min-w-0" aria-labelledby="audit-compare">
         <p id="audit-compare" className="eyebrow mb-3">Comparative audit · {complete} of {parties.length} parties complete</p>
-        <ul className="instrument-pair" data-testid="audit-comparative">
+        <ul className="instrument-pair md:grid-cols-2" data-testid="audit-comparative">
           {parties.map(([name], index) => {
             const done = (checked[name] ?? []).filter(Boolean).length;
             const full = done === CHECKS.length;

@@ -758,7 +758,7 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
 .diplomatic-heading :where(h1, .eyebrow, [class*="tracking-"]) { letter-spacing: 0; }
 .diplomatic-deck [data-testid="deck-tools"] > div:first-child { flex: 1; }
 @media (max-width: 767px) {
-  .diplomatic-deck [data-testid="deck-tools"] { overflow-x: auto; }
+  .diplomatic-deck [data-testid="deck-tools"] { overflow-x: auto; max-width: 100%; }
   .diplomatic-deck [data-testid="deck-tools"] > div:first-child { flex: 1 0 auto; overflow: visible; }
 }
 .diplomatic-deck button { border-radius: var(--radius); }
