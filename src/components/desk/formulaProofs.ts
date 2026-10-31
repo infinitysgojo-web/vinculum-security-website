@@ -21,6 +21,7 @@ import {
   type Forum,
   type ForumTerms,
 } from "./instruments";
+import type { DominumReading } from "./engine";
 
 export type FormulaProof = {
   id: string;
@@ -283,5 +284,23 @@ export function trackShearProof(a: number, b: number, tolerance: number, communa
     ],
     result: shear ? `Δ = ${gap} > τ = ${tolerance} · shear` : `Δ = ${gap} ≤ τ = ${tolerance} · in step`,
     citation: `${CODEX}, Handbook §9B (Track I and Track II sequencing); communal tolerance rule of the MissionEngine.`,
+  };
+}
+
+/** D = 100 × (0.30 A + 0.25 F + 0.25 S + 0.20 C) (Desk 15, The Dominum Effect). */
+export function dominumProof(d: DominumReading): FormulaProof {
+  const [A, F, S, C] = d.terms;
+  return {
+    id: "dominum-index",
+    title: "Dominum Index D",
+    equation: "D = 100 × (0.30 A + 0.25 F + 0.25 S + 0.20 C)",
+    substitution: `D = 100 × (0.30 × ${f4(A.input)} + 0.25 × ${f4(F.input)} + 0.25 × ${f4(S.input)} + 0.20 × ${f4(C.input)})`,
+    steps: [
+      ...d.terms.map((t) => `${t.label}: ${t.weight.toFixed(2)} × ${f4(t.input)} = ${f4(t.value)}`),
+      `100 × ${f4(d.terms.reduce((a, t) => a + t.value, 0))} = ${d.index}`,
+      `Phase: ${d.phase}${d.floorHeld ? "" : " (Self-Reinforcing Dominium withheld: a bond sits at or below the 3.0 viable floor)"}`,
+    ],
+    result: `D = ${d.index}% · ${d.phase}`,
+    citation: `${CODEX}, The Dominum Effect (Law of Sovereign Custodial Inversion). Thresholds: Fiduciary Anchor 40, Custodial Inversion 60, Self-Reinforcing Dominium 75. A rule-based reading, not a prediction.`,
   };
 }
