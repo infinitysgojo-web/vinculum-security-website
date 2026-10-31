@@ -747,6 +747,49 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
   100% { background-color: transparent; }
 }
 .vs-signal-fresh { animation: vs-signal-pulse 400ms ease-out; }
+
+/* Diplomatic instruments: scoped to the desks, never the public reading pages. */
+.diplomatic-workspace {
+  container-type: inline-size;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.desk-surface { overflow-wrap: break-word; }
+.desk-surface :where(h1, h2, h3, h4, h5, h6, .eyebrow, [class*="tracking-"]) {
+  letter-spacing: 0;
+}
+.desk-surface :where(h2, h3) { line-height: 1.25; }
+.desk-surface :where(input, textarea, select) { min-width: 0; max-width: 100%; }
+.desk-surface :where(input[type="number"], output, .font-mono) {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.desk-surface :where(textarea) { resize: vertical; }
+.desk-surface :where(button, [role="button"]) { max-width: 100%; }
+.desk-surface .instrument-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.desk-surface .instrument-layout > * { min-width: 0; }
+.desk-surface .instrument-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+.desk-surface .instrument-pair > * { min-width: 0; }
+@container (min-width: 42rem) {
+  .desk-surface .instrument-pair { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (min-width: 64rem) {
+  .desk-surface .instrument-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (pointer: coarse) {
+  .desk-surface :where(button, input:not([type="checkbox"]):not([type="radio"]), select) {
+    min-height: 2.75rem;
+  }
+  .desk-surface input[type="range"] { touch-action: pan-y; }
+}
 @media (prefers-reduced-motion: reduce) { .vs-signal-fresh { animation: none; outline: 1px solid hsl(var(--ochre)); } }
 
 /* Keyboard operators: a clear, high-contrast focus ring on every control. */

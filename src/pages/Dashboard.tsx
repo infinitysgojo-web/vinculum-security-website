@@ -1698,7 +1698,7 @@ export default function Dashboard() {
         <BinderContext.Provider value={{ add: addFromDesk }}>
         <ExportNoticeContext.Provider value={exportNotice}>
         <div
-          className="pb-10 w-full min-w-0 max-w-full overflow-x-hidden"
+          className="diplomatic-workspace pb-10 w-full min-w-0 max-w-full"
           onInputCapture={(e) => {
             if ((e.target as HTMLInputElement).type === "range") tick();
           }}
@@ -1708,7 +1708,7 @@ export default function Dashboard() {
         >
             {DESKS.map(({ id }) =>
               visited.has(id) ? (
-                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="w-full min-w-0">
+                <div key={`${id}:${deskEpoch}`} hidden={desk !== id} className="desk-surface w-full min-w-0" data-desk={id}>
                   <p className="sr-only" aria-live="polite">{desk === id ? `Desk ${String(DESKS.findIndex((x) => x.id === id) + 1).padStart(2, "0")}, ${DESKS.find((x) => x.id === id)?.label ?? ""}` : ""}</p>
                   <DeskErrorBoundary label={DESKS.find((x) => x.id === id)?.label ?? "This desk"}>
                   {DESK_DOCTRINES[id] && (

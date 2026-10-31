@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { alerts, hasSignal, relationalDynamics, BOND_NAMES, type Alert, type Signals } from "./engine";
 import { Lex } from "./Lexicon";
+import { Button } from "@/components/ui/button";
 
 /** Telemetry labels that carry a lexicon definition. */
 const LEX_FOR: Record<string, string> = { "Limiting bond": "liebig", "Rupture index": "rupture", "Track gap": "track-divergence", "Relational deficit": "deficit", "Contagion": "contagion", "Entropy": "entropy", "Decay": "decay" };
@@ -47,27 +48,27 @@ export default function TelemetryStrip({ signals }: { signals: Signals }) {
         }`}
       >
         {critical > 0 && (
-          <span aria-hidden className="pointer-events-none absolute -inset-px border-2 border-destructive/60 animate-pulse" />
+          <span aria-hidden className="pointer-events-none absolute -inset-px border-2 border-destructive/60" />
         )}
         <p className="text-[9px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-2">
           Mission engine · live telemetry
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-3">
           {cells.map((c) => (
-            <div key={c.k} className="min-w-0">
+            <div key={c.k} className="min-w-0 border-l border-brass/40 pl-3">
               <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
                 {LEX_FOR[c.k] ? <Lex term={LEX_FOR[c.k]}>{c.k}</Lex> : c.k}
               </p>
-              <p className="text-xs sm:text-sm font-serif leading-snug [overflow-wrap:anywhere] text-primary">{c.v}</p>
+              <p className="min-h-10 text-xs sm:text-sm tabular-nums leading-snug [overflow-wrap:anywhere] text-primary">{c.v}</p>
             </div>
           ))}
-          <button
+          <Button variant="ghost"
             type="button"
             onClick={() => critical && setOpen((o) => !o)}
             aria-expanded={critical ? open : undefined}
             aria-controls="vs-critical-drawer"
             disabled={!critical}
-            className={`group min-w-0 text-left ${critical ? "cursor-pointer" : "cursor-default"}`}
+            className={`group h-auto min-w-0 flex-col items-start justify-start whitespace-normal rounded-none border-l border-brass/40 pl-3 text-left ${critical ? "cursor-pointer" : "cursor-default"}`}
           >
             <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground">Alerts</p>
             <p
@@ -78,7 +79,7 @@ export default function TelemetryStrip({ signals }: { signals: Signals }) {
               {alertValue}
               {critical > 0 && <ChevronDown size={13} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />}
             </p>
-          </button>
+          </Button>
         </div>
       </div>
       {critical > 0 && open && (

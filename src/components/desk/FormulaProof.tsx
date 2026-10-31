@@ -1,4 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import type { FormulaProof as Proof } from "./formulaProofs";
 
 /**
@@ -9,20 +10,20 @@ export default function FormulaProof({ proof, className = "" }: { proof: Proof; 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button
+        <Button variant="ghost" size="icon"
           type="button"
-          className={`inline-flex h-6 min-w-6 items-center justify-center border border-brass/60 px-1 align-middle font-mono text-[10px] italic leading-none text-primary hover:border-accent hover:text-accent ${className}`}
+          className={`inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm border border-brass/60 px-1 align-middle font-mono text-xs italic leading-none text-primary hover:border-accent hover:text-accent ${className}`}
           aria-label={`Show the proof: ${proof.title}`}
           title={`Proof: ${proof.title}`}
           data-testid={`proof-${proof.id}`}
         >
           ƒx
-        </button>
+        </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[min(22rem,calc(100vw-2rem))] rounded-none border-brass/60 p-3 text-xs" data-testid="formula-proof">
+      <PopoverContent align="start" className="max-h-[min(36rem,80dvh)] w-[min(26rem,calc(100vw-2rem))] overflow-y-auto rounded-sm border-brass/60 p-4 text-xs leading-relaxed" data-testid="formula-proof">
         <p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-primary">{proof.title}</p>
         <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">1 · Equation</p>
-        <p className="font-mono text-[11px] text-primary [overflow-wrap:anywhere]">{proof.equation}</p>
+        <p className="font-serif text-base text-primary [overflow-wrap:anywhere]">{proof.equation}</p>
         <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">2 · Substituted from this mission</p>
         <p className="font-mono text-[11px] text-foreground/90 [overflow-wrap:anywhere]">{proof.substitution}</p>
         <p className="mt-2 text-[9px] uppercase tracking-[0.14em] text-muted-foreground">3 · Arithmetic</p>
