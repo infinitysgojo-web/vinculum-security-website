@@ -22,7 +22,7 @@ export type BondScores = Record<LevelKey, number>;
 interface BondDiagnosticProps {
   /** Stress-testing modules rendered between the analysis tier and the transmittal console. */
   stress?: ReactNode;
-  /** Delta simulator, seated in the analysis tier beside the boundary rules. */
+  /** Delta simulator, seated in its own full-width landscape workbench. */
   simulator?: ReactNode;
   scores?: BondScores;
   onScoresChange?: (scores: BondScores) => void;
@@ -706,12 +706,12 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
         </div>
       </div>
 
-      {/* Tier 2: analytical deep dive, side by side. */}
+      {/* Tier 2: full-width analysis, safeguards and intervention workbench. */}
       <div className="mt-8 instrument-pair w-full min-w-0">
         <div className="instrument-wide min-w-0">
           <BondMathPanel scores={liveVector} />
         </div>
-        <div className="contents">
+        <div className="instrument-wide min-w-0">
           <div className="bg-gold-tint border border-border p-4 sm:p-5 min-w-0 w-full max-w-full">
             <p className="eyebrow">Boundary rules in force</p>
             <hr className="gold-rule gold-rule-short mt-4 mb-4" />
@@ -728,8 +728,8 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
             </ul>
           </div>
 
-          {simulator}
         </div>
+        {simulator && <div className="instrument-wide min-w-0">{simulator}</div>}
       </div>
 
       {stress && <div className="mt-8 grid grid-cols-1 gap-8 w-full min-w-0 [&>*]:min-w-0">{stress}</div>}

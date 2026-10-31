@@ -422,7 +422,6 @@ export default function ClauseRedliner() {
           </div>
         )}
         <SyncPanel linked={linked} onToggle={setLinked} summary={() => live.length ? live : ["The live reading raises no extra finding against this wording."]} />
-        <ForumMatrix value={forumId} onChange={setForumId} terms={forumTerms} onTerms={setForumTerms} />
         <div className="border border-brass/40 bg-background p-4 sm:p-5 space-y-2">
           <p className={label}>Custom mode: your own rule</p>
           <input className={field} value={op} onChange={(e) => setOp(e.target.value)} placeholder="Phrase to flag, e.g. best endeavours" />
@@ -439,6 +438,9 @@ export default function ClauseRedliner() {
         </div>
       </div>
     </div>
+      <div className="mt-6 w-full min-w-0">
+        <ForumMatrix value={forumId} onChange={setForumId} terms={forumTerms} onTerms={setForumTerms} />
+      </div>
       <div className="mt-8 w-full min-w-0">
         <DeskOutput text={text} fileName="Vinculum-Clause-Redline" />
       </div>
