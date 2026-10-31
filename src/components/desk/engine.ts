@@ -280,6 +280,65 @@ export function successionDurability(s: Signals): SuccessionReading | undefined 
 }
 
 /* ------------------------------------------------------------------ */
+/* The Dominum Effect: Law of Sovereign Custodial Inversion            */
+/* ------------------------------------------------------------------ */
+
+export type DominumPhase = "Imperium-Bound" | "Fiduciary Anchor" | "Custodial Inversion" | "Self-Reinforcing Dominium";
+
+export type DominumReading = {
+  terms: { key: "A" | "F" | "S" | "C"; label: string; weight: number; input: number; value: number }[];
+  /** D in per cent, 0 to 100, one decimal. */
+  index: number;
+  phase: DominumPhase;
+  /** True when every bond holds the viable floor; required for Self-Reinforcing Dominium. */
+  floorHeld: boolean;
+};
+
+/** Phase thresholds on D, in per cent. */
+export const DOMINUM_THRESHOLDS = { anchor: 40, inversion: 60, dominium: 75 } as const;
+
+/**
+ * The Dominum Index, a derived view of four readings already on the bus:
+ *   A = (μB − 1) ÷ 4          bond anchor (Desk 01)
+ *   F = E ÷ 100               fiduciary anchor, escrow released, 0 when frozen (Desk 07)
+ *   S = survival ÷ 100        succession durability (Desk 12)
+ *   C = 1 − R ÷ 100           rupture containment (Desk 02)
+ *   D = 100 × (0.30 A + 0.25 F + 0.25 S + 0.20 C)
+ * Returns the names of the missing readings instead of a number until all four are on the bus.
+ * Self-Reinforcing Dominium further requires every bond above the viable floor.
+ */
+export function dominumIndex(s: Signals): DominumReading | { missing: string[] } {
+  const missing: string[] = [];
+  if (!s.bonds) missing.push("bond vector (Desk 01)");
+  if (s.escrowReleasedPercent === undefined) missing.push("escrow release (Desk 07)");
+  if (s.survivalScore === undefined) missing.push("succession survival (Desk 12)");
+  if (s.rupture === undefined) missing.push("rupture index (Desk 02)");
+  if (missing.length || !s.bonds) return { missing };
+  const b = s.bonds;
+  const v = [b.interpersonal, b.communal, b.intergenerational, b.institutional];
+  const mu = v.reduce((a, x) => a + x, 0) / 4;
+  const E = s.escrowFrozen ? 0 : Math.min(100, Math.max(0, s.escrowReleasedPercent ?? 0));
+  const S = Math.min(100, Math.max(0, s.survivalScore ?? 0));
+  const R = Math.min(100, Math.max(0, s.rupture ?? 0));
+  const terms: DominumReading["terms"] = [
+    { key: "A", label: "0.30 × A (bond anchor, (μB − 1) ÷ 4)", weight: 0.3, input: (mu - 1) / 4, value: 0 },
+    { key: "F", label: "0.25 × F (fiduciary anchor, E ÷ 100)", weight: 0.25, input: E / 100, value: 0 },
+    { key: "S", label: "0.25 × S (succession durability ÷ 100)", weight: 0.25, input: S / 100, value: 0 },
+    { key: "C", label: "0.20 × C (containment, 1 − R ÷ 100)", weight: 0.2, input: 1 - R / 100, value: 0 },
+  ];
+  terms.forEach((t) => (t.value = t.weight * t.input));
+  const index = Math.min(100, Math.max(0, round1(100 * terms.reduce((a, t) => a + t.value, 0))));
+  const floorHeld = v.every((x) => x > VIABLE_FLOOR);
+  const T = DOMINUM_THRESHOLDS;
+  const phase: DominumPhase =
+    index >= T.dominium && floorHeld ? "Self-Reinforcing Dominium"
+    : index >= T.inversion ? "Custodial Inversion"
+    : index >= T.anchor ? "Fiduciary Anchor"
+    : "Imperium-Bound";
+  return { terms, index, phase, floorHeld };
+}
+
+/* ------------------------------------------------------------------ */
 /* Sovereign Custom Mode: analyst-inscribed entities on the bus        */
 /* ------------------------------------------------------------------ */
 
@@ -936,6 +995,8 @@ export function telemetryLines(s: Signals): string[] {
     L.push(`  Relational entropy: H ${dyn.entropy.toFixed(2)}, entropy index ${dyn.entropyIndex.toFixed(3)}.`);
     L.push(`  Decay character: ${dyn.character} (Ω ${dyn.omega.toFixed(2)}).`);
   }
+  const dom = dominumIndex(s);
+  if ("index" in dom) L.push(`  Dominum Index: D ${dom.index} per cent, phase ${dom.phase}${dom.floorHeld ? "" : "; a bond sits at or below the viable floor"}.`);
   const ins = inscriptionLines(s);
   if (ins.length) L.push("", ...ins.slice(0, -1));
   const a = alerts(s);
