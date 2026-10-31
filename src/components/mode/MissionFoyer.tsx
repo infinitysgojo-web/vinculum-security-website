@@ -50,7 +50,7 @@ export default function MissionFoyer({
   return (
     <section aria-labelledby="foyer-title" className="py-2">
       <p className={eyebrowCls}>Mission Foyer</p>
-      <h1 id="foyer-title" className="mt-2 font-serif text-2xl text-primary sm:text-3xl">Choose the mandate for this session</h1>
+      <h1 id="foyer-title" className="mt-2 font-serif text-2xl leading-tight text-primary [overflow-wrap:anywhere] sm:text-3xl">Choose the mandate for this session</h1>
       <GoldRule className="mb-4 mt-4" />
       <p className="max-w-3xl text-sm text-muted-foreground">
         Both paths open the same eighteen desks, the same calculations and the same signal chain. Work stays in this browser: nothing is synced, shared or approved
@@ -120,7 +120,7 @@ function ModeCard({ mode, purpose, status, remembered, children }: { mode: Mode;
         <p className={eyebrowCls}>{mode === "preset" ? "Mandate I · Training" : "Mandate II · Operational record"}</p>
         {remembered && <span className="border border-brass/60 px-2 py-0.5 text-[9px] uppercase tracking-[0.18em] text-primary/80">Last used here</span>}
       </div>
-      <h2 id={id} className="mt-2 font-serif text-xl text-primary">{MODE_LABEL[mode]}</h2>
+      <h2 id={id} className="mt-2 font-serif text-xl leading-snug text-primary [overflow-wrap:anywhere]">{MODE_LABEL[mode]}</h2>
       <p className="mt-2 text-sm text-foreground/85">{purpose}</p>
       <ul className="mt-4 space-y-1 border-l-2 border-brass/40 pl-3 text-xs text-muted-foreground">
         {status.map((s) => (
