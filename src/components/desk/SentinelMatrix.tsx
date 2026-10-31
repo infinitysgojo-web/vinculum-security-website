@@ -5,6 +5,8 @@ import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import { usePublish, useEngine, TREND_MULT, inscribedRuptureLoad, ruptureIndex } from "./engine";
 import SyncPanel from "./SyncPanel";
+import FormulaProof from "./FormulaProof";
+import { sentinelRuptureProof } from "./formulaProofs";
 
 /** Handbook §15 early-warning matrix. Weighted, rule-based; nothing stored or transmitted. */
 const SIGNS: { bond: number; text: string; w: number }[] = [
@@ -160,7 +162,7 @@ export default function SentinelMatrix() {
       traps.length >= 2
         ? `Compound exposure: ${traps.map((t) => t.name).join(" together with ")}. Traps in combination fail faster than the sum of their parts; sequence the counter-measures rather than running them in parallel.`
         : "";
-    return { byBond, pct, b: band(pct), traps, compound, inscribed, share };
+    return { byBond, pct, b: band(pct), traps, compound, inscribed, share, score, totalMax };
   }, [on, trend, custom, cOn, signals.customShocks, signals.customTraps]);
 
   usePublish("sentinel", {
@@ -221,6 +223,7 @@ export default function SentinelMatrix() {
 
   return (
     <section className={panel}>
+      <FormulaProof proof={sentinelRuptureProof(r.score, r.totalMax, r.inscribed, TREND[trend].mult, r.pct)} />
       <div className="mb-6">
         <SyncPanel
           linked={linked}
