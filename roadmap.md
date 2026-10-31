@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Phase 1: give What-If, Escrow Waterfall and Forum Matrix full-width landscape workspaces
+- [ ] Phase 2: rebalance Succession, Compound Shock, Readiness and Handover desks without changing formulas or mission state
+- [ ] Phase 3: record layout rules, run regressions and verify desktop, tablet and mobile mission flows
+
 - [x] Correct mission-entry and active-dashboard header clipping across screen widths; verify all top controls remain reachable
 - [x] Keep text-heavy desk sections landscape and pair small instruments only with sufficient width; avoid forced square heights
 
