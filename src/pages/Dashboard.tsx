@@ -454,7 +454,8 @@ export default function Dashboard() {
     setEngageEpoch((n) => n + 1);
   }, []);
   const publish = useCallback((desk: string, raw: Signals) => {
-    if (customRef.current && !engagedRef.current.has(BUS_PUBLISHER_DESK[desk] ?? desk)) return;
+    const owner = BUS_PUBLISHER_DESK[desk] ?? desk;
+    if (customRef.current && DESKS.some((d) => d.id === owner) && !engagedRef.current.has(owner)) return;
     // Every publication is validated at the bus boundary; refused ones never reach a desk.
     const patch = guardSignalPatch(desk, raw);
     if (!patch) return;
