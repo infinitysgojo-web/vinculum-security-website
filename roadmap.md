@@ -1,5 +1,7 @@
 # Roadmap
 
+- [ ] Correct mission-entry and active-dashboard header clipping across screen widths; verify all top controls remain reachable
+
 - [x] Unify all 18 desks with landscape sections and compact paired instruments, without altering state or formulas
 - [x] Calibrate desk typography, numerical stability, control spacing and formula-proof presentation
 - [x] Refine dashboard top bands while preserving pinned security and desk navigation
