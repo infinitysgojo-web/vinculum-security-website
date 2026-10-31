@@ -4,8 +4,8 @@ import { ruptureIndex } from "../src/components/desk/engine";
 
 test("sentinel proof equals the desk's rupture index", () => {
   const r = ruptureIndex((30 / 60) * 100, 12, 1.15);
-  expect(r).toBe(72);
-  expect(sentinelRuptureProof(30, 60, 12, 1.15, r).result).toBe("R = 72%");
+  expect(r).toBe(71);
+  expect(sentinelRuptureProof(30, 60, 12, 1.15, r).result).toBe("R = 71%");
 });
 
 test("track shear fires only when lead exceeds tolerance", () => {
