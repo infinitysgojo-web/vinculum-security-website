@@ -256,7 +256,7 @@ export default function LitigationWorkbench() {
       </p>
 
       {/* 60/40 workbench: the matter intake on the wider side, the live evidentiary ledger beside it. */}
-      <div className="instrument-layout w-full min-w-0" data-testid="litigation-workbench-split">
+      <div className="instrument-layout litigation-layout lg:grid-cols-[3fr_2fr] w-full min-w-0" data-testid="litigation-workbench-split">
         <div className="space-y-5">
           <div>
             <label className={label} htmlFor="lit-matter">Matter or caption</label>

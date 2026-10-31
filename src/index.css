@@ -793,6 +793,7 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
 }
 @container (min-width: 64rem) {
   .desk-surface .instrument-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .desk-surface .instrument-layout.litigation-layout { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 }
 .desk-surface .diagnostic-layout { grid-template-columns: minmax(0, 1fr); }
 .desk-surface .diagnostic-readings > .instrument-wide { grid-column: 1 / -1; }
