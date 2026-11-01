@@ -276,18 +276,13 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
                   <div className="h-2 bg-primary transition-all" style={{ width: `${dominum.index}%` }} />
                 </div>
                 <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  {[
-                    ["Bond anchor", "Desk 01", 30],
-                    ["Escrow release", "Desk 10", 25],
-                    ["Succession survival", "Desk 12", 25],
-                    ["Rupture inversion", "Desk 02", 20],
-                  ].map(([n, d, w], i) => (
-                    <li key={n as string} className="border border-border bg-background p-2 min-w-0">
+                  {dominum.terms.map((t) => (
+                    <li key={t.key} className="border border-border bg-background p-2 min-w-0">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="text-xs font-semibold text-foreground/90">{n}</span>
-                        <span className="font-mono text-xs text-primary">{Math.round(dominum.terms[i] * 100)}%</span>
+                        <span className="text-xs font-semibold text-foreground/90">{t.key} · {t.label}</span>
+                        <span className="font-mono text-xs text-primary">{Math.round(t.input * 100)}%</span>
                       </div>
-                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{d} · weight {w}%</p>
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">weight {Math.round(t.weight * 100)}% · adds {(t.value * 100).toFixed(1)}</p>
                     </li>
                   ))}
                 </ul>
