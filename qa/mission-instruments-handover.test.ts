@@ -3,7 +3,6 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { GLOSSARY } from "../src/content/glossary";
 import { LEXICON } from "../src/components/desk/lexiconData";
-import { FORUMS, enforceability } from "../src/components/desk/instruments";
 import { sanitizeSignals, telemetryLines } from "../src/components/desk/engine";
 
 const read = (p: string) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
@@ -16,31 +15,19 @@ describe("public glossary mirrors the three instruments", () => {
   ] as const;
 
   for (const [id, term, category] of want) {
-    test(`${term} is in ${category} with a formal statement`, () => {
+    test(`${term} is in ${category} with no published method`, () => {
       const g = GLOSSARY.find((x) => x.id === id);
       expect(g?.term).toBe(term);
       expect(g?.category).toBe(category);
-      expect(g?.formula?.length ?? 0).toBeGreaterThan(2);
+      expect(g?.formula).toBeUndefined();
       expect(g!.short.length).toBeGreaterThan(80);
     });
   }
 
-  test("the equations are the ones the engine runs", () => {
-    const f = (id: string) => GLOSSARY.find((x) => x.id === id)!.formula!.join(" ");
-    expect(f("decay-horizon")).toContain("λ = (U_unmitigated + R_rupture) ÷ 2000");
-    expect(f("decay-horizon")).toContain("t½ = ln(2) ÷ λ, in days");
-    expect(f("decay-horizon")).toContain("B(t) = max(1.0, B₀ · e^(−λt))");
-    expect(f("enforceability")).toContain("E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5");
-    expect(f("escrow")).toContain("60 per cent");
-    expect(f("escrow")).toContain("Final Cession");
-    expect(f("enforceability")).toContain("E − 18");
-    expect(f("enforceability")).toContain("Enforcement friction = 100 − F");
-  });
-
-  test("the published bench values match the engine for every forum", () => {
-    const line = GLOSSARY.find((x) => x.id === "enforceability")!.formula!.find((l) => l.startsWith("Venue fitness scores"))!;
-    expect(line.match(/; /g)?.length).toBe(FORUMS.length - 1);
-    for (const forum of FORUMS) expect(line).toContain(`${forum.name} ${enforceability(forum)}`);
+  test("no public surface publishes a desk formula or weight", () => {
+    const pub = [JSON.stringify(GLOSSARY), read("src/content/commentary.ts"), read("public/llms.txt"), read("public/llms-full.txt")].join(" ");
+    for (const leak of ["÷ 2000", "0.5 × teeth", "0.30 A", "Σ sev", "ln(meanBond", "4,200 ×", "E − 18", "max(S) − min(S)"]) expect(pub).not.toContain(leak);
+    expect(GLOSSARY.every((g) => !g.formula)).toBe(true);
   });
 
   test("glossary ids are unique and the Lexicon shows each id once", () => {
