@@ -95,7 +95,7 @@ export const personLd = {
     addressCountry: "KE",
   },
   description:
-    "James Wesley Ndua is a diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, and the originator of the standalone Vinculum Security doctrine.",
+    "James Wesley Ndua is a diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, and the originator of the standalone Vinculum Security doctrine, The Vinculum Codex and Compact, Deterministic Relational Law and The Dominum Effect.",
   knowsAbout: [
     "Vinculum Security",
     "Deterministic Relational Law",
