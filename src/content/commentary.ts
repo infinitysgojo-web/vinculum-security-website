@@ -646,7 +646,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
     "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
     "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
     "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall", "instruments-together",
-    "dominum-effect", "dominum-index",
+    "vinculum-codex-and-compact", "dominum-effect", "dominum-index",
   ],
   // Confidentiality, integrity, auditability, legal status, attribution and citation.
   statutory: [
