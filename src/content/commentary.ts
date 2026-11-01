@@ -457,9 +457,9 @@ export const COMMENTARY: Division[] = [
         id: "vinculum-codex-and-compact",
         q: "What is The Vinculum Codex and Compact?",
         a: [
-          "The Vinculum Codex and Compact is the complete written volume of Vinculum Security by James Wesley Ndua. It gathers the doctrine, its jurisprudence of Deterministic Relational Law, and the operating rules of The Vinculum Dashboard into one statutorily protected work.",
-          "The Codex sets out what the doctrine holds: that the bond between persons, communities, generations and institutions is the unit of security analysis. The Compact sets out how that doctrine is put to work in mediation, settlement design and the custody of a peace, from first assessment to handover.",
-          "Read together, they give a practitioner one source for the claims, the method and the practice, so that every reading on the dashboard can be traced back to a stated principle.",
+          "The Vinculum Codex and Compact is the foundational doctrinal and operational system of Vinculum Security by James Wesley Ndua, operating as The Unified Operational Nervous System.",
+          "The Codex establishes the jurisprudential and mathematical foundation of Deterministic Relational Law: it defines why the relational bond is the fundamental unit of security, why the viable floor exists, and the deterministic rules that govern every calculation. The Compact establishes the sovereign covenantal framework: how those principles are bound into diplomatic mediation, settlement architecture, and verified custody across successions.",
+          "In the architecture of the chancellery, the dashboard without the Codex would be an opaque calculator, and the Codex without the dashboard would be a doctrine without a desk. Together, they form a closed, statutorily protected system ensuring that every diagnostic reading, stage-gate clearance, and custodial handover traces directly to an unyielding sovereign standard.",
         ],
       },
       {
