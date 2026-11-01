@@ -287,18 +287,18 @@ Sunset clauses can reassure hesitant parties that obligations are not permanent,
 Fixed calendar expirations can, however, invite delay: a reluctant party may wait out the deadline rather than comply. The doctrine therefore favours transitions tied to agreed, verifiable benchmarks, while recognising that some fixed dates may still be politically necessary.
 
 #### Q: What is the Decay Horizon, and why does an unattended settlement have a half-life?
-The Decay Horizon puts a number on Relational Entropy: how long, with no remedy applied, a settlement's bonds take to lose half their strength. Decay constant λ = (U + R) ÷ 2000 (U unmitigated shock exposure, R rupture index in per cent); stability half-life t½ = ln(2) ÷ λ days; each bond follows B(t) = max(1.0, B₀ · e^(−λt)).
+The Decay Horizon puts a number on Relational Entropy: how long, with no remedy applied, a settlement's bonds take to lose half their strength, read as a stability half-life in days. No bond decays below the sovereign baseline.
 
 It is a rule applied to recorded inputs, not a forecast of events.
 
 #### Q: Why does the doctrine score the dispute forum an accord names, rather than taking the clause at its word?
-The Dispute Forum Enforceability Matrix rates venues on doctrinal 1 to 5 scales: E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, minus 18 when sovereign immunity is unaddressed and a further 8 when the seat is not neutral. Enforcement friction = 100 minus the result. Ratings are ordinal judgements, not statistics.
+The Dispute Forum Enforceability Matrix rates venues on doctrinal scales for procedural teeth, exposure to sovereign immunity and pace, and reduces the reading when immunity is unaddressed or the seat is not neutral. What remains unsecured is the enforcement friction. Ratings are ordinal judgements, not statistics.
 
 #### Q: How does a Conditional Escrow Waterfall keep money from rewarding a peace that is breaking?
-Pledged funds are released in four ordered tranches (Mobilization, Demarcation, Operational Commissioning, Final Cession), each only on its verified relational condition, with a clawback reserve and performance bond held until Final Cession. The account freezes while the rupture index is 60 per cent or more.
+Pledged funds are released in four ordered tranches (Mobilization, Demarcation, Operational Commissioning, Final Cession), each only on its verified relational condition, with a clawback reserve and performance bond held until Final Cession. The account freezes while rupture is severe.
 
 #### Q: How do the Decay Horizon, the forum matrix and the escrow waterfall work together on one reading?
-They read the same inputs. The rupture index shortens the stability half-life and, at 60 per cent or more, freezes the escrow; the same bond scores set the decay path and gate each tranche above 3.0. The forum matrix shows whether promises can be enforced if those bonds give way.
+They read the same inputs. Rising rupture shortens the stability half-life and, when severe, freezes the escrow; the same bond scores set the decay path and gate each tranche.
 
 
 ### Division VI: Empirical Calibration Against the Canonical Cases
@@ -373,30 +373,20 @@ The public doctrine, published papers, and comparative frameworks are shared und
 The operational instruments and dashboard remain the protected work of the author, formally registered under statutory copyright law with all rights reserved. Enquiries about uses beyond the licence are welcomed through the institutional correspondence channel.
 
 
-## 7. Dashboard Instrument Formulations (Canonical Wording)
-These definitions match the public Glossary and the formulas the Vinculum Dashboard desks compute. They describe illustrative instruments, not predictions.
+## 7. Dashboard Instruments (Public Descriptions)
+These descriptions match the public Glossary. The working methods of the Vinculum Dashboard desks are a protected work kept in the private dashboard and The Vinculum Codex and Compact; they are not published here. The instruments are illustrative, not predictions.
 
 ### Compound Stress
-The combined strain on a settlement when several shocks land together. Concurrent shocks amplify one another, and each bond loses a tenth of the severity aimed at it, never falling below the 1.0 sovereign baseline.
-- Compound strain: S = min(100, Σ sev_k + (n − 1) × 1.25 × 4 + P_legitimacy), for n active shocks; the amplification term is zero when n ≤ 1.
-- Per-bond load: Ω_i = Σ sev_k over the shocks aimed at bond i.
-- Bond after shock: B_i′ = max(1.0, B_i − Ω_i ÷ 10); the lowest B_i′ names the failing bond.
+The combined strain on a settlement when several shocks land together. Concurrent shocks amplify one another, and each bond loses part of the severity aimed at it, never falling below the sovereign baseline.
 
 ### Bilateral Geodesic
 The great-circle distance and initial bearing between two capitals of record, read on a spherical Earth. It describes geography only and makes no claim about influence or intent.
-- Haversine: a = sin²(Δφ ÷ 2) + cos φ1 cos φ2 sin²(Δλ ÷ 2); c = 2 atan2(√a, √(1 − a)).
-- Distance: d = R c, with R = 6,371 km; nautical miles = d × 0.539957.
-- Initial bearing: θ = atan2(sin Δλ cos φ2, cos φ1 sin φ2 − sin φ1 cos φ2 cos Δλ), normalised to 0° to 360° true.
 
 ### Spherical Barycentre
 The weighted geographic centre of every seated party in a multilateral theatre, with the mean geodesic distance of each party from that centre as its dispersion.
-- Unit vectors: X = Σ w_j cos φ_j cos λ_j ÷ Σ w_j; Y = Σ w_j cos φ_j sin λ_j ÷ Σ w_j; Z = Σ w_j sin φ_j ÷ Σ w_j.
-- Centre: φ = atan2(Z, √(X² + Y²)); λ = atan2(Y, X).
-- Dispersion: the mean bilateral geodesic from each party to the centre, in nautical miles.
 
 ### Rupture Shock Radius
 A heuristic envelope that scales the rupture index into a distance, used only to illustrate how far a rupture's effects could plausibly reach. It is a scaling rule, not a prediction.
-- r = round(4,200 × (R ÷ 100)^1.4) nautical miles, with R clamped to 0 to 100 per cent.
 
 ### Formula Proof [ƒx]
 An inspectable working beside a desk reading that shows each input, each intermediate value and the result, computed by the same function the desk uses, so the proof always equals what is displayed.
