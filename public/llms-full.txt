@@ -406,3 +406,17 @@ A SHA-256 digest of the mission record written in canonical form (keys sorted, n
 
 ### Phase Question Script
 In the questioning desks, every nonblank line of a custom script becomes an ordered question for its phase, and counterpart tactics are read from the mission notes. Seating is limited only by the roster available.
+
+## The Dominum Effect
+
+### The Dominum Effect (Law of Sovereign Custodial Inversion)
+An original doctrine of James Wesley Ndua within The Vinculum Codex and Compact. It names the point at which a settlement stops depending on the command of its makers (imperium) and is held instead by verified custody of its bonds, assets and offices (dominium), so that keeping the peace becomes the self-reinforcing course for every party. It is the positive counterpart to rupture. Phases: Fiduciary Anchor, Custodial Inversion, Self-Reinforcing Dominium. Source: https://www.vinculumsecurity.kidnexus.or.ke/glossary#dominum-effect
+
+### Dominium and Imperium
+Imperium is the right of command and coercion over persons; dominium is true title and custodial stewardship of an estate. Settlements resting on imperium fail when command changes hands; those resting on dominium endure.
+
+### Custodial Inversion
+The second phase of the Dominum Effect, in which guarantees, revenues and continuity provisions pass from discretionary political control into verified, office-held custody.
+
+### Dominum Index
+The dashboard reading of the Dominum Effect. Its method is a protected work applied only inside the private Vinculum Dashboard and set out in the Codex; it is not published on the website.
