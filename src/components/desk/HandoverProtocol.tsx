@@ -3,7 +3,7 @@ import { useTheatreSeed } from "./theatres";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
 import SyncPanel from "./SyncPanel";
-import { telemetryLines, useEngine, usePublish, bondBand, type Signals } from "./engine";
+import { telemetryLines, useEngine, usePublish, bondBand, dominumIndex, type Signals } from "./engine";
 
 /** Bond restoration gate: handover is premature while any bond still fails. */
 function handoverLines(s: Signals): string[] {
@@ -192,10 +192,23 @@ export default function HandoverProtocol() {
             onChange={(e) => setSuccessor(e.target.value)}
             placeholder="Office of the National Peace Secretariat"
           />
-
-
         </div>
-
+        <div className={panel}>
+          <p className={label}>Residual dependence on the departing presence</p>
+          <div className="space-y-2">
+            {DEPENDENCE.map((d) => (
+              <label key={d.id} className="flex items-start gap-3 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={deps.includes(d.id)}
+                  onChange={() => toggle(deps, d.id, setDeps)}
+                  className="mt-1 accent-[hsl(var(--accent))]"
+                />
+                <span className="flex-1 text-foreground/90">{d.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="space-y-6 min-w-0">
@@ -210,20 +223,12 @@ export default function HandoverProtocol() {
             <div className="h-full bg-accent transition-all" style={{ width: `${r.durability}%` }} />
           </div>
           <p className="mt-3 text-xs uppercase tracking-[0.18em] font-semibold text-accent">{r.band}</p>
-          <p className={`${label} mt-5`}>Residual dependence on the departing presence</p>
-          <div className="space-y-2">
-            {DEPENDENCE.map((d) => (
-              <label key={d.id} className="flex items-start gap-3 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={deps.includes(d.id)}
-                  onChange={() => toggle(deps, d.id, setDeps)}
-                  className="mt-1 accent-[hsl(var(--accent))]"
-                />
-                <span className="flex-1 text-foreground/90">{d.label}</span>
-              </label>
-            ))}
-          </div>
+          {(() => { const d = dominumIndex(signals); return (
+            <div className="mt-4 border-t border-border pt-3 flex items-baseline justify-between gap-3">
+              <span className="text-xs text-foreground/85">The Dominum Effect · carried into the record</span>
+              <span className="font-mono text-xs text-primary shrink-0">{"index" in d ? `D ${d.index}% · ${d.phase}` : "Not yet assessed"}</span>
+            </div>
+          ); })()}
         </div>
 
       </div>

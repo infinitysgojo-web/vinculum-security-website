@@ -258,7 +258,48 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
               );
             })}
           </div>
-
+          <div className="border-2 border-brass/60 bg-navy-tint/30 p-4 sm:p-5 space-y-3">
+            <div>
+              <p className={label}>The Dominum Effect</p>
+              <p className="text-xs text-muted-foreground">Law of Sovereign Custodial Inversion · read live from four desks</p>
+            </div>
+            {"index" in dominum ? (
+              <>
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-serif text-4xl leading-none text-primary">D {dominum.index}%</p>
+                    <p className="mt-2 inline-block border border-primary/50 bg-primary/5 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">{dominum.phase}</p>
+                  </div>
+                  <FormulaProof proof={dominumProof(dominum)} />
+                </div>
+                <div className="h-2 bg-border" aria-hidden>
+                  <div className="h-2 bg-primary transition-all" style={{ width: `${dominum.index}%` }} />
+                </div>
+                <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {dominum.terms.map((t) => (
+                    <li key={t.key} className="border border-border bg-background p-2 min-w-0">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-xs font-semibold text-foreground/90">{t.key} · {t.label}</span>
+                        <span className="font-mono text-xs text-primary">{Math.round(t.input * 100)}%</span>
+                      </div>
+                      <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">weight {Math.round(t.weight * 100)}% · adds {(t.value * 100).toFixed(1)}</p>
+                    </li>
+                  ))}
+                </ul>
+                {!dominum.floorHeld && <p className="border-l-2 border-terracotta pl-3 text-xs text-muted-foreground">Self-Reinforcing Dominium is withheld while a bond sits at or below the 3.0 viable floor.</p>}
+              </>
+            ) : (
+              <div className="space-y-2">
+                <p className="font-serif text-lg text-muted-foreground">Not yet assessed</p>
+                <p className="text-xs text-muted-foreground">Awaiting readings from:</p>
+                <ul className="flex flex-wrap gap-2">
+                  {dominum.missing.map((m) => (
+                    <li key={m} className="border border-terracotta/60 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-terracotta">{m}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right: live link, clearance meter, sign-off, audit, locks and the transmittal console. */}
@@ -273,21 +314,6 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
               <div className={`h-2 transition-all ${bindingOpen ? "bg-accent" : "bg-primary"}`} style={{ width: `${clearancePct}%` }} />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{bindingOpen ? `${bindingOpen} binding article${bindingOpen === 1 ? "" : "s"} still locked.` : "Every binding article is clear."}</p>
-            <div className="mt-3 border-t border-border pt-3">
-              <div className="flex items-baseline justify-between gap-3">
-                <p className={label}>The Dominum Effect · Dominum Index</p>
-                {"index" in dominum && <span className="font-mono text-xs text-primary">D {dominum.index}%</span>}
-              </div>
-              {"index" in dominum ? (
-                <>
-                  <p className="font-serif text-lg text-primary">{dominum.phase}</p>
-                  {!dominum.floorHeld && <p className="text-xs text-muted-foreground">Self-Reinforcing Dominium is withheld while a bond sits at or below the 3.0 viable floor.</p>}
-                  <FormulaProof proof={dominumProof(dominum)} />
-                </>
-              ) : (
-                <p className="text-xs text-muted-foreground">Not yet assessed. Awaiting: {dominum.missing.join("; ")}.</p>
-              )}
-            </div>
           </div>
           <div className={`border-2 p-4 ${canSignOff ? "border-primary/50 bg-background" : "border-destructive/60 bg-destructive/5"}`}>
             <p className={label}>Mission sign-off · {stage.label}</p>
