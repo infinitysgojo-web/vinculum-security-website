@@ -73,3 +73,5 @@
 - [x] Polish pass: AI feed formulas, print cleanup, Dispatches mobile fit, per-desk safety net, screen reader updates, focus rings, PDF micro-labels
 
 - [x] Dominum Effect: index on Desk 15, handover telemetry, lexicon, glossary, commentary
+
+- [x] Refresh the author answer and outdated public wording (Commentary, FAQ, About, AI summaries)
