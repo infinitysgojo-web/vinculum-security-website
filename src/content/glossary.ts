@@ -392,15 +392,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Codex and Compact · The Dominum Effect (Statutorily Protected Work)",
     quote: "A peace held by command lasts as long as the commander; a peace held in custody outlasts every hand that signed it.",
     category: "core",
-    formula: [
-      "Bond anchor: A = (μB − 1) ÷ 4, where μB is the mean of the four bond scores.",
-      "Fiduciary anchor: F = E ÷ 100, where E is the per cent of the escrow pledge released; F = 0 while the escrow is frozen.",
-      "Succession durability: S = S% ÷ 100, from the Succession Simulator.",
-      "Rupture containment: C = 1 − R ÷ 100, where R is the rupture index in per cent.",
-      "Dominum Index: D = 100 × (0.30 A + 0.25 F + 0.25 S + 0.20 C), from 0 to 100.",
-      "Phases: Imperium-Bound below 40; Fiduciary Anchor from 40; Custodial Inversion from 60; Self-Reinforcing Dominium from 75, and only while every bond stands above the 3.0 viable floor.",
-      "D is not computed until all four readings exist. It is a rule-based reading, not a prediction.",
-    ],
   },
   {
     id: "dominium-imperium",

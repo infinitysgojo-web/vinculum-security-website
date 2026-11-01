@@ -466,8 +466,8 @@ export const COMMENTARY: Division[] = [
         id: "dominum-index",
         q: "How is the Dominum Index read on the dashboard?",
         a: [
-          "The Dominum Index D is a derived reading of four values the desks already publish: the bond anchor from Diagnostics, the escrow released from the De-confliction Bench, succession durability from the Succession Simulator, and rupture containment from the Sentinel Matrix. It is computed as D = 100 × (0.30 A + 0.25 F + 0.25 S + 0.20 C), and every term can be inspected through its formula proof on Mission Readiness.",
-          "D is not shown until all four readings exist, and a frozen escrow counts as nothing released. Self-Reinforcing Dominium is withheld while any bond sits at or below the 3.0 viable floor, however high D may be, because no custody arrangement can compensate for a failing bond.",
+          "The Dominum Index is a derived reading of four assessments the desks already make: the strength of the relational bonds, the release of conditional escrow, the durability of the settlement across succession, and the containment of rupture. Its method is set out in The Vinculum Codex and Compact and is applied only inside the private Vinculum Dashboard.",
+          "The index is not shown until all four readings exist, and a frozen escrow counts as nothing released. The final phase, Self-Reinforcing Dominium, is withheld while any bond sits at or below the viable floor, however high the index may be, because no custody arrangement can compensate for a failing bond.",
           "Like every reading in the dashboard, the index is a rule applied to the practitioner's own assessment. It is not a forecast, and it does not replace judgement.",
         ],
       },
