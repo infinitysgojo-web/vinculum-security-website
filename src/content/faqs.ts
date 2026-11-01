@@ -66,7 +66,7 @@ export const METHODOLOGY_FAQ: FaqItem[] = [
 export const ABOUT_FAQ: FaqItem[] = [
   {
     q: "Who is James Wesley Ndua?",
-    a: `${A} is a Human Security Diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya (ORCID 0009-0005-9861-8849). He is the originator of Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, and The Vinculum Dashboard.`,
+    a: `${A} is a Human Security Diplomat, scholar and Youth, Peace and Security advocate based in Nairobi, Kenya (ORCID 0009-0005-9861-8849). He is the author and originator of Vinculum Security, A Doctrine of Relational Security, and of its complete canon: The Vinculum Codex and Compact, the practice of Vinculum Diplomacy, the jurisprudence of Deterministic Relational Law (Lex Relationalis Determinata), The Dominum Effect, and The Vinculum Dashboard, the private 18-desk chancellery driven by The Vinculum Unified Operational Nervous System. His work draws on diplomatic practice, Ubuntu philosophy, and youth, peace and security advocacy under UN Security Council Resolutions 2250 and 1325. Its personal root is his founding principle: "I cannot leave the community or the people and substitute it for a role or a room." The doctrine holds that legitimacy and lasting peace rest on the integrity of the bonds between persons, communities, generations and institutions, rather than on title, office or coercive leverage.`,
   },
     {
     q: "What are the statutory copyright registrations?",
@@ -88,11 +88,11 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "Who is the originator and what statutory copyrights protect this work?",
-    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The entire body of work—including the foundational doctrine, the companion handbook, The Vinculum Security Website (its design, layout and literary composition), The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System—is formally registered and protected under statutory copyright law with all legal rights strictly reserved.`,
+    a: `${A} (ORCID 0009-0005-9861-8849) is the sole creator, author, and rights holder. The entire body of work, including the foundational doctrine, the companion handbook, The Vinculum Security Website (its design, layout and literary composition), The Vinculum Dashboard, and The Vinculum Unified Operational Nervous System, is formally registered and protected under statutory copyright law with all legal rights strictly reserved.`,
   },
   {
     q: "What is Deterministic Relational Law (Lex Relationalis Determinata)?",
-    a: `Deterministic Relational Law is an original mathematical jurisprudence originated by ${A}. It establishes that international treaties, transitional accords, and peace settlements behave as dynamic relational structures whose long-term survival is bounded by deterministic mathematical principles—including the Liebig Relational Minimum, kinematic Track I/Track II synchronization, and covenantal succession resistance gates—rather than probabilistic guessing or textual nominalism.`,
+    a: `Deterministic Relational Law is an original mathematical jurisprudence originated by ${A}. It establishes that international treaties, transitional accords, and peace settlements behave as dynamic relational structures whose long-term survival is bounded by deterministic mathematical principles, including the Liebig Relational Minimum, kinematic Track I/Track II synchronization, and covenantal succession resistance gates, rather than probabilistic guessing or textual nominalism.`,
   },
   {
     q: "Is Vinculum Security connected to Vinculum Solutions or Vin eRetail?",
@@ -107,7 +107,7 @@ export const HOME_FAQ: FaqItem[] = [
 export const FOUNDATIONS_FAQ: FaqItem[] = [
   {
     q: "How do Ubuntu and Confucian Role Ethics corroborate the doctrine's referent object?",
-    a: `Ubuntu ("umuntu ngumuntu ngabantu" — a person is a person through other persons) establishes that personhood is constituted through community relationships. Confucian Role Ethics (as analyzed by Ames and Rosemont) independently demonstrates through classical Chinese thought that persons exist through lived reciprocal roles. By drawing upon two independent civilizational traditions, Vinculum Security proves that relational ontology is not culturally localized but a universal foundation of human existence.`,
+    a: `Ubuntu ("umuntu ngumuntu ngabantu": a person is a person through other persons) establishes that personhood is constituted through community relationships. Confucian Role Ethics (as analyzed by Ames and Rosemont) independently demonstrates through classical Chinese thought that persons exist through lived reciprocal roles. By drawing upon two independent civilizational traditions, Vinculum Security proves that relational ontology is not culturally localized but a universal foundation of human existence.`,
   },
   {
     q: "Does Vinculum Security reject Political Realism or Human Security?",

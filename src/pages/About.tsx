@@ -17,7 +17,7 @@ export default function About() {
     <>
       <SEO
         title="About the Author"
-        description="James Wesley Ndua, diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya. Originator of Vinculum Security, A Doctrine of Relational Security — a complete, copyrighted work ready for use in academic circles, mainstream policy, and public discourse."
+        description="James Wesley Ndua, diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya. Originator of Vinculum Security, A Doctrine of Relational Security, and author of The Vinculum Codex and Compact: a complete, copyrighted work ready for academic, policy and public use."
         path="/about"
         image="/og/about.jpg"
         keywords="James Wesley Ndua, originator of Vinculum Security, relational security doctrine author, Youth Peace and Security, Nairobi, ORCID 0009-0005-9861-8849"
@@ -104,7 +104,7 @@ export default function About() {
           <div className="prose-body text-foreground/85">
                                     <div className="space-y-1.5 text-sm">
               <p>
-                <strong>Doctrine & Handbook:</strong> Formally registered and protected under statutory copyright law. All rights reserved.
+                <strong>Doctrine, Handbook, Codex & Compact:</strong> Formally registered and protected under statutory copyright law. All rights reserved.
               </p>
               <p>
                 <strong>The Vinculum Dashboard:</strong> Proprietary operational chancellery software; registered under statutory copyright.
