@@ -347,11 +347,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Desk 17 instrument, Succession Simulator (Statutorily Protected Work)",
     quote: "A settlement left untended does not hold its height; it settles toward the floor at a rate set by its unmitigated exposure and its rupture, and the half-life names how long the remedy may wait.",
     category: "method",
-    formula: [
-      "Decay constant: λ = (U_unmitigated + R_rupture) ÷ 2000, where U is unmitigated shock exposure in points (full severity for each uninsulated shock, one quarter for each insulated shock) and R is the rupture index in per cent.",
-      "Stability half-life: t½ = ln(2) ÷ λ, in days; undefined when λ = 0, because nothing decays.",
-      "Dynamic bond preservation floor: B(t) = max(1.0, B₀ · e^(−λt)), so no bond decays below the statutory 1.0 sovereign baseline.",
-    ],
   },
   {
     id: "enforceability",
@@ -360,13 +355,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Desk 11, Forum Matrix (Statutorily Protected Work)",
     quote: "A dispute clause is only as strong as the place its award can be executed; a forum chosen for prestige and not for teeth leaves the accord with a right and no remedy.",
     category: "core",
-    formula: [
-      "Base score E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, from doctrinal ratings on a 1 to 5 scale.",
-      "Venue fitness scores: ICSID 80; PCA / The Hague 74; LCIA 72; ICC Paris 70; Swiss Arbitration Centre 68; Singapore SIAC 66; ICJ Advisory 46.",
-      "Sovereign immunity waiver penalty: F = E − 18 when the clause leaves immunity from jurisdiction and execution unaddressed.",
-      "Seat neutrality weighting: a further − 8 when the seat lies in the territory of a party to the dispute; F is floored at 0.",
-      "Enforcement friction = 100 − F.",
-    ],
   },
   {
     id: "escrow",
@@ -375,15 +363,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Desk 07, Escrow Waterfall (Statutorily Protected Work)",
     quote: "Money released on signature buys a ceremony; money released on a verified bond buys the bond.",
     category: "field",
-    formula: [
-      "Tranche 1, Mobilization: an independent verifier is seated.",
-      "Tranche 2, Demarcation: the communal bond stands above the 3.0 floor.",
-      "Tranche 3, Operational Commissioning: the institutional bond stands above 3.0 and the track gap is within tolerance.",
-      "Tranche 4, Final Cession: the intergenerational bond stands above 3.0 and treaty survival is at or above 55 per cent.",
-      "A tranche is met only when its own condition holds and every earlier tranche is met. Gross = Σ share_k for met tranches.",
-      "Before Final Cession: Released = Gross × (1 − clawback) − performance bond, floored at 0. At Final Cession: Released = Gross, and both reserves are discharged.",
-      "Emergency freeze: Released = 0 while the rupture index R is 60 per cent or more, whatever tranches are met.",
-    ],
   },
   {
     id: "dominum-effect",
@@ -416,11 +395,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Succession Simulator, Critical Fracture Window (Statutorily Protected Work)",
     quote: "A settlement does not fail on the day it is signed or the day it breaks; it fails across a window, and the window can be counted.",
     category: "method",
-    formula: [
-      "Fracture window: t_f = ln(meanBond ÷ 2.0) ÷ λ, in days, where meanBond is the mean of the four bonds and λ = (U_unmitigated + R_rupture) ÷ 2000 is the decay constant.",
-      "t_f = 0 when meanBond ≤ 2.0, because the reading is already at the fracture level; undefined when λ = 0, because nothing decays.",
-      "Months = t_f ÷ 30.44. Severity: stable above 24 months, monitored above 12, acute above 6, otherwise imminent.",
-    ],
   },
   {
     id: "resource-parity-index",
@@ -429,11 +403,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Desk 07, Resource-Sharing Covenant (Statutorily Protected Work)",
     quote: "A peace that pays the corridor before the community has bought a road through a grievance.",
     category: "field",
-    formula: [
-      "Resource Parity: P = 100 − (max(S) − min(S)), where S is the set of the three head shares in per cent, summing to 100.",
-      "Communal constraint: S_communal ≥ 30%. A communal share below 30 per cent is a legitimacy deficit and adds strain on the Compound Shock desk.",
-      "As computed on the desk, the spread carries a sensitivity weight of 1.5 and the result is rounded and floored at 0: P = max(0, round(100 − 1.5 × (max(S) − min(S)))).",
-    ],
   },
   {
     id: "doctrinal-pleading-heads",
@@ -442,12 +411,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Desk 13, Pleadings Bench (Statutorily Protected Work)",
     quote: "A pleading that cannot name its forum, its breach and its covenant is a complaint, not a claim.",
     category: "core",
-    formula: [
-      "I. Jurisdictional foundation: the dispute forum chosen on the Forum Matrix, with its citation, enforcement teeth (1 to 5) and admissibility criteria.",
-      "II. Substantive relational breach: the weakest bond on the diagnostic, with its score of 5.0.",
-      "III. Sovereign covenants at risk: every covenant of record placed at risk by the breach.",
-      "IV. Provisional measures: drafted, and marked urgent, only when the rupture index R ≥ 40 per cent.",
-    ],
   },
   {
     id: "compound-stress",
@@ -456,11 +419,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Compound Shock Tester (Statutorily Protected Work)",
     quote: "Shocks that arrive together are heavier than the same shocks met one at a time.",
     category: "method",
-    formula: [
-      "Compound strain: S = min(100, Σ sevₖ + (n − 1) × 1.25 × 4 + P_legitimacy), for n active shocks; the amplification term is zero when n ≤ 1.",
-      "Per-bond load: Ωᵢ = Σ sevₖ over the shocks aimed at bond i.",
-      "Bond after shock: Bᵢ′ = max(1.0, Bᵢ − Ωᵢ ÷ 10); the lowest Bᵢ′ names the failing bond.",
-    ],
   },
   {
     id: "bilateral-geodesic",
@@ -469,11 +427,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Desk 02, Asymmetry Matrix",
     quote: "Distance is measured, never presumed.",
     category: "method",
-    formula: [
-      "Haversine: a = sin²(Δφ ÷ 2) + cos φ₁ cos φ₂ sin²(Δλ ÷ 2); c = 2 atan2(√a, √(1 − a)).",
-      "Distance: d = R c, with R = 6,371 km; nautical miles = d × 0.539957.",
-      "Initial bearing: θ = atan2(sin Δλ cos φ₂, cos φ₁ sin φ₂ − sin φ₁ cos φ₂ cos Δλ), normalised to 0° to 360° true.",
-    ],
   },
   {
     id: "spherical-barycentre",
@@ -482,11 +435,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Multilateral theatre telemetry",
     quote: "A table has a centre; the barycentre tells you where it lies.",
     category: "method",
-    formula: [
-      "Unit vectors: X = Σ wⱼ cos φⱼ cos λⱼ ÷ Σ wⱼ; Y = Σ wⱼ cos φⱼ sin λⱼ ÷ Σ wⱼ; Z = Σ wⱼ sin φⱼ ÷ Σ wⱼ.",
-      "Centre: φ = atan2(Z, √(X² + Y²)); λ = atan2(Y, X).",
-      "Dispersion: the mean bilateral geodesic from each party to the centre, in nautical miles.",
-    ],
   },
   {
     id: "rupture-shock-radius",
@@ -495,7 +443,6 @@ export const GLOSSARY: GlossaryEntry[] = [
     source: "The Vinculum Dashboard · Theatre geodesy",
     quote: "The radius illustrates a reading; it does not forecast an event.",
     category: "method",
-    formula: ["r = round(4,200 × (R ÷ 100)^1.4) nautical miles, with R clamped to 0 to 100 per cent."],
   },
   {
     id: "formula-proof",
