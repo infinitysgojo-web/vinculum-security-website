@@ -137,6 +137,7 @@ export default function Commentary() {
         title="Doctrinal Commentary"
         description={`${COMMENTARY_COUNT} answered questions on Vinculum Security by James Wesley Ndua, across seven divisions: claims, method, mathematics, and practice.`}
         path="/commentary"
+        keywords="Vinculum Security commentary, relational security doctrine, The Dominum Effect, Dominum Effect, Dominum Index, Law of Sovereign Custodial Inversion, dominium and imperium, Deterministic Relational Law, James Wesley Ndua"
         jsonLd={buildCommentarySchema()}
       />
 
