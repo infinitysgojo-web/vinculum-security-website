@@ -121,17 +121,14 @@ describe("cross-corpus glossary parity", () => {
     ]) {
       expect(g(id)?.term).toBe(term);
       expect(l(id)?.term).toBe(term);
-      expect(g(id)!.formula!.length).toBeGreaterThan(2);
+      expect(g(id)!.formula).toBeUndefined();
     }
   });
 
-  test("the formulations are stated exactly", () => {
-    const f = (id: string) => g(id)!.formula!.join(" ");
-    expect(f("critical-fracture-window")).toContain("t_f = ln(meanBond ÷ 2.0) ÷ λ");
-    expect(f("resource-parity-index")).toContain("P = 100 − (max(S) − min(S))");
-    expect(f("resource-parity-index")).toContain("S_communal ≥ 30%");
-    expect(f("doctrinal-pleading-heads")).toContain("R ≥ 40 per cent");
+  test("the formulations stay in the private desk lexicon only", () => {
     expect(l("critical-fracture-window")!.short).toContain("t_f = ln(meanBond ÷ 2.0) ÷ λ");
     expect(l("resource-parity-index")!.short).toContain("P = 100 − (max(S) − min(S))");
+    expect(g("critical-fracture-window")!.short).not.toContain("÷");
   });
+
 });

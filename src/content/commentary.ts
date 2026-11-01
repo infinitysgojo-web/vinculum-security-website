@@ -421,8 +421,8 @@ export const COMMENTARY: Division[] = [
         id: "decay-horizon",
         q: "What is the Decay Horizon, and why does an unattended settlement have a half-life?",
         a: [
-          "The Decay Horizon puts a number on Relational Entropy. It asks how long, with no remedy applied, a settlement's bonds take to lose half their strength, given the shocks left unmitigated and the rupture index on record. The decay constant is λ = (U + R) ÷ 2000, where U is unmitigated shock exposure and R is the rupture index in per cent, and the stability half-life is t½ = ln(2) ÷ λ days.",
-          "Each bond then follows B(t) = max(1.0, B₀ · e^(−λt)), so no bond falls below the 1.0 sovereign baseline. Insulating a shock or lowering rupture reduces λ and lengthens the half-life, which is why the doctrine treats maintenance as part of the settlement rather than an afterthought.",
+          "The Decay Horizon puts a number on Relational Entropy. It asks how long, with no remedy applied, a settlement's bonds take to lose half their strength, given the shocks left unmitigated and the rupture on record. The result is read as a stability half-life, measured in days.",
+          "Each bond weakens along that path but never falls below the sovereign baseline. Insulating a shock or lowering rupture slows the decay and lengthens the half-life, which is why the doctrine treats maintenance as part of the settlement rather than an afterthought.",
           "It is a rule applied to recorded inputs, not a forecast of events. It says how fast neglect erodes the bonds on the current reading, not when or whether conflict will occur.",
         ],
       },
@@ -430,8 +430,8 @@ export const COMMENTARY: Division[] = [
         id: "forum-enforceability",
         q: "Why does the doctrine score the dispute forum an accord names, rather than taking the clause at its word?",
         a: [
-          "A dispute clause is only as strong as the place its award can be executed. The Dispute Forum Enforceability Matrix rates each venue on doctrinal 1 to 5 scales for procedural teeth, exposure to sovereign immunity, and pace, and combines them as E = 100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5, with reference to the 1958 New York Convention and the 1965 ICSID Convention.",
-          "The score is reduced by 18 when the clause leaves immunity from jurisdiction and execution unaddressed, and by a further 8 when the seat lies in the territory of a party to the dispute. Enforcement friction, 100 minus the result, is what remains at risk.",
+          "A dispute clause is only as strong as the place its award can be executed. The Dispute Forum Enforceability Matrix rates each venue on doctrinal scales for procedural teeth, exposure to sovereign immunity, and pace, and combines them into one enforceability reading, with reference to the 1958 New York Convention and the 1965 ICSID Convention.",
+          "The reading is reduced when the clause leaves immunity from jurisdiction and execution unaddressed, and reduced again when the seat lies in the territory of a party to the dispute. What the reading does not secure is the enforcement friction that remains at risk.",
           "The ratings are ordinal doctrinal judgements, not measured statistics. Their purpose is to stop a forum being chosen for prestige when the accord needs a remedy it can actually enforce.",
         ],
       },
@@ -439,8 +439,8 @@ export const COMMENTARY: Division[] = [
         id: "escrow-waterfall",
         q: "How does a Conditional Escrow Waterfall keep money from rewarding a peace that is breaking?",
         a: [
-          "Funds pledged to a settlement are held by a neutral custodian and released in four tranches, in order: Mobilization once an independent verifier is seated; Demarcation once the communal bond stands above 3.0; Operational Commissioning once the institutional bond stands above 3.0 and the track gap is within tolerance; and Final Cession once the intergenerational bond stands above 3.0 and treaty survival is at or above 55 per cent.",
-          "Until Final Cession, part of each release is held back as a clawback reserve and a sovereign performance bond is retained. The whole account freezes while the rupture index is 60 per cent or more, whatever tranches have been met.",
+          "Funds pledged to a settlement are held by a neutral custodian and released in four tranches, in order: Mobilization once an independent verifier is seated; Demarcation once the communal bond stands above the viable floor; Operational Commissioning once the institutional bond does the same and the track gap is within tolerance; and Final Cession once the intergenerational bond clears the floor and treaty survival is sufficient.",
+          "Until Final Cession, part of each release is held back as a clawback reserve and a sovereign performance bond is retained. The whole account freezes while rupture is severe, whatever tranches have been met.",
           "The design follows the Liebig Relational Minimum: money is tied to the bond it is meant to build, so released funds reflect verified relational conditions rather than signatures or ceremonies.",
         ],
       },
@@ -448,7 +448,7 @@ export const COMMENTARY: Division[] = [
         id: "instruments-together",
         q: "How do the Decay Horizon, the forum matrix and the escrow waterfall work together on one reading?",
         a: [
-          "They read the same inputs, so they cannot drift apart. The rupture index raises the decay constant and shortens the stability half-life; at 60 per cent or more it also freezes the escrow account. The bond scores that set the decay path are the same scores each escrow tranche must clear above the 3.0 floor.",
+          "They read the same inputs, so they cannot drift apart. Rising rupture speeds decay and shortens the stability half-life; when it becomes severe it also freezes the escrow account. The bond scores that set the decay path are the same scores each escrow tranche must clear above the viable floor.",
           "The forum matrix covers the case where those conditions fail and a party disputes the accord. A low enforcement friction means a breach can be remedied; a high one means the settlement depends on goodwill that the Decay Horizon may show is already wearing away.",
           "Read together, they answer three practical questions about one settlement: how fast it erodes if left alone, whether its money is tied to verified bonds, and whether its promises can be enforced if the bonds give way.",
         ],
@@ -646,7 +646,7 @@ const THEME_MEMBERS: Record<ThemeId, string[]> = {
     "vinculum-diplomacy", "readiness", "track-sync", "succession", "redlining", "guarantor-dilemma",
     "transitional-justice", "escalation-clauses", "sunset-clauses", "eight-cases", "rwanda", "twin-cases",
     "climate", "corridors", "kenya-2008", "colonial-boundaries", "forum-enforceability", "escrow-waterfall", "instruments-together",
-    "dominum-effect", "dominum-index",
+    "vinculum-codex-and-compact", "dominum-effect", "dominum-index",
   ],
   // Confidentiality, integrity, auditability, legal status, attribution and citation.
   statutory: [
