@@ -1726,7 +1726,7 @@ export default function Dashboard() {
         <EngineContext.Provider value={engineValue}>
           <StatutoryClearanceBar deskId={desk} />
         </EngineContext.Provider>
-        <TelemetryStrip signals={effective} />
+        <TelemetryStrip signals={effective} onOpenDesk={(id) => { const d = DESKS.find((x) => x.id === id); if (d) goTo(d); }} />
         <MissionChain
           deskId={desk}
           signals={effective}
