@@ -219,6 +219,8 @@ export function sectionLd(opts: {
     },
     citation: DOI_URL,
     disambiguatingDescription: DISAMBIGUATION,
+    genre: ["Non-fiction", "International law", "Peace and conflict studies", "Diplomacy", "Security studies"],
+    keywords: "non-fiction doctrine, jurisprudence, international law, peace mediation, diplomacy, security studies",
         about: [
       { "@type": "Thing", name: "Vinculum Security" },
       { "@type": "Thing", name: "Deterministic Relational Law" },
@@ -227,6 +229,8 @@ export function sectionLd(opts: {
       { "@type": "Thing", name: "Relational security" },
       { "@type": "Thing", name: "Bond-integrity analysis" },
       { "@type": "Thing", name: "Diplomatic security" },
+      { "@type": "Thing", name: "The Dominum Effect" },
+      { "@type": "Thing", name: "The Vinculum Codex and Compact" },
     ],
   };
 }
