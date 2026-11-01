@@ -454,6 +454,15 @@ export const COMMENTARY: Division[] = [
         ],
       },
       {
+        id: "vinculum-codex-and-compact",
+        q: "What is The Vinculum Codex and Compact?",
+        a: [
+          "The Vinculum Codex and Compact is the complete written volume of Vinculum Security by James Wesley Ndua. It gathers the doctrine, its jurisprudence of Deterministic Relational Law, and the operating rules of The Vinculum Dashboard into one statutorily protected work.",
+          "The Codex sets out what the doctrine holds: that the bond between persons, communities, generations and institutions is the unit of security analysis. The Compact sets out how that doctrine is put to work in mediation, settlement design and the custody of a peace, from first assessment to handover.",
+          "Read together, they give a practitioner one source for the claims, the method and the practice, so that every reading on the dashboard can be traced back to a stated principle.",
+        ],
+      },
+      {
         id: "dominum-effect",
         q: "What is the Dominum Effect, and why does the Codex need it?",
         a: [
