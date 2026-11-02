@@ -75,3 +75,5 @@
 - [x] Dominum Effect: index on Desk 15, handover telemetry, lexicon, glossary, commentary
 
 - [x] Refresh the author answer and outdated public wording (Commentary, FAQ, About, AI summaries)
+
+- [x] Carry strengthened Dominum/Codex SEO wording across all public text and metadata

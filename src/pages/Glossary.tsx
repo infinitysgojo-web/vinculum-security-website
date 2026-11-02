@@ -109,7 +109,7 @@ export default function Glossary() {
         description="Canonical terms of the Vinculum Security doctrine and the Vinculum Diplomacy handbook, each with source section and verbatim passage."
         path="/glossary"
         image="/og/glossary.jpg"
-        keywords="Vinculum Security glossary, relational security definition, vinculum, bond integrity, Vinculum Continuum, canonical terms, The Dominum Effect, Dominum Effect, Law of Sovereign Custodial Inversion, dominium and imperium, Custodial Inversion, James Wesley Ndua"
+        keywords="Vinculum Security glossary, relational security definition, vinculum, bond integrity, Vinculum Continuum, canonical terms, The Dominum Effect, The Dominium Effect, Dominum Effect, Dominium Effect, The Vinculum Codex and Compact, Law of Sovereign Custodial Inversion, dominium and imperium, Custodial Inversion, James Wesley Ndua"
         citationTitle="Vinculum Security: Doctrine Glossary"
         jsonLd={{
           "@context": "https://schema.org",
