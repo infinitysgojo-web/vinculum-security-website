@@ -406,7 +406,7 @@ In the questioning desks, every nonblank line of a custom script becomes an orde
 
 ## The Dominum Effect
 
-### The Dominum Effect (Law of Sovereign Custodial Inversion)
+### The Dominum Effect (also spelled The Dominium Effect; Law of Sovereign Custodial Inversion)
 An original doctrine of James Wesley Ndua within The Vinculum Codex and Compact. It names the point at which a settlement stops depending on the command of its makers (imperium) and is held instead by verified custody of its bonds, assets and offices (dominium), so that keeping the peace becomes the self-reinforcing course for every party. It is the positive counterpart to rupture. Phases: Fiduciary Anchor, Custodial Inversion, Self-Reinforcing Dominium. Source: https://www.vinculumsecurity.kidnexus.or.ke/glossary#dominum-effect
 
 ### Dominium and Imperium

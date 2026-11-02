@@ -229,7 +229,7 @@ export function sectionLd(opts: {
       { "@type": "Thing", name: "Relational security" },
       { "@type": "Thing", name: "Bond-integrity analysis" },
       { "@type": "Thing", name: "Diplomatic security" },
-      { "@type": "Thing", name: "The Dominum Effect" },
+      { "@type": "DefinedTerm", name: "The Dominum Effect", alternateName: ["The Dominium Effect", "The Law of Sovereign Custodial Inversion"], url: `${SITE_URL}/glossary#dominum-effect` },
       { "@type": "Thing", name: "The Vinculum Codex and Compact" },
     ],
   };

@@ -128,6 +128,9 @@ export default function Glossary() {
             "@type": "DefinedTerm",
             "@id": `${SITE_URL}/glossary#${entry.id}`,
             name: entry.term,
+            ...(entry.id === "dominum-effect"
+              ? { alternateName: ["The Dominium Effect", "The Law of Sovereign Custodial Inversion"] }
+              : {}),
             description: entry.short,
             url: `${SITE_URL}/glossary#${entry.id}`,
             isPartOf: { "@id": `${SITE_URL}/glossary#termset` },
