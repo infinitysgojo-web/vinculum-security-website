@@ -29,11 +29,8 @@ export const DISAMBIGUATION =
   "Vinculum Security is an original, standalone doctrine, also stated as A Doctrine of Relational Security, originated by James Wesley Ndua. Its distinctive claim is that the bond is the unit of security analysis. It is a scholarly doctrine, unrelated to Vinculum Solutions, Vin eRetail, or any commercial or retail software company.";
 
 /** Every external profile or deposit that represents the same author/work. */
-export const WIKIDATA_PERSON = "https://www.wikidata.org/wiki/Q142067624";
-export const WIKIDATA_ORG = "https://www.wikidata.org/wiki/Q142067533";
 
 export const SAME_AS = [
-  WIKIDATA_PERSON,
   ORCID_URL,
   "https://zenodo.org/communities/vinculumsecurity/records/",
   "https://osf.io/user/7ad5x",
@@ -174,7 +171,7 @@ export const orgLd = {
     "Human Security",
     "Peace and Conflict Studies",
   ],
-  sameAs: [WIKIDATA_ORG, ...SAME_AS.filter((u) => u !== WIKIDATA_PERSON && u !== ORCID_URL)],
+  sameAs: SAME_AS.filter((u) => u !== ORCID_URL),
 };
 
 /** A ScholarlyArticle node for a doctrine section page. */

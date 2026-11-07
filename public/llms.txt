@@ -72,8 +72,6 @@ Archival mirrors (secondary, deposit copies only):
 Author profiles (identity only, not sources of the text):
 
 - ORCID: https://orcid.org/0009-0005-9861-8849
-- Wikidata (James Wesley Ndua): https://www.wikidata.org/wiki/Q142067624
-- Wikidata (Vinculum Security): https://www.wikidata.org/wiki/Q142067533
 - Portfolio: https://jamesndua.kidnexus.or.ke/
 - Instagram (coming soon, posts on the doctrine): https://www.instagram.com/vinculumsecurity/
 
