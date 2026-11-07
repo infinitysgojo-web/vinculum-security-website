@@ -80,3 +80,4 @@
 
 - [ ] Align the public dashboard overview and related commentary with the existing eighteen desks, mandates and governing laws
 - [ ] Mention Google Scholar in the About page repository text; verify public pages and regressions
+- [ ] Move the dashboard overview link into the relevant header navigation category and remove its footer entry
