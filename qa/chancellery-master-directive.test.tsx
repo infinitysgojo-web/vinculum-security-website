@@ -277,6 +277,13 @@ describe("3.3 · pre-parse payload limits", () => {
     expect(v.verdict).toBe("invalid");
     expect(v.reason).toContain("nested deeper than 32 levels");
   });
+  test("the Mission Vault archive import checks limits before JSON.parse", () => {
+    const src = readFileSync("src/components/desk/MissionVault.tsx", "utf8");
+    const load = src.slice(src.indexOf("const load = (file: File)"));
+    const pre = load.indexOf("precheckJsonText(text, IMPORT_LIMITS)");
+    expect(pre).toBeGreaterThan(-1);
+    expect(pre).toBeLessThan(load.indexOf("JSON.parse(text)"));
+  });
 });
 
 /* ------------------------------------------------------------------ */

@@ -83,3 +83,6 @@
 - [x] Move the dashboard overview link into the relevant header navigation category and remove its footer entry
 - [x] Keep Commentary and Glossary in header navigation, remove their lower navigation entries and tidy that area
 - [x] Polish the updated navigation and footer within the existing visual style; check desktop and mobile access (1280px and 375px; no runtime errors)
+
+- [x] Security hardening: Mission Vault import pre-parse limits (enclave buffers already zeroized on every open/seal)
+- [ ] Leaked-password check: blocked, needs owner to switch it on in Auth settings

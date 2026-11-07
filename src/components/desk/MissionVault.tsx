@@ -27,6 +27,7 @@ import {
 import { refreshEnclave, useEnclave } from "@/lib/chancelleryEnclave";
 import { timingSafeEqualText } from "@/lib/chancelleryCrypto";
 import { countStrippedDeep, sanitizeDeep } from "@/lib/sanitizer";
+import { IMPORT_LIMITS, precheckJsonText } from "@/lib/payloadLimits";
 
 export { EMPTY_PROFILE };
 export type { MissionProfile, SavedTheatreSlot };
@@ -249,8 +250,15 @@ export default function MissionVault({
     const reader = new FileReader();
     reader.onload = async () => {
       let parsed: unknown;
+      const text = String(reader.result);
+      // Structural limits are read from the raw text before JSON.parse allocates anything.
+      const pre = precheckJsonText(text, IMPORT_LIMITS);
+      if (!pre.ok) {
+        toast.error(`Import rejected: the file is ${pre.reason}.`);
+        return;
+      }
       try {
-        parsed = JSON.parse(String(reader.result));
+        parsed = JSON.parse(text);
       } catch {
         toast.error("Import rejected: the file is not valid JSON.");
         return;
