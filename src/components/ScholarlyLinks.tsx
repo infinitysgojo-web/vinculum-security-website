@@ -42,15 +42,6 @@ function PortfolioMark() {
   );
 }
 
-function DataverseMark() {
-  return (
-    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-      <path d="M12 2l8.5 5v10L12 22l-8.5-5V7L12 2z" />
-      <path d="M12 2v10M3.5 7L12 12l8.5-5" />
-    </svg>
-  );
-}
-
 function HalMark() {
   return (
     <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
@@ -123,7 +114,6 @@ const LINKS = [
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
   { label: "OSF", href: "https://osf.io/user/7ad5x", Icon: OsfMark },
   { label: "Portfolio", href: "https://jamesndua.kidnexus.or.ke/", Icon: PortfolioMark },
-  { label: "Dataverse", href: "https://dataverse.harvard.edu/dataverse/vinculumsecurity/", Icon: DataverseMark },
   { label: "HAL", href: "https://cv.hal.science/james-wesley-ndua", Icon: HalMark },
   {
     label: "OpenAire",
