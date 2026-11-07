@@ -82,3 +82,4 @@
 - [ ] Mention Google Scholar in the About page repository text; verify public pages and regressions
 - [ ] Move the dashboard overview link into the relevant header navigation category and remove its footer entry
 - [ ] Keep Commentary and Glossary in header navigation, remove their lower navigation entries and tidy that area
+- [ ] Polish the updated navigation and footer within the existing visual style; check desktop and mobile access
