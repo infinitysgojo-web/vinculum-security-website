@@ -27,6 +27,7 @@ const GROUPS: Group[] = [
     label: "Practice",
     items: [
       { to: "/practice", label: "Field Handbook", note: "What a Vinculum diplomat does" },
+      { to: "/the-vinculum-dashboard", label: "The Vinculum Dashboard", note: "Eighteen desks · operational overview" },
       { to: "/cases", label: "Cases & Atlas", note: "Eight documented processes" },
       { to: "/dispatches", label: "Dispatches", note: "Notes from the field" },
     ],
@@ -40,8 +41,6 @@ const GROUPS: Group[] = [
     ],
   },
 ];
-
-const DASHBOARD = { to: "/the-vinculum-dashboard", label: "The Dashboard" };
 
 const triggerBase =
   "inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.12em] whitespace-nowrap pb-1 border-b-2 outline-none transition-colors focus-visible:text-accent";
@@ -107,16 +106,6 @@ export default function SiteHeader() {
             <kbd className="font-mono text-[10px] text-muted-foreground/80">⌘K</kbd>
           </button>
 
-          <NavLink
-            to={DASHBOARD.to}
-            className={({ isActive }) =>
-              `border px-3 py-1 text-[11px] uppercase tracking-[0.12em] font-semibold whitespace-nowrap transition-colors ${
-                isActive ? "border-accent bg-accent text-accent-foreground" : "border-brass/50 text-accent hover:border-accent"
-              }`
-            }
-          >
-            {DASHBOARD.label}
-          </NavLink>
         </nav>
 
         <div className="lg:hidden flex items-center gap-1 -mr-2">
@@ -154,12 +143,6 @@ export default function SiteHeader() {
                 ))}
               </div>
             ))}
-            <NavLink
-              to={DASHBOARD.to}
-              className="my-3 self-start border border-brass/50 px-3 py-2 text-xs uppercase tracking-[0.18em] font-semibold text-accent"
-            >
-              {DASHBOARD.label}
-            </NavLink>
           </nav>
         </div>
       )}

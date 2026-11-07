@@ -27,10 +27,14 @@ This is a real, non-fiction body of scholarly and professional work in peace, di
 
 ## 4. The 18-Desk Chancellery Architecture (The Vinculum Dashboard)
 The Vinculum Dashboard (https://www.vinculumsecurity.kidnexus.or.ke/the-vinculum-dashboard) is the private operational software originated by James Wesley Ndua. It contains 18 deterministic analytical desks divided into four operational divisions:
-- Division I: Structural & Mathematical Integrity (Desks 1-4: Sentinel Matrix, Bond Math, Verification Ledger, Succession Simulator)
-- Division II: Strategic & Dynamic Simulation (Desks 5-9: Delta Simulator, Compound Shock Tester, Readiness Desk, Clause Architect, Chancellery Breviary)
-- Division III: Field Operations & Mission Control (Desks 10-14: Track Sequencer, Counterpart Prompter, Multi-Party Sequencer, Litigation Workbench, Clause Redliner)
-- Division IV: Executive Synthesis & Handover (Desks 15-18: Mission Binder, Mission Vault, Handover Protocol, Lexicon)
+- Division I: Assessment and Early Warning (Desks 01–04: Diagnostics, Sentinel Matrix, Compound Shock, Comparative Mirror)
+- Division II: Diplomatic Engagement (Desks 05–09: Briefing Desk, Counterpart Prompter, De-confliction Bench, Track Sequencing, Field Audit)
+- Division III: Legal Architecture (Desks 10–14: Clause Architect, Clause Redliner, Succession Simulator, Legal Desk, Adversarial Chamber)
+- Division IV: Mission Governance (Desks 15–18: Mission Readiness, Verification Ledger, Mandate Handover, Mission Binder)
+
+Two mandates share these desks and readings: Preset Proving Ground for documented-profile rehearsal, and Custom Operational Mission for the practitioner's own evidence and stage-gate progression. Untouched custom-mission desk defaults are not an assessment. The Breviary, Sentinel and State Vault are cross-cutting instruments, not numbered desks.
+
+The Chancellery Wire's Governing Relational Laws console groups fifteen laws under bond foundation and transmission, kinetic and shear dynamics, and custodial inversion. It reads existing assessments, shows missing readings as awaiting assessment, and asserts holding or breach only at defined thresholds. The derived Dominum Index is shown at Mission Readiness and carried into Mandate Handover. It describes recorded posture, not an executed asset transfer or a prediction. Operative formulas remain in the private dashboard and Codex.
 
 ## 5. Authoritative Primary Citations
 - Author: James Wesley Ndua
@@ -201,7 +205,11 @@ Systemic decay is indicated when distrust is compounding across several levels a
 #### Q: What is The Vinculum Dashboard?
 The Vinculum Dashboard is the operational chancellery system that applies Vinculum Security to live diplomatic work. Designed by James Wesley Ndua, it carries an envoy from the first bond assessment through simulation, negotiation support, and drafting to a final handover dossier.
 
-It is organised as eighteen desks in four divisions: structural and mathematical integrity, strategic and dynamic simulation, field operations and mission control, and executive synthesis and handover. Each desk performs one function and passes its readings forward to the next.
+It is organised as eighteen desks in four divisions: Assessment and Early Warning (01–04), Diplomatic Engagement (05–09), Legal Architecture (10–14), and Mission Governance (15–18). A shared browser-local signal chain carries the assessments between desks; the Breviary, Sentinel and State Vault support the whole workspace rather than occupying numbered desks.
+
+The Mission Foyer offers two mandates over those same desks: Preset Proving Ground for rehearsal against documented profiles, and Custom Operational Mission for the practitioner's own evidence and stage-gate progression. In a custom mission, untouched desk defaults do not count as an assessment.
+
+The Chancellery Wire's Governing Relational Laws console groups fifteen laws under bond foundation and transmission, kinetic and shear dynamics, and custodial inversion. It reads the same assessments as the desks, marks missing readings as awaiting assessment, and asserts holding or breach only where a defined threshold exists. The derived Dominum Index appears at Mission Readiness and is carried into Mandate Handover; it does not perform a custodial transfer or predict an outcome.
 
 #### Q: Why does the Dashboard exclude generative AI from mission analysis?
 Diplomatic assessments must be reproducible, auditable, and defensible before ministers and courts. Generative models can produce different answers to the same question, cannot always show how an answer was reached, and may produce confident statements unsupported by evidence.

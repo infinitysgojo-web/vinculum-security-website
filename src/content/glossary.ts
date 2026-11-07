@@ -344,7 +344,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     id: "decay-horizon",
     term: "Decay Horizon (Stability Half-Life)",
     short: "The stability half-life of a settlement: how many days, with no remedy applied, its relational bonds take to lose half their strength, given the unmitigated shock exposure and the rupture index on record. Bonds never decay below the statutory 1.0 sovereign baseline. It is a rule applied to the inputs, not a forecast of events.",
-    source: "The Vinculum Dashboard · Desk 17 instrument, Succession Simulator (Statutorily Protected Work)",
+    source: "The Vinculum Dashboard · Desk 12 instrument, Succession Simulator (Statutorily Protected Work)",
     quote: "A settlement left untended does not hold its height; it settles toward the floor at a rate set by its unmitigated exposure and its rupture, and the half-life names how long the remedy may wait.",
     category: "method",
   },

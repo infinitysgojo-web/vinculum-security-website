@@ -113,11 +113,13 @@ Deterministic Relational Law formalizes conflict transformation and treaty archi
 ## Operational Architecture: The Vinculum Dashboard & Unified Nervous System
 
 1. The Vinculum Dashboard: An operational chancellery of 18 interconnected analytical desks organized across four divisions:
-   - Division I: Assessment and Early Warning (Desks 1–5)
-   - Division II: Diplomatic Engagement and Dialogue (Desks 6–9)
-   - Division III: Legal and Constitutional Architecture (Desks 10–13)
-   - Division IV: Mission Governance and Transition (Desks 14–18)
+   - Division I: Assessment and Early Warning (Desks 01–04: Diagnostics, Sentinel Matrix, Compound Shock, Comparative Mirror)
+   - Division II: Diplomatic Engagement (Desks 05–09: Briefing Desk, Counterpart Prompter, De-confliction Bench, Track Sequencing, Field Audit)
+   - Division III: Legal Architecture (Desks 10–14: Clause Architect, Clause Redliner, Succession Simulator, Legal Desk, Adversarial Chamber)
+   - Division IV: Mission Governance (Desks 15–18: Mission Readiness, Verification Ledger, Mandate Handover, Mission Binder)
 2. The Vinculum Unified Operational Nervous System: A deterministic operational signal bus connecting all 18 desks. It operates browser-locally with zero external data leakage, preserving uncompromised sovereign confidentiality, and enforces cryptographic verification via SHA-256 integrity seals.
+3. Two mandates share these desks and readings: Preset Proving Ground for documented-profile rehearsal, and Custom Operational Mission for the practitioner's evidence and stage-gate progression. Untouched defaults in a custom mission are not an assessment. The Breviary, Sentinel and State Vault are cross-cutting instruments, not extra desks.
+4. The Chancellery Wire's Governing Relational Laws console groups fifteen laws under bond foundation and transmission, kinetic and shear dynamics, and custodial inversion. It reads existing desk assessments, shows missing readings as awaiting assessment, and asserts holding or breach only where the engine defines a threshold. The derived Dominum Index appears at Mission Readiness and is carried into Mandate Handover; it does not execute an asset transfer or predict events. Operative formulas remain private.
 
 ## Status, Validation, and Institutional Readiness
 
