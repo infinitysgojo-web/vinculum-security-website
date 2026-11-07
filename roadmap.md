@@ -77,3 +77,6 @@
 - [x] Refresh the author answer and outdated public wording (Commentary, FAQ, About, AI summaries)
 
 - [x] Carry strengthened Dominum/Codex SEO wording across all public text and metadata
+
+- [ ] Align the public dashboard overview and related commentary with the existing eighteen desks, mandates and governing laws
+- [ ] Mention Google Scholar in the About page repository text; verify public pages and regressions
