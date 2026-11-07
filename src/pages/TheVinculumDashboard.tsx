@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
-import { SITE_URL, personLd, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
+import { SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
@@ -13,56 +13,56 @@ import { GLOSSARY } from "@/content/glossary";
 const DIVISIONS = [
   {
     num: "Division I",
-    title: "Assessment & Early Warning",
+    title: "Assessment and Early Warning",
     desks: "Desks 01 – 04",
     summary:
       "Mathematical diagnosis of systemic bond integrity, shock simulation, and empirical case matching.",
     items: [
-      { id: "01", name: "Vinculum-Bond-Diagnostic", role: "Continuous 4D vector profiling across Interpersonal, Communal, Intergenerational, and Institutional domains; Liebig capacity identification." },
+      { id: "01", name: "Diagnostics", role: "Score the interpersonal, communal, intergenerational and institutional-relational bonds, identify the weakest bond, and match the profile against documented cases." },
       { id: "02", name: "The Sentinel Matrix", role: "Early warning tripwire scoring across twenty-four empirical indicators under deteriorating, static, or stabilizing trends." },
       { id: "03", name: "Compound Shock Tester", role: "Stress-testing systemic resiliency against simultaneous economic, political, environmental, or succession crises." },
-      { id: "04", name: "Comparative Mirror", role: "Distance-normalized pattern matching against historical peace accords to anticipate recurring systemic failure modes." },
+      { id: "04", name: "Comparative Mirror", role: "Compare two or three documented theatres against the same relational rubric; historical similarities are aids to analysis, not predictions." },
     ],
   },
   {
     num: "Division II",
-    title: "Diplomatic Engagement & Counterpart Relations",
-    desks: "Desks 05 – 08",
+    title: "Diplomatic Engagement",
+    desks: "Desks 05 – 09",
     summary:
       "Relational cartography, multilateral power-balancing, and multi-track diplomatic synchronization.",
     items: [
-      { id: "05", name: "Relational Atlas", role: "Topological mapping of interpersonal ties, grievances, and communal leverage across high-stakes negotiating parties." },
-      { id: "06", name: "Multi-Party Sequencer", role: "Optimizing the sequence of bilateral and multilateral consultations to prevent early-stage coalition fracture." },
-      { id: "07", name: "Counterpart Prompter & Cable Composer", role: "Structured tactical briefing generators for mediation leads and front-line diplomatic envoys." },
-      { id: "08", name: "Kinematic Track Sequencer", role: "Synchronizing formal Track-I state diplomacy with Track-II and Track-III communal peacebuilding to enforce kinematic tolerance." },
+      { id: "05", name: "Briefing Desk", role: "Assemble a chancellery memorandum from documented case material, field scripts and mission protocols." },
+      { id: "06", name: "Counterpart Prompter", role: "Work through meeting phases with ordered examination questions, custom wording and recorded counterpart tactics." },
+      { id: "07", name: "De-confliction Bench", role: "Seat delegations and examine friction across bilateral pairs to support multi-party sequencing." },
+      { id: "08", name: "Track Sequencing", role: "Read the gap between Track I formal diplomacy and Track II communal reconciliation before elite alignment obscures it." },
+      { id: "09", name: "Field Audit", role: "Review affected stakeholders and protection safeguards before treating the assessment as ready for use." },
     ],
   },
   {
     num: "Division III",
-    title: "Legal & Structural Architecture",
-    desks: "Desks 09 – 12",
+    title: "Legal Architecture",
+    desks: "Desks 10 – 14",
     summary:
       "Treaty engineering, non-fungible covenant drafting, and succession resistance verification.",
     items: [
-      { id: "09", name: "Litigation Workbench", role: "Translating relational obligations into binding legal posture, jurisdictional enforcement, and defensive arbitration tactics." },
       { id: "10", name: "Clause Architect", role: "Drafting non-fungible peace covenants tied directly to physical bond-integrity conditions rather than textual nominalism." },
       { id: "11", name: "Clause Redliner", role: "Adversarial audit of counterpart treaty drafts to expose hidden opt-outs, bad-faith off-ramps, and linguistic mirages." },
       { id: "12", name: "Succession Simulator", role: "Mathematical verification of whether an accord survives the departure, death, or electoral defeat of its original signatories." },
+      { id: "13", name: "Legal Desk", role: "Prepare a matter checklist using the doctrine's evidentiary and continuity rules, alongside dispute-forum assessment." },
+      { id: "14", name: "Adversarial Chamber", role: "Rehearse the recorded objections, answers and unresolved challenges from the doctrine's adversarial review." },
     ],
   },
   {
     num: "Division IV",
-    title: "Mission Governance & Verification",
-    desks: "Desks 13 – 18",
+    title: "Mission Governance",
+    desks: "Desks 15 – 18",
     summary:
       "Stage-gate mission readiness, dynamic dossier compilation, and sovereign handover protocols.",
     items: [
-      { id: "13", name: "Readiness Desk", role: "Enforcing strict stage gates—no diplomatic delegation advances to formal signing without verified relational thresholds." },
-      { id: "14", name: "Mission Binder", role: "Dynamic aggregation of all operational desk outputs into a unified, cryptographically sealed mission file." },
-      { id: "15", name: "Handover Protocol", role: "Structured transition workflows for sovereign chanceries, successor envoys, and international monitoring bodies." },
+      { id: "15", name: "Mission Readiness", role: "Check mission protection and verification gates and read the Dominum Index when its underlying assessments are available." },
       { id: "16", name: "Verification Ledger", role: "Continuous compliance tracking against signed covenants with automated breach-detection triggers." },
-      { id: "17", name: "Chancellery Breviary", role: "Rapid institutional rulebook and doctrinal reference for tactical field maneuvers under extreme pressure." },
-      { id: "18", name: "Mission State Vault", role: "Cryptographic, tamper-evident archival custody of mission parameters under zero-cloud sovereign security." },
+      { id: "17", name: "Mandate Handover", role: "Test local rooting before external departure, draft the handover instrument, and carry the shared Dominum reading into its telemetry." },
+      { id: "18", name: "Mission Binder", role: "Compile documents added from the desks into a numbered master briefing and retain them through the browser-local mission archive." },
     ],
   },
 ];
@@ -76,7 +76,7 @@ const dashboardLd = {
   applicationCategory: "Diplomatic Governance Software / Jurisprudential Decision Engine",
   operatingSystem: "Web-native / Browser-local sovereign runtime",
   description:
-    "An 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits. Governed by Deterministic Relational Law and powered by The Vinculum Unified Operational Nervous System.",
+    "An 18-desk browser-local chancellery for mediation, treaty drafting and relational security audits, with Preset Proving Ground and Custom Operational Mission mandates, governing relational laws and the Dominum Index.",
   alternateName: ["Vinculum Dashboard", "The Vinculum Security Dashboard", "Vinculum Diplomacy Dashboard"],
   disambiguatingDescription:
     "The diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya. Protected by statutory copyright. Not to be confused with Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software.",
@@ -90,7 +90,7 @@ const dashboardLd = {
     "Copyright © James Wesley Ndua. All Statutory Rights Reserved. Formally registered under statutory copyright law. Private, restricted-access software.",
 };
 
-const VOCAB = GLOSSARY.filter((g) => g.category === "field" || g.id === "liebig-relational-capacity" || g.id === "deterministic-relational-law");
+const VOCAB = GLOSSARY.filter((g) => g.category === "field" || ["liebig-relational-capacity", "deterministic-relational-law", "dominum-effect", "dominium-imperium", "custodial-inversion"].includes(g.id));
 
 const vocabLd = {
   "@context": "https://schema.org",
@@ -111,9 +111,9 @@ export default function TheVinculumDashboard() {
     <>
       <SEO
         title="The Vinculum Dashboard"
-        description="The 18-desk operational practitioner chancellery for high-stakes mediation, treaty drafting, and relational security audits. Powered by Deterministic Relational Law under zero-cloud sovereign integrity."
+        description="The private 18-desk chancellery: assessment, diplomatic engagement, legal architecture and mission governance, with two mandates, governing relational laws and the Dominum Index."
         path="/the-vinculum-dashboard"
-        keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, diplomatic mediation software, statutory copyright, peace treaty drafting, sovereign diplomacy"
+        keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, The Dominum Effect, Sovereign Custodial Inversion, Preset Proving Ground, Custom Operational Mission, diplomatic mediation software, statutory copyright, peace treaty drafting, sovereign diplomacy"
         scholarly
         citationTitle="The Vinculum Dashboard: Operational Architecture of Deterministic Relational Law"
         jsonLd={[dashboardLd, vocabLd]}
@@ -196,6 +196,22 @@ export default function TheVinculumDashboard() {
           ))}
         </div>
 
+        <FadeIn className="max-w-3xl mb-16">
+          <p className="eyebrow">Two Mandates, One Chancellery</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/85 space-y-4">
+            <p>
+              The Mission Foyer opens either the <strong>Preset Proving Ground</strong>, for rehearsal against documented settlement profiles,
+              or a <strong>Custom Operational Mission</strong>, for the practitioner's own stakeholder evidence, decisions and stage-gate progression.
+              Both mandates use the same eighteen desks and the same shared readings. In a custom mission, a desk's starting values are not treated as an assessment until the practitioner works that desk.
+            </p>
+            <p>
+              The Chancellery Breviary, Sentinel and State Vault support the whole workspace; they are not extra numbered desks.
+              Mission notes, rehearsal branches and the decision record remain browser-local.
+            </p>
+          </div>
+        </FadeIn>
+
         <NumeralDivider n="III" label="Sovereign Architecture" />
 
         {/* Section 3: Sovereign Architecture */}
@@ -206,19 +222,42 @@ export default function TheVinculumDashboard() {
             <p>
               High-stakes diplomatic negotiations cannot occur within centralized surveillance environments or third-party
               commercial clouds. The Vinculum Dashboard is driven by <strong>The Vinculum Unified Operational Nervous System</strong> (Statutorily Registered &amp; Protected),
-              operating under strict sovereign air-gap principles:
+              keeping working mission material browser-local. This is a confidentiality design, not a claim that the website or sign-in requires no network connection:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-sm text-foreground/80">
               <li>
-                <strong>Browser-Local State Execution:</strong> All mission parameters, counterpart vulnerability ratings, and tactical cables reside strictly within the practitioner's browser sandbox, never leaking to external databases.
+                <strong>Browser-Local Working Material:</strong> Mission parameters, counterpart assessments and tactical cables are processed and retained on the practitioner's device. The practitioner remains responsible for device security and any material deliberately exported or shared.
               </li>
               <li>
-                <strong>Cryptographic Integrity Seals:</strong> Every generated mission dossier, treaty redline, and readiness certification is dynamically stamped with a SHA-256 state seal for tamper-evident proof of audit.
+                <strong>Bounded Integrity Verification:</strong> The Handover Seal hashes a canonical mission record using SHA-256. Sealed local archives support tamper-evident custody; a seal does not establish the truth of the input evidence or automatic legal admissibility.
               </li>
               <li>
                 <strong>Deterministic Zero-AI Guarantee:</strong> The mathematical engine executes strictly reproducible formulas without probabilistic hallucinations, black-box guessing, or algorithmic manipulation.
               </li>
             </ul>
+          </div>
+        </FadeIn>
+
+        <FadeIn className="max-w-3xl my-16">
+          <p className="eyebrow">Governing Relational Laws</p>
+          <GoldRule className="mt-4 mb-6" />
+          <div className="prose-body text-foreground/85 space-y-4">
+            <p>
+              The Chancellery Wire brings fifteen governing relational laws into one console, grouped under bond foundation and transmission,
+              kinetic and shear dynamics, and custodial inversion. It relates the weakest bond, contagion, entropy and decay to rupture,
+              compound stress, track divergence and the Elite-Pact Mirage, then to succession, conditional escrow, resource parity, forum enforceability and handover integrity.
+            </p>
+            <p>
+              These are views of the same desk readings, not separate assessments. A holding or breach status appears only where the engine defines a threshold;
+              otherwise the console shows the available reading or marks the assessment as awaiting its desk.
+            </p>
+            <p>
+              <Link to="/glossary#dominum-effect" className="text-primary underline underline-offset-4">The Dominum Effect</Link>,
+              formally the Law of Sovereign Custodial Inversion, supplies the positive custodial condition those safeguards work toward.
+              Its derived <strong>Dominum Index</strong> is read at Mission Readiness and carried into Mandate Handover from the same bond,
+              escrow, succession and rupture assessments. It describes the recorded posture; it does not execute an asset transfer or predict events.
+              The operative formulas remain in the private dashboard and the Codex.
+            </p>
           </div>
         </FadeIn>
 
