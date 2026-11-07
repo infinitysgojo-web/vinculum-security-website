@@ -97,12 +97,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
  </url>
- <url>
-    <loc>https://www.vinculumsecurity.kidnexus.or.ke/dispatches</loc>
-    <lastmod>2026-10-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
   <url>
     <loc>https://www.vinculumsecurity.kidnexus.or.ke/cases/northern-ireland</loc>
     <changefreq>monthly</changefreq>

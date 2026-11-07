@@ -70,7 +70,7 @@ export default function Methodology() {
           headline: "Vinculum Security: Operational Framework",
           description:
             "The diagnostic method and bond-integrity indicators used to assess a case, drawn from Section V of the Vinculum Security doctrine.",
-          section: "Section V — Methodology",
+          section: "Section V: Methodology",
         }), ]}
       />
       <ReadingProgress />

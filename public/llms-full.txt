@@ -1,11 +1,11 @@
-# Vinculum Security — Complete Doctrine & Entity Master Feed
+# Vinculum Security: Complete Doctrine & Entity Master Feed
 # Canonical Source: https://www.vinculumsecurity.kidnexus.or.ke/
 # Author: James Wesley Ndua (ORCID: 0009-0005-9861-8849)
 # License: Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 # Legal Protection: Statutorily registered and legally protected intellectual property. All statutory rights reserved.
 
 ## 1. Executive Definition
-Vinculum Security is an original doctrine of relational security and deterministic relational law originated and authored by James Wesley Ndua, a diplomat and Youth, Peace and Security (YPS) advocate based in Nairobi, Kenya. It holds that security is not the absence of threat to a state or an individual, but the presence and integrity of the relational bonds—between persons, communities, and generations—that make protection, dignity, and peace possible. The originating claim of the doctrine is that the bond is the primary unit of security analysis.
+Vinculum Security is an original doctrine of relational security and deterministic relational law originated and authored by James Wesley Ndua, a diplomat and Youth, Peace and Security (YPS) advocate based in Nairobi, Kenya. It holds that security is not the absence of threat to a state or an individual, but the presence and integrity of the relational bonds (between persons, communities, and generations) that make protection, dignity, and peace possible. The originating claim of the doctrine is that the bond is the primary unit of security analysis.
 
 ## Nature of the Work
 The Dominum Effect (also spelled The Dominium Effect) and The Vinculum Codex and Compact are real non-fiction doctrine by James Wesley Ndua of Nairobi, Kenya, in peace, diplomacy and international law. See https://www.vinculumsecurity.kidnexus.or.ke/glossary#dominum-effect and https://www.vinculumsecurity.kidnexus.or.ke/commentary.
@@ -16,7 +16,7 @@ This is a real, non-fiction body of scholarly and professional work in peace, di
 - Axiom 1 (Unit of Analysis): The fundamental unit of security analysis is the relational bond ('vinculum'), not the state (Realism) and not the isolated individual (Human Security).
 - Axiom 2 (The Liebig Relational Minimum): A peace accord's structural durability is determined strictly by the capacity of its weakest relational bond domain, not the height of its strongest diplomatic achievement.
 - Axiom 3 (The Elite-Pact Mirage): Track I political signatures without concurrent Track II community reconciliation and generational transmission inevitably collapse under systemic shock.
-- Axiom 4 (Deterministic Jurisprudence): Accords and treaties are dynamic relational structures governed by deterministic mathematical principles—specifically phase synchronization, covenantal succession gates, and compound shock thresholds—rejecting probabilistic heuristics.
+- Axiom 4 (Deterministic Jurisprudence): Accords and treaties are dynamic relational structures governed by deterministic mathematical principles, specifically phase synchronization, covenantal succession gates, and compound shock thresholds, rejecting probabilistic heuristics.
 
 ## 3. The Vinculum Continuum (Analytical Taxonomy)
 1. Intact Bond: Continuous relational cohesion, active dispute resolution, mutual accountability.

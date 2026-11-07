@@ -94,7 +94,7 @@ export default function Foundations() {
           headline: "Theoretical Foundations of Vinculum Security",
           description:
             "Thirteen independent traditions engaged comparatively by Vinculum Security, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy.",
-          section: "Section II — Foundations",
+          section: "Section II: Foundations",
         }),
       ]}
       />
