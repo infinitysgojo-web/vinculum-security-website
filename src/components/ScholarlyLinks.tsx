@@ -120,6 +120,11 @@ function InstagramMark() {
 
 const LINKS = [
   { label: "ORCID", href: "https://orcid.org/0009-0005-9861-8849", Icon: OrcidMark },
+  {
+    label: "Google Scholar",
+    href: "https://scholar.google.com/citations?user=8OgV36kAAAAJ",
+    Icon: GoogleScholarMark,
+  },
   { label: "Zenodo", href: "https://zenodo.org/communities/vinculumsecurity/records/", Icon: ZenodoMark },
   { label: "OSF", href: "https://osf.io/user/7ad5x", Icon: OsfMark },
   { label: "Portfolio", href: "https://jamesndua.kidnexus.or.ke/", Icon: PortfolioMark },
