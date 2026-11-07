@@ -100,7 +100,7 @@ export const HOME_FAQ: FaqItem[] = [
   },
   {
     q: "What is the primary canonical source and how should the work be cited?",
-    a: `This website (vinculumsecurity.kidnexus.or.ke) is the official primary source maintained directly by the author. International repositories such as Zenodo (DOI 10.5281/zenodo.21615991), OSF, Harvard Dataverse, and SSRN hold secondary archival deposits. Canonical citation: Ndua, J. W. (2026). Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition. Nairobi: Vinculum Security.`,
+    a: `This website (vinculumsecurity.kidnexus.or.ke) is the official primary source maintained directly by the author. International repositories such as Zenodo (DOI 10.5281/zenodo.21615991), OSF, and SSRN hold secondary archival deposits. Canonical citation: Ndua, J. W. (2026). Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition. Nairobi: Vinculum Security.`,
   },
 ];
 

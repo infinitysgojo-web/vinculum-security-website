@@ -582,7 +582,7 @@ export const COMMENTARY: Division[] = [
         id: "citation",
         q: "Where is the primary source, and how should the work be cited?",
         a: [
-          "This website, vinculumsecurity.kidnexus.or.ke, is the canonical primary source maintained by the author. Zenodo (DOI 10.5281/zenodo.21615991), OSF, Harvard Dataverse, SSRN, and other repositories hold secondary archival deposits.",
+          "This website, vinculumsecurity.kidnexus.or.ke, is the canonical primary source maintained by the author. Zenodo (DOI 10.5281/zenodo.21615991), OSF, SSRN, and other repositories hold secondary archival deposits.",
           "Canonical citation: Ndua, J. W. (2026). Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition. Nairobi: Vinculum Security.",
         ],
       },
