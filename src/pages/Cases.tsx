@@ -91,7 +91,7 @@ export default function Cases() {
             headline: "Vinculum Security: Applied Case Engagement",
             description:
               "Eight documented processes (Northern Ireland, Colombia, Cambodia, Liberia, Rwanda, Kenya, South Africa, and Tuvalu & Kiribati) scored across the four bond domains of the Vinculum Continuum.",
-            section: "Section VII — Cases",
+            section: "Section VII: Cases",
           }),
           {
             "@context": "https://schema.org",

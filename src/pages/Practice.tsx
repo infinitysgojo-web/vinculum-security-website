@@ -94,7 +94,7 @@ export default function Practice() {
             headline: "Vinculum Diplomacy: The Companion Handbook",
             description:
               "The applied diplomatic practice derived from the Vinculum Security doctrine: foundations, the core behavioral shift, and the four practice principles.",
-            section: "Companion Handbook — Practice",
+            section: "Companion Handbook: Practice",
           }),
           lexiconLd,
         ]}

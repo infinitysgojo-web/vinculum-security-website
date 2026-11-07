@@ -96,7 +96,7 @@ export default function Doctrine() {
             headline: "The Vinculum Security Doctrine",
             description:
               "Section III of Vinculum Security: canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum.",
-            section: "Section III — The Doctrine",
+            section: "Section III: The Doctrine",
           }),
           adversarialLd,
         ]}

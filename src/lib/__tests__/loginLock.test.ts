@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "bun:test";
 const store = new Map<string, string>();
-(globalThis as any).localStorage = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => store.set(k, v), removeItem: (k: string) => store.delete(k) };
+(globalThis as unknown as { localStorage: unknown }).localStorage = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => store.set(k, v), removeItem: (k: string) => store.delete(k) };
 const { registerLockout, lockSecondsLeft, clearLockout, hasOfflineCredential, verifyOffline } = await import("../offlineAuth");
 describe("sign-in hold", () => {
   beforeEach(() => store.clear());
