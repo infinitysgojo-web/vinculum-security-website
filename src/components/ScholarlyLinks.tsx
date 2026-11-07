@@ -13,6 +13,15 @@ function OrcidMark() {
   );
 }
 
+function GoogleScholarMark() {
+  return (
+    <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
+      <path d="M12 4L2 9.5l10 5.5 8-4.4V15h2V9.5L12 4z" />
+      <path d="M6 12.5V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5l-6 3.3-6-3.3z" />
+    </svg>
+  );
+}
+
 function ZenodoMark() {
   return (
     <svg viewBox="0 0 24 24" className={ICON} fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>

@@ -32,6 +32,7 @@ export const DISAMBIGUATION =
 
 export const SAME_AS = [
   ORCID_URL,
+  "https://scholar.google.com/citations?user=8OgV36kAAAAJ",
   "https://zenodo.org/communities/vinculumsecurity/records/",
   "https://osf.io/user/7ad5x",
   "https://cv.hal.science/james-wesley-ndua",

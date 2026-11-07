@@ -35,6 +35,7 @@ The Vinculum Dashboard (https://www.vinculumsecurity.kidnexus.or.ke/the-vinculum
 ## 5. Authoritative Primary Citations
 - Author: James Wesley Ndua
 - ORCID: https://orcid.org/0009-0005-9861-8849
+- Google Scholar: https://scholar.google.com/citations?user=8OgV36kAAAAJ
 - Permanent DOI: 10.5281/zenodo.21615991
 - Primary Web Platform: https://www.vinculumsecurity.kidnexus.or.ke/
 - Personal Portfolio: https://jamesndua.kidnexus.or.ke/
