@@ -305,8 +305,8 @@ export default function SuccessionSimulator() {
       L.push(canon.trap ? `  [TERMINAL SUCCESSION TRAP ENGAGED] S% is below the ${SUCCESSION_TRAP.toFixed(1)}% gate; Desk 15 clearance is locked.` : `  Gate passed: S% is at or above ${SUCCESSION_TRAP.toFixed(1)}%.`);
     }
     if (decay) {
-      L.push("", `DECAY HORIZON AND STABILITY HALF-LIFE: lambda = (U + R) / 2000 = ${decay.lambda.toFixed(4)}; t1/2 = ln 2 / lambda = ${decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "no modelled decay"}`);
-      decay.bonds.forEach((b) => L.push(`  ${b.name}: ${b.now.toFixed(1)} -> ${b.then.toFixed(2)} at ${decay.days} days (B(t) = max(1.0, B0 x e^(-lambda t)))`));
+      L.push("", `DECAY HORIZON AND STABILITY HALF-LIFE: λ = (U + R) ÷ 2000 = ${decay.lambda.toFixed(4)}; t½ = ln 2 ÷ λ = ${decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "∞ (λ = 0; no modelled decay)"}`);
+      decay.bonds.forEach((b) => L.push(`  ${b.name}: ${b.now.toFixed(1)} → ${b.then.toFixed(2)} at ${decay.days} days (B(t) = max(1.0, B₀ × e^(−λt)))`));
       L.push(`  Mean bond loss at ${decay.days} days = ${decay.meanLoss.toFixed(2)}`);
       if (fracture) L.push(`CRITICAL FRACTURE WINDOW: t_f = ln(mean B0 / ${FRACTURE_LEVEL.toFixed(1)}) / lambda = ${fracture.days === null ? "no modelled decay" : `${fracture.days} days (${fracture.months} months)`}; band ${fracture.severity.toUpperCase()}`);
     }
@@ -568,7 +568,7 @@ export default function SuccessionSimulator() {
                   <summary className="cursor-pointer min-h-9 flex items-center text-primary">Formulae</summary>
                   <ul className="mt-1 space-y-1 font-mono text-muted-foreground [overflow-wrap:anywhere]">
                     <li>λ = (U_unmitigated + R_rupture) ÷ 2000 = ({r.exposure.toFixed(1)} + {linked ? signals.rupture ?? 0 : 0}) ÷ 2000 = {decay.lambda.toFixed(4)}</li>
-                    <li>t½ = ln(2) ÷ λ = {decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "undefined (λ = 0)"}</li>
+                    <li>t½ = ln(2) ÷ λ = {decay.halfLifeDays ? `${decay.halfLifeDays.toFixed(1)} days` : "∞ (λ = 0; no modelled decay)"}</li>
                     <li>B(t) = max(1.0, B₀ · e^(−λt))</li>
                   </ul>
                   <p className="mt-1 text-muted-foreground">A rule applied to the inputs, not a forecast. Bonds never decay below the statutory 1.0 sovereign baseline.</p>
