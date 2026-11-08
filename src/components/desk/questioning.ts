@@ -22,10 +22,30 @@ export type Seat = {
   cQ: [string, string, string, string];
   phase: number;
   questionIndex: number;
+  stall: StallKind;
 };
 
 export function newSeat(key: string, cp = 0): Seat {
-  return { key, cp, customOn: false, cLabel: "", cCaution: "", cPivot: "", cQ: ["", "", "", ""], phase: 0, questionIndex: 0 };
+  return { key, cp, customOn: false, cLabel: "", cCaution: "", cPivot: "", cQ: ["", "", "", ""], phase: 0, questionIndex: 0, stall: "none" };
+}
+
+/** Operator-selected conditions reuse the existing examination sequence; no answer inference. */
+export const STALL_CONDITIONS = [
+  { id: "evidence", label: "Evidence not supplied", phase: 1, index: 1 },
+  { id: "mandate", label: "Mandate disputed", phase: 0, index: 1 },
+  { id: "ownership", label: "Obligation owner or date unclear", phase: 2, index: 1 },
+  { id: "verification", label: "Verification unresolved", phase: 2, index: 2 },
+  { id: "unanswered", label: "Answer withheld or disputed", phase: 3, index: 1 },
+] as const;
+
+export type StallKind = "none" | typeof STALL_CONDITIONS[number]["id"];
+
+export function stallResponse(kind: StallKind, defaults: readonly (readonly string[])[], pivot: string) {
+  const condition = STALL_CONDITIONS.find((entry) => entry.id === kind);
+  if (!condition) return undefined;
+  const question = defaults[condition.phase]?.[condition.index];
+  if (!question) return undefined;
+  return { question, pivot, phase: condition.phase, index: condition.index };
 }
 
 /** Update one seat; every other seat keeps its progress exactly. */
