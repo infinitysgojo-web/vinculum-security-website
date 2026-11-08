@@ -116,6 +116,7 @@ export const personLd = {
     "Kinematic Track Synchronization",
     "Succession Durability Gates",
     "The Sentinel Matrix",
+    "The Eye of Humanity (Sentinel Matrix, Desk 02)",
     "Rupture Index",
     "Structural Facade Syndrome",
     "Succession Trap",
