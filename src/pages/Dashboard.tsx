@@ -458,15 +458,14 @@ export default function Dashboard() {
     if (customRef.current && DESKS.some((d) => d.id === owner) && !engagedRef.current.has(owner)) return;
     // Every publication is validated at the bus boundary; refused ones never reach a desk.
     const patch = guardSignalPatch(desk, raw);
-    if (!patch) return;
+    if (!patch || !Object.keys(patch).length) return;
     const moved = changedKeys(busRef.current, patch);
     if (moved.length) {
       busRef.current = { ...busRef.current, ...patch };
       recordPublication(desk, moved);
     }
     setSignals((prev) => {
-      const next = { ...prev, ...patch };
-      return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
+      return changedKeys(prev, patch).length ? { ...prev, ...patch } : prev;
     });
   }, []);
   // The effective state every desk reads: raw publications with Sovereign inscriptions applied.
@@ -867,7 +866,7 @@ export default function Dashboard() {
   customRef.current = activeWs?.mode === "custom";
   useEffect(() => {
     engagedRef.current = new Set();
-  }, [activeId]);
+  }, [activeId, activeWs?.mode]);
   const activeRef = useRef<Workspace | undefined>(activeWs);
   activeRef.current = activeWs;
   // Bumped whenever a workspace is opened, so every desk remounts on that workspace's state.

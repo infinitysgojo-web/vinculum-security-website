@@ -51,6 +51,7 @@ type EvictionDeps = {
   wrote: () => boolean;
   clear: () => Promise<boolean>;
   ms: number;
+  now?: () => number;
 };
 
 /**
@@ -62,13 +63,16 @@ type EvictionDeps = {
 export function createClipboardEviction(d: EvictionDeps) {
   let t: number | null = null;
   let pending = false;
+  let awayAt: number | null = null;
+  const now = d.now ?? Date.now;
   const disarm = () => {
     if (t !== null) d.clearTimer(t);
     t = null;
   };
   return {
     onBlur() {
-      if (!d.wrote()) return;
+      if (!d.wrote() || awayAt !== null) return;
+      awayAt = now();
       disarm();
       t = d.setTimer(() => {
         t = null;
@@ -79,12 +83,14 @@ export function createClipboardEviction(d: EvictionDeps) {
     },
     onFocus() {
       disarm();
-      if (pending) {
+      const overdue = awayAt !== null && now() - awayAt >= d.ms;
+      awayAt = null;
+      if (pending || overdue) {
         pending = false;
         void d.clear();
       }
     },
-    dispose: disarm,
+    dispose() { disarm(); awayAt = null; pending = false; },
     state: () => ({ armed: t !== null, pending }),
   };
 }

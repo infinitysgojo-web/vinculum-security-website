@@ -8,6 +8,7 @@
  * signal values, and holds nothing past the tab: a reload or panic purge starts clean.
  */
 import { useSyncExternalStore } from "react";
+import { signalValueKey } from "@/lib/signalValues";
 import { LEGITIMACY_PENALTY } from "./instruments";
 import { inscribedShockDelta, round1, type BondVector, type CustomCovenant, type CustomShock, type Signals } from "./engine";
 
@@ -26,7 +27,7 @@ let state: MonitorState = { changedAt: {}, changedBy: {}, count: 0 };
 let seq = 0;
 const listeners = new Set<() => void>();
 
-const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
+const same = (a: unknown, b: unknown) => signalValueKey(a) === signalValueKey(b);
 
 /**
  * Keys of the patch whose value differs from the current bus state. Pure: used by the

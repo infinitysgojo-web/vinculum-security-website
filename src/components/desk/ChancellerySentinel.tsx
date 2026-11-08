@@ -3,9 +3,10 @@ import { ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import { inspectElement, WATCHED_SELECTOR, type CanaryFinding } from "@/lib/domCanary";
 import { appWroteClipboard, clearAppClipboard, createClipboardEviction } from "@/lib/clipboardGuard";
+import { idleDeadlineExpired } from "@/lib/sentinelDeadline";
 
 /** Input that counts as practitioner activity for the inactivity lock. */
-const ACTIVITY = ["mousemove", "mousedown", "keydown", "touchstart", "wheel", "scroll", "visibilitychange"] as const;
+const ACTIVITY = ["mousemove", "mousedown", "keydown", "touchstart", "wheel", "scroll"] as const;
 /** Three Escape presses inside this window trigger the panic purge. */
 export const TRIPLE_ESCAPE_WINDOW_MS = 600;
 /** Away from the window this long with app-copied text on the clipboard, and it is evicted. */
@@ -72,20 +73,32 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
   useEffect(() => {
     if (locked || idleMs === null || !(idleMs > 0)) return;
     let t: number | null = null;
-    const reset = () => {
-      armedAt.current = Date.now();
-      if (t) window.clearTimeout(t);
-      t = window.setTimeout(() => {
-        // Overwrite anything this app copied before the workspace seals or signs out.
-        void clearAppClipboard();
-        idleCb.current();
-      }, idleMs);
+    let expired = false;
+    const checkExpiry = () => {
+      if (expired) return true;
+      if (armedAt.current === null || !idleDeadlineExpired(armedAt.current, idleMs, Date.now())) return false;
+      expired = true;
+      if (t !== null) window.clearTimeout(t);
+      void clearAppClipboard();
+      idleCb.current();
+      return true;
     };
+    const reset = () => {
+      if (checkExpiry() || document.visibilityState === "hidden") return;
+      armedAt.current = Date.now();
+      if (t !== null) window.clearTimeout(t);
+      t = window.setTimeout(checkExpiry, idleMs);
+    };
+    const onVisible = () => { if (document.visibilityState !== "hidden") checkExpiry(); };
     ACTIVITY.forEach((e) => window.addEventListener(e, reset, { passive: true }));
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", checkExpiry);
     reset();
     return () => {
       ACTIVITY.forEach((e) => window.removeEventListener(e, reset));
-      if (t) window.clearTimeout(t);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", checkExpiry);
+      if (t !== null) window.clearTimeout(t);
       armedAt.current = null;
     };
   }, [idleMs, locked]);
@@ -110,14 +123,18 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
       wrote: appWroteClipboard,
       clear: clearAppClipboard,
       ms: CLIPBOARD_EVICT_MS,
+      now: Date.now,
     });
     const onBlur = () => ev.onBlur();
     const onFocus = () => ev.onFocus();
+    const onVisibility = () => document.visibilityState === "hidden" ? ev.onBlur() : ev.onFocus();
     window.addEventListener("blur", onBlur);
     window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
       window.removeEventListener("blur", onBlur);
       window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
       ev.dispose();
     };
   }, []);
@@ -174,7 +191,7 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
     const observer = new MutationObserver((mutations) => {
       const out: CanaryFinding[] = [];
       for (const m of mutations) {
-        if (m.type === "attributes" && m.target instanceof Element) {
+        if (m.type === "attributes" && m.target instanceof Element && m.target.matches(WATCHED_SELECTOR)) {
           seen.delete(m.target);
           check(m.target, out);
           continue;
@@ -191,7 +208,7 @@ export function ChancellerySentinel({ idleMs, onIdle, locked, lockScreen, onPani
         description: `${out[0].reason}: ${out[0].source.slice(0, 80)}`,
       });
     });
-    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["src", "srcdoc", "data"] });
+    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["src", "srcdoc", "data", "type"] });
     return () => observer.disconnect();
   }, []);
 

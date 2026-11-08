@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { CASES } from "@/content/cases";
+import { signalValueKey } from "@/lib/signalValues";
 
 /**
  * The Vinculum Mission Engine.
@@ -64,7 +65,7 @@ export function inscribedRuptureLoad(shocks: ReadonlyArray<{ deltas: BondVector 
 
 /** Composite rupture index R = min(100, round((observed share + inscribed load) × trend multiplier)). */
 export function ruptureIndex(observedShare: number, inscribedLoad: number, trendMultiplier: number): number {
-  return Math.min(100, Math.round((observedShare + inscribedLoad) * trendMultiplier));
+  return Math.max(0, Math.min(100, Math.round((observedShare + inscribedLoad) * trendMultiplier)));
 }
 
 /** Canonical trend multipliers applied to the rupture index. */
@@ -321,7 +322,7 @@ export function dominumIndex(s: Signals): DominumReading | { missing: string[] }
   const S = Math.min(100, Math.max(0, s.survivalScore ?? 0));
   const R = Math.min(100, Math.max(0, s.rupture ?? 0));
   const terms: DominumReading["terms"] = [
-    { key: "A", label: "0.30 × A (bond anchor, (μB − 1) ÷ 4)", weight: 0.3, input: (mu - 1) / 4, value: 0 },
+    { key: "A", label: "0.30 × A (bond anchor, (μB − 1) ÷ 4)", weight: 0.3, input: Math.min(1, Math.max(0, (mu - 1) / 4)), value: 0 },
     { key: "F", label: "0.25 × F (fiduciary anchor, E ÷ 100)", weight: 0.25, input: E / 100, value: 0 },
     { key: "S", label: "0.25 × S (succession durability ÷ 100)", weight: 0.25, input: S / 100, value: 0 },
     { key: "C", label: "0.20 × C (containment, 1 − R ÷ 100)", weight: 0.2, input: 1 - R / 100, value: 0 },
@@ -682,11 +683,13 @@ export function useEngine() {
 /** Publish a desk's readings onto the bus whenever they change. */
 export function usePublish(desk: string, patch: Signals) {
   const { publish, epoch } = useEngine();
-  const key = JSON.stringify(patch);
+  const patchRef = useRef(patch);
+  patchRef.current = patch;
+  const key = signalValueKey(patch);
   useEffect(() => {
-    publish(desk, JSON.parse(key) as Signals);
+    publish(desk, patchRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [desk, key, epoch]);
+  }, [desk, key, epoch, publish]);
 }
 
 /* ------------------------------------------------------------------ */
@@ -1047,7 +1050,7 @@ export type RelationalDynamics = {
  *   d_i     = max(0, 3.0 − B_i)              Δ_rel = Σ d_i          (Relational Deficit)
  *   p_i     = d_i ÷ Δ_rel                    H = −Σ p_i ln p_i ÷ ln 4
  *   S_rel   = H × τ × Δ_rel ÷ 8              (Relational Entropy; τ = trend multiplier)
- *   C_rel   = 100 × (σ_B ÷ 2) × (1 + 0.15 n_shock) × (1 + 0.10 n_friction) × (1 + R ÷ 100) ÷ 4.6, capped 100
+ *   C_rel   = 100 × (σ_B ÷ 2) × (1 + 0.15 n_shock) × (1 + 0.10 n_friction) × (1 + R ÷ 100) × (1 + Δ_rel ÷ 8) ÷ 4.6, capped 100
  *   Ω       = H × k ÷ 4                      (k = bonds in deficit)
  *   Character: None if Δ_rel = 0; Systemic if k ≥ 3 or Ω ≥ 0.5; Acute if k = 1; otherwise Mixed.
  */
@@ -1074,9 +1077,10 @@ export function relationalDynamics(s: Signals): RelationalDynamics | undefined {
     { label: "1 + 0.15 × shocks", value: 1 + 0.15 * nShock },
     { label: "1 + 0.10 × friction pairs", value: 1 + 0.1 * nFric },
     { label: "1 + R ÷ 100 (rupture load)", value: 1 + R / 100 },
+    { label: "1 + Δrel ÷ 8 (deficit depth)", value: 1 + deficit / 8 },
   ];
   const product = terms.reduce((a, t) => a * t.value, 1);
-  const contagion = Math.min(100, round1((100 * product) / 4.6 * (1 + deficit / 8)));
+  const contagion = Math.min(100, round1((100 * product) / 4.6));
   const omega = entropy * (k / 4);
   const character: DecayCharacter =
     deficit === 0 ? "None" : k >= 3 || omega >= 0.5 ? "Systemic" : k === 1 ? "Acute" : "Mixed";
