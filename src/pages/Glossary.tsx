@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import SEO from "@/components/SEO";
 import {
   LICENSE_URL,
@@ -37,20 +38,26 @@ const CATEGORY_LABELS: Record<GlossaryCategory | "all", string> = {
 };
 
 export default function Glossary() {
+  const { hash } = useLocation();
   const [q, setQ] = useState("");
   const [activeCategory, setActiveCategory] = useState<GlossaryCategory | "all">("all");
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (window.location.hash) {
-      const id = window.location.hash.slice(1);
-      setTimeout(() => {
+    if (hash) {
+      let id: string;
+      try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+      if (!GLOSSARY.some((entry) => entry.id === id)) return;
+      setQ("");
+      setActiveCategory("all");
+      const timer = setTimeout(() => {
         const el = document.getElementById(id);
         el?.scrollIntoView({ behavior: "smooth", block: "start" });
         el?.classList.add("glossary-highlight");
       }, 200);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [hash]);
 
   const results = useMemo(() => {
     let filtered = GLOSSARY;
