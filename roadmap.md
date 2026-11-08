@@ -1,5 +1,8 @@
 # Roadmap
 
+- [ ] Add an optional eighteen-desk orientation with first-visit invitation, on-demand access, real controls and desk-specific safeguards
+- [ ] Verify tour navigation, custom-mission assessment isolation, privacy, keyboard access and desktop/mobile presentation
+
 - [x] Verify all 35 approved refinement candidates against actual desk identities, sourced mathematics and existing safeguards; reject invented thresholds or destructive changes (full disposition in .lovable/refinement-review.md)
 - [x] Refine verified mathematical/proof parity, signal publication, counterpart progress and desk presentation issues; preserve Codex Part IV §4.3.2 contagion arithmetic
 - [x] Harden existing Sentinel, clipboard, enclave-held edits and local recovery paths without erasing quarantined records; latest-write tracking and boundary regressions pass
