@@ -220,6 +220,21 @@ export function frictionProof(
 /* Desk 05 · Compound Shock Tester — compound strain arithmetic       */
 /* ------------------------------------------------------------------ */
 
+/** Existing asymmetry instrument: normalized Euclidean distance, never a track-phase tolerance. */
+export function asymmetryProof(friction: number, parties: { label: string; vector: number[] }[]): FormulaProof {
+  return {
+    id: "multiparty-asymmetry", title: "Inter-party friction coefficient",
+    equation: "F_ab = round₂(√(Σᵢ (Bᵢ,a − Bᵢ,b)²) ÷ 8); F = max F_ab",
+    substitution: parties.map((p) => `${p.label}: (${p.vector.join(", ")})`).join("; "),
+    steps: parties.flatMap((a, i) => parties.slice(i + 1).map((b) => {
+      const sum = a.vector.reduce((n, x, k) => n + (x - b.vector[k]) ** 2, 0);
+      return `${a.label} / ${b.label}: √${f4(sum)} ÷ 8 = ${f2(Math.round(Math.sqrt(sum) / 8 * 100) / 100)}`;
+    })),
+    result: `Friction = ${f2(friction)} (0 to 1)`,
+    citation: `${CODEX}, Desk 07 asymmetry instrument: Euclidean distance normalized by the maximum four-bond distance of 8. Not a transmission probability or Track I/II phase tolerance.`,
+  };
+}
+
 /** Compound strain = min(100, Σ ω + (k − 1) × 1.25 × 4 + penalty) (Desk 05). */
 export function compoundShockProof(
   shockCount: number,

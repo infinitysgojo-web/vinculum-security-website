@@ -11,6 +11,22 @@ export function phaseQuestions(custom: string, fallback: readonly string[]): str
   return entered.length ? entered : [...fallback];
 }
 
+/** Resolve the current place against the entered sequence, without retaining an out-of-range checkpoint. */
+export function questionCheckpoint(index: number, length: number): number {
+  return Math.max(0, Math.min(Number.isFinite(index) ? Math.floor(index) : 0, Math.max(0, length - 1)));
+}
+
+/** Every seat's actual entered sequence, exported without inference or automatic phase advancement. */
+export function seatScriptLines(seat: Seat, name: string, caution: string, pivot: string,
+  defaults: readonly (readonly string[])[], phases: readonly string[]): string[] {
+  const questions = defaults.map((fallback, i) => phaseQuestions(seat.customOn ? seat.cQ[i] ?? "" : "", fallback));
+  const phase = questionCheckpoint(seat.phase, phases.length);
+  const index = questionCheckpoint(seat.questionIndex, questions[phase]?.length ?? 0);
+  return [`COUNTERPART: ${name}`, `STANDING CAUTION: ${caution}`, `TACTICAL PIVOT: ${pivot}`,
+    `OPERATOR CHECKPOINT: ${phases[phase]} · question ${index + 1} of ${questions[phase]?.length ?? 0}; position only, not a verified answer`,
+    ...phases.flatMap((label, i) => [`${i + 1}. ${label.toUpperCase()}`, ...questions[i].map((q, j) => `   ${j + 1}. "${q}"`), ""])];
+}
+
 /** One counterpart seated in the room, carrying its own place and wording. */
 export type Seat = {
   key: string;

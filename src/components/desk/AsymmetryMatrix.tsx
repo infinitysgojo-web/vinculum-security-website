@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import { useEngine, usePublish, VIABLE_FLOOR } from "./engine";
-import { theatreById } from "./theatres";
-import { bilateralGeodesic } from "./theatreGeodesy";
 import FormulaProof from "./FormulaProof";
-import { frictionProof } from "./formulaProofs";
+import { asymmetryProof } from "./formulaProofs";
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"] as const;
 const SHORT = ["Inter.", "Comm.", "Gen.", "Inst."];
@@ -27,8 +25,10 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
   const { signals } = useEngine();
   const [tol, setTol] = useState<Record<string, number[]>>({});
   const vec = (p: Party) => tol[p.id] ?? defaultTol(p);
-  const setCell = (p: Party, i: number, v: number) =>
-    setTol((t) => ({ ...t, [p.id]: vec(p).map((x, j) => (j === i ? Math.max(1, Math.min(5, Math.round(v * 10) / 10)) : x)) }));
+  const setCell = (p: Party, i: number, v: number) => {
+    if (!Number.isFinite(v)) return;
+    setTol((t) => ({ ...t, [p.id]: (t[p.id] ?? defaultTol(p)).map((x, j) => (j === i ? Math.max(1, Math.min(5, Math.round(v * 10) / 10)) : x)) }));
+  };
 
   const coeff = (a: Party, b: Party) => {
     const va = vec(a);
@@ -57,20 +57,6 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parties, tol, limIdx, liveLim]);
 
-  const theatre = theatreById(signals.presetId);
-  const geo = useMemo(() => {
-    if (!theatre?.coords || parties.length < 2) return null;
-    const p1 = {
-      lat: theatre.coords.lat + 0.8 * Math.sin(1.2),
-      lng: theatre.coords.lng + 1.1 * Math.cos(1.2),
-    };
-    const p2 = {
-      lat: theatre.coords.lat - 0.8 * Math.sin(2.4),
-      lng: theatre.coords.lng - 1.1 * Math.cos(2.4),
-    };
-    return bilateralGeodesic(p1, p2);
-  }, [theatre, parties]);
-
   usePublish("asymmetry", { partyFriction: parties.length >= 2 ? maxF : 0, vetoHolder: veto?.label ?? "" });
 
   const gapBreach = signals.trackGap !== undefined && signals.trackTolerance !== undefined && signals.trackGap > signals.trackTolerance;
@@ -80,7 +66,7 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
   return (
     <div className="border border-brass/40 bg-background p-4 sm:p-5">
       <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary mb-1">Asymmetry and leverage matrix</p>
-      <FormulaProof proof={frictionProof(maxF, signals.trackTolerance ?? 0.25, geo)} />
+      <FormulaProof proof={asymmetryProof(maxF, parties.map((p) => ({ label: p.label, vector: vec(p) })))} />
       <p className="mb-3 text-xs text-muted-foreground">
         Tolerance is the minimum each delegation will accept on each bond. Coefficients are Euclidean distance over the maximum (0 to 1).
       </p>
@@ -152,20 +138,6 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
           </tbody>
         </table>
       </div>
-
-      {geo && (
-        <div className="mt-4 p-3 border border-brass/40 bg-background/50 font-mono text-xs flex flex-wrap items-center justify-between gap-3">
-          <span className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground font-semibold">
-            Bilateral Geodesic Axis ({theatre?.sigil})
-          </span>
-          <span className="text-foreground font-medium">
-            {geo.distanceNm.toLocaleString()} NM ({geo.distanceKm.toLocaleString()} km) · {geo.bearingDeg}°T
-          </span>
-          <span className="text-[11px] text-muted-foreground">
-            Flight: {geo.flightHoursMach082}h (Mach 0.82) · Fiber latency: {geo.fiberLatencyMs}ms
-          </span>
-        </div>
-      )}
 
       <div className="mt-4 space-y-2 text-xs">
         <p className="[overflow-wrap:anywhere]">

@@ -5,7 +5,7 @@ import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { phaseQuestions, counterpartTactics, newSeat, updateSeat, removeSeat, STALL_CONDITIONS, stallResponse, type Seat, type StallKind } from "./questioning";
+import { phaseQuestions, counterpartTactics, newSeat, updateSeat, removeSeat, questionCheckpoint, seatScriptLines, STALL_CONDITIONS, stallResponse, type Seat, type StallKind } from "./questioning";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
@@ -130,17 +130,22 @@ export default function CounterpartPrompter() {
 
   const tactics = counterpartTactics(linked ? signals.customNotes : []);
   const selectedTactic = tactics.find((note) => note.id === tacticId);
-  const currentIndex = Math.min(questionIndex, questions[phase].length - 1);
+  const currentIndex = questionCheckpoint(questionIndex, questions[phase].length);
+  useEffect(() => {
+    if (questionIndex !== currentIndex) setRoom((r) => updateSeat(r, seat.key, { questionIndex: currentIndex }));
+  }, [questionIndex, currentIndex, seat.key]);
   const defaultQuestions = SCRIPT[bond].map((q, i) => [q, ...FOLLOW_UPS[i]]);
   const response = stallResponse(seat.stall, defaultQuestions, active.pivot);
   const conditionLabel = STALL_CONDITIONS.find((entry) => entry.id === seat.stall)?.label;
 
   const text = useMemo(() => {
     const L = ["COUNTERPART MEETING SCRIPT", "Source context: Vinculum Diplomacy: The Practitioner Handbook, Section 9A; Codex, Desk 6 and supplementary questioning register.", "Default wording is existing application examination guidance, not a verbatim Handbook quotation. Custom wording and inscribed tactics are operator-entered and not independently verified.", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, ...(room.length > 1 ? [`IN THE ROOM: ${room.map(seatLabel).join("; ")}`] : []), "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
-    PHASES.forEach((p, i) => {
-      L.push(`${i + 1}. ${p.toUpperCase()}`);
-      questions[i].forEach((q, j) => L.push(`   ${j + 1}. "${q}"`));
-      L.push("");
+    room.forEach((s, i) => {
+      const base = COUNTERPARTS[s.cp];
+      L.push(`SEAT ${i + 1}`, ...seatScriptLines(s, seatLabel(s),
+        s.customOn && s.cCaution.trim() ? s.cCaution.trim() : base.caution,
+        s.customOn && s.cPivot.trim() ? s.cPivot.trim() : base.pivot,
+        SCRIPT[bond].map((q, k) => [q, ...FOLLOW_UPS[k]]), PHASES), "");
     });
     if (tactics.length) {
       L.push("INSCRIBED COUNTERPART TACTICS");
@@ -169,10 +174,10 @@ export default function CounterpartPrompter() {
           <div className="border border-brass/40 bg-background p-4">
             <p className={label}>Counterparts in the room · {room.length}</p>
             <div className="flex flex-wrap gap-2" role="tablist" aria-label="Counterparts in the room">
-              {room.map((s) => (
+              {room.map((s, i) => (
                 <span key={s.key} className={`inline-flex items-center border ${s.key === seat.key ? "border-accent bg-accent text-accent-foreground" : "border-brass/50 text-primary"}`}>
                   <Button variant="ghost" type="button" role="tab" aria-selected={s.key === seat.key} onClick={() => setActiveKey(s.key)} className="h-auto min-h-9 px-3 py-1 text-xs whitespace-normal text-left hover:bg-transparent">
-                    {seatLabel(s)} · {PHASES[s.phase]}
+                    {i + 1}. {seatLabel(s)} · {PHASES[s.phase]}
                   </Button>
                   {room.length > 1 && (
                     <Button variant="ghost" type="button" aria-label={`Remove ${seatLabel(s)} from the room`} onClick={() => dropSeat(s.key)} className="h-9 w-9 p-0 hover:bg-transparent">×</Button>
