@@ -1,13 +1,13 @@
 import type { BondVector } from "./engine";
 
 /**
- * Three deterministic instruments: Decay Horizon (Desk 17 instrument, SuccessionSimulator), Dispute Forum Enforceability Matrix (Desk 11) and Conditional Escrow Waterfall (Desk 07).
+ * Three deterministic instruments: Decay Horizon (Desk 12 instrument, SuccessionSimulator), Dispute Forum Enforceability Matrix (Desk 11) and Conditional Escrow Waterfall (Desk 07).
  * Pure arithmetic on what the analyst entered and what the MissionEngine carries.
  * Nothing here predicts events; every figure is a rule applied to the inputs.
  */
 
 /* ------------------------------------------------------------------ */
-/* Decay Horizon & Stability Half-Life (Desk 17, SuccessionSimulator)  */
+/* Decay Horizon & Stability Half-Life (Desk 12, SuccessionSimulator)  */
 /* ------------------------------------------------------------------ */
 
 /** Projection horizons, in days. */
@@ -175,7 +175,7 @@ export function escrowWaterfall(terms: EscrowTerms, s: EscrowInput) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Critical Fracture Window (Desk 17, SuccessionSimulator)             */
+/* Critical Fracture Window (Desk 12, SuccessionSimulator)             */
 /* ------------------------------------------------------------------ */
 
 /** Mean-bond level at which the reading is treated as fractured. */

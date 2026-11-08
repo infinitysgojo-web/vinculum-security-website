@@ -42,7 +42,7 @@ export function governingLaws(s: Signals): Pillar[] {
         law("Liebig Limiting Factor", "diagnostics", "Desk 01", "The weakest bond, not the average, sets the ceiling on what the whole relationship can carry.",
           !s.weakestBond ? pend("Desk 01") : { reading: `${s.weakestBond}${s.weakestBand ? ` · ${s.weakestBand}` : ""}`, status: "reading" }),
         law("Relational Contagion", "diagnostics", "Desk 01", "Damage to one bond transmits into the others; an isolated fracture rarely stays isolated.",
-          !dyn ? pend("Desk 01") : { reading: `${dyn.contagion}% transmission · ${dyn.bondsInDeficit} of 4 bonds in deficit`, status: dyn.bondsInDeficit ? "breach" : "hold" }),
+          !dyn ? pend("Desk 01") : { reading: `${dyn.contagion}% coefficient · ${dyn.bondsInDeficit} of 4 bonds in deficit`, status: dyn.contagion >= 50 ? "breach" : "reading" }),
         law("Relational Entropy and Decay Horizon", "succession", "Desk 12", "Unattended relationships lose order over time; the horizon names how long stability lasts without repair.",
           !dyn ? pend("Desk 01") : { reading: `${dyn.character} decay${s.stabilityHalfLifeDays ? ` · half-life ${Math.round(s.stabilityHalfLifeDays)} days` : ""}`, status: "reading" }),
       ],
@@ -59,7 +59,7 @@ export function governingLaws(s: Signals): Pillar[] {
         law("Elite-Pact Mirage", "tracks", "Desk 08", "An accord signed above the communities it governs looks like peace and behaves like a ceasefire.",
           s.elitePactAlert === undefined ? pend("Desk 08") : { reading: s.elitePactAlert ? "Mirage condition present" : "Not present", status: s.elitePactAlert ? "breach" : "hold" }),
         law("Critical Fracture Window", "succession", "Desk 12", "The period in which accumulated decay can turn into open fracture if nothing intervenes.",
-          s.fractureMonths === undefined ? pend("Desk 12") : { reading: s.fractureMonths ? `${s.fractureMonths} months${s.fractureSeverity ? ` · ${s.fractureSeverity}` : ""}` : "No decay window", status: "reading" }),
+          s.fractureMonths === undefined ? pend("Desk 12") : { reading: s.fractureSeverity === "imminent" && s.fractureMonths === 0 ? "0 months · imminent" : s.fractureMonths ? `${s.fractureMonths} months${s.fractureSeverity ? ` · ${s.fractureSeverity}` : ""}` : "No decay window (∞)", status: "reading" }),
       ],
     },
     {

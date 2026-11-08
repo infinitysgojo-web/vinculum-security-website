@@ -19,7 +19,8 @@ export default function RelationalDynamicsPanel({ scores }: { scores: [number, n
     }),
     [signals, scores]
   );
-  const d = relationalDynamics(s)!;
+  const d = relationalDynamics(s);
+  if (!d) return null;
   const tone = d.character === "Systemic" ? "text-terracotta" : d.character === "None" ? "text-primary" : "text-brass";
 
   return (
@@ -55,7 +56,7 @@ export default function RelationalDynamicsPanel({ scores }: { scores: [number, n
         <span className={mono}>Ω = {d.omega.toFixed(3)}</span> · k = {d.bondsInDeficit} · {d.character}
       </p>
       <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-        {d.character === "None" && "No bond sits at or below the Viable floor; there is no decay to classify."}
+        {d.character === "None" && "No bond sits below the Viable floor, so there is no deficit-based decay to classify. A bond exactly at 3.0 still breaches the floor."}
         {d.character === "Acute" && "Decay is confined to one bond. A targeted remedy on that bond is proportionate."}
         {d.character === "Mixed" && "Decay touches two bonds without full diffusion. Remedy both, largest deficit first, and watch for spread."}
         {d.character === "Systemic" && "Decay is structural. Clearance locks until two covenants, one binding office continuity, are drafted."}

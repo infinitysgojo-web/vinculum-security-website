@@ -487,6 +487,13 @@ const SIGNAL_STRINGS = [
 const SIGNAL_BOOLEANS = ["elitePactAlert", "verifierSeated", "escrowFrozen", "immunityWaived", "neutralSeat", "legitimacyDeficit"] as const;
 const SIGNAL_STRING_LISTS = ["analogues", "traps", "shocks", "frictionPairs", "covenants", "mirrors", "customRules"] as const;
 
+/** Canonical schema membership, including explicitly cleared fields. */
+export function isSignalKey(key: string): boolean {
+  return [...SIGNAL_NUMBERS, ...SIGNAL_STRINGS, ...SIGNAL_BOOLEANS, ...SIGNAL_STRING_LISTS,
+    "bonds", "bondStrain", "customParties", "customTraps", "customShocks", "customCovenants", "customGates",
+    "customTracks", "customPrecedents", "customPhrases", "customNotes"].some((k) => k === key);
+}
+
 /**
  * Coerce anything read from a mission archive into a valid Signals object.
  * Unknown keys and wrongly typed values are dropped; bond scores are clamped to 1.0 to 5.0.
@@ -1077,10 +1084,10 @@ export function relationalDynamics(s: Signals): RelationalDynamics | undefined {
     { label: "1 + 0.15 × shocks", value: 1 + 0.15 * nShock },
     { label: "1 + 0.10 × friction pairs", value: 1 + 0.1 * nFric },
     { label: "1 + R ÷ 100 (rupture load)", value: 1 + R / 100 },
-    { label: "1 + Δrel ÷ 8 (deficit depth)", value: 1 + deficit / 8 },
   ];
   const product = terms.reduce((a, t) => a * t.value, 1);
-  const contagion = Math.min(100, round1((100 * product) / 4.6));
+  // Codex Part IV §4.3.2 follows this execution order, including the deficit amplifier.
+  const contagion = Math.min(100, round1((100 * product) / 4.6 * (1 + deficit / 8)));
   const omega = entropy * (k / 4);
   const character: DecayCharacter =
     deficit === 0 ? "None" : k >= 3 || omega >= 0.5 ? "Systemic" : k === 1 ? "Acute" : "Mixed";
