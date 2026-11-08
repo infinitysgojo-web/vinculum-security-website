@@ -5,7 +5,7 @@ import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { phaseQuestions, counterpartTactics, newSeat, updateSeat, removeSeat, type Seat } from "./questioning";
+import { phaseQuestions, counterpartTactics, newSeat, updateSeat, removeSeat, STALL_CONDITIONS, stallResponse, type Seat, type StallKind } from "./questioning";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
@@ -75,10 +75,10 @@ export default function CounterpartPrompter() {
   const seat = room.find((s) => s.key === activeKey) ?? room[0];
   const patch = (p: Partial<Seat>) => setRoom((r) => updateSeat(r, seat.key, p));
   const { cp, phase, questionIndex, customOn, cLabel, cCaution, cPivot, cQ } = seat;
-  const setCp = (v: number) => patch({ cp: v });
+  const setCp = (v: number) => patch({ cp: v, stall: "none" });
   const setPhase = (v: number) => patch({ phase: v, questionIndex: 0 });
   const setQuestionIndex = (v: number) => patch({ questionIndex: v });
-  const setCustomOn = (v: boolean) => patch({ customOn: v, questionIndex: 0 });
+  const setCustomOn = (v: boolean) => patch({ customOn: v, questionIndex: 0, stall: "none" });
   const setCLabel = (v: string) => patch({ cLabel: v });
   const setCCaution = (v: string) => patch({ cCaution: v });
   const setCPivot = (v: string) => patch({ cPivot: v });
@@ -131,9 +131,12 @@ export default function CounterpartPrompter() {
   const tactics = counterpartTactics(linked ? signals.customNotes : []);
   const selectedTactic = tactics.find((note) => note.id === tacticId);
   const currentIndex = Math.min(questionIndex, questions[phase].length - 1);
+  const defaultQuestions = SCRIPT[bond].map((q, i) => [q, ...FOLLOW_UPS[i]]);
+  const response = stallResponse(seat.stall, defaultQuestions, active.pivot);
+  const conditionLabel = STALL_CONDITIONS.find((entry) => entry.id === seat.stall)?.label;
 
   const text = useMemo(() => {
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, ...(room.length > 1 ? [`IN THE ROOM: ${room.map(seatLabel).join("; ")}`] : []), "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
+    const L = ["COUNTERPART MEETING SCRIPT", "Source context: Vinculum Diplomacy: The Practitioner Handbook, Section 9A; Codex, Desk 6 and supplementary questioning register.", "Default wording is existing application examination guidance, not a verbatim Handbook quotation. Custom wording and inscribed tactics are operator-entered and not independently verified.", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, ...(room.length > 1 ? [`IN THE ROOM: ${room.map(seatLabel).join("; ")}`] : []), "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
     PHASES.forEach((p, i) => {
       L.push(`${i + 1}. ${p.toUpperCase()}`);
       questions[i].forEach((q, j) => L.push(`   ${j + 1}. "${q}"`));
@@ -143,6 +146,13 @@ export default function CounterpartPrompter() {
       L.push("INSCRIBED COUNTERPART TACTICS");
       tactics.forEach((note) => L.push(`  ${note.title}`, note.body, ""));
     }
+    room.forEach((s) => {
+      const selected = STALL_CONDITIONS.find((entry) => entry.id === s.stall);
+      const base = COUNTERPARTS[s.cp];
+      const pivot = s.customOn && s.cPivot.trim() ? s.cPivot.trim() : base.pivot;
+      const followUp = stallResponse(s.stall, SCRIPT[bond].map((q, i) => [q, ...FOLLOW_UPS[i]]), pivot);
+      if (selected && followUp) L.push("OPERATOR-SELECTED UNRESOLVED CONDITION", `  Counterpart: ${seatLabel(s)}`, `  Condition: ${selected.label}`, `  Existing ${PHASES[followUp.phase]} follow-up: ${followUp.question}`, `  ${s.customOn && s.cPivot.trim() ? "Operator-entered" : "Archetype"} pivot: ${followUp.pivot}`, "  Selection is not a finding, verified answer, or cleared stage gate.", "");
+    });
     L.push("GUARDRAILS", "  - Record the answer, not your interpretation of it.", "  - Never expose a community participant without a protection framework in force.", "  - Children are a protected party and never a bond source.", "");
     L.push("POST-MEETING AUDIT LEDGER");
     AUDIT.forEach((a) => L.push(`  [ ] ${a}`));
@@ -171,7 +181,6 @@ export default function CounterpartPrompter() {
               ))}
               <Button variant="outline" type="button" onClick={addSeat} className="min-h-9 text-[10px] uppercase tracking-[0.16em]">Add counterpart</Button>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">Each counterpart keeps its own phase, question and wording when you switch between them.</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
@@ -282,6 +291,18 @@ export default function CounterpartPrompter() {
             <div className="border border-brass/40 bg-background p-4 mt-3">
               <p className={label}>If they deflect or attack</p>
               <p className="text-sm text-foreground/85 break-words">{active.pivot}</p>
+              <label htmlFor="cp-stall" className={`${label} mt-4`}>Unresolved condition · officer selection</label>
+              <select id="cp-stall" className={field} value={seat.stall} onChange={(e) => patch({ stall: e.target.value as StallKind })}>
+                <option value="none">No condition selected</option>
+                {STALL_CONDITIONS.map((entry) => <option key={entry.id} value={entry.id}>{entry.label}</option>)}
+              </select>
+              {response && <div className="mt-4 border-t border-border pt-4" role="status">
+                <p className={label}>{conditionLabel} · {PHASES[response.phase]} follow-up</p>
+                <blockquote className="font-serif text-lg text-primary leading-relaxed break-words">“{response.question}”</blockquote>
+                <p className="mt-3 text-xs text-muted-foreground">Operator-selected; not an evidence finding or stage-gate clearance.</p>
+                {customOn && <p className="mt-2 text-xs text-muted-foreground">Existing default safeguard; custom phase wording remains unchanged.</p>}
+                <Button variant="ghost" type="button" className="mt-2" onClick={() => patch({ stall: "none" })}>Clear condition</Button>
+              </div>}
             </div>
             <div className="flex justify-between items-center gap-3 mt-3">
               <Button variant="ghost" type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</Button>
