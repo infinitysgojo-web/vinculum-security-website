@@ -1175,8 +1175,6 @@ export default function Dashboard() {
     const cur = activeRef.current;
     if (!cur) return;
     switch (a) {
-      case "orientation":
-        return openOrientation();
       case "foyer":
         return toFoyer();
       case "tray":
@@ -1343,6 +1341,8 @@ export default function Dashboard() {
       setWireOpen(true);
     };
     switch (a) {
+      case "orientation":
+        return openOrientation();
       case "seal":
         return sealState.state === "unsealed" ? void sealMission() : toast(sealState.state === "intact" ? "Already sealed. Integrity intact." : "Divergence detected. Open the seal badge to inspect or re-seal.");
       case "wire":
