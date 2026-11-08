@@ -178,6 +178,7 @@ export default function SentinelMatrix() {
   const text = useMemo(() => {
     const L = [
       "EARLY-WARNING SENTINEL READING",
+      "Sentinel Matrix (The Eye of Humanity) · Desk 02",
       "Compiled under Handbook Section 15 (failure modes)",
       "",
       `THEATER: ${theater.trim() || "Unnamed theater"}`,

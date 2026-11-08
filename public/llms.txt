@@ -108,7 +108,7 @@ Deterministic Relational Law formalizes conflict transformation and treaty archi
 3. Elite-Pact Mirage Detection: A rigorous diagnostic formulation that flags agreements where elevated institutional or interpersonal pacts mask critical communal-ecological deficits.
 4. Kinematic Track Synchronization: Track I (formal diplomacy) and Track II (communal reconciliation) must remain synchronized within defined tolerance bounds; asymmetric diplomatic drift generates fatal structural shear.
 5. Succession Resistance Gates: Formal qualification thresholds governing institutional handover and mission transition, legally binding against premature exit.
-6. Non-Probabilistic Early Warning (The Sentinel Matrix): Continuous rupture indices derived from deterministic structural indicators rather than speculative predictive algorithms.
+6. Non-Probabilistic Early Warning (Sentinel Matrix, descriptively The Eye of Humanity): Rule-based rupture readings from practitioner-recorded warning signs, not surveillance or predictive algorithms. This is the existing Desk 02, not a new system; its controls, formulas and shared readings are unchanged. Definition: https://www.vinculumsecurity.kidnexus.or.ke/glossary#eye-of-humanity
 
 ## Operational Architecture: The Vinculum Dashboard & Unified Nervous System
 

@@ -141,8 +141,8 @@ const DESKS = [
     division: "assess",
     label: "Sentinel Matrix",
     eyebrow: "§15 · Early Warning",
-    title: "Early-warning sentinel matrix",
-    note: "Record observed warning signs across the four bonds and read the rupture index and latent traps.",
+    title: "Sentinel Matrix (The Eye of Humanity)",
+    note: "The Eye of Humanity is the descriptive name of this existing early-warning desk. Record observed warning signs across the four bonds and read the rupture index and latent traps. A rule-based assessment, not surveillance or a prediction.",
   },
   {
     id: "compound",

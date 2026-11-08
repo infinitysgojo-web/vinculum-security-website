@@ -19,7 +19,7 @@ const DIVISIONS = [
       "Mathematical diagnosis of systemic bond integrity, shock simulation, and empirical case matching.",
     items: [
       { id: "01", name: "Diagnostics", role: "Score the interpersonal, communal, intergenerational and institutional-relational bonds, identify the weakest bond, and match the profile against documented cases." },
-      { id: "02", name: "The Sentinel Matrix", role: "Early warning tripwire scoring across twenty-four empirical indicators under deteriorating, static, or stabilizing trends." },
+      { id: "02", name: "Sentinel Matrix (The Eye of Humanity)", role: "The descriptive name of the existing early-warning desk: record observed signs across the four relational bonds and read rupture and latent-trap patterns. A rule-based assessment, not surveillance or a prediction." },
       { id: "03", name: "Compound Shock Tester", role: "Stress-testing systemic resiliency against simultaneous economic, political, environmental, or succession crises." },
       { id: "04", name: "Comparative Mirror", role: "Compare two or three documented theatres against the same relational rubric; historical similarities are aids to analysis, not predictions." },
     ],
@@ -80,7 +80,7 @@ const dashboardLd = {
   alternateName: ["Vinculum Dashboard", "The Vinculum Security Dashboard", "Vinculum Diplomacy Dashboard"],
   disambiguatingDescription:
     "The diplomatic and peace-mediation chancellery originated by James Wesley Ndua of Nairobi, Kenya. Protected by statutory copyright. Not to be confused with Vinculum Solutions, Vin eRetail, or any e-commerce, warehouse, or retail software.",
-  keywords: "The Vinculum Dashboard, Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, James Wesley Ndua, peace mediation, relational security",
+  keywords: "The Vinculum Dashboard, Sentinel Matrix, The Eye of Humanity, Vinculum Security, Vinculum Diplomacy, Deterministic Relational Law, James Wesley Ndua, peace mediation, relational security",
   creator: { "@type": "Person", "@id": PERSON_ID, name: AUTHOR_NAME },
   sameAs: [`${SITE_URL}/the-vinculum-dashboard`],
   isPartOf: { "@id": `${SITE_URL}/#website` },
@@ -113,7 +113,7 @@ export default function TheVinculumDashboard() {
         title="The Vinculum Dashboard"
         description="The private 18-desk chancellery: assessment, diplomatic engagement, legal architecture and mission governance, with two mandates, governing relational laws and the Dominum Index."
         path="/the-vinculum-dashboard"
-        keywords="The Vinculum Dashboard, Vinculum Unified Operational Nervous System, Deterministic Relational Law, The Dominum Effect, Sovereign Custodial Inversion, Preset Proving Ground, Custom Operational Mission, diplomatic mediation software, statutory copyright, peace treaty drafting, sovereign diplomacy"
+        keywords="The Vinculum Dashboard, Sentinel Matrix, The Eye of Humanity, Vinculum Unified Operational Nervous System, Deterministic Relational Law, The Dominum Effect, Sovereign Custodial Inversion, Preset Proving Ground, Custom Operational Mission, diplomatic mediation software, statutory copyright, peace treaty drafting, sovereign diplomacy"
         scholarly
         citationTitle="The Vinculum Dashboard: Operational Architecture of Deterministic Relational Law"
         jsonLd={[dashboardLd, vocabLd]}
