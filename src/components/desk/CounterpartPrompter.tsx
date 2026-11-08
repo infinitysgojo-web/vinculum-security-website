@@ -5,7 +5,7 @@ import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { phaseQuestions, counterpartTactics } from "./questioning";
+import { phaseQuestions, counterpartTactics, newSeat, updateSeat, removeSeat, type Seat } from "./questioning";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
@@ -66,11 +66,36 @@ const AUDIT = [
 ];
 
 export default function CounterpartPrompter() {
-  const [cp, setCp] = useState(0);
   const [bond, setBond] = useState(0);
-  const [phase, setPhase] = useState(0);
-  const [questionIndex, setQuestionIndex] = useState(0);
   const [tacticId, setTacticId] = useState("");
+  // The room: several counterparts at once, each keeping its own phase, place and wording.
+  const [room, setRoom] = useState<Seat[]>(() => [newSeat("s1", 0)]);
+  const [activeKey, setActiveKey] = useState("s1");
+  const [nextId, setNextId] = useState(2);
+  const seat = room.find((s) => s.key === activeKey) ?? room[0];
+  const patch = (p: Partial<Seat>) => setRoom((r) => updateSeat(r, seat.key, p));
+  const { cp, phase, questionIndex, customOn, cLabel, cCaution, cPivot, cQ } = seat;
+  const setCp = (v: number) => patch({ cp: v });
+  const setPhase = (v: number) => patch({ phase: v, questionIndex: 0 });
+  const setQuestionIndex = (v: number) => patch({ questionIndex: v });
+  const setCustomOn = (v: boolean) => patch({ customOn: v, questionIndex: 0 });
+  const setCLabel = (v: string) => patch({ cLabel: v });
+  const setCCaution = (v: string) => patch({ cCaution: v });
+  const setCPivot = (v: string) => patch({ cPivot: v });
+  const seatLabel = (s: Seat) => (s.customOn ? s.cLabel.trim() || "Custom counterpart" : COUNTERPARTS[s.cp]?.label ?? "");
+  const addSeat = () => {
+    const key = `s${nextId}`;
+    const used = new Set(room.map((s) => s.cp));
+    const free = COUNTERPARTS.findIndex((_, i) => !used.has(i));
+    setRoom((r) => [...r, newSeat(key, free >= 0 ? free : 0)]);
+    setNextId((n) => n + 1);
+    setActiveKey(key);
+  };
+  const dropSeat = (key: string) => {
+    const next = removeSeat(room, key);
+    setRoom(next);
+    if (key === activeKey) setActiveKey(next[0].key);
+  };
 
   // Division I decides which bond this meeting is actually about.
   const { signals } = useEngine();
@@ -83,14 +108,9 @@ export default function CounterpartPrompter() {
 
   // Custom mode: define a counterpart the ten archetypes do not cover,
   // and override any scripted question with your own wording.
-  const [customOn, setCustomOn] = useState(false);
-  const [cLabel, setCLabel] = useState("");
-  const [cCaution, setCCaution] = useState("");
-  const [cPivot, setCPivot] = useState("");
-  const [cQ, setCQ] = useState<[string, string, string, string]>(["", "", "", ""]);
-  usePublish("counterpart", { counterpart: customOn ? cLabel.trim() || "Custom counterpart" : COUNTERPARTS[cp]?.label ?? "" });
+  usePublish("counterpart", { counterpart: room.map(seatLabel).join("; ") });
   const setQ = (i: number, v: string) =>
-    setCQ((p) => p.map((x, j) => (j === i ? v : x)) as [string, string, string, string]);
+    patch({ cQ: cQ.map((x, j) => (j === i ? v : x)) as [string, string, string, string] });
 
   const active = useMemo(() => {
     const base = COUNTERPARTS[cp];
@@ -111,10 +131,9 @@ export default function CounterpartPrompter() {
   const tactics = counterpartTactics(linked ? signals.customNotes : []);
   const selectedTactic = tactics.find((note) => note.id === tacticId);
   const currentIndex = Math.min(questionIndex, questions[phase].length - 1);
-  useEffect(() => setQuestionIndex(0), [phase, bond, customOn, cQ]);
 
   const text = useMemo(() => {
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
+    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, ...(room.length > 1 ? [`IN THE ROOM: ${room.map(seatLabel).join("; ")}`] : []), "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
     PHASES.forEach((p, i) => {
       L.push(`${i + 1}. ${p.toUpperCase()}`);
       questions[i].forEach((q, j) => L.push(`   ${j + 1}. "${q}"`));
@@ -130,13 +149,30 @@ export default function CounterpartPrompter() {
     if (live) L.push("", ...telemetryLines(signals));
     L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [active, bond, questions, live, signals, tactics]);
+  }, [active, bond, questions, live, signals, tactics, room]);
 
 
   return (
     <section className="w-full min-w-0">
       <div className="instrument-layout w-full min-w-0">
         <div className="space-y-5">
+          <div className="border border-brass/40 bg-background p-4">
+            <p className={label}>Counterparts in the room · {room.length}</p>
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Counterparts in the room">
+              {room.map((s) => (
+                <span key={s.key} className={`inline-flex items-center border ${s.key === seat.key ? "border-accent bg-accent text-accent-foreground" : "border-brass/50 text-primary"}`}>
+                  <Button variant="ghost" type="button" role="tab" aria-selected={s.key === seat.key} onClick={() => setActiveKey(s.key)} className="h-auto min-h-9 px-3 py-1 text-xs whitespace-normal text-left hover:bg-transparent">
+                    {seatLabel(s)} · {PHASES[s.phase]}
+                  </Button>
+                  {room.length > 1 && (
+                    <Button variant="ghost" type="button" aria-label={`Remove ${seatLabel(s)} from the room`} onClick={() => dropSeat(s.key)} className="h-9 w-9 p-0 hover:bg-transparent">×</Button>
+                  )}
+                </span>
+              ))}
+              <Button variant="outline" type="button" onClick={addSeat} className="min-h-9 text-[10px] uppercase tracking-[0.16em]">Add counterpart</Button>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">Each counterpart keeps its own phase, question and wording when you switch between them.</p>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
               <label className={label} htmlFor="cp-c">Counterpart</label>
