@@ -25,3 +25,13 @@ test("seating accepts all eight standard delegations and added custom actors", (
   const roster = ["state", "armed", "youth", "elders", "civil", "donor", "spoiler", "guarantor", "own-1", "own-2"];
   expect(seatingSelection(roster, roster)).toEqual(roster);
 });
+test("switching counterparts keeps each one's place and wording", async () => {
+  const { newSeat, updateSeat, removeSeat } = await import("../src/components/desk/questioning");
+  let room = [newSeat("a", 0), newSeat("b", 1)];
+  room = updateSeat(room, "a", { phase: 2, questionIndex: 3, cLabel: "Diaspora council" });
+  room = updateSeat(room, "b", { phase: 1 });
+  expect(room[0]).toMatchObject({ phase: 2, questionIndex: 3, cLabel: "Diaspora council" });
+  expect(room[1]).toMatchObject({ phase: 1, questionIndex: 0, cLabel: "" });
+  expect(removeSeat(room, "a").map((s) => s.key)).toEqual(["b"]);
+  expect(removeSeat([room[1]], "b").length).toBe(1);
+});
