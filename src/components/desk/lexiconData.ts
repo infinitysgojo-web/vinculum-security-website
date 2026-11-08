@@ -69,7 +69,7 @@ const OPERATIONAL: LexEntry[] = [
 export const LEXICON: LexEntry[] = [
   ...OPERATIONAL,
   // A public glossary term that mirrors an operational entry keeps the desk wording here, once.
-  ...GLOSSARY.filter((g) => !OPERATIONAL.some((o) => o.id === g.id)).map((g) => ({ id: g.id, term: g.term, short: g.short, source: g.source })),
+  ...GLOSSARY.filter((g) => !OPERATIONAL.some((o) => o.id === g.id || o.term.trim().toLowerCase() === g.term.trim().toLowerCase())).map((g) => ({ id: g.id, term: g.term, short: g.short, source: g.source })),
 ];
 
 export const findLex = (term: string) =>
