@@ -1,5 +1,11 @@
 # Roadmap
 
+- [ ] Verify all 35 approved refinement candidates against actual desk identities, sourced mathematics and existing safeguards; reject invented thresholds or destructive changes
+- [ ] Refine verified mathematical/proof parity, signal publication, counterpart progress and desk presentation issues
+- [ ] Harden existing Sentinel, clipboard, enclave-held edits and local recovery paths without erasing quarantined records
+- [ ] Validate reference integrity, public discovery metadata and print/navigation behavior
+- [ ] Run regression tests and signed-in desktop/mobile mission verification; document completed, already-covered and unsuitable candidates
+
 - [x] Refine Counterpart Prompter stall handling using existing questions and per-counterpart browser-local state; distinguish application guidance from verbatim source quotations
 - [x] Prove deterministic responses, multi-party isolation and signed-in desktop/mobile operation; verify meeting-text download; 372 regression tests passed
 - [x] Append three verified refinement pages and their limits to the complete Codex, as approved; preserve all 272 inherited content streams unchanged and visually inspect all 275 rendered pages
