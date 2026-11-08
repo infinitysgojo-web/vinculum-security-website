@@ -5,7 +5,7 @@ import { useEngine, usePublish, hasSignal, telemetryLines } from "./engine";
 import SyncPanel from "./SyncPanel";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { phaseQuestions, counterpartTactics } from "./questioning";
+import { phaseQuestions, counterpartTactics, newSeat, updateSeat, removeSeat, type Seat } from "./questioning";
 
 /** Handbook §9A counterpart protocol prompter: a sequenced meeting script. */
 const COUNTERPARTS = [
@@ -66,11 +66,36 @@ const AUDIT = [
 ];
 
 export default function CounterpartPrompter() {
-  const [cp, setCp] = useState(0);
   const [bond, setBond] = useState(0);
-  const [phase, setPhase] = useState(0);
-  const [questionIndex, setQuestionIndex] = useState(0);
   const [tacticId, setTacticId] = useState("");
+  // The room: several counterparts at once, each keeping its own phase, place and wording.
+  const [room, setRoom] = useState<Seat[]>(() => [newSeat("s1", 0)]);
+  const [activeKey, setActiveKey] = useState("s1");
+  const [nextId, setNextId] = useState(2);
+  const seat = room.find((s) => s.key === activeKey) ?? room[0];
+  const patch = (p: Partial<Seat>) => setRoom((r) => updateSeat(r, seat.key, p));
+  const { cp, phase, questionIndex, customOn, cLabel, cCaution, cPivot, cQ } = seat;
+  const setCp = (v: number) => patch({ cp: v });
+  const setPhase = (v: number) => patch({ phase: v, questionIndex: 0 });
+  const setQuestionIndex = (v: number) => patch({ questionIndex: v });
+  const setCustomOn = (v: boolean) => patch({ customOn: v, questionIndex: 0 });
+  const setCLabel = (v: string) => patch({ cLabel: v });
+  const setCCaution = (v: string) => patch({ cCaution: v });
+  const setCPivot = (v: string) => patch({ cPivot: v });
+  const seatLabel = (s: Seat) => (s.customOn ? s.cLabel.trim() || "Custom counterpart" : COUNTERPARTS[s.cp]?.label ?? "");
+  const addSeat = () => {
+    const key = `s${nextId}`;
+    const used = new Set(room.map((s) => s.cp));
+    const free = COUNTERPARTS.findIndex((_, i) => !used.has(i));
+    setRoom((r) => [...r, newSeat(key, free >= 0 ? free : 0)]);
+    setNextId((n) => n + 1);
+    setActiveKey(key);
+  };
+  const dropSeat = (key: string) => {
+    const next = removeSeat(room, key);
+    setRoom(next);
+    if (key === activeKey) setActiveKey(next[0].key);
+  };
 
   // Division I decides which bond this meeting is actually about.
   const { signals } = useEngine();
@@ -83,14 +108,9 @@ export default function CounterpartPrompter() {
 
   // Custom mode: define a counterpart the ten archetypes do not cover,
   // and override any scripted question with your own wording.
-  const [customOn, setCustomOn] = useState(false);
-  const [cLabel, setCLabel] = useState("");
-  const [cCaution, setCCaution] = useState("");
-  const [cPivot, setCPivot] = useState("");
-  const [cQ, setCQ] = useState<[string, string, string, string]>(["", "", "", ""]);
-  usePublish("counterpart", { counterpart: customOn ? cLabel.trim() || "Custom counterpart" : COUNTERPARTS[cp]?.label ?? "" });
+  usePublish("counterpart", { counterpart: room.map(seatLabel).join("; ") });
   const setQ = (i: number, v: string) =>
-    setCQ((p) => p.map((x, j) => (j === i ? v : x)) as [string, string, string, string]);
+    patch({ cQ: cQ.map((x, j) => (j === i ? v : x)) as [string, string, string, string] });
 
   const active = useMemo(() => {
     const base = COUNTERPARTS[cp];
@@ -111,7 +131,6 @@ export default function CounterpartPrompter() {
   const tactics = counterpartTactics(linked ? signals.customNotes : []);
   const selectedTactic = tactics.find((note) => note.id === tacticId);
   const currentIndex = Math.min(questionIndex, questions[phase].length - 1);
-  useEffect(() => setQuestionIndex(0), [phase, bond, customOn, cQ]);
 
   const text = useMemo(() => {
     const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
