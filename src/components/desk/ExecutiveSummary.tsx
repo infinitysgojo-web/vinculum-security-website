@@ -146,6 +146,7 @@ export default function ExecutiveSummary({ m }: { m: ExecSummary }) {
         <button type="button" onClick={() => setPrinting(true)} className="inline-flex min-h-10 items-center gap-2 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-accent hover:text-accent">
           <Printer size={13} /> Print one-page summary
         </button>
+        <span className="text-[10px] text-muted-foreground">Tip: enable "Background graphics" in the print dialog for shaded bands.</span>
       </div>
       <ExecutiveSheet m={m} archivalHash={hash} />
       {printing && createPortal(<div id="vs-exec-print"><ExecutiveSheet m={m} archivalHash={hash} /></div>, document.body)}
