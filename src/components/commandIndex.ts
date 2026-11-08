@@ -5,7 +5,7 @@
 
 export type PaletteDesk = { id: string; label: string; title: string };
 
-export type PaletteAction = "seal" | "wire" | "export" | "diff" | "branch" | "mask" | "panic" | "shortcuts" | "summary" | "timeline" | "inspector" | "ledger";
+export type PaletteAction = "seal" | "wire" | "export" | "diff" | "branch" | "mask" | "panic" | "shortcuts" | "summary" | "timeline" | "inspector" | "ledger" | "orientation";
 
 export type CommandItem =
   | { kind: "desk"; id: string; number: string; label: string; detail: string; score: number }
@@ -34,6 +34,7 @@ export const DESK_TOPICS: Record<string, string[]> = {
 };
 
 export const PALETTE_ACTIONS: { id: PaletteAction; label: string; detail: string; words: string[] }[] = [
+  { id: "orientation", label: "Open desk orientation", detail: "Purpose, controls and safeguards of all eighteen desks", words: ["tour", "guide", "orientation"] },
   { id: "seal", label: "Seal mission assessment", detail: "Tamper-evident SHA-256 handover seal", words: ["seal", "handover", "hash", "integrity", "sha"] },
   { id: "wire", label: "Open the Chancellery Wire", detail: "Record of dispatches", words: ["wire", "dispatch", "log"] },
   { id: "inspector", label: "Open the Live Bus Signal Inspector", detail: "Raw reactive payload monitor", words: ["inspector", "signals", "bus", "telemetry", "payload"] },

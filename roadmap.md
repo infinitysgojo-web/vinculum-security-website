@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Add an optional eighteen-desk orientation with first-visit invitation, on-demand access, real controls and desk-specific safeguards; reuse existing guide content and actual division order
+- [x] Verify all eighteen tour steps in a signed-in custom mission, unchanged untouched readings, deliberate first assessment, privacy navigation, Escape/focus return, remembered dismissal, palette access and print suppression; five viewport sizes fit, 387 tests pass and no runtime errors
+
 - [x] Verify all 35 approved refinement candidates against actual desk identities, sourced mathematics and existing safeguards; reject invented thresholds or destructive changes (full disposition in .lovable/refinement-review.md)
 - [x] Refine verified mathematical/proof parity, signal publication, counterpart progress and desk presentation issues; preserve Codex Part IV §4.3.2 contagion arithmetic
 - [x] Harden existing Sentinel, clipboard, enclave-held edits and local recovery paths without erasing quarantined records; latest-write tracking and boundary regressions pass

@@ -345,7 +345,7 @@ export const DESK_GUIDES: Record<string, DeskGuide> = {
   legal: {
     purpose: "Prepare a litigation checklist and the doctrinal pleading heads.",
     do: ["Enter the matter caption, facts and procedural posture.", "Choose the primary strained bond and counterpart posture."],
-    expect: ["Four pleading heads filled from the bus; a missing input is named as missing.", `Provisional measures marked urgent at rupture ${PROVISIONAL_THRESHOLD}% or more.`],
+    expect: ["Three standing pleading heads filled from the bus; a missing input is named as missing.", `A fourth provisional-measures head is added at rupture ${PROVISIONAL_THRESHOLD}% or more.`],
     why: "Heads are filled only from the dispute forum, weakest bond, covenants and rupture on the bus.",
     handsOff: ["Admissibility notes are doctrinal summaries, not advice for a particular filing."],
   },
@@ -386,7 +386,7 @@ export const DESK_GUIDES: Record<string, DeskGuide> = {
   },
   multiparty: {
     purpose: "Seat parties, read friction, and set resource shares and escrow terms.",
-    do: ["Seat up to four parties and set their friction.", "Set the three resource heads.", "Adjust escrow tranche shares, clawback and performance bond."],
+    do: ["Seat delegations from the available roster, or add your own, and set their friction.", "Set the three resource heads.", "Adjust escrow tranche shares, clawback and performance bond."],
     expect: ["Seated parties and friction pairs on the bus.", "Resource parity and the communal-share legitimacy check.", "Escrow tranches met, released share and freeze state."],
     why: `Tranches release in order on verified conditions; the account freezes at rupture ${ESCROW_FREEZE}% or more.`,
     handsOff: ["Resource and escrow figures are design terms, not commitments."],
@@ -397,6 +397,34 @@ export const DESK_GUIDES: Record<string, DeskGuide> = {
     expect: ["Each answer marked answered, partly conceded or held open."],
     why: "The doctrine names its critics in advance; the chamber reads the live telemetry beside them.",
     handsOff: ["The chamber does not score your instrument."],
+  },
+  mirror: {
+    purpose: "Compare two or three documented theatres against the same four-bond rubric.",
+    do: ["Select the documented theatres to compare.", "Optionally plot the live mission vector beside the recorded case profiles."],
+    expect: ["Recorded case profiles alongside the current mission reading when available."],
+    why: "The comparison uses documented case vectors and the existing diagnostic rubric.",
+    handsOff: ["Historical resemblance is context, not a predicted outcome or a prescription."],
+  },
+  briefing: {
+    purpose: "Assemble a chancellery memorandum from the case record and entered mission details.",
+    do: ["Choose a documented case, or enter your own theatre, problem statement and bond scores.", "Set the receiving office, instrument, precedence and handling caveat.", "Review the memorandum and optional comparative annex before copying or exporting it."],
+    expect: ["A formatted draft with doctrinal scripts and continuity protocols."],
+    why: "The text is assembled deterministically from recorded inputs and existing wording.",
+    handsOff: ["Composition is not dispatch, verification of facts or proof of an external classification regime."],
+  },
+  counterpart: {
+    purpose: "Prepare ordered examination questions for each counterpart without inferring their answers.",
+    do: ["Add counterparts and switch between their separate seats.", "Choose the focus bond, phase and question, or enter an ordered custom script.", "Select an unresolved condition when needed, then review or export the meeting scripts."],
+    expect: ["Each seat retains its own phase, question and unresolved condition.", "Exports include every seated script and checkpoint."],
+    why: "Operator choices select existing wording; tactics are read from shared mission notes.",
+    handsOff: ["No AI, inferred answers or automatic phase advance.", "Stall guidance does not verify evidence or clear a gate."],
+  },
+  audit: {
+    purpose: "Record the stakeholder safeguard checks for each affected party.",
+    do: ["Select the affected party.", "Record whether evidence was reviewed, the party heard directly and independent verification recorded.", "Review coverage across parties, or reset the checks."],
+    expect: ["Separate checklist records for the affected parties."],
+    why: "The bench summarises operator-recorded checks alongside existing mission readings.",
+    handsOff: ["Completion is not certification and never replaces protection obligations."],
   },
 };
 
