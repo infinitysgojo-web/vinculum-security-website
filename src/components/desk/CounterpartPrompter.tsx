@@ -136,7 +136,7 @@ export default function CounterpartPrompter() {
   const conditionLabel = STALL_CONDITIONS.find((entry) => entry.id === seat.stall)?.label;
 
   const text = useMemo(() => {
-    const L = ["COUNTERPART MEETING SCRIPT", "Compiled from Vinculum Diplomacy: The Practitioner Handbook, Section 9A", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, ...(room.length > 1 ? [`IN THE ROOM: ${room.map(seatLabel).join("; ")}`] : []), "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
+    const L = ["COUNTERPART MEETING SCRIPT", "Source context: Vinculum Diplomacy: The Practitioner Handbook, Section 9A; Codex, Desk 6 and supplementary questioning register.", "Default wording is existing application examination guidance, not a verbatim Handbook quotation. Custom wording and inscribed tactics are operator-entered and not independently verified.", "", `COUNTERPART: ${active.label}${active.custom ? " (own definition)" : ""}`, `FOCUS BOND: ${DOMAINS[bond]}`, ...(room.length > 1 ? [`IN THE ROOM: ${room.map(seatLabel).join("; ")}`] : []), "", `STANDING CAUTION: ${active.caution}`, `TACTICAL PIVOT: ${active.pivot}`, ""];
     PHASES.forEach((p, i) => {
       L.push(`${i + 1}. ${p.toUpperCase()}`);
       questions[i].forEach((q, j) => L.push(`   ${j + 1}. "${q}"`));
