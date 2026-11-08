@@ -1,8 +1,8 @@
 # Roadmap
 
-- [ ] Add The Eye of Humanity descriptor to Desk 02 and relevant website, glossary and AI reference text without changing behavior
-- [ ] Append the naming clarification to the complete Codex PDF, preserving every existing page
-- [ ] Verify the document download, public references and existing desk behavior
+- [x] Add The Eye of Humanity descriptor to Desk 02 and relevant website, glossary and AI reference text without changing behavior
+- [x] Append the naming clarification to the complete Codex PDF, preserving every existing page (271 unchanged pages plus Appendix K, page 272)
+- [x] Verify the revised document, public references and existing desk behavior (all pages rendered; Appendix K visually checked; signed-in warning sign reads 6%; mobile has no overflow; 363 regression tests pass)
 
 - [x] Phase 1: give What-If, Escrow Waterfall and Forum Matrix full-width landscape workspaces
 - [x] Phase 2: rebalance Succession, Compound Shock, Readiness and Handover desks without changing formulas or mission state
@@ -89,4 +89,4 @@
 - [x] Polish the updated navigation and footer within the existing visual style; check desktop and mobile access (1280px and 375px; no runtime errors)
 
 - [x] Security hardening: Mission Vault import pre-parse limits (enclave buffers already zeroized on every open/seal)
-- [ ] Leaked-password check: blocked, needs owner to switch it on in Auth settings
+- [x] Leaked-password check: enabled by owner and confirmed by the subsequent settings security check
