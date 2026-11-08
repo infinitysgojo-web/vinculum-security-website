@@ -90,3 +90,6 @@
 
 - [x] Security hardening: Mission Vault import pre-parse limits (enclave buffers already zeroized on every open/seal)
 - [x] Leaked-password check: enabled by owner and confirmed by the subsequent settings security check
+
+- [x] Codex vs dashboard term audit: add Codex Part XV and Appendix D terms missing from the working lexicon
+- [x] Codex vs dashboard system audit: desk numbers and names (01–18) match Part IX
