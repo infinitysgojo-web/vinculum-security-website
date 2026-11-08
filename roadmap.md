@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Refine Counterpart Prompter stall handling using existing sourced questions and per-counterpart browser-local state
+- [ ] Prove deterministic responses, multi-party isolation and live desktop/mobile operation
+- [ ] Append the verified refinement and its limits to the complete Codex; export and visually inspect every page
+
 - [x] Add The Eye of Humanity descriptor to Desk 02 and relevant website, glossary and AI reference text without changing behavior
 - [x] Append the naming clarification to the complete Codex PDF, preserving every existing page (271 unchanged pages plus Appendix K, page 272)
 - [x] Verify the revised document, public references and existing desk behavior (all pages rendered; Appendix K visually checked; signed-in warning sign reads 6%; mobile has no overflow; 363 regression tests pass)
