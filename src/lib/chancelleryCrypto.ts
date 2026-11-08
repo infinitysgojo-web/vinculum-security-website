@@ -27,7 +27,14 @@ export const TAG_MISMATCH = "Authentication tag mismatch. Invalid passphrase or 
 
 const subtle = () => {
   const s = globalThis.crypto?.subtle;
-  if (!s) throw new Error("Web Crypto is unavailable in this browser context.");
+  if (!s) {
+    const insecure = typeof window !== "undefined" && window.isSecureContext === false;
+    throw new Error(
+      insecure
+        ? "Web Crypto requires a secure context. Open the dashboard over https:// or http://localhost, not a plain network address."
+        : "Web Crypto is unavailable in this browser context.",
+    );
+  }
   return s;
 };
 
