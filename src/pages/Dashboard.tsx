@@ -1,7 +1,7 @@
 import DeskErrorBoundary from "@/components/desk/DeskErrorBoundary";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Archive, ArrowLeft, ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, MoreHorizontal, PanelRight, ScrollText, Search, Shield, ShieldAlert, ShieldCheck, ShieldOff, Siren, SlidersHorizontal, Timer, Volume2, VolumeX } from "lucide-react";
+import { Archive, ArrowLeft, BookOpen, ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, MoreHorizontal, PanelRight, ScrollText, Search, Shield, ShieldAlert, ShieldCheck, ShieldOff, Siren, SlidersHorizontal, Timer, Volume2, VolumeX, X } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
 import StatutoryClearanceBar from "@/components/desk/StatutoryClearanceBar";
 import { THEATRES, type TheatreId } from "@/components/desk/theatres";
@@ -54,6 +54,9 @@ import LocalDataDialog from "@/components/mode/LocalDataDialog";
 import ModeHeader, { ModeBadges, modeStatusText, type HeaderAction } from "@/components/mode/ModeHeader";
 import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
 import DeskGuide from "@/components/mode/DeskGuide";
+import DeskOrientation from "@/components/mode/DeskOrientation";
+import { dismissOrientation, orientationInvited } from "@/components/mode/orientation";
+import { Button } from "@/components/ui/button";
 import {
   BranchDialog,
   BriefDialog,
@@ -823,6 +826,14 @@ export default function Dashboard() {
   // Sovereign Navigation Hotkeys: one listener for [, ], ?, Esc, Ctrl/Cmd+K and Ctrl/Cmd+S.
   // Navigation keys are ignored while typing in a field; the panic keys stay with the Sentinel.
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [orientationOpen, setOrientationOpen] = useState(false);
+  const [orientationDismissed, setOrientationDismissed] = useState(() => {
+    try { return orientationInvited(window.localStorage); } catch { return false; }
+  });
+  const rememberOrientation = () => {
+    setOrientationDismissed(true);
+    try { dismissOrientation(window.localStorage); } catch { /* Preference only. */ }
+  };
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [wireOpen, setWireOpen] = useState(false);
   const [wireTab, setWireTab] = useState<WireTab>("wire");
@@ -846,6 +857,11 @@ export default function Dashboard() {
     mask: () => privacyToggleRef.current(),
     // Radix closes its own dialogs, drawers and popovers; with none open, Escape leaves Focus view and folds the wire.
     escape: () => {
+      if (orientationOpen) {
+        setOrientationOpen(false);
+        document.querySelector<HTMLButtonElement>('[data-testid="orientation-button"]')?.focus();
+        return;
+      }
       setFocus(false);
       setWireOpen(false);
     },
@@ -1020,6 +1036,24 @@ export default function Dashboard() {
     setDesk(d.id);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+  const openOrientation = () => {
+    if (!activeWs) return toast("Open an exercise or mission to view the desk orientation.");
+    rememberOrientation();
+    setFocus(false);
+    setOrientationOpen(true);
+    window.scrollTo({ top: 0 });
+  };
+  const closeOrientation = (work = false) => {
+    setOrientationOpen(false);
+    if (work) {
+      // Focus alone is not engagement; no control is clicked or altered.
+      window.requestAnimationFrame(() => {
+        const surface = document.querySelector<HTMLElement>(`.desk-surface[data-desk="${desk}"]`);
+        const control = surface?.querySelector<HTMLElement>('input:not([type="hidden"]):not(:disabled), select:not(:disabled), textarea:not(:disabled), button:not(:disabled)');
+        (control ?? document.getElementById("vs-desk-title"))?.focus();
+      });
+    } else document.querySelector<HTMLButtonElement>('[data-testid="orientation-button"]')?.focus();
+  };
 
   const deskLabel = (id: string) => DESKS.find((d) => d.id === id)?.label ?? id;
   const now = () => new Date().toISOString();
@@ -1141,6 +1175,8 @@ export default function Dashboard() {
     const cur = activeRef.current;
     if (!cur) return;
     switch (a) {
+      case "orientation":
+        return openOrientation();
       case "foyer":
         return toFoyer();
       case "tray":
@@ -1475,6 +1511,7 @@ export default function Dashboard() {
               )}
               <ChancelleryBreviary signals={effective} profile={profile} onAddToBinder={addToBinder} />
               <LexiconDrawer />
+              {missionOpen && <Button variant="ghost" size="icon" onClick={openOrientation} aria-label="Open desk orientation" aria-expanded={orientationOpen} title="Desk orientation" data-testid="orientation-button" className={deckBtn(orientationOpen)}><BookOpen aria-hidden /></Button>}
               <button
                 type="button"
                 onClick={() => setPaletteOpen(true)}
@@ -1710,6 +1747,15 @@ export default function Dashboard() {
             </p>
           )}
         </div>
+        {!orientationDismissed && !orientationOpen && (
+          <div data-testid="orientation-invitation" className="mb-5 flex flex-wrap items-center gap-3 border-y border-brass/40 py-3 print:hidden">
+            <BookOpen size={17} className="shrink-0 text-accent" aria-hidden />
+            <p className="min-w-0 flex-1 text-sm text-primary">First time at the desks?</p>
+            <Button size="sm" variant="outline" onClick={openOrientation}>Take the desk orientation</Button>
+            <Button variant="ghost" size="icon" onClick={rememberOrientation} aria-label="Dismiss desk orientation invitation" title="Dismiss invitation"><X aria-hidden /></Button>
+          </div>
+        )}
+        {orientationOpen && <DeskOrientation desks={DESKS} divisions={DIVISIONS} deskId={desk} onDesk={(id) => { const d = DESKS.find((x) => x.id === id); if (d) goTo(d); }} onClose={() => closeOrientation()} onWork={() => closeOrientation(true)} />}
         {guideOn && activeWs && (
           <div className={`max-w-3xl ${focus ? "hidden" : ""}`}>
             <DeskGuide
