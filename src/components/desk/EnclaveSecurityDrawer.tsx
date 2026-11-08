@@ -30,6 +30,7 @@ const errText = (e: unknown) => (e instanceof Error ? e.message : "The enclave o
  */
 export default function EnclaveSecurityDrawer({ sealedCount }: { sealedCount: number }) {
   const enclave = useEnclave();
+  const insecure = typeof window !== "undefined" && window.isSecureContext === false;
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -77,6 +78,7 @@ export default function EnclaveSecurityDrawer({ sealedCount }: { sealedCount: nu
 
       {open && (
         <div id="enclave-drawer-body" className="space-y-5 px-4 pb-5 min-w-0">
+          {insecure && <p role="alert" className="border border-destructive px-3 py-2 text-xs text-destructive">Encryption is unavailable on this connection. Open the dashboard over HTTPS or localhost before setting or opening an enclave.</p>}
           <p className="max-w-3xl text-xs text-muted-foreground leading-relaxed">
             With a passphrase set, every theatre saved to the library is sealed with AES-256-GCM under a key derived in
             this browser (PBKDF2-SHA-256, 310,000 iterations, a fresh salt and IV per record; records sealed earlier at 100,000 are re-sealed on unseal). The passphrase and key are

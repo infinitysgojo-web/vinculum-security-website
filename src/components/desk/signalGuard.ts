@@ -5,7 +5,7 @@
  * and an unknown publisher is refused. MissionEngine stays the only signal chain: this
  * is a filter on its publish path, not a second store.
  */
-import { sanitizeSignals, type Signals } from "./engine";
+import { isSignalKey, sanitizeSignals, type Signals } from "./engine";
 
 /** Every id that publishes to the bus: the desks, the mission profile, presets and the inscription tray. */
 export const SIGNAL_PUBLISHERS: ReadonlySet<string> = new Set([
@@ -35,8 +35,8 @@ export function guardSignalPatch(desk: string, patch: unknown): Signals | null {
   const clean = sanitizeSignals(raw) as Record<string, unknown>;
   const out: Record<string, unknown> = {};
   for (const k of Object.keys(raw)) {
-    if (raw[k] === undefined) out[k] = undefined;
-    else if (k in clean) out[k] = clean[k];
+    if (raw[k] === undefined && isSignalKey(k)) out[k] = undefined;
+    else if (Object.prototype.hasOwnProperty.call(clean, k)) out[k] = clean[k];
   }
   return out as Signals;
 }

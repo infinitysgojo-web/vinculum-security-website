@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import SovereignCustomDrawer from "./SovereignCustomDrawer";
+import { Button } from "@/components/ui/button";
 import {
   BOND_NAMES,
   ENFORCEMENT_MECHANISMS,
@@ -397,9 +398,9 @@ function NoteForm({ desk, spec, reading }: { desk: string; spec: NoteSpec; readi
         <label className="block"><span className={lab}>{spec.titleLabel}</span><input className={field} value={title} onChange={(e) => setTitle(e.target.value)} placeholder={spec.titlePh} /></label>
         <label className="block"><span className={lab}>{spec.bodyLabel}</span><textarea rows={spec.rows ?? 3} className={field} value={body} onChange={(e) => setBody(e.target.value)} placeholder={spec.bodyPh} /></label>
       </div>
-      <button type="button" className={btn} disabled={!title.trim()} onClick={() => { setAll([...all, { id: uid(), desk, kind: spec.kind, title: title.trim(), body: body.trim() }]); setTitle(""); setBody(""); }}>
+      <Button variant="outline" type="button" className={btn} disabled={!title.trim() || !body.trim()} onClick={() => { if (!title.trim() || !body.trim()) return; setAll([...all, { id: uid(), desk, kind: spec.kind, title: title.trim(), body: body.trim() }]); setTitle(""); setBody(""); }}>
         <Plus size={13} aria-hidden /> Inscribe
-      </button>
+      </Button>
       {list.length > 0 && (
         <ul className="space-y-2">
           {list.map((n) => (

@@ -87,7 +87,7 @@ export function transactionalRead(storage: KV, key: string): LocalRead {
   if (cur !== null) {
     // The current copy is unreadable (truncated or altered): restore the last known-good copy, keep the bad text aside.
     const good = parse(storage.getItem(lastGoodKey(key)));
-    const bad = quarantineEntry(cur.slice(0, 200_000), "The latest local save could not be parsed (truncated or altered).");
+    const bad = quarantineEntry(cur, "The latest local save could not be parsed (truncated or altered).");
     if (good.ok) {
       const r = readStore(good.value);
       return {

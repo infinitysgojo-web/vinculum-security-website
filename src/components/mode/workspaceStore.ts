@@ -9,6 +9,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { openSnapshot, sealSnapshot } from "@/lib/chancelleryEnclave";
 import { EMPTY_STORE, readStore, type Mode, type Workspace, type WorkspaceStore } from "./workspace";
 import { boundHistory, transactionalRead, transactionalWrite } from "./localPersistence";
+import { signalValueKey } from "@/lib/signalValues";
+import { createWriteRevision } from "@/lib/writeRevision";
 
 export const storeKey = (uid: string) => `vinculum-workspaces:${uid}`;
 const snapshotName = (uid: string) => `workspaces:${uid}`;
@@ -35,7 +37,14 @@ export function mergeStores(a: WorkspaceStore, b: WorkspaceStore): WorkspaceStor
     const prev = byId.get(w.id);
     if (!prev || (w.updatedAt || "") >= (prev.updatedAt || "")) byId.set(w.id, w);
   }
-  return { ...a, ...b, workspaces: [...byId.values()], quarantine: [...a.quarantine, ...b.quarantine] };
+  const seen = new Set<string>();
+  const quarantine = [...a.quarantine, ...b.quarantine].filter((record) => {
+    const key = signalValueKey(record);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return { ...a, ...b, workspaces: [...byId.values()], quarantine };
 }
 
 export function readActiveId(): string | null {
@@ -81,12 +90,29 @@ export function useWorkspaceStore(uid: string | null, active: boolean, enclave: 
   const storeRef = useRef(store);
   storeRef.current = store;
   const openedSealed = useRef(false);
+  const writes = useRef(createWriteRevision());
+  const [dirty, setDirty] = useState(false);
+  const queue = useRef<Promise<void>>(Promise.resolve());
+
+  useEffect(() => {
+    if (!active || !uid || !dirty) return;
+    const onUnload = (event: BeforeUnloadEvent) => {
+      if (!writes.current.dirty()) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onUnload);
+    return () => window.removeEventListener("beforeunload", onUnload);
+  }, [active, uid, dirty]);
 
   useEffect(() => {
     if (!uid || !active) {
       setStore({ ...EMPTY_STORE, workspaces: [], quarantine: [] });
       setLoaded(false);
       openedSealed.current = false;
+      writes.current.reset();
+      setDirty(false);
+      setStatus("idle");
       return;
     }
     let cancelled = false;
@@ -132,12 +158,16 @@ export function useWorkspaceStore(uid: string | null, active: boolean, enclave: 
   }, [uid, active, enclave.configured, enclave.unlocked]);
 
   const persist = useCallback(
-    async (next: WorkspaceStore) => {
+    (next: WorkspaceStore) => {
       if (!uid) return;
+      const revision = writes.current.begin();
+      setDirty(true);
+      const save = async () => {
+      if (!writes.current.current(revision)) return;
       try {
         if (enclave.configured) {
           if (!enclave.unlocked) {
-            setStatus("held");
+            if (writes.current.current(revision)) setStatus("held");
             return;
           }
           // IndexedDB writes one record atomically; the plaintext copies are removed only after it succeeds.
@@ -146,17 +176,28 @@ export function useWorkspaceStore(uid: string | null, active: boolean, enclave: 
         } else {
           const r = transactionalWrite(window.localStorage, storeKey(uid), boundHistory(next));
           if (!r.ok) {
-            setStatus(r.reason === "quota" ? "full" : "unavailable");
+            if (writes.current.current(revision)) setStatus(r.reason === "quota" ? "full" : "unavailable");
             return;
           }
         }
-        setStatus("saved");
+        if (writes.current.complete(revision)) {
+          setStatus("saved");
+          setDirty(false);
+        }
       } catch {
-        setStatus("unavailable");
+        if (writes.current.current(revision)) setStatus("unavailable");
       }
+      };
+      queue.current = queue.current.then(save, save);
+      return queue.current;
     },
     [uid, enclave.configured, enclave.unlocked],
   );
+
+  // A held latest revision is retried after the enclave is actually opened.
+  useEffect(() => {
+    if (loaded && active && enclave.unlocked && writes.current.dirty()) void persist(storeRef.current);
+  }, [loaded, active, enclave.unlocked, persist]);
 
   /** Insert or replace one workspace and write the collection. */
   const put = useCallback(

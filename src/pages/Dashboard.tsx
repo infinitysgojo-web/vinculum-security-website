@@ -458,15 +458,14 @@ export default function Dashboard() {
     if (customRef.current && DESKS.some((d) => d.id === owner) && !engagedRef.current.has(owner)) return;
     // Every publication is validated at the bus boundary; refused ones never reach a desk.
     const patch = guardSignalPatch(desk, raw);
-    if (!patch) return;
+    if (!patch || !Object.keys(patch).length) return;
     const moved = changedKeys(busRef.current, patch);
     if (moved.length) {
       busRef.current = { ...busRef.current, ...patch };
       recordPublication(desk, moved);
     }
     setSignals((prev) => {
-      const next = { ...prev, ...patch };
-      return JSON.stringify(next) === JSON.stringify(prev) ? prev : next;
+      return changedKeys(prev, patch).length ? { ...prev, ...patch } : prev;
     });
   }, []);
   // The effective state every desk reads: raw publications with Sovereign inscriptions applied.
@@ -867,7 +866,7 @@ export default function Dashboard() {
   customRef.current = activeWs?.mode === "custom";
   useEffect(() => {
     engagedRef.current = new Set();
-  }, [activeId]);
+  }, [activeId, activeWs?.mode]);
   const activeRef = useRef<Workspace | undefined>(activeWs);
   activeRef.current = activeWs;
   // Bumped whenever a workspace is opened, so every desk remounts on that workspace's state.
@@ -953,6 +952,9 @@ export default function Dashboard() {
   }, [profileMeta, activeId]);
 
   const bootWorkspace = useCallback((w: Workspace) => {
+    engagedRef.current = new Set();
+    customRef.current = w.mode === "custom";
+    busRef.current = w.state.signals;
     clearLedger();
     if (w.replay.length) restoreLedger(w.replay as Parameters<typeof restoreLedger>[0]);
     const d = DESKS.find((x) => x.id === w.state.desk) ?? DESKS[0];
@@ -1579,7 +1581,7 @@ export default function Dashboard() {
       {/* Band 3 · Desk navigation: division tabs and the desk stepper in one fixed-height band. */}
       {missionOpen && (
         <nav aria-label="Desk navigation" data-testid="desk-band" className={`sticky top-9 z-30 diplomatic-navigation border-b border-brass/40 bg-background/95 backdrop-blur ${focus ? "hidden" : ""}`}>
-          <div ref={bandRef} className="container flex h-12 items-center gap-3 overflow-x-auto scrollbar-none scroll-smooth [webkit-overflow-scrolling:touch]">
+          <div ref={bandRef} className="container flex h-12 items-center gap-3 overflow-x-auto scrollbar-none scroll-smooth [-webkit-overflow-scrolling:touch]">
             <div className="flex shrink-0 items-center gap-0.5 border border-brass/50 p-0.5" role="group" aria-label="Divisions">
               {DIVISIONS.map((dv) => {
                 const on = division === dv.id;

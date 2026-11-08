@@ -143,11 +143,8 @@ export default function SEO({
       {scholarly && (
         <meta name="citation_author_orcid" content={ORCID_URL} />
       )}
-      {scholarly && (
-        <meta name="citation_author_institution" content="Nairobi, Kenya" />
-      )}
       {scholarly && <meta name="citation_publisher" content={SITE_NAME} />}
-      {scholarly && <meta name="citation_doi" content={CITATION.doi} />}
+      {scholarly && !citationTitle && <meta name="citation_doi" content={CITATION.doi} />}
       {scholarly && <meta name="citation_language" content="en" />}
       {scholarly && <meta name="citation_public_url" content={canonical} />}
       {scholarly && <meta name="citation_abstract_html_url" content={canonical} />}

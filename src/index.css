@@ -630,6 +630,7 @@ html.scif [class*="tracking-["] { font-family: ui-monospace, "SFMono-Regular", M
    Formats articles for physical treaty folios. The executive dossier's own masthead
    (header.dossier-masthead) is exempt so the print-only dossier keeps its running head. */
 @media print {
+  [data-testid="sentinel-strip"], [data-testid="ops-deck"], [data-testid="desk-band"], [data-testid="focus-bar"] { display: none !important; }
   header:not(.dossier-masthead), footer, nav, #stcm-wrapper, .no-print, button, [role="dialog"] {
     display: none !important;
   }

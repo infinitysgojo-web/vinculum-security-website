@@ -214,7 +214,7 @@ describe("7. lock, idle, panic and the single Sentinel owner", () => {
   const sentinel = read("src/components/desk/ChancellerySentinel.tsx");
   test("the Sentinel overwrites app-copied clipboard content on lock and before idle", () => {
     expect(sentinel).toContain("if (locked) void clearAppClipboard();");
-    expect(sentinel).toContain("void clearAppClipboard();\n        idleCb.current();");
+    expect(sentinel).toMatch(/void clearAppClipboard\(\);\s+idleCb\.current\(\);/);
     expect(sentinel).toContain("{locked ? lockScreen : children}");
   });
   test("the clipboard guard keeps only a marker, never the copied text", () => {

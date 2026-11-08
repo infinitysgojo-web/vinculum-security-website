@@ -66,7 +66,7 @@ export function halfLifeProof(lambda: number): FormulaProof {
     equation: "t½ = ln 2 ÷ λ",
     substitution: `t½ = 0.6931 ÷ ${f4(lambda)}`,
     steps: t === null
-      ? ["λ = 0: no unmitigated exposure and no rupture, so the bonds do not decay and t½ is undefined (∞)."]
+      ? ["λ = 0: no exponential decay; the half-life limit is ∞, not a finite duration or a guarantee of stability."]
       : [`ln 2 = 0.693147`, `0.693147 ÷ ${f4(lambda)} = ${t.toFixed(1)} days`, `B(t) = max(${SOVEREIGN_FLOOR.toFixed(1)}, B₀ · e^(−λt)): no bond decays below the sovereign floor.`],
     result: t === null ? "t½ = ∞" : `t½ = ${t.toFixed(1)} days`,
     citation: `${CODEX}, Part V §5.1; the exponential law B(t) = B₀e^(−λt) with the ${SOVEREIGN_FLOOR.toFixed(1)} sovereign floor.`,
@@ -220,6 +220,21 @@ export function frictionProof(
 /* Desk 05 · Compound Shock Tester — compound strain arithmetic       */
 /* ------------------------------------------------------------------ */
 
+/** Existing asymmetry instrument: normalized Euclidean distance, never a track-phase tolerance. */
+export function asymmetryProof(friction: number, parties: { label: string; vector: number[] }[]): FormulaProof {
+  return {
+    id: "multiparty-asymmetry", title: "Inter-party friction coefficient",
+    equation: "F_ab = round₂(√(Σᵢ (Bᵢ,a − Bᵢ,b)²) ÷ 8); F = max F_ab",
+    substitution: parties.map((p) => `${p.label}: (${p.vector.join(", ")})`).join("; "),
+    steps: parties.flatMap((a, i) => parties.slice(i + 1).map((b) => {
+      const sum = a.vector.reduce((n, x, k) => n + (x - b.vector[k]) ** 2, 0);
+      return `${a.label} / ${b.label}: √${f4(sum)} ÷ 8 = ${f2(Math.round(Math.sqrt(sum) / 8 * 100) / 100)}`;
+    })),
+    result: `Friction = ${f2(friction)} (0 to 1)`,
+    citation: `${CODEX}, Desk 07 asymmetry instrument: Euclidean distance normalized by the maximum four-bond distance of 8. Not a transmission probability or Track I/II phase tolerance.`,
+  };
+}
+
 /** Compound strain = min(100, Σ ω + (k − 1) × 1.25 × 4 + penalty) (Desk 05). */
 export function compoundShockProof(
   shockCount: number,
@@ -231,11 +246,11 @@ export function compoundShockProof(
   return {
     id: "desk05-compound-strain",
     title: "Compound Shock Strain Amplification",
-    equation: "Strain = min(100, Σ ω + (k − 1) × 1.25 × 4 + L_penalty)",
+    equation: "Strain = min(100, Σ ω + max(0, k − 1) × 1.25 × 4 + L_penalty)",
     substitution: `k = ${shockCount}, Base Σ ω = ${baseSeverity}, Amp = ${amplification.toFixed(1)}, L_pen = ${legitimacyPenalty}`,
     steps: [
       `Base severity sum across ${shockCount} shock(s): Σ ω = ${baseSeverity}`,
-      `Nonlinear compounding: (${shockCount} − 1) × 1.25 × 4 levels = +${amplification.toFixed(1)} strain points`,
+      `Nonlinear compounding: max(0, ${shockCount} − 1) × 1.25 × 4 levels = +${amplification.toFixed(1)} strain points`,
       `Legitimacy structural penalty: +${legitimacyPenalty} strain points`,
       `Gross sum: ${baseSeverity} + ${amplification.toFixed(1)} + ${legitimacyPenalty} = ${(baseSeverity + amplification + legitimacyPenalty).toFixed(1)}`,
       `Clamped to [0, 100]: min(100, ${(baseSeverity + amplification + legitimacyPenalty).toFixed(1)}) = ${strain}`,
@@ -297,7 +312,7 @@ export function dominumProof(d: DominumReading): FormulaProof {
     substitution: `D = 100 × (0.30 × ${f4(A.input)} + 0.25 × ${f4(F.input)} + 0.25 × ${f4(S.input)} + 0.20 × ${f4(C.input)})`,
     steps: [
       ...d.terms.map((t) => `${t.label}: ${t.weight.toFixed(2)} × ${f4(t.input)} = ${f4(t.value)}`),
-      `100 × ${f4(d.terms.reduce((a, t) => a + t.value, 0))} = ${d.index}`,
+      `D = min(100, max(0, round₁(100 × ${f4(d.terms.reduce((a, t) => a + t.value, 0))}))) = ${d.index}; displayed intermediate terms are rounded`,
       `Phase: ${d.phase}${d.floorHeld ? "" : " (Self-Reinforcing Dominium withheld: a bond sits at or below the 3.0 viable floor)"}`,
     ],
     result: `D = ${d.index}% · ${d.phase}`,
