@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Add The Eye of Humanity descriptor to Desk 02 and relevant website, glossary and AI reference text without changing behavior
+- [ ] Append the naming clarification to the complete Codex PDF, preserving every existing page
+- [ ] Verify the document download, public references and existing desk behavior
+
 - [x] Phase 1: give What-If, Escrow Waterfall and Forum Matrix full-width landscape workspaces
 - [x] Phase 2: rebalance Succession, Compound Shock, Readiness and Handover desks without changing formulas or mission state
 - [x] Phase 3: record layout rules, run regressions and verify desktop, tablet and mobile mission flows (364 tests passed; seven desks checked at 1920, 1280, 768 and 375px; simulator changes read back through the live bench; no page overflow or runtime errors)
