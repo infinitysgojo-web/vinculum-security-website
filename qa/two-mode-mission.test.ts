@@ -32,7 +32,7 @@ import { THEATRES } from "../src/components/desk/theatres";
 
 const read = (p: string) => readFileSync(new URL(`../${p}`, import.meta.url), "utf8");
 const DASH = read("src/pages/Dashboard.tsx");
-const DESK_IDS = [...DASH.matchAll(/\n    id: "([a-z]+)",\n    division:/g)].map((m) => m[1]);
+const DESK_IDS = [...DASH.matchAll(/\n {4}id: "([a-z]+)",\n {4}division:/g)].map((m) => m[1]);
 const MODE_DIR = new URL("../src/components/mode", import.meta.url).pathname;
 const MODE_FILES = readdirSync(MODE_DIR).map((f) => join(MODE_DIR, f));
 
@@ -254,7 +254,7 @@ describe("signal chain and boundaries", () => {
     expect(PURGED_LOCAL_KEY.test(storeKey("u1"))).toBe(true);
     expect(PURGED_LOCAL_KEY.test(MODE_KEY)).toBe(true);
     expect(ACTIVE_KEY.startsWith("vs:")).toBe(true);
-    expect(DASH).toMatch(/clearOfflineSession\(\);\n    writeActiveId\(null\);/);
+    expect(DASH).toMatch(/clearOfflineSession\(\);\n {4}writeActiveId\(null\);/);
   });
   test("the dashboard keeps one inactivity owner and renders the Foyer inside the existing route", () => {
     expect(DASH.match(/<ChancellerySentinel/g)).toHaveLength(1);

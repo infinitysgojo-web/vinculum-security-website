@@ -6,7 +6,7 @@ import { dismissOrientation, orientationInvited, ORIENTATION_KEY } from "../src/
 
 describe("optional eighteen-desk orientation", () => {
   test("every actual dashboard desk has guidance, with no extra desk", () => {
-    const ids = [...readFileSync("src/pages/Dashboard.tsx", "utf8").matchAll(/\n    id: "([a-z]+)",\n    division:/g)].map((m) => m[1]);
+    const ids = [...readFileSync("src/pages/Dashboard.tsx", "utf8").matchAll(/\n {4}id: "([a-z]+)",\n {4}division:/g)].map((m) => m[1]);
     expect(ids).toHaveLength(18);
     expect(Object.keys(DESK_GUIDES).sort()).toEqual(ids.sort());
   });

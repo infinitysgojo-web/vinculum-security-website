@@ -1,5 +1,6 @@
 // Surface 1: the Tamper-Evident Handover Seal and the Divergence Beacon.
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import {
   SEAL_STORAGE_KEY,
@@ -119,7 +120,7 @@ describe("divergence beacon", () => {
 
   test("unsealed missions show the seal action; the dashboard compares canonical bytes so a stale hash never reads intact", () => {
     expect(sealStatus(null, "x", () => []).state).toBe("unsealed");
-    const dash = require("node:fs").readFileSync("src/pages/Dashboard.tsx", "utf8") as string;
+    const dash = readFileSync("src/pages/Dashboard.tsx", "utf8") as string;
     expect(dash).toContain("canonicalSeal(sealInput) === hSeal.canonical");
     expect(dash).toContain("<HandoverSealBadge");
   });

@@ -30,21 +30,21 @@ const inscribed: Signals = {
 describe("desk mount integrity", () => {
   for (const [name, Desk] of [["Clause Architect", ClauseArchitect], ["Compound Shock Tester", CompoundShockTester]] as const) {
     test(`${name} mounts on an empty boot bus`, () => {
-      expect(() => mount(Desk as any, {})).not.toThrow();
+      expect(() => mount(Desk as Parameters<typeof mount>[0], {})).not.toThrow();
     });
     test(`${name} mounts with inscribed shocks and covenants`, () => {
-      expect(() => mount(Desk as any, inscribed)).not.toThrow();
+      expect(() => mount(Desk as Parameters<typeof mount>[0], inscribed)).not.toThrow();
     });
   }
 
   test("inscribed shocks join the Compound Shock Tester's register", () => {
-    const html = mount(CompoundShockTester as any, inscribed);
+    const html = mount(CompoundShockTester as Parameters<typeof mount>[0], inscribed);
     expect(html).toContain("Inscribed shock one [INSCRIBED]");
     expect(html).toContain("Inscribed shock two [INSCRIBED]");
   });
 
   test("inscribed covenants compile as sequential Article C.N provisions", () => {
-    const html = mount(ClauseArchitect as any, inscribed);
+    const html = mount(ClauseArchitect as Parameters<typeof mount>[0], inscribed);
     expect(html).toContain("Successor briefing covenant [INSCRIBED]");
     expect(html).not.toMatch(/ARTICLE (undefined|NaN)/);
     expect(html).not.toContain("rom(");

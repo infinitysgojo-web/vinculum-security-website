@@ -5,7 +5,7 @@ import { isTypingTarget, resolveHotkey, stepDesk } from "../src/hooks/useSoverei
 import { searchCommands } from "../src/components/commandIndex";
 
 const DASH = readFileSync("src/pages/Dashboard.tsx", "utf8");
-const DESKS = [...DASH.matchAll(/\n    id: "([a-z]+)",\n    division: "[a-z]+",\n    label: "([^"]+)",[\s\S]*?\n    title: "([^"]+)"/g)].map((m) => ({ id: m[1], label: m[2], title: m[3] }));
+const DESKS = [...DASH.matchAll(/\n {4}id: "([a-z]+)",\n {4}division: "[a-z]+",\n {4}label: "([^"]+)",[\s\S]*?\n {4}title: "([^"]+)"/g)].map((m) => ({ id: m[1], label: m[2], title: m[3] }));
 
 describe("hotkeys cycle desks", () => {
   test("[ and ] step backward and forward; Alt+arrows too", () => {
