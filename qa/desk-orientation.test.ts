@@ -27,3 +27,18 @@ describe("optional eighteen-desk orientation", () => {
     for (const q of ["tour", "guide", "orientation"]) expect(searchCommands(q, [])[0]).toMatchObject({ kind: "action", id: "orientation" });
   });
 });
+describe("orientation deep links in the palette", () => {
+  const desks = [
+    { id: "diagnostics", label: "Bond Diagnostics", title: "Desk one" },
+    { id: "sentinel", label: "Sentinel Matrix", title: "Desk two" },
+  ];
+  test("guide plus a desk number opens that desk's orientation", () => {
+    expect(searchCommands("guide 02", desks)[0]).toMatchObject({ kind: "guide", id: "sentinel", number: "02" });
+  });
+  test("tour plus a desk name opens that desk's orientation", () => {
+    expect(searchCommands("tour sentinel", desks)[0]).toMatchObject({ kind: "guide", id: "sentinel" });
+  });
+  test("a bare guide word still opens the general orientation", () => {
+    expect(searchCommands("guide", desks).some((i) => i.kind === "guide")).toBe(false);
+  });
+});

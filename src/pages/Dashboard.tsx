@@ -2077,6 +2077,12 @@ export default function Dashboard() {
           window.setTimeout(() => document.getElementById("vs-desk-title")?.focus(), 60);
         }}
         onAction={onPaletteAction}
+        onGuide={(id) => {
+          const d = DESKS.find((x) => x.id === id);
+          if (!d || !activeWs) return openOrientation();
+          goTo(d);
+          openOrientation();
+        }}
       />
       <ShortcutSheet open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       {activeWs && (
