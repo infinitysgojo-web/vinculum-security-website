@@ -205,12 +205,15 @@ export default function CableComposer() {
   const liveBond = live && signals.weakestBond ? (DOMAINS as readonly string[]).indexOf(signals.weakestBond) : -1;
   const bi = auto ? (liveBond >= 0 ? liveBond : weakest) : manual;
   const rBase = RECIPIENTS[rk];
-  const r = {
-    label: rBase.label,
-    office: oOffice.trim() || rBase.office,
-    frame: rBase.frame,
-    directive: oDirective.trim() || rBase.directive,
-  };
+  const r = useMemo(
+    () => ({
+      label: rBase.label,
+      office: oOffice.trim() || rBase.office,
+      frame: rBase.frame,
+      directive: oDirective.trim() || rBase.directive,
+    }),
+    [rBase, oOffice, oDirective],
+  );
   const cab = CABLES[ck];
   const today = useMemo(() => new Date(), []);
 
