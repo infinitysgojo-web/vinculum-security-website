@@ -106,3 +106,5 @@
 
 - [x] Codex vs dashboard term audit: add Codex Part XV and Appendix D terms missing from the working lexicon
 - [x] Codex vs dashboard system audit: desk numbers and names (01–18) match Part IX
+
+- [x] Refinement pass: desk recalculation tidy (all 16 hook notices cleared), Ctrl+K desk guide entries ("guide 07"), direct browser print polish for dense desks, phone tap targets, guide focus outlines, early storage-full warning
