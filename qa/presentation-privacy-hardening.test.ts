@@ -66,6 +66,7 @@ class El {
     });
   }
   closest(sel: string): El | null {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     for (let e: El | null = this; e; e = e.parent) if (e.matches(sel)) return e;
     return null;
   }

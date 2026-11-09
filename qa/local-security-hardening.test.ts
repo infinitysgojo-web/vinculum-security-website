@@ -232,8 +232,8 @@ describe("7. lock, idle, panic and the single Sentinel owner", () => {
       }
     }
   });
-  test("panic purge still covers the new transactional keys by prefix", () => {
-    const { PURGED_LOCAL_KEY } = require("../src/lib/panicPurge");
+  test("panic purge still covers the new transactional keys by prefix", async () => {
+    const { PURGED_LOCAL_KEY } = await import("../src/lib/panicPurge");
     for (const k of ["vinculum-workspaces:u", "vinculum-workspaces:u:pending", "vinculum-workspaces:u:last-good"]) expect(PURGED_LOCAL_KEY.test(k)).toBe(true);
   });
 });

@@ -205,7 +205,7 @@ test("an apostille carries its canonical state, so a pasted one recomputes; tamp
   expect(ok.clearances).toMatchObject({ passed: d.clearancesPassed, total: 20 });
   expect(ok.floor?.breaches.length).toBeGreaterThan(0);
 
-  const forged = text.replace(/STATUS  : \d+\//, "STATUS  : 19/");
+  const forged = text.replace(/STATUS {2}: \d+\//, "STATUS  : 19/");
   expect((await verifyApostilleText(forged)).verdict).toBe(d.clearancesPassed === 19 ? "confirmed" : "mismatch");
   const lines = text.split("\n");
   const ci = lines.findIndex((l) => l.startsWith("CANON"));
