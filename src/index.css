@@ -841,13 +841,11 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
    horizontally scrolling regions unfold instead of clipping. */
 @media print {
   .desk-surface { overflow: visible !important; }
-  .desk-surface section,
-  .desk-surface table,
   .desk-surface tr,
+  .desk-surface li,
   .desk-surface figure,
   .desk-surface svg,
-  .desk-surface pre,
-  .desk-surface [class*="border"]:not(.desk-surface) { break-inside: avoid; page-break-inside: avoid; }
+  .desk-surface fieldset { break-inside: avoid; page-break-inside: avoid; }
   .desk-surface h2, .desk-surface h3, .desk-surface h4 { break-after: avoid; page-break-after: avoid; }
   .desk-surface [class*="overflow-x-auto"],
   .desk-surface [class*="overflow-auto"] { overflow: visible !important; max-height: none !important; }
