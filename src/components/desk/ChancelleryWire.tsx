@@ -154,7 +154,6 @@ export default function ChancelleryWire({
   useEffect(() => {
     push(diff(prev.current, signals));
     prev.current = signals;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signals]);
 
   useEffect(() => onDispatch((d) => push([{ cls: "DISPATCH", text: `MINTED ${d.kind.toUpperCase()}${d.desk ? ` FROM ${d.desk.toUpperCase()}` : ""} // ${d.ref} // ${d.digest.slice(0, 16)}` }])), []);

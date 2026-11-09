@@ -9,7 +9,11 @@ export type PaletteAction = "seal" | "wire" | "export" | "diff" | "branch" | "ma
 
 export type CommandItem =
   | { kind: "desk"; id: string; number: string; label: string; detail: string; score: number }
-  | { kind: "action"; id: PaletteAction; label: string; detail: string; score: number };
+  | { kind: "action"; id: PaletteAction; label: string; detail: string; score: number }
+  | { kind: "guide"; id: string; number: string; label: string; detail: string; score: number };
+
+/** Words that turn a desk query into a request for that desk's orientation page. */
+const GUIDE_WORDS = ["guide", "orientation", "tour"];
 
 /** Subjects each desk deals with, by dashboard desk id. */
 export const DESK_TOPICS: Record<string, string[]> = {
@@ -62,6 +66,16 @@ export function searchCommands(query: string, desks: ReadonlyArray<PaletteDesk>)
   const deskItem = (d: PaletteDesk, i: number, score: number): CommandItem => ({ kind: "desk", id: d.id, number: num(i), label: d.label, detail: d.title, score });
   if (!q) return desks.map((d, i) => deskItem(d, i, 0));
   const out: CommandItem[] = [];
+  // "guide 11", "tour sentinel", "orientation clauses": open the orientation at that desk.
+  const guideWord = GUIDE_WORDS.find((w) => q.startsWith(`${w} `));
+  if (guideWord) {
+    const rest = q.slice(guideWord.length + 1).trim();
+    if (rest) {
+      for (const hit of searchCommands(rest, desks)) {
+        if (hit.kind === "desk") out.push({ kind: "guide", id: hit.id, number: hit.number, label: `Orientation: ${hit.label}`, detail: "Purpose, key controls and safeguards", score: hit.score + 5 });
+      }
+    }
+  }
   const n = /^\d{1,2}$/.test(q) ? Number(q) : NaN;
   desks.forEach((d, i) => {
     let score = 0;

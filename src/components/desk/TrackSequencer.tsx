@@ -127,7 +127,7 @@ export default function TrackSequencer({ initialDone = [] }: { /** Steps recorde
   // Viable or Fortified = two phases. With no live communal reading, the
   // baseline of one phase applies and the rule is advisory only.
   const communal = linked ? signals.bonds?.communal : undefined;
-  const tol = communal !== undefined ? communalTolerance(communal) : null;
+  const tol = useMemo(() => (communal !== undefined ? communalTolerance(communal) : null), [communal]);
   const tolerance = tol ? tol.phases : 1;
 
   const r = useMemo(() => {
@@ -159,7 +159,7 @@ export default function TrackSequencer({ initialDone = [] }: { /** Steps recorde
     const atLimit = gap >= tolerance;
     const mirage = gap > tolerance;
     return { a, b, gap, reading, counter, nextI, nextII, atLimit, mirage };
-  }, [done, tolerance, tol?.band]);
+  }, [done, tolerance, tol]);
 
   /** The phase Track I has reached while leading beyond the communal tolerance, if any. */
   const badgePhase = offendingPhase(r.a, r.b, tolerance);

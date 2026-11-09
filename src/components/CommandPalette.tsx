@@ -15,12 +15,14 @@ export default function CommandPalette({
   desks,
   onDesk,
   onAction,
+  onGuide,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   desks: ReadonlyArray<PaletteDesk>;
   onDesk: (id: string) => void;
   onAction: (a: PaletteAction) => void;
+  onGuide?: (id: string) => void;
 }) {
   const [q, setQ] = useState("");
   const [i, setI] = useState(0);
@@ -41,6 +43,7 @@ export default function CommandPalette({
     if (!it) return;
     onOpenChange(false);
     if (it.kind === "desk") onDesk(it.id);
+    else if (it.kind === "guide") onGuide?.(it.id);
     else onAction(it.id);
   };
 
@@ -93,7 +96,7 @@ export default function CommandPalette({
               className={`flex cursor-pointer items-baseline gap-3 px-4 py-2 text-sm ${k === i ? "bg-accent/15 text-accent" : "text-primary"}`}
             >
               <span className="w-12 shrink-0 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                {it.kind === "desk" ? `Desk ${it.number}` : "Action"}
+                {it.kind === "desk" ? `Desk ${it.number}` : it.kind === "guide" ? `Guide ${it.number}` : "Action"}
               </span>
               <span className="min-w-0">
                 <span className="font-medium">{it.label}</span>

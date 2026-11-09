@@ -275,7 +275,7 @@ export default function CompoundShockTester() {
     L.push("");
     L.push("END OF STRESS TEST");
     return L.join("\n");
-  }, [theatre, active, strain, band, sequence, bondScores, useLive, liveVector, deductions, failIndex]);
+  }, [theatre, active, strain, band, sequence, bondScores, useLive, liveVector, deductions, failIndex, ALL.length]);
 
   return (
     <div className="space-y-6">

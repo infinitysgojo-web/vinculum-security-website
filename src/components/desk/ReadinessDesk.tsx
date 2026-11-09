@@ -91,9 +91,9 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
   const stage = STAGES[si];
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
-  const locks = linked ? engineLocks(signals) : [];
+  const locks = useMemo(() => (linked ? engineLocks(signals) : []), [linked, signals]);
   const openLocks = locks.filter((l) => !l.held);
-  const audit = linked ? stageGateAudit(signals) : null;
+  const audit = useMemo(() => (linked ? stageGateAudit(signals) : null), [linked, signals]);
   const auditLocked = audit?.locked ?? false;
   // Sovereign readiness gates: every inscribed gate must be attested before certification.
   const sovereignOpen = (signals.customGates ?? []).filter((g) => !g.verified);
@@ -175,7 +175,7 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
     r.lifecycle.forEach((s) => L.push(`  ${s.cleared ? "CLEARED    " : "OUTSTANDING"}  ${s.label} (${s.met}/${s.total})`));
     L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [mission, done, r, stage, locks, linked, signals, openQuestions, questionsOpen]);
+  }, [mission, done, r, stage, locks, linked, signals, openQuestions, questionsOpen, audit]);
 
   let group = "";
   const DIVISIONS: { id: string; title: string; note: string; prefixes: string[] }[] = [

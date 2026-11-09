@@ -106,7 +106,7 @@ export default function VerificationLedger() {
   const mission = useMission();
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
-  const engineLines = linked ? ledgerLines(signals) : [];
+  const engineLines = useMemo(() => (linked ? ledgerLines(signals) : []), [linked, signals]);
   
   const [instrument, setInstrument] = useState("");
   const [seated, setSeated] = useState<string[]>(["civil", "youth"]);

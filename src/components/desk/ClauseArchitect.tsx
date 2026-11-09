@@ -166,7 +166,9 @@ export default function ClauseArchitect() {
 
   // The dispute forum is chosen on Desk 11's enforceability matrix and read here from the bus.
   const forum = FORUMS.find((f) => f.id === signals.disputeForumId) ?? FORUMS.find((f) => f.id === "pca")!;
-  const forumTerms: ForumTerms = { immunityWaived: signals.immunityWaived ?? false, neutralSeat: signals.neutralSeat ?? true };
+  const immunityWaived = signals.immunityWaived ?? false;
+  const neutralSeat = signals.neutralSeat ?? true;
+  const forumTerms: ForumTerms = useMemo(() => ({ immunityWaived, neutralSeat }), [immunityWaived, neutralSeat]);
   const forumFit = forumFitness(forum, forumTerms);
   usePublish("clauses", {
     covenants: [...picked.map((i) => FRAGILITIES[i].label), ...allOwn.map((o) => o.label)],
@@ -230,7 +232,7 @@ export default function ClauseArchitect() {
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     L.push("", `DISPUTE SETTLEMENT (Desk 11 forum: ${forum.name}; venue fitness ${forumFit.fitness} of 100, enforcement friction ${forumFit.friction}${forumFit.immunity ? "; immunity unaddressed" : ""}${forumFit.seat ? "; seat not neutral" : ""})`, forumClause(forum, forumTerms));
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig, allOwn, ownType, live, signals, mandated, forum]);
+  }, [ag, picked, title, parties, office, rig, allOwn, ownType, live, signals, mandated, forum, forumFit, forumTerms]);
 
 
   return (

@@ -205,12 +205,15 @@ export default function CableComposer() {
   const liveBond = live && signals.weakestBond ? (DOMAINS as readonly string[]).indexOf(signals.weakestBond) : -1;
   const bi = auto ? (liveBond >= 0 ? liveBond : weakest) : manual;
   const rBase = RECIPIENTS[rk];
-  const r = {
-    label: rBase.label,
-    office: oOffice.trim() || rBase.office,
-    frame: rBase.frame,
-    directive: oDirective.trim() || rBase.directive,
-  };
+  const r = useMemo(
+    () => ({
+      label: rBase.label,
+      office: oOffice.trim() || rBase.office,
+      frame: rBase.frame,
+      directive: oDirective.trim() || rBase.directive,
+    }),
+    [rBase, oOffice, oDirective],
+  );
   const cab = CABLES[ck];
   const today = useMemo(() => new Date(), []);
 
@@ -281,7 +284,7 @@ Compiled from the published record. No part of this memorandum is machine-genera
 or predictive; every statement above is drawn verbatim from the case file and handbook.
 Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.
 END OF ${cab.tag}`;
-  }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex, live, signals]);
+  }, [c, r, cab, bi, theater, drafter, prec, cav, annex, live, signals]);
 
 
   const copy = async () => {
