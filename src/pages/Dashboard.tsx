@@ -56,6 +56,7 @@ import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
 import DeskGuide from "@/components/mode/DeskGuide";
 import DeskOrientation from "@/components/mode/DeskOrientation";
 import { dismissOrientation, orientationInvited } from "@/components/mode/orientation";
+import { storageUsage } from "@/components/mode/localPersistence";
 import { Button } from "@/components/ui/button";
 import {
   BranchDialog,
@@ -911,6 +912,22 @@ export default function Dashboard() {
     // Re-check storage after the store loads and after each save.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [legacyKey, wsStore.loaded, savedAt]);
+  // Warn once per visit, before the browser refuses saves, that local storage is nearly full.
+  const storageWarned = useRef(false);
+  useEffect(() => {
+    if (storageWarned.current || (!savedAt && wsStore.status !== "full")) return;
+    let live = true;
+    void storageUsage().then((u) => {
+      if (!live || storageWarned.current || !(u.constrained || wsStore.status === "full")) return;
+      storageWarned.current = true;
+      toast.warning("Browser storage is nearly full", {
+        description: "Export a backup from Local data. Nothing is removed automatically.",
+        action: { label: "Local data", onClick: () => setDialog("local-data") },
+        duration: 12000,
+      });
+    });
+    return () => { live = false; };
+  }, [savedAt, wsStore.status]);
   const exportNotice = activeWs?.mode === "preset" ? (activeWs.derived ? `${DERIVED_NOTICE}\n${TRAINING_NOTICE}` : TRAINING_NOTICE) : "";
 
   /* ---------------------------------------------------------------- */
