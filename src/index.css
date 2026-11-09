@@ -835,3 +835,39 @@ html.vs-shroud [role="radio"] { pointer-events: auto !important; }
   outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
 }
+
+/* ---------- Direct browser printing of dense desks ----------
+   Keeps cards, tables and instrument tiers whole across page breaks and lets
+   horizontally scrolling regions unfold instead of clipping. */
+@media print {
+  .desk-surface { overflow: visible !important; }
+  .desk-surface section,
+  .desk-surface table,
+  .desk-surface tr,
+  .desk-surface figure,
+  .desk-surface svg,
+  .desk-surface pre,
+  .desk-surface [class*="border"]:not(.desk-surface) { break-inside: avoid; page-break-inside: avoid; }
+  .desk-surface h2, .desk-surface h3, .desk-surface h4 { break-after: avoid; page-break-after: avoid; }
+  .desk-surface [class*="overflow-x-auto"],
+  .desk-surface [class*="overflow-auto"] { overflow: visible !important; max-height: none !important; }
+  .desk-surface pre, .desk-surface textarea { white-space: pre-wrap !important; overflow-wrap: anywhere; }
+  .desk-surface [class*="grid-cols"] { gap: 0.5rem !important; }
+  .desk-surface [class*="shadow"] { box-shadow: none !important; }
+}
+
+/* ---------- Touch targets on phone-width screens ---------- */
+@media (pointer: coarse) and (max-width: 640px) {
+  [data-testid="ops-deck"] button,
+  [data-testid="desk-orientation"] button,
+  [data-testid="orientation-invitation"] button,
+  .desk-surface button { min-height: 2.75rem; min-width: 2.75rem; }
+  .desk-surface select,
+  [data-testid="desk-orientation"] select { min-height: 2.75rem; }
+}
+
+/* ---------- Keyboard focus inside the desk orientation ---------- */
+[data-testid="desk-orientation"] :is(button, select, a):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
