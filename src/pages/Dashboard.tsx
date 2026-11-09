@@ -897,6 +897,8 @@ export default function Dashboard() {
   const [sealing, setSealing] = useState(false);
   const ledgerNow = useSessionLedger();
   const scenario = activeWs?.scenario ? scenarioById(activeWs.scenario.id) : undefined;
+  // Re-read the stored mode whenever the open workspace changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const lastMode = useMemo(() => readMode(), [activeId]);
   const legacyKey = uid ? `vinculum-session:${uid}` : null;
   const legacyDraft = useMemo(() => {
@@ -906,6 +908,8 @@ export default function Dashboard() {
     } catch {
       return false;
     }
+    // Re-check storage after the store loads and after each save.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [legacyKey, wsStore.loaded, savedAt]);
   const exportNotice = activeWs?.mode === "preset" ? (activeWs.derived ? `${DERIVED_NOTICE}\n${TRAINING_NOTICE}` : TRAINING_NOTICE) : "";
 

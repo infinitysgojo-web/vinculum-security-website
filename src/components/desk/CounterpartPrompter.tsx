@@ -164,7 +164,7 @@ export default function CounterpartPrompter() {
     if (live) L.push("", ...telemetryLines(signals));
     L.push("", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     return L.join("\n");
-  }, [active, bond, questions, live, signals, tactics, room]);
+  }, [active, bond, live, signals, tactics, room]);
 
 
   return (

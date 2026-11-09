@@ -18,10 +18,13 @@ export default function MirrorDesk() {
   // Linked: the live theatre's own bond vector can be drawn on the radar. Unlinked: historical cases only.
   const [linked, setLinked] = useState(true);
   const [showLive, setShowLive] = useState(true);
-  const liveVector =
-    linked && signals.bonds
-      ? [signals.bonds.interpersonal, signals.bonds.communal, signals.bonds.intergenerational, signals.bonds.institutional]
-      : null;
+  const liveVector = useMemo(
+    () =>
+      linked && signals.bonds
+        ? [signals.bonds.interpersonal, signals.bonds.communal, signals.bonds.intergenerational, signals.bonds.institutional]
+        : null,
+    [linked, signals.bonds],
+  );
   const analogue = linked && signals.analogue ? CASES.find((c) => c.shortTitle === signals.analogue) : undefined;
   // The three nearest documented cases from the live reading, closest first.
   const nearestThree = linked

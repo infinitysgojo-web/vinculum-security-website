@@ -695,7 +695,6 @@ export function usePublish(desk: string, patch: Signals) {
   const key = signalValueKey(patch);
   useEffect(() => {
     publish(desk, patchRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [desk, key, epoch, publish]);
 }
 

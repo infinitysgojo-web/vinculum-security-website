@@ -255,7 +255,8 @@ export default function BondDiagnostic({ scores: controlled, onScoresChange, str
 
   const values = LEVELS.map((l) => scores[l.key]) as [number, number, number, number];
   const mean = values.reduce((a, b) => a + b, 0) / 4;
-  const reading = useMemo(() => mathReading(values), [values.join(",")]);
+  const [v0, v1, v2, v3] = values;
+  const reading = useMemo(() => mathReading([v0, v1, v2, v3]), [v0, v1, v2, v3]);
 
   const weakest = useMemo(() => {
     let w = LEVELS[0];

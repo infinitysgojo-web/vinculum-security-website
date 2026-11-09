@@ -230,7 +230,7 @@ export default function ClauseArchitect() {
     L.push("Drafting aid only. Compiled deterministically from the doctrine; not legal advice. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.");
     L.push("", `DISPUTE SETTLEMENT (Desk 11 forum: ${forum.name}; venue fitness ${forumFit.fitness} of 100, enforcement friction ${forumFit.friction}${forumFit.immunity ? "; immunity unaddressed" : ""}${forumFit.seat ? "; seat not neutral" : ""})`, forumClause(forum, forumTerms));
     return L.join("\n");
-  }, [ag, picked, title, parties, office, rig, allOwn, ownType, live, signals, mandated, forum]);
+  }, [ag, picked, title, parties, office, rig, allOwn, ownType, live, signals, mandated, forum, forumFit, forumTerms]);
 
 
   return (

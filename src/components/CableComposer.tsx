@@ -281,7 +281,7 @@ Compiled from the published record. No part of this memorandum is machine-genera
 or predictive; every statement above is drawn verbatim from the case file and handbook.
 Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.
 END OF ${cab.tag}`;
-  }, [c, r, cab, bi, today, theater, drafter, prec, cav, annex, live, signals]);
+  }, [c, r, cab, bi, theater, drafter, prec, cav, annex, live, signals]);
 
 
   const copy = async () => {

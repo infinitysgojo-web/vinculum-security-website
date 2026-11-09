@@ -288,7 +288,7 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
   const [own, setOwn] = useState<Actor[]>([]);
   const [ownFric, setOwnFric] = useState<{ a: string; b: string; text: string }[]>([]);
   const [nl, setNl] = useState(""); const [nb, setNb] = useState(1); const [nc, setNc] = useState(""); const [nf, setNf] = useState("");
-  const ACTORS = [...BASE_ACTORS, ...own];
+  const ACTORS = useMemo(() => [...BASE_ACTORS, ...own], [own]);
   const [draftQuestions, setDraftQuestions] = useState<[string, string, string, string]>(["", "", "", ""]);
   const addParty = () => {
     if (!nl.trim()) return;
@@ -424,7 +424,7 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
     L.push("", `CONDITIONAL ESCROW: ${escrow.frozen ? "FROZEN (rupture at or above 60%)" : `${escrow.released}% of ${escrow.total}% released; clawback ${escrowTerms.clawback}% and performance bond ${escrowTerms.bond}% ${escrow.ceded ? "discharged at Final Cession" : "held until Final Cession"}`}`);
     escrow.tranches.forEach((t) => L.push(`  [${t.met ? "x" : " "}] ${t.label} (${t.share}%): ${t.condition}`));
     return L.join("\n");
-  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow, escrowTerms, resources, res]);
+  }, [theatre, seated, frictions, bondGaps, spoiler, linked, signals, escrow, escrowTerms, resources, res, ACTORS]);
 
   return (
     <div className="w-full min-w-0">

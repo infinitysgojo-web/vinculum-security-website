@@ -61,7 +61,7 @@ export default function HandoverProtocol() {
   const mission = useMission();
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
-  const engineLines = linked ? handoverLines(signals) : [];
+  const engineLines = useMemo(() => (linked ? handoverLines(signals) : []), [linked, signals]);
   const [mandate, setMandate] = useState("");
   const [successor, setSuccessor] = useState("");
   const [cleared, setCleared] = useState<string[]>([]);
