@@ -166,7 +166,9 @@ export default function ClauseArchitect() {
 
   // The dispute forum is chosen on Desk 11's enforceability matrix and read here from the bus.
   const forum = FORUMS.find((f) => f.id === signals.disputeForumId) ?? FORUMS.find((f) => f.id === "pca")!;
-  const forumTerms: ForumTerms = { immunityWaived: signals.immunityWaived ?? false, neutralSeat: signals.neutralSeat ?? true };
+  const immunityWaived = signals.immunityWaived ?? false;
+  const neutralSeat = signals.neutralSeat ?? true;
+  const forumTerms: ForumTerms = useMemo(() => ({ immunityWaived, neutralSeat }), [immunityWaived, neutralSeat]);
   const forumFit = forumFitness(forum, forumTerms);
   usePublish("clauses", {
     covenants: [...picked.map((i) => FRAGILITIES[i].label), ...allOwn.map((o) => o.label)],

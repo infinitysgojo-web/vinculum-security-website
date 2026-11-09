@@ -91,7 +91,7 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
   const stage = STAGES[si];
   const { signals } = useEngine();
   const [linked, setLinked] = useState(true);
-  const locks = linked ? engineLocks(signals) : [];
+  const locks = useMemo(() => (linked ? engineLocks(signals) : []), [linked, signals]);
   const openLocks = locks.filter((l) => !l.held);
   const audit = useMemo(() => (linked ? stageGateAudit(signals) : null), [linked, signals]);
   const auditLocked = audit?.locked ?? false;
