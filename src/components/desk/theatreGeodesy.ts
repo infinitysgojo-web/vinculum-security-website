@@ -30,7 +30,14 @@ const RAD2DEG = 180 / Math.PI;
 /**
  * Great-circle distance and initial forward bearing between two coordinates.
  */
-export function bilateralGeodesic(from: LatLng, to: LatLng): GeodesicResult {
+const clampLatLng = (p: LatLng): LatLng => ({
+  lat: Number.isFinite(p.lat) ? Math.max(-90, Math.min(90, p.lat)) : 0,
+  lng: Number.isFinite(p.lng) ? ((((p.lng + 180) % 360) + 360) % 360) - 180 : 0,
+});
+
+export function bilateralGeodesic(rawFrom: LatLng, rawTo: LatLng): GeodesicResult {
+  const from = clampLatLng(rawFrom);
+  const to = clampLatLng(rawTo);
   const phi1 = from.lat * DEG2RAD;
   const phi2 = to.lat * DEG2RAD;
   const deltaPhi = (to.lat - from.lat) * DEG2RAD;

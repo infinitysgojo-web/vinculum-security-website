@@ -33,7 +33,8 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
   const coeff = (a: Party, b: Party) => {
     const va = vec(a);
     const vb = vec(b);
-    return Math.round((Math.sqrt(va.reduce((n, x, i) => n + (x - vb[i]) ** 2, 0)) / MAX_DIST) * 100) / 100;
+    const d = Math.sqrt(va.reduce((n, x, i) => n + (x - (vb[i] ?? x)) ** 2, 0)) / MAX_DIST;
+    return Number.isFinite(d) ? Math.round(Math.max(0, Math.min(1, d)) * 100) / 100 : 0;
   };
 
   const limIdx = Math.max(0, BONDS.findIndex((b) => b === signals.weakestBond));
