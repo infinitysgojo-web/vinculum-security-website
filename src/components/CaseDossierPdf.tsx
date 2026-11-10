@@ -11,7 +11,7 @@ import {
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import { DOMAINS, type CaseStudy } from "@/content/cases";
 import { mathReading, holdsFloor, bondBand, VIABLE_FLOOR } from "@/components/desk/engine";
-import { Neatline } from "@/components/pdf/Neatline";
+import { FrontCover, BackCover } from "@/components/pdf/BookCover";
 import mark from "@/assets/vinculum-mark.png";
 import serifRegular from "@/assets/fonts/CormorantGaramond-Regular.ttf";
 import serifItalic from "@/assets/fonts/CormorantGaramond-Italic.ttf";
@@ -263,13 +263,19 @@ const s = StyleSheet.create({
   rationaleText: { fontSize: 10, width: "74%" },
 
   h2: {
-    fontSize: 14,
+    fontSize: 13.5,
+    letterSpacing: 1.6,
+    textTransform: "uppercase",
     color: NAVY,
-    marginTop: 20,
-    marginBottom: 4,
-    borderBottomWidth: 0.7,
-    borderBottomColor: BRASS,
-    paddingBottom: 5,
+    marginTop: 24,
+    marginBottom: 8,
+    paddingVertical: 5,
+    paddingLeft: 9,
+    borderLeftWidth: 2.4,
+    borderLeftColor: BRASS,
+    borderBottomWidth: 0.5,
+    borderBottomColor: RULE,
+    backgroundColor: PARCHMENT,
   },
   h3: {
     fontFamily: "InterDoc",
@@ -291,6 +297,11 @@ const s = StyleSheet.create({
     borderLeftColor: BRASS,
   },
   body: { fontSize: 10.5, marginBottom: 8, textAlign: "justify" },
+  contents: { borderTopWidth: 0.6, borderBottomWidth: 0.6, borderColor: BRASS, paddingVertical: 8, marginTop: 14, marginBottom: 4 },
+  contentsLabel: { fontFamily: "InterDoc", fontSize: 6, letterSpacing: 2, color: MUTED, textTransform: "uppercase", marginBottom: 4 },
+  contentsRow: { flexDirection: "row", fontSize: 10, color: NAVY, marginBottom: 1 },
+  contentsNum: { width: 26, fontWeight: 600 },
+  endMark: { fontFamily: "InterDoc", fontSize: 6.4, letterSpacing: 2.4, color: MUTED, textTransform: "uppercase", textAlign: "center", marginTop: 26, paddingTop: 8, borderTopWidth: 0.6, borderTopColor: BRASS },
   note: { fontSize: 8.8, color: MUTED, fontStyle: "italic", marginTop: 8 },
   quote: {
     marginTop: 14,
@@ -445,57 +456,20 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
       creator="Vinculum Security"
       producer="Vinculum Security"
     >
-      {/* ---------------- FRONT COVER ---------------- */}
-      <Page size="A4" style={s.cover}>
-        <Neatline outer={s.frameOuter} inner={s.coverFrame}>
-          <View style={s.coverTop}>
-            <Image style={s.emblem} src={mark} />
-            <Text style={s.coverWordmark}>Vinculum Security</Text>
-            <Text style={s.coverMotto}>Pro Omni Humanitate</Text>
-            <View style={s.coverHair} />
-            <Text style={s.coverLabel}>A Doctrine of Relational Security</Text>
-          </View>
-
-          <View style={s.coverMid}>
-            <Text style={s.coverSeries}>Executive Dossier · Applied Case Engagement</Text>
-            <View style={s.coverTitleWrap}>
-              <Text style={s.coverTitle}>{c.title}</Text>
-            </View>
-            <Text style={s.coverSub}>
-              {c.region} · {c.era}
-            </Text>
-            <Text style={s.coverPillar}>Primary pillar: {c.pillar}</Text>
-          </View>
-
-          <View style={s.coverFoot}>
-            <View style={s.coverFootRow}>
-              <View style={s.coverFootCell}>
-                <Text style={s.coverFootLabel}>Document reference</Text>
-                <Text style={s.coverFootValue}>{docRef}</Text>
-              </View>
-              <View style={s.coverFootCell}>
-                <Text style={s.coverFootLabel}>Doctrine section</Text>
-                <Text style={s.coverFootValue}>{c.ref}</Text>
-              </View>
-              <View style={s.coverFootCell}>
-                <Text style={s.coverFootLabel}>Prepared by</Text>
-                <Text style={s.coverFootValue}>{AUTHOR_NAME}</Text>
-              </View>
-            </View>
-            <View style={s.coverFootRow}>
-              <View style={s.coverFootCell}>
-                <Text style={s.coverFootLabel}>Registration</Text>
-                <Text style={s.coverFootValue}>Statutorily protected works</Text>
-              </View>
-              <View style={s.coverFootCell}>
-                <Text style={s.coverFootLabel}>Classification</Text>
-                <Text style={s.coverFootValue}>Unrestricted · Public Record</Text>
-              </View>
-            </View>
-            <Text style={s.statutoryNotice}>Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.</Text>
-          </View>
-        </Neatline>
-      </Page>
+      <FrontCover
+        mark={mark}
+        series="Chancellery Dossier · Applied Case Engagement"
+        kicker={`Section ${c.ref} · ${c.region} · ${c.era}`}
+        title={c.title}
+        subtitle={`Primary pillar: ${c.pillar}`}
+        rows={[
+          ["Document reference", docRef],
+          ["Doctrine section", c.ref],
+          ["Prepared by", AUTHOR_NAME],
+          ["Classification", "Unrestricted · Public record"],
+        ]}
+        notice="Registered and protected under statutory copyright law. All statutory rights reserved."
+      />
 
       {/* ---------------- BODY ---------------- */}
       <Page size="A4" style={s.page}>
@@ -515,12 +489,27 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
           rows={[
             { label: "Document reference", value: docRef },
             { label: "Prepared by", value: AUTHOR_NAME },
-            { label: "Registration", value: "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved" },
             { label: "Theater", value: c.region },
             { label: "Period of record", value: c.era },
             { label: "Canonical record", value: url },
           ]}
         />
+
+        <View style={s.contents} wrap={false}>
+          <Text style={s.contentsLabel}>Compartments of this dossier</Text>
+          {[
+            ["I.", "Executive Overview"],
+            ["II.", "The Four-Bond Continuum Matrix"],
+            ["III.", "Doctrinal Findings"],
+            ["IV.", "Applied Protocols for Envoys"],
+            ["V.", "Sources of Record"],
+          ].map(([n, t]) => (
+            <View key={n} style={s.contentsRow}>
+              <Text style={s.contentsNum}>{n}</Text>
+              <Text>{t}</Text>
+            </View>
+          ))}
+        </View>
 
         <Text style={s.h2} minPresenceAhead={36}>I. Executive Overview</Text>
         <Text style={s.abstract}>{c.summary}</Text>
@@ -591,43 +580,22 @@ export function DossierDocument({ c }: { c: CaseStudy }) {
             <Text style={s.source}>{src}</Text>
           </View>
         ))}
+        <Text style={s.endMark} wrap={false}>End of dossier · {docRef}</Text>
       </Page>
 
-      {/* ---------------- BACK COVER ---------------- */}
-      <Page size="A4" style={s.cover}>
-        <Neatline outer={s.frameOuter} inner={s.backFrame}>
-          <View style={s.coverTop}>
-            <Image style={s.emblemSm} src={mark} />
-            <Text style={[s.coverWordmark, { fontSize: 17, letterSpacing: 4.5 }]}>
-              Vinculum Security
-            </Text>
-            <Text style={s.coverMotto}>Pro Omni Humanitate</Text>
-            <View style={s.coverHair} />
-            <Text style={s.coverLabel}>A Doctrine of Relational Security</Text>
-          </View>
-
-          <Text style={s.backLead}>
-            This dossier is drawn from Vinculum Security: The Fortified Doctrine, Expanded Version,
-            Final Edition, Section {c.ref}, and Vinculum Diplomacy: The Practitioner Handbook, Final
-            Edition, Section 12. Both works are by {AUTHOR_NAME}.
-          </Text>
-
-          <View style={s.colophon}>
-            <Text>
-              {AUTHOR_NAME}. All statutory rights reserved.
-            </Text>
-            <Text>
-              Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved. Released under
-              Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA
-              4.0).
-            </Text>
-            <Text>
-              Document reference {docRef} · Unrestricted public record.
-            </Text>
-            <Text>{url}</Text>
-          </View>
-        </Neatline>
-      </Page>
+      <BackCover
+        mark={mark}
+        lead={[
+          `This dossier is drawn from Vinculum Security: The Fortified Doctrine, Expanded Version, Final Edition, Section ${c.ref}, and Vinculum Diplomacy: The Practitioner Handbook, Final Edition, Section 12. Both works are by ${AUTHOR_NAME}.`,
+        ]}
+        rows={[
+          ["Document reference", docRef],
+          ["Canonical record", url],
+          ["Licence", "CC BY-NC-SA 4.0"],
+          ["Classification", "Unrestricted · Public record"],
+        ]}
+        notice={`${AUTHOR_NAME}. An original work registered and protected under statutory copyright law and international conventions. Any use beyond the licence stated above requires the author’s written permission. All statutory rights reserved.`}
+      />
     </Document>
   );
 }

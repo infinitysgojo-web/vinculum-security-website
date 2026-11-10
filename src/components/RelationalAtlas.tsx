@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
+import { holdsFloor } from "@/components/desk/engine";
 import { CASES, DOMAINS, type CaseStudy, type Region } from "@/content/cases";
 import { LAND_PATH, SPHERE_PATH, MAP_W, MAP_H, COUNTRY_WORLD, PIN_XY } from "@/content/geo";
 import { tick, soundEnabled, setSoundEnabled, onSoundChange } from "@/lib/chancelleryHaptics";
@@ -608,8 +609,29 @@ export default function RelationalAtlas() {
 
   const badge = lit && COORDS[lit] && (
     <div className="absolute top-2 right-2 sm:top-3 sm:right-3 max-w-[55%] border border-brass/50 bg-background/95 px-1.5 py-1 sm:px-2.5 sm:py-1.5 text-right">
-      <p className="hidden sm:block text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Nominal reference</p>
+      {(() => {
+        const c = CASES.find((x) => x.slug === lit);
+        return c ? (
+          <>
+            <p className="font-serif text-[12px] sm:text-sm leading-tight text-primary truncate">{c.shortTitle}</p>
+            <p className="hidden sm:block text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-0.5">
+              Section {c.ref} · {c.era}
+            </p>
+          </>
+        ) : null;
+      })()}
+      <p className="hidden sm:block text-[9px] uppercase tracking-[0.2em] text-muted-foreground mt-1 border-t border-brass/30 pt-1">Nominal reference</p>
       <p className="font-mono text-[10px] sm:text-[11px] text-primary whitespace-nowrap">{COORDS[lit]}</p>
+      {(() => {
+        const c = CASES.find((x) => x.slug === lit);
+        if (!c) return null;
+        const below = c.scores.filter((s) => !holdsFloor(s)).length;
+        return (
+          <p className="hidden sm:block text-[9px] uppercase tracking-[0.18em] mt-0.5 text-muted-foreground">
+            {below === 0 ? "All four bonds above the 3.0 floor" : `${below} of 4 bonds at or below 3.0`}
+          </p>
+        );
+      })()}
     </div>
   );
 

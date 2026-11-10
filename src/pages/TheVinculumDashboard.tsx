@@ -145,8 +145,8 @@ export default function TheVinculumDashboard() {
               accords collapse, the cost is measured in violent relapse and institutional devastation.
             </p>
             <p>
-              <strong>The Vinculum Dashboard</strong> (Statutorily Registered & Protected), driven by The Vinculum Unified Operational
-              Nervous System (Protected Proprietary Architecture), was engineered by James Wesley Ndua to replace subjective
+              <strong>The Vinculum Dashboard</strong>, driven by The Vinculum Unified Operational
+              Nervous System, was engineered by James Wesley Ndua to replace subjective
               optimism with <em>Deterministic Relational Law</em> (<span className="italic">Lex Relationalis Determinata</span>).
               It treats a peace accord not as a static text, but as a dynamic relational structure governed by strict
               mathematical bounds: the weakest bond determines systemic capacity, diplomatic tracks must stay
@@ -319,13 +319,10 @@ export default function TheVinculumDashboard() {
           </div>
           <div className="mt-8 pt-6 border-t border-brass/30 text-[11px] text-muted-foreground space-y-1">
             <p>
-              <strong>Statutory Protection:</strong> The Vinculum Dashboard is an original proprietary work registered under statutory copyright law. All Rights Reserved.
-            </p>
-            <p>
-              <strong>Core Nervous System:</strong> The Vinculum Unified Operational Nervous System is registered and protected by statutory copyright law. Unauthorized copying, decompilation, or derivation is strictly prohibited.
-            </p>
-            <p>
-              <strong>Doctrinal Foundation:</strong> Vinculum Security & Vinculum Diplomacy are protected under registered statutory copyright. Copyright © James Wesley Ndua.
+              <strong>Statutory Protection:</strong> The Vinculum Dashboard, The Vinculum Unified Operational Nervous System, and the
+              doctrines of Vinculum Security and Vinculum Diplomacy are original works by James Wesley Ndua, registered and protected
+              under statutory copyright law. Unauthorized copying, decompilation, or derivation is strictly prohibited. All statutory
+              rights reserved.
             </p>
           </div>
 

@@ -7,7 +7,7 @@ import serifSemiBold from "@/assets/fonts/CormorantGaramond-SemiBold.ttf";
 import sansRegular from "@/assets/fonts/Inter-Regular.ttf";
 import sansSemiBold from "@/assets/fonts/Inter-SemiBold.ttf";
 import type { MissionProfile } from "./mission";
-import { Neatline } from "@/components/pdf/Neatline";
+import { FrontCover, BackCover } from "@/components/pdf/BookCover";
 
 /**
  * Publication-grade PDF for every dashboard desk document, matching the
@@ -40,6 +40,7 @@ const MUTED = "#5F6470";
 const SLATE = "#2F3A4A";
 
 const s = StyleSheet.create({
+  endMark: { fontFamily: "InterDoc", fontSize: 6.4, letterSpacing: 2.4, color: "#5F6470", textTransform: "uppercase", textAlign: "center", marginTop: 26, paddingTop: 8, borderTopWidth: 0.6, borderTopColor: "#D4A24C" },
   cover: { fontFamily: "Cormorant", color: INK, backgroundColor: "#FFFFFF" },
   frameOuter: { margin: 26 },
   coverFrame: {
@@ -331,34 +332,21 @@ export async function buildDeskDossier({
       author={AUTHOR_NAME}
       subject={eyebrow}
     >
-      <Page size="A4" style={s.cover}>
-        <Neatline outer={s.frameOuter} inner={s.coverFrame}>
-          <View style={s.center}>
-            <Image src={mark} style={s.emblem} />
-            <Text style={s.wordmark}>Vinculum Security</Text>
-            <Text style={s.motto}>Pro Omni Humanitate</Text>
-            <View style={s.hair} />
-            <Text style={s.series}>Chancellery Working Document · {eyebrow}</Text>
-            <Text style={s.docTitle}>{deskTitle}</Text>
-            <Text style={s.sub}>A Doctrine of Relational Security</Text>
-          </View>
-          <View style={s.ledger}>
-            {[
-              ["Document reference", reference],
-              ["Mission or theatre", theatre],
-              ["Parties of record", profile.parties.trim() || "Not recorded"],
-              ["Drafting officer", profile.officer.trim() || "Not recorded"],
-              ["Registered works", "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved"],
-              ["Classification", classification],
-            ].map(([k, v]) => (
-              <View key={k} style={s.ledgerRow}>
-                <Text style={s.ledgerKey}>{k}</Text>
-                <Text style={s.ledgerVal}>{v}</Text>
-              </View>
-            ))}
-          </View>
-        </Neatline>
-      </Page>
+      <FrontCover
+        mark={mark}
+        series={`Chancellery Working Document · ${eyebrow}`}
+        kicker="A Doctrine of Relational Security"
+        title={deskTitle}
+        subtitle={theatre}
+        rows={[
+          ["Document reference", reference],
+          ["Mission or theatre", theatre],
+          ["Parties of record", profile.parties.trim() || "Not recorded"],
+          ["Drafting officer", profile.officer.trim() || "Not recorded"],
+          ["Classification", classification],
+        ]}
+        notice="Registered and protected under statutory copyright law. All statutory rights reserved."
+      />
 
       <Page size="A4" style={s.page}>
         <View style={s.runHead} fixed>
@@ -371,7 +359,8 @@ export async function buildDeskDossier({
         <Text style={[s.runText, s.pageNo]} fixed render={({ pageNumber, totalPages }) => `${pageNumber} of ${totalPages}`} />
         <Text style={s.docTitle}>{deskTitle}</Text>
         <View style={s.gap} />
-        <Body text={text} />
+        <Body text={text.split("Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.").join("").replace(/[ \t]+$/gm, "").replace(/\n{3,}/g, "\n\n").trimEnd()} />
+        <Text style={s.endMark} wrap={false}>End of document · {reference}</Text>
       </Page>
 
       {attestation && (
@@ -446,39 +435,22 @@ export async function buildDeskDossier({
         </Page>
       )}
 
-      <Page size="A4" style={s.cover}>
-        <Neatline outer={s.frameOuter} inner={s.coverFrame}>
-          <View />
-          <View style={s.center}>
-            <Image src={mark} style={s.emblemSm} />
-            <Text style={[s.wordmark, { fontSize: 16, letterSpacing: 4.5 }]}>Vinculum Security</Text>
-            <Text style={s.motto}>Pro Omni Humanitate</Text>
-            <View style={s.hair} />
-            <Text style={s.backLead}>
-              Compiled under Vinculum Security: The Fortified Doctrine and Vinculum Diplomacy: The
-              Practitioner Handbook. Every reading in this document is rule-based and was computed in the
-              practitioner's own browser. Nothing entered was stored or transmitted.
-            </Text>
-            <Text style={s.backLead}>
-              {AUTHOR_NAME}. Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.
-              CC BY-NC-SA 4.0.
-            </Text>
-          </View>
-          <View>
-            <View style={s.ledger}>
-              <View style={s.ledgerRow}>
-                <Text style={s.ledgerKey}>Record</Text>
-                <Text style={s.ledgerVal}>{SITE_URL}</Text>
-              </View>
-              <View style={s.ledgerRow}>
-                <Text style={s.ledgerKey}>Classification</Text>
-                <Text style={s.ledgerVal}>{classification}</Text>
-              </View>
-            </View>
-            <Apostille attestation={attestation} />
-          </View>
-        </Neatline>
-      </Page>
+      <BackCover
+        mark={mark}
+        lead={[
+          "Compiled under Vinculum Security: The Fortified Doctrine and Vinculum Diplomacy: The Practitioner Handbook. Every reading in this document is rule-based and was computed in the practitioner's own browser. Nothing entered was stored or transmitted.",
+        ]}
+        rows={[
+          ["Record", SITE_URL],
+          ["Licence", "CC BY-NC-SA 4.0"],
+          ["Classification", classification],
+        ]}
+        notice={`${AUTHOR_NAME}. An original work registered and protected under statutory copyright law and international conventions. Any use beyond the licence stated above requires the author’s written permission. All statutory rights reserved.`}
+      >
+        <View style={{ backgroundColor: "#FFFFFF" }}>
+          <Apostille attestation={attestation} />
+        </View>
+      </BackCover>
     </Document>
   );
 

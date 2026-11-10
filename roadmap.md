@@ -113,3 +113,6 @@
 
 - [x] Reshaped enhancements: division words in quick search, click-to-copy live digest with spoken confirmation; others already in place or declined
 - [x] Desk 13: clause article names searchable in Command Palette
+
+- [x] Dossier PDFs: book-style front and back covers, refined interior (case + desk dossiers)
+- [x] Reduce repeated statutory rights notice (public site + PDFs), keep one full statement per surface
