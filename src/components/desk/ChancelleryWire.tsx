@@ -144,6 +144,16 @@ export default function ChancelleryWire({
   const prev = useRef<Signals>(signals);
   const box = useRef<HTMLDivElement>(null);
   const digest = useStateDigest(signals);
+  const [copied, setCopied] = useState(false);
+  const copyDigest = async () => {
+    try {
+      await copyText(digest);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   const push = (rows: { cls: WireClass; text: string }[]) => {
     if (!rows.length) return;
@@ -248,7 +258,15 @@ export default function ChancelleryWire({
                 </span>
               </div>
               <p className="mb-1 font-mono text-[10px] tabular-nums uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]">
-                Live state digest · <span className="text-primary normal-case">{digest ? digest : "computing"}</span>
+                Live state digest ·{" "}
+                {digest ? (
+                  <button type="button" onClick={copyDigest} title="Copy the full digest" aria-label="Copy the live state digest" className="text-primary normal-case underline-offset-2 hover:underline focus-visible:outline focus-visible:outline-1 focus-visible:outline-accent [overflow-wrap:anywhere] text-left">
+                    {digest}
+                  </button>
+                ) : (
+                  <span className="text-primary normal-case">computing</span>
+                )}
+                <span role="status" aria-live="polite" className="ml-2 text-accent normal-case">{copied ? "Copied" : ""}</span>
               </p>
               <div ref={box} className="h-48 sm:h-56 [@media(max-height:720px)]:h-32 overflow-y-auto border border-border bg-background p-2 font-mono text-[10px] tabular-nums leading-relaxed">
                 {shown.length === 0 ? (

@@ -3,7 +3,15 @@
  * system actions. Pure: the palette renders whatever searchCommands() returns.
  */
 
-export type PaletteDesk = { id: string; label: string; title: string };
+export type PaletteDesk = { id: string; label: string; title: string; division?: string };
+
+/** Ways an operator names a division in the search box: "div 1", "division iii", "legal". */
+export const DIVISION_ALIASES: Record<string, string[]> = {
+  assess: ["div 1", "div i", "division 1", "division i", "assessment", "early warning"],
+  engage: ["div 2", "div ii", "division 2", "division ii", "engagement", "diplomatic engagement"],
+  legal: ["div 3", "div iii", "division 3", "division iii", "legal architecture"],
+  govern: ["div 4", "div iv", "division 4", "division iv", "governance", "mission governance"],
+};
 
 export type PaletteAction = "seal" | "wire" | "export" | "diff" | "branch" | "mask" | "panic" | "shortcuts" | "summary" | "timeline" | "inspector" | "ledger" | "orientation";
 
@@ -77,7 +85,9 @@ export function searchCommands(query: string, desks: ReadonlyArray<PaletteDesk>)
     }
   }
   const n = /^\d{1,2}$/.test(q) ? Number(q) : NaN;
+  const divisionHit = Object.entries(DIVISION_ALIASES).find(([, words]) => words.includes(q))?.[0];
   desks.forEach((d, i) => {
+    if (divisionHit && d.division === divisionHit) { out.push(deskItem(d, i, 75)); return; }
     let score = 0;
     if (n === i + 1) score = 100;
     const label = norm(d.label);

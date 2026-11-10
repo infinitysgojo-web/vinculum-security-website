@@ -110,3 +110,5 @@
 - [x] Refinement pass: desk recalculation tidy (all 16 hook notices cleared), Ctrl+K desk guide entries ("guide 07"), direct browser print polish for dense desks, phone tap targets, guide focus outlines, early storage-full warning
 
 - [x] 50-point list: verified subset applied (forum distance and delegation gap input guards); rest declined as new features or already in place
+
+- [x] Reshaped enhancements: division words in quick search, click-to-copy live digest with spoken confirmation; others already in place or declined
