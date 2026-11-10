@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { bilateralGeodesic } from "@/components/desk/theatreGeodesy";
 describe("geodesy input bounds", () => {
   it("out-of-range coordinates give the same result as their wrapped equivalents", () => {
