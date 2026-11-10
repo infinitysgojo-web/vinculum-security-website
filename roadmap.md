@@ -112,3 +112,4 @@
 - [x] 50-point list: verified subset applied (forum distance and delegation gap input guards); rest declined as new features or already in place
 
 - [x] Reshaped enhancements: division words in quick search, click-to-copy live digest with spoken confirmation; others already in place or declined
+- [x] Desk 13: clause article names searchable in Command Palette

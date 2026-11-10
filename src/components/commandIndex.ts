@@ -34,7 +34,7 @@ export const DESK_TOPICS: Record<string, string[]> = {
   multiparty: ["escrow", "tranche", "clawback", "friction", "veto", "parties", "resource", "waterfall", "uti possidetis", "demarcation"],
   tracks: ["track", "elite pact", "sequencing", "communal track"],
   audit: ["safeguard", "stakeholder", "field audit"],
-  clauses: ["covenant", "clause", "continuity", "vclt", "pacta sunt servanda", "treaty", "drafting"],
+  clauses: ["covenant", "clause", "continuity", "vclt", "pacta sunt servanda", "treaty", "drafting", "elite personalisation", "intergenerational alienation", "institutional atrophy", "performative compliance", "asymmetric verification", "temporal exhaustion", "independent verifier", "continuity provision"],
   redliner: ["covenant", "redline", "arbitration", "icsid", "pca", "lcia", "icc", "siac", "icj", "forum", "immunity", "new york convention", "vclt", "enforceability"],
   succession: ["decay", "half-life", "half life", "fracture", "succession", "durability", "lambda", "covenant", "timeline"],
   legal: ["arbitration", "litigation", "pleadings", "provisional measures", "icsid", "icj", "new york convention", "admissibility"],
