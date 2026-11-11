@@ -293,12 +293,12 @@ export default function TheVinculumDashboard() {
               Consult the authoritative commentary repository for inquiries into the eighteen-desk chain, deterministic analysis without generative AI, browser-local confidentiality, and the weakest-bond rupture warning.
             </p>
           </div>
-          <a
-            href="/commentary#dashboard"
+          <Link
+            to="/commentary#dashboard"
             className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
           >
             Read Commentary →
-          </a>
+          </Link>
         </div>
 
         {/* Section 5: Access & Statutory Notice */}
@@ -315,6 +315,12 @@ export default function TheVinculumDashboard() {
               className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold border border-primary text-primary hover:bg-primary/10 transition-colors"
             >
               Read Full Methodology
+            </Link>
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold bg-primary text-primary-foreground hover:bg-accent transition-colors"
+            >
+              Accredited Envoy Sign-In
             </Link>
           </div>
           <div className="mt-8 pt-6 border-t border-brass/30 text-[11px] text-muted-foreground space-y-1">

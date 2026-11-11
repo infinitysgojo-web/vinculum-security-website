@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { sectionLd, SITE_URL, PERSON_ID, AUTHOR_NAME } from "@/lib/seo-entities";
 import { PANELS, VERDICT_LABEL } from "@/content/adversarial";
@@ -290,7 +291,7 @@ export default function Doctrine() {
           <p className="text-sm italic text-muted-foreground">
             The doctrine states explicit falsifiability criteria (Section IV); the concrete
             test-bed is the <Cite term="cross-case-pattern">Cross-Case Pattern Summary</Cite> of
-            all thirty-two scores on the <a href="/cases" className="text-accent hover:underline">Cases</a> page,
+            all thirty-two scores on the <Link to="/cases" className="text-accent hover:underline">Cases</Link> page,
             with the <Cite term="scoring-rubric">1-5 descriptive-anchor rubric</Cite> and the
             Rwanda <Cite term="adversarial-rescoring">adversarial-rescoring</Cite> demonstration
             supplying the method behind the numbers.

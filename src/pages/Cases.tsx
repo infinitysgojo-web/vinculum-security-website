@@ -236,6 +236,21 @@ export default function Cases() {
         </FadeIn>
 
 
+        {filtered.length === 0 && (
+          <div className="border border-brass/50 bg-card/40 p-8 mb-32 text-center" role="status">
+            <p className="font-serif text-lg text-primary">
+              No documented cases match the selected combination of region and doctrine pillar.
+            </p>
+            <button
+              type="button"
+              onClick={clearAll}
+              className="mt-5 px-5 py-2.5 border border-accent/60 text-[10px] uppercase tracking-[0.22em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
+
         <div className="grid gap-6 lg:grid-cols-2 pb-32">
           {filtered.map((c, i) => {
             return (
@@ -258,25 +273,26 @@ export default function Cases() {
                     {c.summary}
                   </p>
 
-                  <div className="mt-auto grid grid-cols-1 sm:grid-cols-[1.1fr_0.8fr_1.5fr_2fr] gap-y-3 sm:gap-y-2 sm:gap-x-3 border-t border-border/70 pt-4">
+                  <div className="mt-auto grid grid-cols-1 sm:grid-cols-4 gap-y-3 sm:gap-y-2 sm:gap-x-3 border-t border-border/70 pt-4">
                     {DOMAINS.map((d, idx) => (
                       <div key={d}>
                         <div className="flex items-baseline justify-between gap-4 sm:block">
                           <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight whitespace-nowrap">
                             {d}
                           </p>
-                          <p className="font-serif text-accent text-sm sm:hidden">
+                          <p className={`font-serif text-sm sm:hidden ${c.scores[idx] < 3 ? "text-destructive" : "text-accent"}`}>
                             {c.scores[idx]} / 5
                           </p>
                         </div>
                         <div className="h-1.5 bg-brass/30 mt-1">
                           <div
-                            className="h-full bg-accent"
+                            className={`h-full ${c.scores[idx] < 3 ? "bg-destructive/70" : "bg-accent"}`}
                             style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
                           />
                         </div>
-                        <p className="font-serif text-accent text-sm hidden sm:block sm:mt-0.5">
+                        <p className={`font-serif text-sm hidden sm:block sm:mt-0.5 ${c.scores[idx] < 3 ? "text-destructive" : "text-accent"}`}>
                           {c.scores[idx]} / 5
+                          {c.scores[idx] < 3 && <span className="sr-only"> (below the 3.0 viable floor)</span>}
                         </p>
                       </div>
                     ))}
@@ -308,12 +324,12 @@ export default function Cases() {
               Review empirical calibration across the eight canonical peace processes, adversarial rescoring demonstrations, and environmental security baselines.
             </p>
           </div>
-          <a
-            href="/commentary#cases"
+          <Link
+            to="/commentary#cases"
             className="shrink-0 px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold uppercase tracking-wider hover:bg-accent transition-colors"
           >
             Read Commentary →
-          </a>
+          </Link>
         </div>
       </div>
     </>

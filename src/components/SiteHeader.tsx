@@ -134,6 +134,7 @@ export default function SiteHeader() {
                   <NavLink
                     key={n.to}
                     to={n.to}
+                    onClick={() => setOpen(false)}
                     className={({ isActive }) =>
                       `block py-2.5 text-xs uppercase tracking-[0.18em] font-semibold border-b border-brass/25 ${isActive ? "text-accent" : "text-primary"}`
                     }
@@ -143,6 +144,13 @@ export default function SiteHeader() {
                 ))}
               </div>
             ))}
+            <Link
+              to="/login"
+              onClick={() => setOpen(false)}
+              className="mt-2 mb-2 block py-2.5 text-center text-xs uppercase tracking-[0.18em] font-semibold border border-primary text-primary"
+            >
+              Accredited Envoy Sign-In
+            </Link>
           </nav>
         </div>
       )}

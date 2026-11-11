@@ -301,9 +301,7 @@ export default function Commentary() {
           <GoldRule className="mb-3" />
           <p className="text-xs leading-relaxed text-muted-foreground">
             All doctrinal determinations, analytical frameworks, and operational software architectures
-            are original intellectual property authored by James Wesley Ndua. Statutorily registered and
-            legally protected under copyright law and international conventions. All statutory rights strictly
-            reserved. Made available for scholarly reading under CC BY-NC-ND 4.0.
+            are original intellectual property authored by James Wesley Ndua. An original work registered and protected under statutory copyright law and international conventions. All statutory rights strictly reserved. Made available for scholarly reading under CC BY-NC-ND 4.0.
           </p>
         </div>
         </div>
