@@ -316,12 +316,6 @@ export default function TheVinculumDashboard() {
             >
               Read Full Methodology
             </Link>
-            <Link
-              to="/login"
-              className="inline-flex items-center justify-center px-6 py-2.5 text-xs uppercase tracking-[0.2em] font-semibold bg-primary text-primary-foreground hover:bg-accent transition-colors"
-            >
-              Accredited Envoy Sign-In
-            </Link>
           </div>
           <div className="mt-8 pt-6 border-t border-brass/30 text-[11px] text-muted-foreground space-y-1">
             <p>
