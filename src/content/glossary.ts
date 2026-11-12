@@ -453,6 +453,14 @@ export const GLOSSARY: GlossaryEntry[] = [
     category: "method",
   },
   {
+    id: "unified-deterministic-chancellery-apparatus",
+    term: "Unified Deterministic Chancellery Apparatus",
+    short: "The integrated operational system of The Vinculum Codex and Dashboard, in which public international law, systems mathematics, empirical diplomatic history and caucus statecraft function as one unbroken causal chain, from the first diagnosis of bond stress to the sealed handover of the treaty record.",
+    source: "The Vinculum Dashboard · System Architecture",
+    quote: "Law, mathematics, history and statecraft, bound together into one working engine.",
+    category: "method",
+  },
+  {
     id: "handover-seal",
     term: "Handover Seal",
     short: "A SHA-256 digest of the mission record written in canonical form (keys sorted, no whitespace), computed on the device, so a successor can confirm the record arrived unaltered.",

@@ -139,6 +139,12 @@ export default function TheVinculumDashboard() {
           <p className="eyebrow">The Deterministic Imperative</p>
           <GoldRule className="mt-4 mb-6" />
           <div className="prose-body text-foreground/85 space-y-4">
+            <p className="font-display text-lg text-foreground">
+              The Vinculum Codex and Dashboard together form a{" "}
+              <strong>Unified Deterministic Chancellery Apparatus</strong>: an operational instrument in which
+              public international law, applied systems mathematics, empirical diplomatic history and caucus
+              statecraft are bound together into one working engine.
+            </p>
             <p>
               Traditional international mediation relies heavily on subjective diplomatic memos, personal intuition,
               and linguistic compromises that conceal structural fragility behind rhetorical consensus. When these
