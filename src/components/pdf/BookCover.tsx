@@ -67,7 +67,7 @@ function Ornament() {
   );
 }
 
-function Board({ children }: { children: ReactNode }) {
+function Board({ children, compact }: { children: ReactNode; compact?: boolean }) {
   return (
     <Page size="A4" style={c.page}>
       <View style={c.spine}>
@@ -75,7 +75,7 @@ function Board({ children }: { children: ReactNode }) {
       </View>
       <View style={c.board}>
         <View style={c.frameA}>
-          <View style={c.frameB}>
+          <View style={[c.frameB, compact && { paddingVertical: 18 }]}>
             <Corners />
             {children}
           </View>
@@ -128,7 +128,7 @@ export function BackCover({ mark, lead, rows, notice, children }: {
 }) {
   const compact = Boolean(children);
   return (
-    <Board>
+    <Board compact={compact}>
       {!compact && <View />}
       <View style={c.center}>
         <View style={compact ? [c.ringSm, { width: 48, height: 48, borderRadius: 24, marginBottom: 8 }] : c.ringSm}>
