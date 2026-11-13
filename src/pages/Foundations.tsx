@@ -127,7 +127,7 @@ export default function Foundations() {
                 </span>
                 <div className="flex items-baseline gap-4">
                   <span className="font-serif text-accent text-lg">{f.letter}</span>
-                  <h2 className="font-serif text-primary text-xl pr-16">{f.title}</h2>
+                  <h2 className="font-serif text-primary text-xl pr-28 md:pr-32">{f.title}</h2>
                 </div>
                 <hr className="gold-rule gold-rule-short mt-3 mb-4" />
                 <p className="text-[0.95rem] leading-relaxed text-foreground/85">{f.body}</p>
