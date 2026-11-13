@@ -187,7 +187,7 @@ export default function Home() {
       <section className="relative container pt-16 md:pt-24 pb-14 border-b-2 border-primary overflow-hidden">
         <span
           aria-hidden
-          className="pointer-events-none absolute -right-6 top-4 font-serif text-brass/25 text-[7rem] md:text-[11rem] leading-none select-none"
+          className="pointer-events-none absolute -right-6 top-4 font-serif text-brass/10 text-[7rem] md:text-[11rem] leading-none select-none z-0"
           style={{ transform: `translateY(${offset}px)` }}
         >
           MMXXVI
