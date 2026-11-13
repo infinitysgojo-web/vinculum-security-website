@@ -234,7 +234,7 @@ const at = StyleSheet.create({
   sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", minHeight: 50, paddingVertical: 6, paddingHorizontal: 8, alignItems: "center", justifyContent: "center" },
   sealMono: { fontFamily: "Courier", fontSize: 6.6, color: NAVY, lineHeight: 1.3, textAlign: "center" },
   apo: { borderWidth: 0.85, borderColor: BRASS, padding: 2.5, backgroundColor: "#F6EFE2" },
-  apoInner: { borderWidth: 0.35, borderColor: BRASS, paddingVertical: 6, paddingHorizontal: 10 },
+  apoInner: { borderWidth: 0.35, borderColor: BRASS, paddingVertical: 4, paddingHorizontal: 10 },
   apoTitle: { fontFamily: "InterDoc", fontSize: 7, fontWeight: 600, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase", textAlign: "center" },
   apoLatin: { fontSize: 8.6, fontStyle: "italic", color: MUTED, textAlign: "center", marginTop: 1, marginBottom: 6, lineHeight: 1.2 },
   apoRow: { flexDirection: "row", borderTopWidth: 0.4, borderTopColor: RULE, paddingVertical: 2 },
