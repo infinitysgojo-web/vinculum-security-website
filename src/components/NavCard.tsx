@@ -27,7 +27,7 @@ export default function NavCard({
       >
         {numeral}
       </span>
-      <p className="eyebrow group-hover:text-brass transition-colors">{eyebrow}</p>
+      <p className="eyebrow pr-14 md:pr-16 group-hover:text-brass transition-colors">{eyebrow}</p>
       <h3 className="mt-3 font-serif text-primary group-hover:text-background transition-colors">
         {title}
       </h3>
