@@ -397,14 +397,14 @@ function SentinelStrip({ inFoyer, deskLabel, bondMean, rupture }: { inFoyer: boo
 function TheatrePresetSelect({ value, custom, onChange }: { value: string; custom: boolean; onChange: (id: string) => void }) {
   const { mask } = usePrivacy();
   return (
-    <label className="relative inline-flex shrink-0 items-center" title={`Theatre preset: hydrates all desks. Training scenarios with illustrative readings, not field measurements.${custom ? " Applying one to this mission shows its impact first and is recorded in the Decision Record." : ""}`}>
+    <label className="relative inline-flex w-full shrink-0 items-center sm:w-auto" title={`Theatre preset: hydrates all desks. Training scenarios with illustrative readings, not field measurements.${custom ? " Applying one to this mission shows its impact first and is recorded in the Decision Record." : ""}`}>
       <span className="sr-only">Theatre preset · hydrates all desks</span>
       <select
         data-shroud-nav
         data-testid="theatre-preset"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="h-8 w-36 sm:w-44 2xl:w-52 appearance-none border border-brass/50 bg-background pl-2 pr-6 font-mono text-[10px] uppercase tracking-[0.1em] text-primary"
+        className="h-8 w-full min-w-0 sm:w-44 2xl:w-52 appearance-none border border-brass/50 bg-background pl-2 pr-6 font-mono text-[10px] uppercase tracking-[0.1em] text-primary"
       >
         <option value="">{value ? "Detach preset" : "Theatre preset…"}</option>
         {THEATRES.map((t) => (
@@ -1508,7 +1508,7 @@ export default function Dashboard() {
             {missionOpen && (
               <TheatrePresetSelect value={signals.presetId ?? ""} custom={activeWs?.mode === "custom"} onChange={requestTheatre} />
             )}
-            <div className="flex min-w-0 flex-wrap items-center gap-0.5 border-l border-brass/40 pl-2 text-[10px] uppercase tracking-[0.16em] font-semibold">
+            <div className="flex min-w-0 flex-wrap items-center gap-0.5 sm:border-l sm:border-brass/40 sm:pl-2 text-[10px] uppercase tracking-[0.16em] font-semibold">
               {missionOpen && activeWs && (
                 <>
                   <button type="button" onClick={() => setPanel((p) => (p === "vault" ? null : "vault"))} aria-pressed={panel === "vault"} aria-controls="deck-panel-vault" className={deckBtn(panel === "vault")} title="Mission State Vault: details, library, archives, enclave security" data-testid="vault-toggle">
@@ -1655,11 +1655,12 @@ export default function Dashboard() {
                       const first = DESKS.find((d) => d.division === dv.id);
                       if (first) setDesk(first.id);
                     }}
-                    className={`h-8 shrink-0 whitespace-nowrap px-2 sm:px-2.5 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors ${
+                    className={`h-8 shrink-0 whitespace-nowrap px-1.5 sm:px-2.5 text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors ${
                       on ? "bg-primary text-primary-foreground" : "text-primary/70 hover:text-accent"
                     }`}
                   >
-                    {dv.short}
+                    <span className="sm:hidden">{dv.short.split(".")[0]}</span>
+                    <span className="hidden sm:inline">{dv.short}</span>
                     <span className="sr-only"> · {dv.label}</span>
                   </button>
                 );
@@ -1769,9 +1770,9 @@ export default function Dashboard() {
           )}
         </div>
         {!orientationDismissed && !orientationOpen && (
-          <div data-testid="orientation-invitation" className="mb-5 flex flex-wrap items-center gap-3 border-y border-brass/40 py-3 print:hidden">
+          <div data-testid="orientation-invitation" className="mb-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3 border-y border-brass/40 py-3 print:hidden">
             <BookOpen size={17} className="shrink-0 text-accent" aria-hidden />
-            <p className="min-w-0 flex-1 text-sm text-primary">First time at the desks?</p>
+            <p className="min-w-0 text-sm text-primary sm:flex-1">First time at the desks?</p>
             <Button size="sm" variant="outline" onClick={openOrientation}>Take the desk orientation</Button>
             <Button variant="ghost" size="icon" onClick={rememberOrientation} aria-label="Dismiss desk orientation invitation" title="Dismiss invitation"><X aria-hidden /></Button>
           </div>

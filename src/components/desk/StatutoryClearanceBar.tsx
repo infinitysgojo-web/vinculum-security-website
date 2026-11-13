@@ -49,7 +49,7 @@ export default function StatutoryClearanceBar({ deskId }: { deskId: string }) {
           {cleared}/{all.length} clearances · {floorBreached ? `statutory rupture: floor ${VIABLE_FLOOR.toFixed(1)} breached` : `floor ${VIABLE_FLOOR.toFixed(1)} held`}
         </p>
       </div>
-      <div className="mt-2 -mx-1 flex gap-1.5 overflow-x-auto px-1 pb-0.5 scrollbar-none">
+      <div className="mt-2 -mx-1 flex gap-1.5 overflow-x-auto pl-1 pr-4 pb-0.5 scrollbar-none [-webkit-overflow-scrolling:touch]">
         {ids
           ? all
               .filter((c) => ids.includes(c.id))
