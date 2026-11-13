@@ -273,27 +273,24 @@ export default function Cases() {
                     {c.summary}
                   </p>
 
-                  <div className="mt-auto grid grid-cols-1 sm:grid-cols-4 gap-y-3 sm:gap-y-2 sm:gap-x-3 border-t border-border/70 pt-4">
+                  <div className="mt-auto grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 border-t border-border/70 pt-3.5">
                     {DOMAINS.map((d, idx) => (
-                      <div key={d}>
-                        <div className="flex items-baseline justify-between gap-4 sm:block">
-                          <p className="text-[9px] uppercase tracking-[0.14em] font-semibold text-primary/60 leading-tight whitespace-nowrap">
+                      <div key={d} className="space-y-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <p className="text-[9px] uppercase tracking-[0.12em] font-semibold text-primary/70 leading-tight truncate">
                             {d}
                           </p>
-                          <p className={`font-serif text-sm sm:hidden ${c.scores[idx] < 3 ? "text-destructive" : "text-accent"}`}>
+                          <p className={`font-serif text-xs font-medium shrink-0 ${c.scores[idx] < 3 ? "text-destructive" : "text-accent"}`}>
                             {c.scores[idx]} / 5
+                            {c.scores[idx] < 3 && <span className="sr-only"> (below the 3.0 viable floor)</span>}
                           </p>
                         </div>
-                        <div className="h-1.5 bg-brass/30 mt-1">
+                        <div className="h-1.5 bg-brass/30">
                           <div
                             className={`h-full ${c.scores[idx] < 3 ? "bg-destructive/70" : "bg-accent"}`}
                             style={{ width: `${(c.scores[idx] / 5) * 100}%` }}
                           />
                         </div>
-                        <p className={`font-serif text-sm hidden sm:block sm:mt-0.5 ${c.scores[idx] < 3 ? "text-destructive" : "text-accent"}`}>
-                          {c.scores[idx]} / 5
-                          {c.scores[idx] < 3 && <span className="sr-only"> (below the 3.0 viable floor)</span>}
-                        </p>
                       </div>
                     ))}
                   </div>
