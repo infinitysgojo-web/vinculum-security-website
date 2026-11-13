@@ -126,19 +126,24 @@ export function FrontCover({ mark, series, kicker, title, subtitle, rows, notice
 export function BackCover({ mark, lead, rows, notice, children }: {
   mark: string; lead: string[]; rows: LedgerRow[]; notice?: string; children?: ReactNode;
 }) {
+  const compact = Boolean(children);
   return (
     <Board>
-      <View />
+      {!compact && <View />}
       <View style={c.center}>
-        <View style={c.ringSm}><Image src={mark} style={c.emblemSm} /></View>
-        <Text style={[c.wordmark, { fontSize: 17, letterSpacing: 5 }]}>Vinculum Security</Text>
+        <View style={compact ? [c.ringSm, { width: 48, height: 48, borderRadius: 24, marginBottom: 8 }] : c.ringSm}>
+          <Image src={mark} style={compact ? { width: 32, height: 32, objectFit: "contain" } : c.emblemSm} />
+        </View>
+        <Text style={[c.wordmark, { fontSize: compact ? 15 : 17, letterSpacing: 5 }]}>Vinculum Security</Text>
         <Text style={c.motto}>Pro Omni Humanitate</Text>
-        <Ornament />
-        {lead.map((p, i) => <Text key={i} style={c.lead}>{p}</Text>)}
+        <View style={compact ? [c.ornament, { marginVertical: 6 }] : c.ornament}>
+          <View style={c.ornLine} /><View style={c.ornDot} /><View style={c.ornLine} />
+        </View>
+        {lead.map((p, i) => <Text key={i} style={compact ? [c.lead, { fontSize: 9.5, lineHeight: 1.4, marginTop: 2 }] : c.lead}>{p}</Text>)}
       </View>
       <View>
         <Ledger rows={rows} notice={notice} />
-        {children && <View style={{ marginTop: 10 }}>{children}</View>}
+        {children && <View style={{ marginTop: 8 }}>{children}</View>}
       </View>
     </Board>
   );

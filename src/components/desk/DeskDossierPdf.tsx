@@ -233,11 +233,11 @@ const at = StyleSheet.create({
   sigLine: { borderBottomWidth: 0.6, borderBottomColor: INK, height: 22 },
   sealBox: { borderWidth: 0.6, borderColor: BRASS, borderStyle: "dashed", minHeight: 50, paddingVertical: 6, paddingHorizontal: 8, alignItems: "center", justifyContent: "center" },
   sealMono: { fontFamily: "Courier", fontSize: 6.6, color: NAVY, lineHeight: 1.3, textAlign: "center" },
-  apo: { borderWidth: 0.85, borderColor: NAVY, padding: 2.5, marginTop: 14 },
-  apoInner: { borderWidth: 0.35, borderColor: BRASS, paddingVertical: 8, paddingHorizontal: 10 },
+  apo: { borderWidth: 0.85, borderColor: BRASS, padding: 2.5, backgroundColor: "#F6EFE2" },
+  apoInner: { borderWidth: 0.35, borderColor: BRASS, paddingVertical: 6, paddingHorizontal: 10 },
   apoTitle: { fontFamily: "InterDoc", fontSize: 7, fontWeight: 600, letterSpacing: 2.2, color: NAVY, textTransform: "uppercase", textAlign: "center" },
   apoLatin: { fontSize: 8.6, fontStyle: "italic", color: MUTED, textAlign: "center", marginTop: 1, marginBottom: 6, lineHeight: 1.2 },
-  apoRow: { flexDirection: "row", borderTopWidth: 0.4, borderTopColor: RULE, paddingVertical: 3 },
+  apoRow: { flexDirection: "row", borderTopWidth: 0.4, borderTopColor: RULE, paddingVertical: 2 },
   apoKey: { width: 112, fontFamily: "InterDoc", fontSize: 6, letterSpacing: 1.3, color: MUTED, textTransform: "uppercase", paddingTop: 1.5 },
   apoVal: { flex: 1 },
   apoMono: { fontFamily: "Courier", fontSize: 7.6, color: INK, lineHeight: 1.3 },
@@ -447,9 +447,7 @@ export async function buildDeskDossier({
         ]}
         notice={`${AUTHOR_NAME}. An original work registered and protected under statutory copyright law and international conventions. Any use beyond the licence stated above requires the author’s written permission. All statutory rights reserved.`}
       >
-        <View style={{ backgroundColor: "#FFFFFF" }}>
-          <Apostille attestation={attestation} />
-        </View>
+        <Apostille attestation={attestation} />
       </BackCover>
     </Document>
   );

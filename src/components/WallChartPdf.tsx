@@ -167,7 +167,7 @@ const s = StyleSheet.create({
   quadLabel: { fontFamily: "InterDoc", fontSize: 6.2, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginTop: 8, marginBottom: 2.5 },
   band: { flexDirection: "row", marginTop: 0 },
   panel: { borderWidth: 0.6, borderColor: BRASS, backgroundColor: CREAM, padding: 9, flexGrow: 1 },
-  notice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginTop: 6, paddingTop: 5, borderTopWidth: 0.5, borderTopColor: RULE },
+  notice: { fontFamily: "InterDoc", fontSize: 6.2, alignSelf: "stretch", textAlign: "left", color: MUTED, lineHeight: 1.5, marginTop: 6, paddingTop: 5, borderTopWidth: 0.5, borderTopColor: RULE },
   foot: { marginTop: "auto", borderTopWidth: 0.6, borderTopColor: RULE, paddingTop: 7 },
   footNotice: { fontFamily: "InterDoc", fontSize: 6.2, color: MUTED, lineHeight: 1.5, marginBottom: 7 },
   footRow: { flexDirection: "row", justifyContent: "space-between" },
