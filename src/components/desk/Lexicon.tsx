@@ -76,7 +76,7 @@ export function LexiconDrawer() {
           type="button"
           title="Lexicon"
           aria-label="Open the working lexicon"
-          className="inline-flex items-center gap-1.5 min-h-9 text-primary hover:text-accent transition-colors"
+          className="inline-flex h-8 min-w-8 shrink-0 items-center justify-center gap-1.5 border border-transparent px-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-primary hover:border-border hover:text-accent transition-colors"
         >
           <BookOpen size={14} /> <span className="hidden 2xl:inline">Lexicon</span>
         </button>
