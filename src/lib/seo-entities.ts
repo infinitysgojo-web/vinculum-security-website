@@ -10,10 +10,10 @@
 export const SITE_URL = "https://www.vinculumsecurity.kidnexus.or.ke";
 export const SITE_NAME = "Vinculum Security";
 export const AUTHOR_NAME = "James Wesley Ndua";
-export const AUTHOR_ROLE = "The Sovereign Jurist & Principal Architect";
-export const AUTHOR_WORK_DESIGNATION = "Author, Vinculum Security Doctrine & Diplomacy";
-export const AUTHOR_SYSTEM_DESIGNATION = "Architect of the Vinculum Unified Operational Nervous System";
-export const AUTHOR_DESCRIPTION = "James Wesley Ndua is The Sovereign Jurist & Principal Architect, author of Vinculum Security Doctrine & Diplomacy, and architect of the Vinculum Unified Operational Nervous System, based in Nairobi, Kenya.";
+export const AUTHOR_ROLE = "Principal Architect, Vinculum Security";
+export const AUTHOR_WORK_DESIGNATION = "Author of the Vinculum Security Doctrine & Diplomatic Architecture";
+export const AUTHOR_SYSTEM_DESIGNATION = "Engineering Sovereign Relational Infrastructure";
+export const AUTHOR_DESCRIPTION = "James Wesley Ndua is the Principal Architect of Vinculum Security, author of the Vinculum Security Doctrine & Diplomatic Architecture, engineering sovereign relational infrastructure, based in Nairobi, Kenya.";
 export const ORCID_URL = "https://orcid.org/0009-0005-9861-8849";
 export const DOI = "10.5281/zenodo.21615991";
 export const DOI_URL = `https://doi.org/${DOI}`;
