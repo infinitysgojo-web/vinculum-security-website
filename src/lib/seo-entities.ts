@@ -46,7 +46,7 @@ export const SAME_AS = [
   "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7189099",
   "https://www.researchgate.net/publication/411776051_Vinculum_Security_The_Fortified_Doctrine_Expanded_Version",
   "https://www.instagram.com/vinculumsecurity/",
-  "https://jamesndua.kidnexus.or.ke/",
+  "https://www.jamesndua.kidnexus.or.ke/",
   "https://medium.com/@jamesndua",
 ];
 
