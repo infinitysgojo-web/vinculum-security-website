@@ -96,7 +96,7 @@ export function ChancelleryBreviary({
         <button
           type="button"
           aria-label="Open the Chancellery Breviary, a 90-second executive briefing"
-          className="inline-flex items-center gap-1.5 min-h-9 border border-brass/60 bg-accent/10 px-2.5 py-1.5 text-[10px] uppercase tracking-[0.18em] font-semibold text-accent hover:bg-accent hover:text-accent-foreground transition-colors"
+          className="inline-flex h-8 shrink-0 items-center justify-center gap-1.5 border border-brass/50 bg-accent/10 px-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-accent hover:border-accent hover:bg-accent/20 transition-colors"
           title="Open 90-second executive chancellery briefing"
         >
           <Zap size={13} />
