@@ -1503,7 +1503,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className={`flex ${missionOpen ? "w-full" : "flex-1 basis-[16rem]"} min-w-0 flex-wrap items-center gap-2`} data-testid="deck-tools">
+          <div className={`flex ${missionOpen ? "w-full" : "w-full sm:w-auto sm:flex-1"} min-w-0 flex-wrap items-center justify-between sm:justify-start gap-2`} data-testid="deck-tools">
             <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
             {missionOpen && (
               <TheatrePresetSelect value={signals.presetId ?? ""} custom={activeWs?.mode === "custom"} onChange={requestTheatre} />
@@ -1574,7 +1574,7 @@ export default function Dashboard() {
               )}
             </div>
             </div>
-            <div className="ml-auto flex max-w-full flex-wrap items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
+            <div className="sm:ml-auto flex shrink-0 items-center gap-0.5 text-[10px] uppercase tracking-[0.16em] font-semibold">
               {missionOpen && activeWs && (
                 <HandoverSealBadge status={sealState} differences={() => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : [])} sealing={sealBusy} onSeal={() => void sealMission()} onReseal={() => void sealMission()} onClear={breakSeal} />
               )}
