@@ -10,6 +10,10 @@
 export const SITE_URL = "https://www.vinculumsecurity.kidnexus.or.ke";
 export const SITE_NAME = "Vinculum Security";
 export const AUTHOR_NAME = "James Wesley Ndua";
+export const AUTHOR_ROLE = "The Sovereign Jurist & Principal Architect";
+export const AUTHOR_WORK_DESIGNATION = "Author, Vinculum Security Doctrine & Diplomacy";
+export const AUTHOR_SYSTEM_DESIGNATION = "Architect of the Vinculum Unified Operational Nervous System";
+export const AUTHOR_DESCRIPTION = "James Wesley Ndua is The Sovereign Jurist & Principal Architect, author of Vinculum Security Doctrine & Diplomacy, and architect of the Vinculum Unified Operational Nervous System, based in Nairobi, Kenya.";
 export const ORCID_URL = "https://orcid.org/0009-0005-9861-8849";
 export const DOI = "10.5281/zenodo.21615991";
 export const DOI_URL = `https://doi.org/${DOI}`;
@@ -45,6 +49,65 @@ export const SAME_AS = [
   "https://jamesndua.kidnexus.or.ke/",
   "https://medium.com/@jamesndua",
 ];
+
+export const PUBLIC_PILLARS = [
+  {
+    "name": "The Doctrine",
+    "to": "/doctrine",
+    "description": "Canonical definition, ontological claim, and the four-level Vinculum Continuum."
+  },
+  {
+    "name": "The Vinculum Dashboard",
+    "to": "/the-vinculum-dashboard",
+    "description": "The existing eighteen-desk operational chancellery and its architecture."
+  },
+  {
+    "name": "Case Studies",
+    "to": "/cases",
+    "description": "Eight documented processes assessed across four relational bond domains."
+  },
+  {
+    "name": "Doctrinal Commentary",
+    "to": "/commentary",
+    "description": "Authoritative interpretive inquiries across seven analytical divisions."
+  },
+  {
+    "name": "Theoretical Foundations",
+    "to": "/foundations",
+    "description": "Thirteen independent traditions engaged comparatively by the doctrine."
+  },
+  {
+    "name": "Doctrine Glossary",
+    "to": "/glossary",
+    "description": "Canonical terms with source sections and verbatim passages."
+  },
+  {
+    "name": "About the Author",
+    "to": "/about",
+    "description": "James Wesley Ndua, author and principal architect of the work."
+  },
+  {
+    "name": "Field Dispatches",
+    "to": "/dispatches",
+    "description": "Field commentary and diplomatic analysis by James Wesley Ndua."
+  }
+] as const;
+
+export const navigationLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": `${SITE_URL}/#sitenav`,
+  name: "Vinculum Security Core Directory",
+  itemListOrder: "https://schema.org/ItemListOrderAscending",
+  numberOfItems: PUBLIC_PILLARS.length,
+  itemListElement: PUBLIC_PILLARS.map((item, index) => ({
+    "@type": "SiteNavigationElement",
+    position: index + 1,
+    name: item.name,
+    description: item.description,
+    url: `${SITE_URL}${item.to}`,
+  })),
+};
 
 export const PERSON_ID = `${SITE_URL}/about#person`;
 export const ORG_ID = `${SITE_URL}/#organization`;
@@ -88,15 +151,14 @@ export const personLd = {
   "@id": PERSON_ID,
   name: AUTHOR_NAME,
   url: `${SITE_URL}/about`,
-  jobTitle: "Human Security Diplomat",
+  jobTitle: AUTHOR_ROLE,
   nationality: "Kenyan",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Nairobi",
     addressCountry: "KE",
   },
-  description:
-    "James Wesley Ndua is a diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya, and the originator of the standalone Vinculum Security doctrine, The Vinculum Codex and Compact, Deterministic Relational Law and The Dominum Effect.",
+  description: AUTHOR_DESCRIPTION,
   knowsAbout: [
     "Vinculum Security",
     "Deterministic Relational Law",

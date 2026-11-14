@@ -22,7 +22,7 @@ export default function Dispatches() {
   return (
     <>
       <SEO
-        title="The Dispatches Gazette"
+        title="Field Dispatches"
         description="Field commentary, diplomatic monographs, and geopolitical analysis by James Wesley Ndua: examining live international crises through the Vinculum Security lens. Published continuously on Medium."
         path="/dispatches"
         type="website"

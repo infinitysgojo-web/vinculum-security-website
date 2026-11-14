@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Update the existing author designation on Home, About, author references and search/AI metadata
+- [x] Harmonize existing public navigation signals and truthful sitemap modification dates; verified author layout at 390/1075/1280px, desktop/mobile navigation, 407 passing tests and clean preview build
+
 - [x] Add an optional eighteen-desk orientation with first-visit invitation, on-demand access, real controls and desk-specific safeguards; reuse existing guide content and actual division order
 - [x] Verify all eighteen tour steps in a signed-in custom mission, unchanged untouched readings, deliberate first assessment, privacy navigation, Escape/focus return, remembered dismissal, palette access and print suppression; five viewport sizes fit, 387 tests pass and no runtime errors
 

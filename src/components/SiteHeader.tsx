@@ -18,7 +18,7 @@ const GROUPS: Group[] = [
   {
     label: "Doctrine",
     items: [
-      { to: "/foundations", label: "Foundations", note: "Lineage and first principles" },
+      { to: "/foundations", label: "Theoretical Foundations", note: "Lineage and first principles" },
       { to: "/methodology", label: "Methodology", note: "Scoring and the 3.0 viable floor" },
       { to: "/doctrine", label: "The Doctrine", note: "The canonical text" },
     ],
@@ -28,16 +28,16 @@ const GROUPS: Group[] = [
     items: [
       { to: "/practice", label: "Field Handbook", note: "What a Vinculum diplomat does" },
       { to: "/the-vinculum-dashboard", label: "The Vinculum Dashboard", note: "Eighteen desks · operational overview" },
-      { to: "/cases", label: "Cases & Atlas", note: "Eight documented processes" },
-      { to: "/dispatches", label: "Dispatches", note: "Notes from the field" },
+      { to: "/cases", label: "Case Studies", note: "Eight documented processes" },
+      { to: "/dispatches", label: "Field Dispatches", note: "Notes from the field" },
     ],
   },
   {
     label: "Reference",
     items: [
-      { to: "/commentary", label: "Commentary", note: "Answered inquiries" },
-      { to: "/glossary", label: "Glossary", note: "Terms of art" },
-      { to: "/about", label: "About", note: "The author and the work" },
+      { to: "/commentary", label: "Doctrinal Commentary", note: "Answered inquiries" },
+      { to: "/glossary", label: "Doctrine Glossary", note: "Terms of art" },
+      { to: "/about", label: "About the Author", note: "The author and the work" },
     ],
   },
 ];

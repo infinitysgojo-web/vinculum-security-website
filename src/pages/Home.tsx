@@ -1,6 +1,8 @@
 import SEO from "@/components/SEO";
 import {
   AUTHOR_NAME,
+  AUTHOR_ROLE,
+  navigationLd,
   BOOK_ID,
   DOI,
   DOI_URL,
@@ -22,44 +24,6 @@ import Logo from "@/components/Logo";
 import { useParallax } from "@/hooks/useParallax";
 import { Link } from "react-router-dom";
 import { COMMENTARY_COUNT } from "@/content/commentary";
-
-const SITELINKS = [
-  {
-    name: "The Doctrine",
-    description: "The foundational definition of relational security and the four-level Vinculum Continuum.",
-    to: "/doctrine",
-  },
-  {
-    name: "Doctrinal Commentary",
-    description: "Fifty-six authoritative determinations across seven analytical divisions.",
-    to: "/commentary",
-  },
-  {
-    name: "Case Studies",
-    description: "Canonical peace processes and bilateral treaties scored across four relational bond domains.",
-    to: "/cases",
-  },
-  {
-    name: "The Vinculum Dashboard",
-    description: "Eighteen deterministic operational desks for relational security analysis and handovers.",
-    to: "/the-vinculum-dashboard",
-  },
-  {
-    name: "Theoretical Foundations",
-    description: "Comparative engagement with Ubuntu, restorative justice, and legal philosophy traditions.",
-    to: "/foundations",
-  },
-  {
-    name: "About the Author",
-    description: "Authored by James Wesley Ndua. Scholarly affiliations, ORCID record, and statutory notices.",
-    to: "/about",
-  },
-  {
-    name: "Field Dispatches",
-    description: "Published articles, field notes, and analytical dispatches by James Wesley Ndua.",
-    to: "/dispatches",
-  },
-];
 
 const CARDS = [
   { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
@@ -163,24 +127,7 @@ export default function Home() {
           },
         },
                  
-        {
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          "@id": `${SITE_URL}/#sitelinks`,
-          name: "Vinculum Security Core Directory",
-          description:
-            "Primary navigational pillars and canonical doctrinal repositories of Vinculum Security.",
-          isPartOf: { "@id": `${SITE_URL}/#webpage` },
-          itemListOrder: "https://schema.org/ItemListOrderAscending",
-          numberOfItems: SITELINKS.length,
-          itemListElement: SITELINKS.map((item, i) => ({
-            "@type": "SiteNavigationElement",
-            position: i + 1,
-            name: item.name,
-            description: item.description,
-            url: `${SITE_URL}${item.to}`,
-          })),
-        }]}
+        navigationLd]}
       />
 
       {/* Hero */}
@@ -214,8 +161,8 @@ export default function Home() {
               <p className="text-lg leading-snug text-foreground/85 font-medium">
                 An original diplomatic doctrine on the bonds that make protection, dignity, and peace possible.
               </p>
-              <p className="mt-4 text-[10px] uppercase tracking-[0.24em] font-semibold text-accent">
-                James Wesley Ndua · Human Security Diplomat
+              <p className="mt-4 text-[10px] uppercase tracking-[0.24em] font-semibold text-accent leading-relaxed">
+                {AUTHOR_NAME} · {AUTHOR_ROLE}
               </p>
             </div>
           </div>

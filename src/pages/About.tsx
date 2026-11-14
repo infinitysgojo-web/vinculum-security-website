@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SEO from "@/components/SEO";
-import { SITE_URL, personLd } from "@/lib/seo-entities";
+import { AUTHOR_DESCRIPTION, AUTHOR_ROLE, AUTHOR_WORK_DESIGNATION, AUTHOR_SYSTEM_DESIGNATION, SITE_URL, personLd } from "@/lib/seo-entities";
 import PageHeader from "@/components/PageHeader";
 import PullQuote from "@/components/PullQuote";
 import GoldRule from "@/components/GoldRule";
@@ -17,7 +17,7 @@ export default function About() {
     <>
       <SEO
         title="About the Author"
-        description="James Wesley Ndua, diplomat and Youth, Peace and Security advocate based in Nairobi, Kenya. Originator of Vinculum Security, A Doctrine of Relational Security, and author of The Vinculum Codex and Compact: a complete, copyrighted work ready for academic, policy and public use."
+        description={AUTHOR_DESCRIPTION}
         path="/about"
         image="/og/about.jpg"
         keywords="James Wesley Ndua, originator of Vinculum Security, relational security doctrine author, Youth Peace and Security, Nairobi, ORCID 0009-0005-9861-8849"
@@ -42,17 +42,15 @@ export default function About() {
           <DiplomatBadge variant="field-notes">Nairobi · YPS</DiplomatBadge>
         </FadeIn>
 
-        <FadeIn className="max-w-3xl mb-12 flex items-start gap-6">
+        <FadeIn className="max-w-3xl mb-12 flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
           <Logo size={72} className="mt-2 shrink-0" />
-          <div>
+          <div className="min-w-0 space-y-2">
             <h2 className="font-serif text-primary text-2xl">James Wesley Ndua</h2>
             <hr className="gold-rule gold-rule-short mt-3 mb-4" />
-            <p className="text-sm uppercase tracking-widest text-muted-foreground" style={{ letterSpacing: "0.18em" }}>
-              Human Security Diplomat · Youth, Peace and Security Advocate
-            </p>
-            <p className="text-sm uppercase tracking-widest text-muted-foreground mt-1" style={{ letterSpacing: "0.18em" }}>
-              Nairobi, Kenya
-            </p>
+            <p className="text-sm font-semibold text-accent leading-relaxed">{AUTHOR_ROLE}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{AUTHOR_WORK_DESIGNATION}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{AUTHOR_SYSTEM_DESIGNATION}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">Nairobi, Kenya</p>
           </div>
         </FadeIn>
 

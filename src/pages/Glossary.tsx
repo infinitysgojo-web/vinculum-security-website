@@ -112,7 +112,7 @@ export default function Glossary() {
   return (
     <>
       <SEO
-        title="Glossary"
+        title="Doctrine Glossary"
         description="Canonical terms of the Vinculum Security doctrine and the Vinculum Diplomacy handbook, each with source section and verbatim passage."
         path="/glossary"
         image="/og/glossary.jpg"
