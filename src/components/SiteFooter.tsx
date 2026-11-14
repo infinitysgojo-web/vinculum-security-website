@@ -9,7 +9,7 @@ export default function SiteFooter() {
           <span className="whitespace-nowrap">
             Copyright ©{" "}
             <a
-              href="https://jamesndua.kidnexus.or.ke/"
+              href=href="https://www.jamesndua.kidnexus.or.ke/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-accent transition-colors"
