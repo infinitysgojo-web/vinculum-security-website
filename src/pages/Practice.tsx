@@ -254,8 +254,8 @@ export default function Practice() {
             agreement specifically to survive a change in the officeholders who negotiated it.
           </p>
           <p className="mt-4 text-sm text-foreground/75">
-            The handbook is operational rather than provisional. It is complete and intended for direct use in the
-            room, alongside the doctrine, by practitioners working now.
+            The handbook is a working instrument, not a draft. It is complete and written for direct use at the
+            table, alongside the doctrine, by practitioners working now.
           </p>
         </FadeIn>
 

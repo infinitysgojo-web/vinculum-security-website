@@ -26,10 +26,10 @@ import { Link } from "react-router-dom";
 import { COMMENTARY_COUNT } from "@/content/commentary";
 
 const CARDS = [
-  { to: "/doctrine", eyebrow: "Section III", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
-  { to: "/foundations", eyebrow: "Section II", title: "Theoretical Foundations", description: "Thirteen independent traditions engaged comparatively, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy." },
-  { to: "/cases", eyebrow: "Section VII", title: "Case Studies", description: "Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific, each scored across four bond domains." },
-  { to: "/methodology", eyebrow: "Section V", title: "Methodology", description: "The diagnostic method and bond-integrity indicators used to assess a case in plain terms." },
+  { to: "/doctrine", eyebrow: "Doctrine", title: "The Doctrine", description: "Canonical definition, ontological claim, comparative positioning, and the four-level Vinculum Continuum." },
+  { to: "/foundations", eyebrow: "Foundations", title: "Theoretical Foundations", description: "Thirteen independent traditions engaged comparatively, including Ubuntu, role ethics, restorative justice, peacebuilding, and intergenerational policy." },
+  { to: "/cases", eyebrow: "Cases", title: "Case Studies", description: "Eight documented processes across Africa, Latin America, Europe, Southeast Asia, and the Pacific, each scored across four bond domains." },
+  { to: "/methodology", eyebrow: "Method", title: "Methodology", description: "The diagnostic method and bond-integrity indicators used to assess a case in plain terms." },
   { to: "/practice", eyebrow: "Handbook", title: "Vinculum Diplomacy", description: "The applied practitioner discipline derived from the doctrine, oriented around four practice principles." },
   { to: "/glossary", eyebrow: "Reference", title: "Doctrine Glossary", description: "Canonical terms with source sections and verbatim passages from the doctrine and companion handbook." },
 ];
@@ -225,8 +225,9 @@ export default function Home() {
           <hr className="gold-rule gold-rule-short mt-4 mb-4" />
           <p className="text-sm leading-relaxed text-foreground/75">
             The foundational doctrine, companion handbook, The Vinculum Dashboard, and The Vinculum Unified Operational 
-            Nervous System are original intellectual property authored by James Wesley Ndua. An original work registered and protected under statutory copyright law and international conventions. All statutory rights strictly reserved. All systems and doctrines have been empirically calibrated 
-            against historical peace processes and are fully operational for sovereign chancellery deployment.
+            Nervous System are original intellectual property authored by James Wesley Ndua. An original work registered and protected under statutory copyright law and international conventions. All statutory rights strictly reserved. The doctrine has been proven against eight documented peace
+            processes under a stated rubric and an adversarial review. Its handbook and chancellery instruments
+            stand complete and ready for use in the room.
           </p>
          </FadeIn>
 
@@ -241,8 +242,8 @@ export default function Home() {
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-              Consult the {COMMENTARY_COUNT}-inquiry authoritative repository for exhaustive doctrinal commentary,
-              mathematical formulations, and statutory determinations.
+              Consult the {COMMENTARY_COUNT}-inquiry commentary of record: doctrinal interpretation, the governing
+              relational laws, and the provenance of the registered works.
             </p>
           </div>
           <a

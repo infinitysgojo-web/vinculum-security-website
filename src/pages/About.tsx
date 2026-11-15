@@ -118,7 +118,7 @@ export default function About() {
               </p>
             </div>
             <p>
-              All these works are original intellectual property authored by James Wesley Ndua, fully developed and operational. An original work registered and protected under statutory copyright law and international conventions. All statutory rights strictly reserved.
+              These works are held of record by their author, James Wesley Ndua, and deposited with the registrar.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4 mt-6">
