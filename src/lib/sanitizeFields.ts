@@ -42,10 +42,12 @@ export function sanitizePathUrl(url: unknown): string {
 
 /**
  * Validates external outbound URLs to ensure only secure, approved protocols (https/http/mailto) are allowed.
+ * Fallback origin handles headless test runners where window is undefined.
  */
 export function isSafeOutboundUrl(url: string): boolean {
   try {
-    const parsed = new URL(url, window.location.origin);
+    const base = typeof window !== "undefined" && window?.location?.origin ? window.location.origin : "https://www.vinculumsecurity.kidnexus.or.ke";
+    const parsed = new URL(url, base);
     return parsed.protocol === "https:" || parsed.protocol === "http:" || parsed.protocol === "mailto:";
   } catch {
     return false;
