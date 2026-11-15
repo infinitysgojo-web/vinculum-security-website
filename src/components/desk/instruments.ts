@@ -1,4 +1,5 @@
 import type { BondVector } from "./engine";
+import { deepFreeze, finiteBond, finiteOr, nonNegative, ordinal5, percent, round2 } from "./mathGuards";
 
 /**
  * Three deterministic instruments: Decay Horizon (Desk 12 instrument, SuccessionSimulator), Dispute Forum Enforceability Matrix (Desk 11) and Conditional Escrow Waterfall (Desk 07).
@@ -11,7 +12,7 @@ import type { BondVector } from "./engine";
 /* ------------------------------------------------------------------ */
 
 /** Projection horizons, in days. */
-export const DECAY_HORIZONS = [30, 90, 180, 365] as const;
+export const DECAY_HORIZONS = Object.freeze([30, 90, 180, 365] as const);
 
 /** The statutory sovereign baseline no bond may decay below. */
 export const SOVEREIGN_FLOOR = 1.0;
@@ -31,7 +32,7 @@ export type DecayReading = {
 
 /** B(t) = max(1.0, B₀ · e^(−λt)). */
 export const preservedBond = (b0: number, lambda: number, days: number) =>
-  Math.max(SOVEREIGN_FLOOR, b0 * Math.exp(-lambda * days));
+  Math.max(SOVEREIGN_FLOOR, finiteBond(b0) * Math.exp(-nonNegative(lambda) * nonNegative(days)));
 
 /**
  * U is the unmitigated exposure in points (full severity of each uninsulated shock,
@@ -39,11 +40,12 @@ export const preservedBond = (b0: number, lambda: number, days: number) =>
  *   λ = (U + R) ÷ 2000        t½ = ln 2 ÷ λ (days)        B(t) = max(1.0, B₀ · e^(−λt))
  */
 export function decayHorizon(bonds: BondVector, unmitigated: number, rupture: number, days: number): DecayReading {
-  const lambda = Math.max(0, unmitigated + rupture) / 2000;
+  const lambda = Math.max(0, finiteOr(unmitigated, 0) + finiteOr(rupture, 0)) / 2000;
   const halfLifeDays = lambda > 0 ? Math.LN2 / lambda : null;
-  const vals = [bonds.interpersonal, bonds.communal, bonds.intergenerational, bonds.institutional];
+  days = nonNegative(days);
+  const vals = [bonds.interpersonal, bonds.communal, bonds.intergenerational, bonds.institutional].map(finiteBond);
   const names = ["Interpersonal", "Communal", "Intergenerational", "Institutional"];
-  const r2 = (n: number) => Math.round(n * 100) / 100;
+  const r2 = round2;
   const rows = vals.map((now, i) => ({ name: names[i], now, then: r2(preservedBond(now, lambda, days)) }));
   const curve = Array.from({ length: 7 }, (_, k) => {
     const day = Math.round((days * k) / 6);
@@ -64,7 +66,7 @@ export function decayHorizon(bonds: BondVector, unmitigated: number, rupture: nu
  */
 export type Forum = { id: string; name: string; basis: string; route: string; teeth: number; immunity: number; pace: number; article: string };
 
-export const FORUMS: Forum[] = [
+export const FORUMS: readonly Forum[] = [
   { id: "icsid", name: "ICSID", basis: "ICSID Convention 1965, arts. 25, 53–55", route: "Pecuniary obligations enforced as a final domestic judgment in every Contracting State (art. 54); execution subject to art. 55", teeth: 5, immunity: 3, pace: 3,
     article: "Any dispute arising out of an investment made under this instrument shall be submitted to the International Centre for Settlement of Investment Disputes for arbitration under the ICSID Convention, each Party giving its consent under Article 25 and agreeing that the award shall be binding and recognised under Article 54." },
   { id: "pca", name: "PCA / The Hague", basis: "PCA Arbitration Rules 2012; New York Convention 1958", route: "Recognition and enforcement under the New York Convention in any Contracting State", teeth: 4, immunity: 3, pace: 4,
@@ -79,7 +81,8 @@ export const FORUMS: Forum[] = [
     article: "Any dispute arising out of or in connection with this instrument shall be referred to and finally resolved by arbitration administered by the Singapore International Arbitration Centre in accordance with the Arbitration Rules of the Singapore International Arbitration Centre for the time being in force." },
   { id: "icj", name: "ICJ Advisory", basis: "ICJ Statute arts. 36 and 65; UN Charter arts. 94 and 96", route: "No execution route: compliance rests on the State, with referral to the Security Council under art. 94(2) for contentious judgments", teeth: 3, immunity: 4, pace: 1,
     article: "Any question concerning the interpretation or application of this instrument may, failing settlement by negotiation within six months, be referred to the International Court of Justice, by contentious proceedings under Article 36(1) of its Statute or by a request for an advisory opinion through an authorised organ under Article 96 of the Charter." },
-];
+].map((f) => deepFreeze(f));
+Object.freeze(FORUMS);
 
 /** Sovereign immunity waiver penalty: deducted while the clause leaves immunity unaddressed. */
 export const IMMUNITY_PENALTY = 18;
@@ -99,6 +102,7 @@ export function forumFitness(f: Forum, t: ForumTerms) {
   const immunity = t.immunityWaived ? 0 : IMMUNITY_PENALTY;
   const seat = t.neutralSeat ? 0 : SEAT_PENALTY;
   const fitness = Math.max(0, base - immunity - seat);
+  // Conservation: fitness + friction = 100 exactly.
   return { base, immunity, seat, fitness, friction: 100 - fitness };
 }
 
@@ -107,7 +111,8 @@ export const forumClause = (f: Forum, t: ForumTerms) => f.article + (t.immunityW
 
 /** E = round(100 × (0.5 × teeth + 0.3 × (6 − immunity) + 0.2 × pace) ÷ 5). */
 export function enforceability(f: Pick<Forum, "teeth" | "immunity" | "pace">): number {
-  return Math.round((100 * (0.5 * f.teeth + 0.3 * (6 - f.immunity) + 0.2 * f.pace)) / 5);
+  const teeth = ordinal5(f.teeth), immunity = ordinal5(f.immunity), pace = ordinal5(f.pace);
+  return Math.round((100 * (0.5 * teeth + 0.3 * (6 - immunity) + 0.2 * pace)) / 5);
 }
 
 /* ------------------------------------------------------------------ */
@@ -151,7 +156,10 @@ export const CESSION_SURVIVAL = 55;
  *   At Final Cession: Released = Gross, and both reserves are discharged
  */
 export function escrowWaterfall(terms: EscrowTerms, s: EscrowInput) {
-  const { shares, clawback, bond } = terms;
+  // Shares, clawback and bond are per cent: each is clamped to [0, 100]; non-finite reads as 0.
+  const shares = terms.shares.map(percent) as EscrowTerms["shares"];
+  const clawback = percent(terms.clawback);
+  const bond = percent(terms.bond);
   const gapOk = s.trackGap !== undefined && s.trackTolerance !== undefined && s.trackGap <= s.trackTolerance;
   const raw = [
     { id: "t1", label: "Tranche 1 · Mobilization", condition: "Independent verifier seated", ok: s.verifierSeated === true },
@@ -164,14 +172,16 @@ export function escrowWaterfall(terms: EscrowTerms, s: EscrowInput) {
     chain = chain && t.ok;
     return { id: t.id, label: t.label, condition: t.condition, share: shares[i], met: chain };
   });
-  const frozen = (s.rupture ?? 0) >= ESCROW_FREEZE;
+  const frozen = finiteOr(s.rupture, 0) >= ESCROW_FREEZE;
   const total = shares.reduce((a, b) => a + b, 0);
   const gross = tranches.filter((t) => t.met).reduce((a, t) => a + t.share, 0);
   const ceded = tranches[3].met;
   const clawbackHeld = frozen || ceded ? 0 : Math.round(gross * clawback) / 100;
   const bondHeld = frozen || ceded || gross === 0 ? 0 : Math.min(bond, gross - clawbackHeld);
   const released = frozen ? 0 : Math.max(0, Math.round((gross - clawbackHeld - bondHeld) * 100) / 100);
-  return { tranches, frozen, total, gross, clawbackHeld, bondHeld, released, ceded };
+  /** Pledge conservation: the four tranche shares sum to exactly 100. */
+  const balanced = Math.abs(total - 100) < 1e-9;
+  return { tranches, frozen, total, balanced, gross, clawbackHeld, bondHeld, released, ceded };
 }
 
 /* ------------------------------------------------------------------ */
@@ -189,7 +199,9 @@ export type FractureSeverity = "stable" | "monitored" | "acute" | "imminent";
  * Months = t_f ÷ 30.44. Bands: > 24 stable, > 12 monitored, > 6 acute, otherwise imminent.
  * A rule applied to the inputs, not a forecast of events.
  */
-export function fractureWindow(meanBond: number, lambda: number) {
+export function fractureWindow(meanBondIn: number, lambdaIn: number) {
+  const meanBond = finiteBond(meanBondIn);
+  const lambda = nonNegative(lambdaIn);
   if (meanBond <= FRACTURE_LEVEL) return { days: 0, months: 0, severity: "imminent" as FractureSeverity };
   if (lambda <= 0) return { days: null, months: null, severity: "stable" as FractureSeverity };
   const days = Math.log(meanBond / FRACTURE_LEVEL) / lambda;
@@ -214,6 +226,7 @@ export const DEFAULT_RESOURCES: [number, number, number] = [40, 35, 25];
  * Parity P = round(100 − (max − min) × 1.5), floored at 0. Deficit when communal < 30.
  */
 export function rebalance(shares: [number, number, number], i: number, v: number): [number, number, number] {
+  if (!Number.isFinite(v) || i < 0 || i > 2) return [...shares] as [number, number, number];
   const val = Math.max(0, Math.min(100, Math.round(v)));
   const others = [0, 1, 2].filter((k) => k !== i);
   const rest = others.reduce((a, k) => a + shares[k], 0);
@@ -245,7 +258,7 @@ export type PleadingInput = { disputeForum?: string; disputeForumId?: string; fo
  * Jurisdictional admissibility criteria for each venue on the Forum Matrix. Doctrinal
  * summaries of the governing instrument, not legal advice for a particular filing.
  */
-export const ADMISSIBILITY: Record<string, string> = {
+export const ADMISSIBILITY: Readonly<Record<string, string>> = Object.freeze({
   icsid: "A legal dispute arising directly out of an investment, between a Contracting State and a national of another Contracting State, with the written consent of both (ICSID Convention art. 25).",
   pca: "A written agreement to arbitrate under the PCA Arbitration Rules 2012; at least one party a State, a State-controlled entity or an intergovernmental organisation, or otherwise by agreement of the parties.",
   lcia: "A written agreement referring the dispute to the LCIA Rules, with the subject matter arbitrable under the law of the seat.",
@@ -253,7 +266,7 @@ export const ADMISSIBILITY: Record<string, string> = {
   swiss: "An agreement referring the dispute to the Swiss Rules; at a Swiss seat, any claim involving an economic interest is arbitrable (PILA art. 177).",
   siac: "An agreement referring the dispute to SIAC; the Court of Arbitration screens for a prima facie arbitration agreement before constitution of the tribunal.",
   icj: "Contentious proceedings only between States that have consented under art. 36 of the Statute; an advisory opinion only on request of an organ or agency authorised under art. 96 of the Charter.",
-};
+});
 
 /** The Forum Matrix venue on the bus, matched by id and then by name. */
 export const pleadingForum = (s: Pick<PleadingInput, "disputeForumId" | "disputeForum">): Forum | undefined =>

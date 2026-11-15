@@ -15,6 +15,7 @@
  * predicts events: each step is the same rule applied to fewer or more inputs.
  */
 import { clampScore, inscribedRuptureLoad, ruptureIndex, round1, type BondVector, type CustomShock, type Signals } from "./engine";
+import { finiteBond, nonNegative } from "./mathGuards";
 import { ESCROW_FREEZE, fractureWindow, PROVISIONAL_THRESHOLD, SOVEREIGN_FLOOR } from "./instruments";
 
 /** Each shock beyond the first adds 1.25 severity points per bond level (four levels). */
@@ -34,12 +35,13 @@ export type CompoundReading = {
  * scrubber so the final step can never disagree with the desk.
  */
 export function compoundStress(active: ReadonlyArray<DeskShock>, live: readonly number[] | undefined, legitimacyPenalty: number): CompoundReading {
-  const base = active.reduce((a, s) => a + s.sev, 0);
+  const sev = (x: DeskShock) => nonNegative(x.sev);
+  const base = active.reduce((a, s) => a + sev(s), 0);
   const amp = active.length > 1 ? (active.length - 1) * COMPOUND_AMPLIFY * 4 : 0;
-  const strain = Math.min(100, round1(base + amp + legitimacyPenalty));
-  const omega = [0, 1, 2, 3].map((i) => active.filter((x) => x.bond === i).reduce((a, x) => a + x.sev, 0));
+  const strain = Math.min(100, round1(base + amp + nonNegative(legitimacyPenalty)));
+  const omega = [0, 1, 2, 3].map((i) => active.filter((x) => x.bond === i).reduce((a, x) => a + sev(x), 0));
   const bondScores = (live
-    ? live.map((v, i) => Math.max(1, round1(v - omega[i] / 10)))
+    ? [0, 1, 2, 3].map((i) => Math.max(1, round1(finiteBond(live[i]) - omega[i] / 10)))
     : omega.map((s) => Math.max(1, round1(5 - Math.min(4, s / 9))))) as [number, number, number, number];
   const failIndex = bondScores.indexOf(Math.min(...bondScores));
   return { strain, bondScores, deductions: omega.map((w) => round1(w / 10)) as [number, number, number, number], failIndex };

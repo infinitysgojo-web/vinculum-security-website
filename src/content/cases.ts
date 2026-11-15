@@ -470,6 +470,9 @@ export const CASES: CaseStudy[] = [
   },
 ];
 
+// The canonical precedent coordinates are read-only: no desk may move a precedent.
+CASES.forEach((c) => Object.freeze(c.scores));
+
 export function getCase(slug?: string) {
   return CASES.find((c) => c.slug === slug);
 }
