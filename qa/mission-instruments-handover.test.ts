@@ -71,7 +71,14 @@ describe("instrument signals ride the browser-local bus", () => {
   test("the instruments engine is pure: no network, storage, secrets or cloud client", () => {
     const src = read("src/components/desk/instruments.ts");
     expect(src).not.toMatch(/fetch\(|XMLHttpRequest|WebSocket|sendBeacon|supabase|localStorage|indexedDB|import\.meta\.env|apiKey|secret/i);
-    expect(src.match(/^import .*$/gm) ?? []).toEqual(['import type { BondVector } from "./engine";']);
+    expect(src.match(/^import .*$/gm) ?? []).toEqual([
+      'import type { BondVector } from "./engine";',
+      'import { deepFreeze, finiteBond, finiteOr, nonNegative, ordinal5, percent, round2 } from "./mathGuards";',
+    ]);
+    // The numeric guards it leans on are pure too: no imports, no I/O.
+    const guards = read("src/components/desk/mathGuards.ts");
+    expect(guards).not.toMatch(/fetch\(|XMLHttpRequest|WebSocket|sendBeacon|supabase|localStorage|indexedDB|import\.meta\.env|apiKey|secret/i);
+    expect(guards.match(/^import .*$/gm) ?? []).toEqual([]);
   });
 });
 

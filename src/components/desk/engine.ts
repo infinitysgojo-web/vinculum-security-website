@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef } from "react";
 import { CASES } from "@/content/cases";
 import { signalValueKey } from "@/lib/signalValues";
+import { deepFreeze, finiteBond, finiteOr, nonNegative } from "./mathGuards";
 
 /**
  * The Vinculum Mission Engine.
@@ -34,7 +35,7 @@ export const BOND_NAMES = [
 export const round1 = (n: number) => Math.round(n * 10) / 10;
 
 /** Clamp a score to the 1.0 to 5.0 scale and round it to one decimal. */
-export const clampScore = (n: number) => round1(Math.min(5, Math.max(1, n)));
+export const clampScore = (n: number) => round1(Math.min(5, Math.max(1, finiteBond(n))));
 
 export type BondBandName = "Failing" | "Fragile" | "Viable" | "Fortified";
 
@@ -59,17 +60,19 @@ export const INSCRIBED_LOAD_CAP = 30;
  * bond delta across the inscribed shocks, six per active inscribed trap, capped at 30.
  */
 export function inscribedRuptureLoad(shocks: ReadonlyArray<{ deltas: BondVector }>, activeTraps: number): number {
-  const mag = shocks.reduce((n, x) => n + Object.values(x.deltas).reduce((a, d) => a + Math.max(0, -d), 0), 0);
-  return Math.min(INSCRIBED_LOAD_CAP, Math.round(mag * 5 + activeTraps * 6));
+  const mag = shocks.reduce((n, x) => n + Object.values(x.deltas ?? {}).reduce((a, d) => a + Math.max(0, -finiteOr(d, 0)), 0), 0);
+  const traps = Math.floor(nonNegative(activeTraps));
+  return Math.min(INSCRIBED_LOAD_CAP, Math.round(mag * 5 + traps * 6));
 }
 
 /** Composite rupture index R = min(100, round((observed share + inscribed load) × trend multiplier)). */
 export function ruptureIndex(observedShare: number, inscribedLoad: number, trendMultiplier: number): number {
-  return Math.max(0, Math.min(100, Math.round((observedShare + inscribedLoad) * trendMultiplier)));
+  const m = finiteOr(trendMultiplier, 1.0);
+  return Math.max(0, Math.min(100, Math.round((nonNegative(observedShare) + nonNegative(inscribedLoad)) * m)));
 }
 
 /** Canonical trend multipliers applied to the rupture index. */
-export const TREND_MULT = { improving: 0.85, static: 1.0, deteriorating: 1.15 } as const;
+export const TREND_MULT = Object.freeze({ improving: 0.85, static: 1.0, deteriorating: 1.15 } as const);
 
 /**
  * Communal-bond tolerance rule for Track I. The principals' track may lead the
@@ -120,7 +123,9 @@ export const MAX_DISTANCE = Math.sqrt(4 * 16);
  * The state-vector reading: mean, population variance, spread, limiting factor
  * (the minimum bond) and the Euclidean distance to the nearest canonical case.
  */
-export function mathReading(v: [number, number, number, number]): MathReading {
+export function mathReading(input: [number, number, number, number]): MathReading {
+  // A non-finite score reads at the 1.0 sovereign baseline, so no NaN reaches the bus.
+  const v = input.map(finiteBond) as [number, number, number, number];
   const mean = v.reduce((a, b) => a + b, 0) / 4;
   const variance = v.reduce((a, b) => a + (b - mean) ** 2, 0) / 4;
   const spread = Math.max(...v) - Math.min(...v);
@@ -169,7 +174,9 @@ export type FacadeReading = {
  * Engaged when variance exceeds 1.25 AND the strongest bond is at least 4.0
  * AND the weakest bond is at most 2.0.
  */
-export function facadeSyndrome(v: readonly number[]): FacadeReading {
+export function facadeSyndrome(input: readonly number[]): FacadeReading {
+  const v = input.map(finiteBond);
+  if (v.length === 0) return { engaged: false, variance: 0, max: 0, min: 0, tests: { varianceAbove: false, maxAtLeast: false, minAtMost: false } };
   const mean = v.reduce((a, b) => a + b, 0) / v.length;
   const variance = v.reduce((a, b) => a + (b - mean) ** 2, 0) / v.length;
   const max = Math.max(...v);
@@ -250,11 +257,11 @@ export const SUCCESSION_TRAP = 55.0;
  */
 export function successionDurability(s: Signals): SuccessionReading | undefined {
   if (!s.bonds) return undefined;
-  const b = s.bonds;
+  const b = { interpersonal: finiteBond(s.bonds.interpersonal), communal: finiteBond(s.bonds.communal), intergenerational: finiteBond(s.bonds.intergenerational), institutional: finiteBond(s.bonds.institutional) };
   const mu = (b.interpersonal + b.communal + b.intergenerational + b.institutional) / 4;
   const covenantCount = s.covenants?.length ?? 0;
   const covenantIndicator = covenantCount >= COVENANT_SATURATION ? 1.0 : 0.5 * covenantCount;
-  const rupturePct = s.rupture ?? 0;
+  const rupturePct = Math.min(100, nonNegative(s.rupture));
   const rTilde = rupturePct / 100;
   const terms = [
     { label: "0.35 × μB (composite mean)", weight: 0.35, input: mu, value: 0.35 * mu },
@@ -316,11 +323,12 @@ export function dominumIndex(s: Signals): DominumReading | { missing: string[] }
   if (s.rupture === undefined) missing.push("rupture index (Desk 02)");
   if (missing.length || !s.bonds) return { missing };
   const b = s.bonds;
-  const v = [b.interpersonal, b.communal, b.intergenerational, b.institutional];
+  const v = [b.interpersonal, b.communal, b.intergenerational, b.institutional].map(finiteBond);
   const mu = v.reduce((a, x) => a + x, 0) / 4;
-  const E = s.escrowFrozen ? 0 : Math.min(100, Math.max(0, s.escrowReleasedPercent ?? 0));
-  const S = Math.min(100, Math.max(0, s.survivalScore ?? 0));
-  const R = Math.min(100, Math.max(0, s.rupture ?? 0));
+  const E = s.escrowFrozen ? 0 : Math.min(100, nonNegative(s.escrowReleasedPercent));
+  const S = Math.min(100, nonNegative(s.survivalScore));
+  // An unreadable rupture reading counts as full rupture, so containment is never overstated.
+  const R = Math.min(100, Math.max(0, finiteOr(s.rupture, 100)));
   const terms: DominumReading["terms"] = [
     { key: "A", label: "0.30 × A (bond anchor, (μB − 1) ÷ 4)", weight: 0.3, input: Math.min(1, Math.max(0, (mu - 1) / 4)), value: 0 },
     { key: "F", label: "0.25 × F (fiduciary anchor, E ÷ 100)", weight: 0.25, input: E / 100, value: 0 },
