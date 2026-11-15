@@ -6,6 +6,8 @@ interface Step {
   note: string;
   to?: string;
   href?: string;
+  /** Several destinations named in one step, each linked separately. */
+  links?: { label: string; to: string }[];
 }
 
 interface Pathway {
@@ -30,7 +32,10 @@ const PATHWAYS: Pathway[] = [
       {
         label: "Colombia and Kenya",
         note: "Two processes where formal accords advanced faster than the bonds beneath them.",
-        to: "/cases/colombia",
+        links: [
+          { label: "Colombia", to: "/cases/colombia" },
+          { label: "Kenya", to: "/cases/kenya" },
+        ],
       },
       {
         label: "Methodology",
@@ -129,7 +134,21 @@ export default function ReadingPathways() {
                       {String(si + 1).padStart(2, "0")}
                     </span>
                     <div>
-                      {s.to ? (
+                      {s.links ? (
+                        <span className="text-sm font-semibold text-primary">
+                          {s.links.map((l, li) => (
+                            <span key={l.to}>
+                              {li > 0 && " and "}
+                              <Link
+                                to={l.to}
+                                className="underline decoration-brass/50 underline-offset-4 hover:text-accent transition-colors"
+                              >
+                                {l.label}
+                              </Link>
+                            </span>
+                          ))}
+                        </span>
+                      ) : s.to ? (
                         <Link
                           to={s.to}
                           className="text-sm font-semibold text-primary underline decoration-brass/50 underline-offset-4 hover:text-accent transition-colors"

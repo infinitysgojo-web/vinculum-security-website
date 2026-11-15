@@ -17,7 +17,9 @@ export default function SiteFooter() {
               James Wesley Ndua
             </a>
           </span>
-          <span className="whitespace-nowrap">All Rights Reserved</span>
+          <span className="whitespace-nowrap">Doctrine texts CC BY-NC-ND 4.0</span>
+          <span className="text-brass hidden sm:inline" aria-hidden>·</span>
+          <span className="whitespace-nowrap">Dashboard software all rights reserved</span>
           <span className="text-brass hidden sm:inline" aria-hidden>·</span>
           <span className="whitespace-nowrap">First articulated MMXXVI</span>
           <span className="text-accent whitespace-nowrap">A Doctrine of Relational Security</span>
