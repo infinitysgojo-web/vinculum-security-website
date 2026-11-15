@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { ShieldAlert, ShieldCheck, Stamp } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { sha8, type SealDifference, type SealStatus } from "./handoverSeal";
+import { Button } from "@/components/ui/button";
+import { formatSealValue, sealParameterLabel, sha8, type SealDifference, type SealStatus } from "./handoverSeal";
 
 /**
  * The header beacon of the Tamper-Evident Handover Seal.
@@ -25,32 +26,32 @@ export default function HandoverSealBadge({
   onClear: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const base = "inline-flex min-h-8 max-w-[16rem] shrink-0 whitespace-nowrap items-center gap-1.5 border px-2 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors";
+  const base = "rounded-none h-8 hover:bg-transparent inline-flex min-h-8 max-w-[16rem] shrink-0 whitespace-nowrap items-center gap-1.5 border px-2 font-mono text-[10px] uppercase tracking-[0.12em] transition-colors";
   if (status.state === "unsealed")
     return (
-      <button type="button" onClick={onSeal} disabled={sealing} className={`${base} border-brass/50 text-primary hover:border-accent hover:text-accent disabled:opacity-50`} title="Seal the mission assessment with SHA-256 before a briefing or a handover" data-testid="seal-badge">
-        <Stamp size={12} /> <span className="hidden 2xl:inline">{sealing ? "Sealing…" : "Seal assessment"}</span>
-      </button>
+      <Button variant="ghost" type="button" onClick={onSeal} disabled={sealing} className={`${base} border-brass/50 text-primary hover:border-accent hover:text-accent disabled:opacity-50`} title="Seal the mission assessment with SHA-256 before a briefing or a handover" aria-label={sealing ? "Sealing assessment" : "Seal assessment"} data-testid="seal-badge">
+        <Stamp size={12} /> <span className="hidden xl:inline">{sealing ? "Sealing…" : "Seal assessment"}</span>
+      </Button>
     );
   const diffs = open && status.state === "diverged" ? differences() : [];
   return (
     <>
-      <button
+      <Button variant="ghost"
         type="button"
         onClick={() => setOpen(true)}
-        className={`${base} ${status.state === "intact" ? "border-emerald/60 text-emerald" : "border-destructive bg-destructive/10 text-destructive font-semibold"}`}
+        className={`${base} ${status.state === "intact" ? "border-emerald/60 text-emerald hover:text-emerald" : "border-destructive bg-destructive/10 text-destructive hover:text-destructive font-semibold"}`}
         title={status.state === "intact" ? `Integrity intact · sealed by ${status.seal.sealedBy}` : "Divergence detected: open the inspection"}
-        aria-label={status.state === "intact" ? `Sealed, integrity intact, ${sha8(status.seal.sealHash)}` : `Divergence detected in ${status.parameters.join(", ")}`}
+        aria-label={status.state === "intact" ? `Sealed, integrity intact, ${sha8(status.seal.sealHash)}` : `Divergence detected in ${status.parameters.map(sealParameterLabel).join(", ")}`}
         data-testid="seal-badge"
         data-seal-state={status.state}
       >
         {status.state === "intact" ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-        <span className="hidden truncate 2xl:inline">
+        <span className="hidden truncate xl:inline">
           {status.state === "intact"
             ? `Sealed · ${sha8(status.seal.sealHash)}`
-            : `Divergence detected · ${status.parameters.slice(0, 2).join(", ")}${status.parameters.length > 2 ? ` +${status.parameters.length - 2}` : ""}`}
+            : "Divergence detected"}
         </span>
-      </button>
+      </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-2xl rounded-none" data-testid="seal-inspection">
           <DialogHeader>
@@ -63,7 +64,7 @@ export default function HandoverSealBadge({
             <p className="text-sm text-foreground/85">The live mission state hashes to the sealed digest. Profile, warrant facts, assumptions and exclusions, bus signals and the decision ledger are unchanged since sealing.</p>
           ) : (
             <div className="max-h-[55vh] overflow-auto border border-border">
-              <table className="w-full min-w-[30rem] border-collapse text-xs">
+              <table className="w-full table-fixed border-collapse text-xs">
                 <thead className="sticky top-0 bg-background">
                   <tr className="text-left text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
                     <th className="px-2 py-1.5 font-semibold">Parameter</th>
@@ -74,9 +75,9 @@ export default function HandoverSealBadge({
                 <tbody>
                   {diffs.slice(0, 300).map((d) => (
                     <tr key={d.path} className="border-t border-border align-top">
-                      <td className="px-2 py-1 font-mono text-primary [overflow-wrap:anywhere]">{d.path}</td>
-                      <td className="px-2 py-1 font-mono text-muted-foreground line-through decoration-destructive/60 [overflow-wrap:anywhere]">{d.sealed}</td>
-                      <td className="px-2 py-1 font-mono bg-ochre/10 text-foreground [overflow-wrap:anywhere]">{d.current}</td>
+                      <td className="px-2 py-1 text-primary [overflow-wrap:anywhere]"><span>{sealParameterLabel(d.path)}</span><div className="font-mono text-[10px] text-muted-foreground">{d.path}</div></td>
+                      <td className="px-2 py-1 font-mono text-muted-foreground line-through decoration-destructive/60 [overflow-wrap:anywhere]">{formatSealValue(d.sealed) === formatSealValue(d.current) ? d.sealed : <SealValue value={d.sealed} />}</td>
+                      <td className="px-2 py-1 font-mono bg-ochre/10 text-foreground [overflow-wrap:anywhere]">{formatSealValue(d.sealed) === formatSealValue(d.current) ? d.current : <SealValue value={d.current} />}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -85,15 +86,20 @@ export default function HandoverSealBadge({
             </div>
           )}
           <div className="flex flex-wrap justify-end gap-2">
-            <button type="button" onClick={() => { onClear(); setOpen(false); }} className="min-h-10 border border-border px-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
+            <Button variant="ghost" type="button" onClick={() => { onClear(); setOpen(false); }} className="rounded-none hover:bg-transparent min-h-10 border border-border px-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
               Break seal
-            </button>
-            <button type="button" onClick={() => { onReseal(); setOpen(false); }} disabled={sealing} className="min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.14em] font-semibold text-primary hover:border-accent disabled:opacity-50">
+            </Button>
+            <Button variant="ghost" type="button" onClick={() => { onReseal(); setOpen(false); }} disabled={sealing} className="rounded-none hover:bg-transparent min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.14em] font-semibold text-primary hover:border-accent disabled:opacity-50">
               Re-seal current state
-            </button>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
     </>
   );
+}
+
+function SealValue({ value }: { value: string }) {
+  const display = formatSealValue(value);
+  return display === value ? <>{value}</> : <details><summary className="cursor-pointer">{display}</summary><span className="block mt-1 text-[10px]">Exact: {value}</span></details>;
 }

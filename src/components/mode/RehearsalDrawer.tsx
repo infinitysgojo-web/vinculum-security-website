@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
-import { FileJson, FileText, GitBranch, Package, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Check, FileJson, FileText, GitBranch, Package, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import ShockTimelineScrubber from "@/components/desk/ShockTimelineScrubber";
@@ -9,6 +10,8 @@ import { missionSlug, type ExecSummary } from "@/components/desk/executiveBrief"
 import { buildManifest, diplomaticCable, downloadBlob, type ManifestBody } from "@/components/desk/DiplomaticCableExport";
 import type { Signals } from "@/components/desk/engine";
 import { BASELINE_ID, MAX_BRANCHES, postureDiff, postureOf, type BranchStore, type DiffRow, type PostureState } from "./postureBranches";
+
+type ExportKind = "manifest" | "briefing" | "cable";
 
 export type RehearsalTab = "branches" | "diff" | "timeline" | "summary" | "pouch";
 
@@ -81,21 +84,37 @@ export default function RehearsalDrawer({
   const slug = missionSlug(summary.masthead.title);
   const [busy, setBusy] = useState<string | null>(null);
 
-  const exportFile = async (kind: "manifest" | "briefing" | "cable" | "all") => {
+  const [requested, setRequested] = useState<Partial<Record<ExportKind, number>>>({});
+  useEffect(() => {
+    setRequested({});
+  }, [open, slug, rawSignals, summary]);
+  useEffect(() => {
+    if (!Object.keys(requested).length) return;
+    const timer = window.setTimeout(() => setRequested({}), 6000);
+    return () => window.clearTimeout(timer);
+  }, [requested]);
+  const markRequested = (kind: ExportKind) => setRequested((previous) => ({ ...previous, [kind]: Date.now() }));
+
+  const exportFile = async (kind: ExportKind | "all") => {
     setBusy(kind);
     try {
       const m = await buildManifest(manifestBody());
-      if (kind === "manifest" || kind === "all")
+      if (kind === "manifest" || kind === "all") {
         downloadBlob(new Blob([JSON.stringify(m, null, 2)], { type: "application/json" }), `${slug}-manifest.json`);
-      if (kind === "cable" || kind === "all")
+        markRequested("manifest");
+      }
+      if (kind === "cable" || kind === "all") {
         downloadBlob(new Blob([diplomaticCable(summary, { digest: m.integrity.hash })], { type: "text/plain;charset=us-ascii" }), `${slug}-cable.txt`);
+        markRequested("cable");
+      }
       if (kind === "briefing" || kind === "all") {
         const { buildExecutiveBriefingPdf } = await import("@/components/desk/ExecutiveSummaryPdf");
         downloadBlob(await buildExecutiveBriefingPdf(summary), `${slug}-briefing.pdf`);
+        markRequested("briefing");
       }
-      toast.success(kind === "all" ? `Pouch sealed · manifest SHA-256 ${m.integrity.hash.slice(0, 12)}…` : "Saved to this device");
+      toast.success(kind === "all" ? `Pouch sealed · manifest SHA-256 ${m.integrity.hash.slice(0, 12)}…` : "Download requested");
     } catch {
-      toast.error("This browser could not assemble the export. Nothing was saved.");
+      toast.error("Export assembly failed. Any downloads already requested remain available.");
     } finally {
       setBusy(null);
     }
@@ -232,13 +251,13 @@ export default function RehearsalDrawer({
           <section className="mt-4 space-y-3 min-w-0">
             <p className="text-xs text-muted-foreground">The diplomatic pouch, assembled in this browser from one summary model so the three files agree. The cable carries the manifest's SHA-256.</p>
             <ul className="space-y-2">
-              <li className="flex flex-wrap items-center gap-2 border border-border p-2"><FileJson size={14} className="text-accent" /><span className="min-w-0 flex-1 font-mono text-xs [overflow-wrap:anywhere]">{slug}-manifest.json</span><button type="button" className={btn} disabled={!!busy} onClick={() => void exportFile("manifest")}>Save</button></li>
-              <li className="flex flex-wrap items-center gap-2 border border-border p-2"><FileText size={14} className="text-accent" /><span className="min-w-0 flex-1 font-mono text-xs [overflow-wrap:anywhere]">{slug}-briefing.pdf</span><button type="button" className={btn} disabled={!!busy} onClick={() => void exportFile("briefing")}>Save</button></li>
-              <li className="flex flex-wrap items-center gap-2 border border-border p-2"><FileText size={14} className="text-accent" /><span className="min-w-0 flex-1 font-mono text-xs [overflow-wrap:anywhere]">{slug}-cable.txt</span><button type="button" className={btn} disabled={!!busy} onClick={() => void exportFile("cable")}>Save</button></li>
+              <li className="flex flex-wrap items-center gap-2 border border-border p-2"><FileJson size={14} className="text-accent" /><span className="min-w-0 flex-1 font-mono text-xs [overflow-wrap:anywhere]">{slug}-manifest.json</span><span role="status" className="inline-flex shrink-0 items-center text-emerald">{requested.manifest && <Check size={14} aria-label="Download requested" />}</span><Button variant="ghost" type="button" className={`rounded-none hover:bg-transparent ${btn}`} disabled={!!busy} aria-label="Save manifest" onClick={() => void exportFile("manifest")}>Save</Button></li>
+              <li className="flex flex-wrap items-center gap-2 border border-border p-2"><FileText size={14} className="text-accent" /><span className="min-w-0 flex-1 font-mono text-xs [overflow-wrap:anywhere]">{slug}-briefing.pdf</span><span role="status" className="inline-flex shrink-0 items-center text-emerald">{requested.briefing && <Check size={14} aria-label="Download requested" />}</span><Button variant="ghost" type="button" className={`rounded-none hover:bg-transparent ${btn}`} disabled={!!busy} aria-label="Save briefing" onClick={() => void exportFile("briefing")}>Save</Button></li>
+              <li className="flex flex-wrap items-center gap-2 border border-border p-2"><FileText size={14} className="text-accent" /><span className="min-w-0 flex-1 font-mono text-xs [overflow-wrap:anywhere]">{slug}-cable.txt</span><span role="status" className="inline-flex shrink-0 items-center text-emerald">{requested.cable && <Check size={14} aria-label="Download requested" />}</span><Button variant="ghost" type="button" className={`rounded-none hover:bg-transparent ${btn}`} disabled={!!busy} aria-label="Save cable" onClick={() => void exportFile("cable")}>Save</Button></li>
             </ul>
-            <button type="button" className={btn} disabled={!!busy} onClick={() => void exportFile("all")} data-testid="export-pouch">
+            <Button variant="ghost" type="button" className={`rounded-none hover:bg-transparent ${btn}`} disabled={!!busy} onClick={() => void exportFile("all")} data-testid="export-pouch">
               <Package size={13} /> {busy ? "Assembling…" : "Save all three"}
-            </button>
+            </Button>
             <pre className="max-h-56 overflow-auto border border-border bg-background p-2 font-mono text-[10px] leading-snug whitespace-pre" data-testid="cable-preview">{diplomaticCable(summary)}</pre>
           </section>
         )}

@@ -1,5 +1,7 @@
 # Project Architecture
 
+- Seal formatting follows exact comparison; PDF hashes use visible chunks; pouch ticks confirm requests only. Why: readability must preserve evidence and browser limits.
+
 - PDF exports reserve body space for bounded running headers and footers; statutory notices belong in full-width notice blocks, not compact mastheads. Why: long legal text must never collide with branding or page numbering.
 
 - Keep scholarly working tools embedded in their relevant existing page, with browser-local state only, to preserve a focused reading architecture without new routes or data storage.

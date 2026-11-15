@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Refine divergence display precision and desk labels without changing canonical comparisons; expose laptop seal status
+- [ ] Bound PDF digest lines without inserting hidden characters; add truthful transient per-file pouch feedback
+- [ ] Run regression tests, signed-in seal/export flow, desktop/mobile layout and rendered PDF checks
+
 - [x] Update the existing author designation on Home, About, author references and search/AI metadata
 - [x] Harmonize existing public navigation signals and truthful sitemap modification dates; verified author layout at 390/1075/1280px, desktop/mobile navigation, 407 passing tests and clean preview build
 

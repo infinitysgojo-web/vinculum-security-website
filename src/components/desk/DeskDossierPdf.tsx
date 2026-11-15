@@ -1,3 +1,4 @@
+import { digestLines } from "./executiveBrief";
 import { Document, Page, Text, View, Image, StyleSheet, Font, pdf } from "@react-pdf/renderer";
 import { AUTHOR_NAME, SITE_URL } from "@/lib/seo-entities";
 import mark from "@/assets/vinculum-mark.png";
@@ -283,7 +284,7 @@ function Apostille({ attestation }: { attestation?: Attestation }) {
           <Text style={at.apoKey}>SHA-256 state digest</Text>
           <View style={at.apoVal}>
             {attestation ? (
-              chunk(attestation.digest, 32).map((line, i) => <Text key={i} style={at.apoMono}>{line}</Text>)
+              digestLines(attestation.digest, 32).map((line, i) => <Text key={i} style={at.apoMono}>{line}</Text>)
             ) : (
               <Text style={at.apoMono}>Not computed</Text>
             )}
@@ -378,8 +379,9 @@ export async function buildDeskDossier({
           <View style={at.box} wrap={false}>
             <Text style={at.label}>Protocol registry</Text>
             <Text style={at.mono}>REF NO  : {attestation.ref}</Text>
-            <Text style={at.mono}>DIGEST  : {attestation.digest.slice(0, 32)}</Text>
-            <Text style={at.mono}>{"\u00A0".repeat(10)}{attestation.digest.slice(32)}</Text>
+            {digestLines(attestation.digest, 32).map((line, index) => (
+              <Text key={index} style={at.mono}>{index === 0 ? "DIGEST  : " : "\u00A0".repeat(10)}{line}</Text>
+            ))}
             <Text style={at.mono}>
               STATUS  : {attestation.clearances.filter((c) => c.passed).length}/{attestation.clearances.length} STATUTORY CLEARANCES // {attestation.gatesPassed}/{attestation.gatesTotal} GATES
             </Text>
@@ -425,7 +427,7 @@ export async function buildDeskDossier({
                 {wrapRef(attestation.ref, 22).map((line, i) => (
                   <Text key={`r${i}`} style={[at.sealMono, i === 0 ? { marginTop: 4 } : {}]}>{line}</Text>
                 ))}
-                {chunk(attestation.digest, 16).map((line, i) => (
+                {digestLines(attestation.digest).map((line, i) => (
                   <Text key={`d${i}`} style={[at.sealMono, i === 0 ? { marginTop: 3 } : {}]}>{line}</Text>
                 ))}
               </View>

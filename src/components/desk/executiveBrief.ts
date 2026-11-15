@@ -8,6 +8,12 @@ import { exposureOf } from "@/components/mode/postureBranches";
 
 export const STATUTORY_NOTICE =
   "Statutorily registered and legally protected intellectual property. Formally protected under statutory copyright law and international conventions. All statutory rights reserved.";
+
+/** Visible PDF line chunks; joining them restores every original digest character. */
+export function digestLines(digest: string, width = 16): string[] {
+  const size = Number.isFinite(width) ? Math.max(1, Math.floor(width)) : 16;
+  return digest.match(new RegExp(`.{1,${size}}`, "g")) ?? [digest];
+}
 export const NON_COMMERCIAL_NOTICE =
   "Non-commercial diplomatic instrument. Prepared in a browser-local chancellery terminal; deterministic readings from documented formulas, not forecasts.";
 

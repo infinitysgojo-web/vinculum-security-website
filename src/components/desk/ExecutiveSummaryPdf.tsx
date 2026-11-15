@@ -5,7 +5,7 @@ import serifItalic from "@/assets/fonts/CormorantGaramond-Italic.ttf";
 import sansRegular from "@/assets/fonts/Inter-Regular.ttf";
 import sansSemiBold from "@/assets/fonts/Inter-SemiBold.ttf";
 import { Neatline, NEAT_BRASS, NEAT_NAVY } from "@/components/pdf/Neatline";
-import { radarPoints, type ExecSummary } from "./executiveBrief";
+import { digestLines, radarPoints, type ExecSummary } from "./executiveBrief";
 
 /**
  * [mission-slug]-briefing.pdf: the 1-Page Executive Action Summary in the Vinculum
@@ -78,7 +78,9 @@ function BriefingDoc({ m }: { m: ExecSummary }) {
             {meta.map(([k, v]) => (
               <View key={k} style={s.meta}>
                 <Text style={s.metaK}>{k}</Text>
-                <Text style={s.metaV}>{v}</Text>
+                {k === "Seal stamp" && /^SHA-256 [0-9a-f]{64}$/i.test(v) ? (
+                  <View><Text style={s.metaV}>SHA-256</Text>{digestLines(v.slice(8)).map((line, index) => <Text key={index} style={s.metaV}>{line}</Text>)}</View>
+                ) : <Text style={s.metaV}>{v}</Text>}
               </View>
             ))}
           </View>

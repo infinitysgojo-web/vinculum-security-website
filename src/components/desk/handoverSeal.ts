@@ -115,6 +115,38 @@ export function clearSeal(store: Pick<Storage, "removeItem"> | undefined = globa
 
 export type SealDifference = { path: string; sealed: string; current: string };
 
+/** Display only: never feed formatted values into canonicalisation or comparisons. */
+export function formatSealValue(value: string): string {
+  if (!/^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?$/i.test(value)) return value;
+  const number = Number(value);
+  return Number.isFinite(number) ? String(Number(number.toPrecision(12))) : value;
+}
+
+/** Identify verified sources; unknown signal fields retain their exact path. */
+export function sealParameterLabel(path: string): string {
+  const labels: Record<string, string> = {
+    bonds: "Desk 01 · Bond diagnostic", bondMean: "Desk 01 · Mean bond", bondVariance: "Desk 01 · Bond variance",
+    weakestBond: "Desk 01 · Limiting bond", weakestScore: "Desk 01 · Limiting score",
+    rupture: "Desk 02 · Rupture index", ruptureBase: "Desk 02 · Base rupture", ruptureBand: "Desk 02 · Rupture band",
+    bondStrain: "Desk 02 · Bond strain", traps: "Desk 02 · Failure modes", trend: "Desk 02 · Trend", trendMultiplier: "Desk 02 · Trend multiplier",
+    shocks: "Desk 03 · Compound shocks", firstToBreak: "Desk 03 · First bond to break", shockSeverity: "Desk 03 · Shock severity",
+    projectedDegradation: "Desk 12 · Projected bond degradation", decayConstant: "Desk 12 · Decay constant",
+    stabilityHalfLifeDays: "Desk 12 · Stability half-life", survivalScore: "Desk 12 · Succession durability", unmitigatedExposure: "Desk 12 · Unmitigated exposure",
+    fractureMonths: "Desk 12 · Fracture horizon", fractureSeverity: "Desk 12 · Fracture severity",
+  };
+  const match = /^signals\.([^.\[]+)(?:\.([^.\[]+))?/.exec(path);
+  if (match) {
+    const label = labels[match[1]];
+    if (!label) return path;
+    const bond = match[1] === "bonds" ? match[2] : undefined;
+    return bond ? `${label} · ${bond[0].toUpperCase()}${bond.slice(1)}` : label;
+  }
+  if (path.startsWith("profile.")) return "Mission profile";
+  if (path.startsWith("binder.")) return "Mission warrant";
+  if (path.startsWith("decisions")) return "Decision ledger";
+  return path;
+}
+
 /** Flatten a JSON value to path → canonical leaf text. Arrays are indexed: covenants[2].title. */
 function flatten(v: unknown, path: string, out: Map<string, string>) {
   if (v !== null && typeof v === "object") {

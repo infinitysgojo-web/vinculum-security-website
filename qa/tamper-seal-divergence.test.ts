@@ -7,6 +7,8 @@ import {
   canonicalSeal,
   computeSealHash,
   createSeal,
+  formatSealValue,
+  sealParameterLabel,
   modifiedParameters,
   readSeal,
   sealDifferences,
@@ -86,6 +88,22 @@ describe("SHA-256 seal", () => {
 });
 
 describe("divergence beacon", () => {
+  test("display precision removes binary noise without changing exact differences or hashes", async () => {
+    expect(formatSealValue("0.04999999999999996")).toBe("0.05");
+    expect(formatSealValue("0.33187500000000003")).toBe("0.331875");
+    expect(formatSealValue("0.0000000000001")).toBe("1e-13");
+    expect(formatSealValue('"0.04999999999999996"')).toBe('"0.04999999999999996"');
+    const original = sealPayload(input({ signals: { bondVariance: 0.05 } }));
+    const changed = sealPayload(input({ signals: { bondVariance: 0.04999999999999996 } }));
+    expect(sealDifferences(canonicalSeal(original), changed)).toEqual([{ path: "signals.bondVariance", sealed: "0.05", current: "0.04999999999999996" }]);
+    expect(await computeSealHash(original)).not.toBe(await computeSealHash(changed));
+  });
+
+  test("source labels use the actual bond diagnostic and succession desks, never guessed ownership", () => {
+    expect(sealParameterLabel("signals.bonds.interpersonal")).toBe("Desk 01 · Bond diagnostic · Interpersonal");
+    expect(sealParameterLabel("signals.projectedDegradation")).toBe("Desk 12 · Projected bond degradation");
+    expect(sealParameterLabel("signals.unknownReading")).toBe("signals.unknownReading");
+  });
   test("an untouched mission is INTEGRITY INTACT", async () => {
     const s = await createSeal(sealPayload(input()), "Envoy A");
     const now = await computeSealHash(sealPayload(input()));
