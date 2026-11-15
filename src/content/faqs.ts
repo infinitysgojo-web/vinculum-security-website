@@ -130,7 +130,7 @@ export const FOUNDATIONS_FAQ: FaqItem[] = [
 export const CASES_FAQ: FaqItem[] = [
   {
     q: "Which eight peace processes constitute the empirical test-bed of Vinculum Security?",
-    a: `The doctrine has been proven against eight documented historical and contemporary processes: Northern Ireland (1998 Good Friday Agreement), Colombia (2016 Havana Accord), Cambodia (1991 Paris Peace Agreements), Liberia (2003 Accra Comprehensive Peace Agreement), Rwanda (1993 Arusha Accords & post-genocide Gacaca), Kenya (2008 National Accord), South Africa (1994 Interim Constitution & TRC), and Tuvalu–Kiribati (Pacific climate displacement).`,
+    a: `The doctrine was empirically calibrated against eight documented historical and contemporary processes: Northern Ireland (1998 Good Friday Agreement), Colombia (2016 Havana Accord), Cambodia (1991 Paris Peace Agreements), Liberia (2003 Accra Comprehensive Peace Agreement), Rwanda (1993 Arusha Accords & post-genocide Gacaca), Kenya (2008 National Accord), South Africa (1994 Interim Constitution & TRC), and Tuvalu–Kiribati (Pacific climate displacement).`,
   },
   {
     q: "How does the Vinculum Continuum score historical settlements across the four bond domains?",

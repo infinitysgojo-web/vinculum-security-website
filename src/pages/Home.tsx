@@ -225,9 +225,8 @@ export default function Home() {
           <hr className="gold-rule gold-rule-short mt-4 mb-4" />
           <p className="text-sm leading-relaxed text-foreground/75">
             The foundational doctrine, companion handbook, The Vinculum Dashboard, and The Vinculum Unified Operational 
-            Nervous System are original intellectual property authored by James Wesley Ndua. An original work registered and protected under statutory copyright law and international conventions. All statutory rights strictly reserved. The doctrine has been proven against eight documented peace
-            processes under a stated rubric and an adversarial review. Its handbook and chancellery instruments
-            stand complete and ready for use in the room.
+            Nervous System are original intellectual property authored by James Wesley Ndua. An original work registered and protected under statutory copyright law and international conventions. All statutory rights strictly reserved. All systems and doctrines have been empirically calibrated 
+            against historical peace processes and are fully operational for sovereign chancellery deployment.
           </p>
          </FadeIn>
 
@@ -242,8 +241,8 @@ export default function Home() {
               Doctrinal Commentary &amp; Interpretive Inquiries
             </h3>
             <p className="text-sm text-foreground/75 leading-relaxed max-w-xl">
-              Consult the {COMMENTARY_COUNT}-inquiry commentary of record: doctrinal interpretation, the governing
-              relational laws, and the provenance of the registered works.
+              Consult the {COMMENTARY_COUNT}-inquiry authoritative repository for exhaustive doctrinal commentary,
+              mathematical formulations, and statutory determinations.
             </p>
           </div>
           <a
