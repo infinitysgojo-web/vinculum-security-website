@@ -1,5 +1,5 @@
 /**
- * Cursor-safe sanitizer wiring for free-text fields. Nothing runs per keystroke:
+ * Cursor-safe sanitizer wiring for free-text fields and URL navigation. Nothing runs per keystroke:
  *  - on paste, text with prohibited hidden, bidirectional or control characters is
  *    rejected and nothing is inserted; clean text is inserted in NFC form;
  *  - on drop, dragged text gets the same check as a paste: rejected whole when it carries
@@ -24,6 +24,33 @@ const isFreeText = (t: EventTarget | null): t is Field => {
   }
   return false;
 };
+
+/**
+ * Hardens navigation paths against backslash traversal and open-redirect bypass vectors.
+ * Converts backslashes to forward slashes and collapses scheme-relative leading slashes.
+ */
+export function sanitizePathUrl(url: unknown): string {
+  if (typeof url !== "string") return "/";
+  // Convert any backslashes (e.g. \dashboard or \\evil.com) to forward slashes
+  const normalized = url.replace(/\\/g, "/").trim();
+  // Strip dangerous scheme protocols if attempted in local navigation
+  if (/^(javascript|vbscript|data):/i.test(normalized)) return "/";
+  // Neutralize scheme-relative external redirect bypasses (e.g. //attacker.com)
+  if (normalized.startsWith("//")) return "/" + normalized.replace(/^\/+/, "");
+  return normalized;
+}
+
+/**
+ * Validates external outbound URLs to ensure only secure, approved protocols (https/http/mailto) are allowed.
+ */
+export function isSafeOutboundUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url, window.location.origin);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" || parsed.protocol === "mailto:";
+  } catch {
+    return false;
+  }
+}
 
 /** Write a value the way a user edit would, so React's onChange sees it. */
 function commitValue(el: Field, value: string) {
