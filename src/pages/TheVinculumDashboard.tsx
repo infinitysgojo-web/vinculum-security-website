@@ -43,11 +43,11 @@ const DIVISIONS = [
     title: "Legal Architecture",
     desks: "Desks 10 – 14",
     summary:
-      "Treaty engineering, bond-conditioned covenant drafting, and succession resistance testing.",
+      "Treaty engineering, non-fungible covenant drafting, and succession resistance verification.",
     items: [
-      { id: "10", name: "Clause Architect", role: "Drafting covenants conditioned on bond integrity held above the Viable Floor, so a clause binds the relationship and not the text alone." },
+      { id: "10", name: "Clause Architect", role: "Drafting non-fungible peace covenants tied directly to physical bond-integrity conditions rather than textual nominalism." },
       { id: "11", name: "Clause Redliner", role: "Adversarial audit of counterpart treaty drafts to expose hidden opt-outs, bad-faith off-ramps, and linguistic mirages." },
-      { id: "12", name: "Succession Simulator", role: "Tests an accord against the Succession Trap: whether its Continuity Provisions hold through the departure, death, or electoral defeat of its signatories." },
+      { id: "12", name: "Succession Simulator", role: "Mathematical verification of whether an accord survives the departure, death, or electoral defeat of its original signatories." },
       { id: "13", name: "Legal Desk", role: "Prepare a matter checklist using the doctrine's evidentiary and continuity rules, alongside dispute-forum assessment." },
       { id: "14", name: "Adversarial Chamber", role: "Rehearse the recorded objections, answers and unresolved challenges from the doctrine's adversarial review." },
     ],
@@ -155,15 +155,15 @@ export default function TheVinculumDashboard() {
               Nervous System, was engineered by James Wesley Ndua to replace subjective
               optimism with <em>Deterministic Relational Law</em> (<span className="italic">Lex Relationalis Determinata</span>).
               It treats a peace accord not as a static text, but as a dynamic relational structure governed by strict
-              mathematical bounds: the weakest bond determines systemic capacity, no track may run beyond Communal
-              Tolerance while Track Divergence is read and held in check, and no treaty is certified durable unless it clears succession resistance gates.
+              mathematical bounds: the weakest bond determines systemic capacity, diplomatic tracks must stay
+              kinematically synchronized, and no treaty is certified durable unless it clears succession resistance gates.
             </p>
           </div>
         </FadeIn>
 
         <FadeIn className="max-w-3xl mb-16">
           <PullQuote cite="Operational Doctrine § I">
-            Peace is not the nominal signing of paper by elites; it is the Liebig Relational Capacity of the bonds that bind communities together across generational time.
+            Peace is not the nominal signing of paper by elites; it is the physical durability of the relational bonds that bind communities together across generational time.
           </PullQuote>
         </FadeIn>
 
@@ -238,7 +238,7 @@ export default function TheVinculumDashboard() {
                 <strong>Bounded Integrity Verification:</strong> The Handover Seal hashes a canonical mission record using SHA-256. Sealed local archives support tamper-evident custody; a seal does not establish the truth of the input evidence or automatic legal admissibility.
               </li>
               <li>
-                <strong>Deterministic Zero-AI Guarantee:</strong> Deterministic Relational Law executes as reproducible formulas: identical evidence yields an identical reading, attested by the Integrity Stamp. No generative AI enters the chancellery.
+                <strong>Deterministic Zero-AI Guarantee:</strong> The mathematical engine executes strictly reproducible formulas without probabilistic hallucinations, black-box guessing, or algorithmic manipulation.
               </li>
             </ul>
           </div>
