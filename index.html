@@ -3,7 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Perimeter Transport & Defensive Headers -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="x-dns-prefetch-control" content="off" />
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Permissions-Policy" content="accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=(), browsing-topics=(), run-ad-auction=(), join-ad-interest-group=()" />
+
+    <!-- Universal Anti-Ad, Anti-Tracking & Injected Overlay Shield -->
+    <style id="anti-ad-shield">
+      /* Block rogue commercial ad banners, retargeting iframes, and injected sponsor tags */
+      iframe[src*="doubleclick.net"],
+      iframe[src*="googlesyndication.com"],
+      iframe[src*="adnxs.com"],
+      iframe[src*="taboola.com"],
+      iframe[src*="outbrain.com"],
+      iframe[src*="criteo.com"],
+      div[class*="ad-banner"],
+      div[id*="google_ads"],
+      div[class*="sponsored-content"],
+      div[data-ad-unit],
+      aside[aria-label*="advertisement" i] {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
+        max-height: 0 !important;
+      }
+    </style>
+
     <script>
       // Frame protection belongs in CSP response headers, not frame-busting scripts:
       // sandboxed previews cannot navigate their parent and must remain visible.
@@ -50,7 +80,6 @@
     <meta name="dcterms.identifier" content="https://doi.org/10.5281/zenodo.21615991" data-rh="true" />
     <meta name="dcterms.rights" content="CC BY-NC-ND 4.0" data-rh="true" />
     <meta name="dcterms.license" content="https://creativecommons.org/licenses/by-nc-nd/4.0/" data-rh="true" />
-
 
     <link rel="icon" href="/vinculum-security-favicon.png?v=20260804" type="image/png" sizes="96x96" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
