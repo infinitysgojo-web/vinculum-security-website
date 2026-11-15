@@ -50,6 +50,24 @@ export function hexToBytes(hex: string): Uint8Array<ArrayBuffer> {
 }
 
 /**
+ * Validates that generated random bytes pass a statistical health check against
+ * all-zero or stuck-generator anomalies before being consumed in keys, nonces, or salts.
+ */
+export function assertEntropyHealth(bytes: Uint8Array): void {
+  if (bytes.length < 12) return;
+  let allZero = true;
+  let allSame = true;
+  const first = bytes[0];
+  for (let i = 0; i < bytes.length; i++) {
+    if (bytes[i] !== 0) allZero = false;
+    if (bytes[i] !== first) allSame = false;
+  }
+  if (allZero || allSame) {
+    throw new Error("CSPRNG entropy failure: generator produced uniform or degenerate byte sequence.");
+  }
+}
+
+/**
  * SHA-256 of a UTF-8 string through the browser's native SubtleCrypto, as lowercase hex.
  * Used by the Tamper-Evident Handover Seal and the evidentiary export manifest.
  */
@@ -59,7 +77,9 @@ export async function sha256HexText(text: string): Promise<string> {
 }
 
 export function randomBytes(n: number): Uint8Array<ArrayBuffer> {
-  return globalThis.crypto.getRandomValues(new Uint8Array(n));
+  const bytes = globalThis.crypto.getRandomValues(new Uint8Array(n));
+  assertEntropyHealth(bytes);
+  return bytes;
 }
 
 /**
