@@ -38,7 +38,9 @@ export type DecisionAction =
   | "ESCROW_TERMS"
   | "PROFILE_AMENDED"
   | "POSTURE_BRANCH"
-  | "HANDOVER_SEAL";
+  | "HANDOVER_SEAL"
+  | "HANDOVER_SEAL_BROKEN"
+  | "HANDOVER_RESEAL";
 
 export type LedgerEntry = { seq: number; at: string; kind: LedgerKind; detail: string; /** Origin desk number ("07"), or "00" for the mission shell. */ desk?: string };
 
@@ -131,7 +133,7 @@ export function mintedKind(kind: string): LedgerKind {
 export const DECISION_ACTIONS: ReadonlySet<string> = new Set<DecisionAction>([
   "INSCRIBE_SHOCK", "LIFT_SHOCK", "INSCRIBE_COVENANT", "AMEND_COVENANT", "STRIKE_COVENANT", "REDLINE_COVENANT",
   "GATE_OVERRIDE", "GATE_SATISFIED", "GATE_REOPENED", "TRANCHE_RELEASE", "ESCROW_FREEZE", "ESCROW_TERMS",
-  "PROFILE_AMENDED", "POSTURE_BRANCH", "HANDOVER_SEAL",
+  "PROFILE_AMENDED", "POSTURE_BRANCH", "HANDOVER_SEAL", "HANDOVER_SEAL_BROKEN", "HANDOVER_RESEAL",
 ]);
 
 /** Record one user decision against its origin desk ("07", or "00" for the mission shell). */

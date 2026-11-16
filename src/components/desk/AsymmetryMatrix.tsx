@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useEngine, usePublish, VIABLE_FLOOR } from "./engine";
 import FormulaProof from "./FormulaProof";
 import { asymmetryProof } from "./formulaProofs";
+import { Button } from "@/components/ui/button";
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"] as const;
 const SHORT = ["Inter.", "Comm.", "Gen.", "Inst."];
@@ -24,6 +25,7 @@ const defaultTol = (p: Party) => p.tol ?? BONDS.map((_, i) => (i === p.bond ? 4.
 export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
   const { signals } = useEngine();
   const [tol, setTol] = useState<Record<string, number[]>>({});
+  const [pair, setPair] = useState<[string, string] | null>(null);
   const vec = (p: Party) => tol[p.id] ?? defaultTol(p);
   const setCell = (p: Party, i: number, v: number) => {
     if (!Number.isFinite(v)) return;
@@ -63,9 +65,12 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
   const gapBreach = signals.trackGap !== undefined && signals.trackTolerance !== undefined && signals.trackGap > signals.trackTolerance;
 
   if (parties.length < 2) return null;
+  const pairA = parties.find((p) => p.id === pair?.[0]);
+  const pairB = parties.find((p) => p.id === pair?.[1]);
+  const pairProof = pairA && pairB ? asymmetryProof(coeff(pairA, pairB), [pairA, pairB].map((p) => ({ label: p.label, vector: vec(p) }))) : null;
 
   return (
-    <div className="border border-brass/40 bg-background p-4 sm:p-5">
+    <div className="border border-brass/40 bg-background p-4 sm:p-5 min-w-0" data-testid="asymmetry-matrix">
       <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary mb-1">Asymmetry and leverage matrix</p>
       <FormulaProof proof={asymmetryProof(maxF, parties.map((p) => ({ label: p.label, vector: vec(p) })))} />
       <p className="mb-3 text-xs text-muted-foreground">
@@ -130,7 +135,11 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
                       key={b.id}
                       className={`p-1 text-center font-mono tabular-nums ${c === null ? "text-muted-foreground" : c >= 0.25 ? "bg-destructive/10 text-destructive font-semibold" : c >= 0.12 ? "bg-ochre/10 text-primary" : "text-primary"}`}
                     >
-                      {c === null ? "—" : c.toFixed(2)}
+                      {c === null ? "—" : <Button variant="ghost" size="sm" type="button" className="h-8 min-w-10 rounded-none p-1 font-mono text-inherit"
+                        aria-label={`Inspect friction: ${a.label} / ${b.label}, ${c.toFixed(2)}`} aria-pressed={pairA?.id === a.id && pairB?.id === b.id}
+                        onClick={() => setPair([a.id, b.id])} title={`${a.label} / ${b.label}: ${vec(a).join(", ")} versus ${vec(b).join(", ")}`}>
+                        {c.toFixed(2)}
+                      </Button>}
                     </td>
                   );
                 })}
@@ -138,6 +147,13 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-2 min-h-12 border-t border-border pt-2 text-xs text-primary [overflow-wrap:anywhere]" role="status">
+        {pairProof && pairA && pairB ? <>
+          <p className="font-semibold">{pairA.label} / {pairB.label} · {coeff(pairA, pairB).toFixed(2)} <FormulaProof proof={pairProof} /></p>
+          <p className="font-mono text-[11px] text-muted-foreground">{pairProof.substitution}</p>
+        </> : <p>Maximum inter-party friction: {maxF.toFixed(2)}</p>}
       </div>
 
       <div className="mt-4 space-y-2 text-xs">

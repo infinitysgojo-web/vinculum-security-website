@@ -11,7 +11,7 @@
 import { sha256HexText } from "@/lib/chancelleryCrypto";
 import { canonicalJson } from "./registry";
 import type { Signals } from "./engine";
-import type { DecisionRecord } from "./ledgerStore";
+import { logDecision, type DecisionRecord } from "./ledgerStore";
 
 export const SEAL_STORAGE_KEY = "vs:handover-seal";
 
@@ -47,7 +47,9 @@ export function sealPayload(i: SealInput): SealPayload {
     binder: { facts: pick("fact"), assumptions: pick("assumption"), exclusions: pick("excluded") },
     signals: JSON.parse(JSON.stringify(i.signals ?? {})) as Signals,
     // The evt_ numbering is positional, so it is left out: the record content is what is sealed.
-    decisions: i.decisions.filter((d) => d.action !== "HANDOVER_SEAL").map(({ timestamp, deskId, action, details }) => ({ timestamp, deskId, action, details })),
+    // A creation/replacement record contains the resulting hash, so cannot hash itself.
+    // Break records remain covered; full replacement lineage is visible in the local ledger.
+    decisions: i.decisions.filter((d) => d.action !== "HANDOVER_SEAL" && d.action !== "HANDOVER_RESEAL").map(({ timestamp, deskId, action, details }) => ({ timestamp, deskId, action, details })),
   };
 }
 
@@ -101,11 +103,26 @@ export function writeSeal(seal: HandoverSeal, store: Pick<Storage, "setItem"> | 
   }
 }
 
-export function clearSeal(store: Pick<Storage, "removeItem"> | undefined = globalThis.sessionStorage) {
+/** Local audit only, not an immutable history or evidence of consent. */
+export function recordSealReplacement(current: HandoverSeal, previous: HandoverSeal | null) {
+  const prior = previous?.sessionId === current.sessionId ? previous : null;
+  return logDecision("00", prior ? "HANDOVER_RESEAL" : "HANDOVER_SEAL",
+    `Mission ${current.sessionId} · ${prior ? `Supersedes SHA-256 ${prior.sealHash} (sealed ${prior.sealedAt}) → ` : ""}SHA-256 ${current.sealHash} · sealed ${current.sealedAt} by ${current.sealedBy}`,
+    new Date(current.sealedAt));
+}
+
+export function recordSealBreak(previous: HandoverSeal, at: Date = new Date()) {
+  return logDecision("00", "HANDOVER_SEAL_BROKEN",
+    `Mission ${previous.sessionId} · SHA-256 ${previous.sealHash} · original seal ${previous.sealedAt} by ${previous.sealedBy} · baseline removed`, at);
+}
+
+export function clearSeal(store: Pick<Storage, "removeItem"> | undefined = globalThis.sessionStorage): boolean {
   try {
-    store?.removeItem(SEAL_STORAGE_KEY);
+    if (!store) return false;
+    store.removeItem(SEAL_STORAGE_KEY);
+    return true;
   } catch {
-    // sessionStorage unavailable: nothing was stored.
+    return false;
   }
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { BOND_NAMES } from "./engine";
 import { FLAG_LABEL, firstTrips, type TimelineFlag, type TimelineStep } from "./shockTimeline";
+import { Button } from "@/components/ui/button";
 
 const FLAG_TONE: Record<TimelineFlag, string> = {
   SOVEREIGN_FLOOR: "border-terracotta text-terracotta",
@@ -33,13 +34,13 @@ export default function ShockTimelineScrubber({ steps, title, note }: { steps: T
     <div className="border border-brass/40 bg-background p-4 min-w-0" data-testid="shock-timeline">
       <p className="text-[10px] uppercase tracking-[0.2em] font-semibold text-primary/80">{title}</p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button type="button" className={btn} onClick={() => setT((x) => Math.max(0, x - 1))} disabled={t <= 0} aria-label="Previous step">
+        <Button variant="ghost" type="button" className={`${btn} rounded-none`} onClick={() => setT((x) => Math.max(0, x - 1))} disabled={t <= 0} aria-label="Previous step">
           <ChevronLeft size={12} /> Previous step
-        </button>
-        <button type="button" className={btn} onClick={() => setT((x) => Math.min(n, x + 1))} disabled={t >= n} aria-label="Next step">
+        </Button>
+        <Button variant="ghost" type="button" className={`${btn} rounded-none`} onClick={() => setT((x) => Math.min(n, x + 1))} disabled={t >= n} aria-label="Next step">
           Next step <ChevronRight size={12} />
-        </button>
-        <span className="ml-auto font-mono text-xs text-primary tabular-nums">T{cur.t} of T{n}</span>
+        </Button>
+        <output className="ml-auto font-mono text-xs text-primary tabular-nums" aria-live="polite">T{cur.t} of T{n}</output>
       </div>
       <input
         type="range"
@@ -49,15 +50,15 @@ export default function ShockTimelineScrubber({ steps, title, note }: { steps: T
         value={Math.min(t, n)}
         onChange={(e) => setT(Number(e.target.value))}
         aria-label="Timeline step"
-        aria-valuetext={cur.label}
+        aria-valuetext={`T${cur.t} of T${n}: ${cur.label}`}
         className="mt-3 w-full accent-[hsl(var(--accent))]"
         disabled={n === 0}
       />
       <ol className="mt-1 flex w-full gap-0.5" aria-label="Threshold markers">
         {steps.map((s) => (
           <li key={s.t} className="flex-1 min-w-0">
-            <button type="button" onClick={() => setT(s.t)} title={s.label}
-              className={`block h-2 w-full ${s.t === cur.t ? "bg-accent" : s.flags.length ? "bg-terracotta/50" : "bg-brass/30"}`} aria-label={`Go to ${s.label}`} />
+            <Button variant="ghost" type="button" onClick={() => setT(s.t)} title={s.label}
+              className={`block h-8 w-full min-w-0 rounded-none p-0 border-b-4 ${s.t === cur.t ? "border-accent bg-accent/10" : s.flags.length ? "border-terracotta/50" : "border-brass/30"}`} aria-pressed={s.t === cur.t} aria-label={`Go to ${s.label}`} />
             <span className="block text-center font-mono text-[9px] text-muted-foreground">{s.t}</span>
           </li>
         ))}
@@ -66,9 +67,9 @@ export default function ShockTimelineScrubber({ steps, title, note }: { steps: T
         <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Thresholds first reached">
           {(Object.entries(trips) as [TimelineFlag, number][]).map(([f, at]) => (
             <li key={f}>
-              <button type="button" onClick={() => setT(at)} className={`min-h-8 border px-2 text-[10px] uppercase tracking-[0.12em] font-semibold ${FLAG_TONE[f]}`} title={FLAG_LABEL[f]}>
+              <Button variant="ghost" type="button" onClick={() => setT(at)} className={`min-h-8 rounded-none border px-2 text-[10px] uppercase tracking-[0.12em] font-semibold ${FLAG_TONE[f]}`} title={FLAG_LABEL[f]}>
                 {FLAG_SHORT[f]} · trips at T{at}
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Record full-hash seal breaks and replacement lineage in the existing local Decision Log; prevent failed/stale sealing from appearing successful
+- [ ] Improve seal visibility and existing radar, asymmetry, timeline and proof interactions without changing formulas or publications
+- [ ] Run regressions and authenticated seal/visual flows at desktop and mobile sizes
+
 - [ ] Refine divergence display precision and desk labels without changing canonical comparisons; expose laptop seal status
 - [ ] Bound PDF digest lines without inserting hidden characters; add truthful transient per-file pouch feedback
 - [ ] Run regression tests, signed-in seal/export flow, desktop/mobile layout and rendered PDF checks

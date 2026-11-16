@@ -30,7 +30,7 @@ export default function HandoverSealBadge({
   if (status.state === "unsealed")
     return (
       <Button variant="ghost" type="button" onClick={onSeal} disabled={sealing} className={`${base} border-brass/50 text-primary hover:border-accent hover:text-accent disabled:opacity-50`} title="Seal the mission assessment with SHA-256 before a briefing or a handover" aria-label={sealing ? "Sealing assessment" : "Seal assessment"} data-testid="seal-badge">
-        <Stamp size={12} /> <span className="hidden xl:inline">{sealing ? "Sealing…" : "Seal assessment"}</span>
+        <Stamp size={12} /> <span className="hidden sm:inline">{sealing ? "Sealing…" : "Seal assessment"}</span>
       </Button>
     );
   const diffs = open && status.state === "diverged" ? differences() : [];
@@ -38,6 +38,7 @@ export default function HandoverSealBadge({
     <>
       <Button variant="ghost"
         type="button"
+        disabled={sealing}
         onClick={() => setOpen(true)}
         className={`${base} ${status.state === "intact" ? "border-emerald/60 text-emerald hover:text-emerald" : "border-destructive bg-destructive/10 text-destructive hover:text-destructive font-semibold"}`}
         title={status.state === "intact" ? `Integrity intact · sealed by ${status.seal.sealedBy}` : "Divergence detected: open the inspection"}
@@ -46,7 +47,7 @@ export default function HandoverSealBadge({
         data-seal-state={status.state}
       >
         {status.state === "intact" ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-        <span className="hidden truncate xl:inline">
+        <span className="truncate">
           {status.state === "intact"
             ? `Sealed · ${sha8(status.seal.sealHash)}`
             : "Divergence detected"}
@@ -61,7 +62,7 @@ export default function HandoverSealBadge({
             </DialogDescription>
           </DialogHeader>
           {status.state === "intact" ? (
-            <p className="text-sm text-foreground/85">The live mission state hashes to the sealed digest. Profile, warrant facts, assumptions and exclusions, bus signals and the decision ledger are unchanged since sealing.</p>
+            <p className="text-sm text-foreground/85">The live mission state hashes to the sealed digest. Profile, warrant facts, assumptions and exclusions, bus signals and covered decisions are unchanged since sealing. Seal creation and replacement entries are not included in their own hash.</p>
           ) : (
             <div className="max-h-[55vh] overflow-auto border border-border">
               <table className="w-full table-fixed border-collapse text-xs">
@@ -85,8 +86,9 @@ export default function HandoverSealBadge({
               {diffs.length > 300 && <p className="p-2 text-[11px] text-muted-foreground">{diffs.length - 300} further differences not shown.</p>}
             </div>
           )}
+          <p className="text-xs leading-relaxed text-muted-foreground">Seal changes, original digests and replacement links appear in the Decision Log. This is editable browser-local history, not proof of consent or independent custody. Retain the original record separately for comparison.</p>
           <div className="flex flex-wrap justify-end gap-2">
-            <Button variant="ghost" type="button" onClick={() => { onClear(); setOpen(false); }} className="rounded-none hover:bg-transparent min-h-10 border border-border px-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
+            <Button variant="ghost" type="button" disabled={sealing} onClick={() => { onClear(); setOpen(false); }} className="rounded-none hover:bg-transparent min-h-10 border border-border px-3 text-[10px] uppercase tracking-[0.14em] text-muted-foreground hover:text-accent">
               Break seal
             </Button>
             <Button variant="ghost" type="button" onClick={() => { onReseal(); setOpen(false); }} disabled={sealing} className="rounded-none hover:bg-transparent min-h-10 border border-brass/50 px-3 text-[10px] uppercase tracking-[0.14em] font-semibold text-primary hover:border-accent disabled:opacity-50">

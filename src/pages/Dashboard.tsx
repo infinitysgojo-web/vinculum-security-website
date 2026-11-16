@@ -38,7 +38,7 @@ import { DoctrineAnchors } from "@/components/DoctrinalTooltip";
 import { useSovereignHotkeys, stepDesk } from "@/hooks/useSovereignHotkeys";
 import { PrivacyProvider, usePrivacy } from "@/components/desk/PrivacyContext";
 import HandoverSealBadge from "@/components/desk/HandoverSealBadge";
-import { canonicalSeal, clearSeal, computeSealHash, createSeal, readSeal, sealDifferences, sealPayload, sealStatus, writeSeal, type HandoverSeal } from "@/components/desk/handoverSeal";
+import { canonicalSeal, clearSeal, computeSealHash, createSeal, readSeal, recordSealBreak, recordSealReplacement, sealDifferences, sealPayload, sealStatus, writeSeal, type HandoverSeal } from "@/components/desk/handoverSeal";
 import { changedKeys, recordPublication, resetBusMonitor } from "@/components/desk/busMonitor";
 import { execSummary } from "@/components/desk/executiveBrief";
 import { MANIFEST_FORMAT, type ManifestBody } from "@/components/desk/DiplomaticCableExport";
@@ -964,6 +964,7 @@ export default function Dashboard() {
     };
   }, [sealInput, hSeal]);
   const [sealBusy, setSealBusy] = useState(false);
+  const sealPending = useRef(false);
   // Equal canonical bytes give an equal digest, so the beacon never shows a stale "intact" while the hash computes.
   const sameBytes = !!hSeal && canonicalSeal(sealInput) === hSeal.canonical;
   const sealState = sealStatus(hSeal, sameBytes ? hSeal!.sealHash : liveHash === hSeal?.sealHash ? "" : liveHash, () => (hSeal ? sealDifferences(hSeal.canonical, sealInput) : []));
@@ -1260,29 +1261,43 @@ export default function Dashboard() {
   /* ---------------- Surface 1: handover seal ---------------- */
   const sealMission = async () => {
     if (!activeWs) return toast.error("Open a mission before sealing it.");
+    if (sealPending.current) return;
+    sealPending.current = true;
+    const missionId = activeWs.id;
+    const previous = hSeal;
     setSealBusy(true);
     // Mount every desk first, so the sealed bus carries every desk's readings and merely
     // opening a desk later is not reported as a divergence.
     setVisited(new Set(DESKS.map((d) => d.id)));
     await new Promise((r) => window.setTimeout(r, 700));
     try {
+      const current = activeRef.current;
+      if (!current || current.id !== missionId) throw new Error("Mission changed");
       const w = workRef.current;
-      const p = sealPayload({ profile: w.profile, sessionId: activeWs.id, tray: activeWs.tray, signals: w.signals, decisions: decisionRecords(ledgerEntries()) });
-      const sl = await createSeal(p, w.profile.officer || activeWs.warrant?.custodian || "");
-      writeSeal(sl);
+      const p = sealPayload({ profile: w.profile, sessionId: missionId, tray: current.tray, signals: w.signals, decisions: decisionRecords(ledgerEntries()) });
+      const sl = await createSeal(p, w.profile.officer || current.warrant?.custodian || "");
+      const latest = activeRef.current;
+      const live = workRef.current;
+      if (!latest || latest.id !== missionId || canonicalSeal(sealPayload({ profile: live.profile, sessionId: missionId, tray: latest.tray, signals: live.signals, decisions: decisionRecords(ledgerEntries()) })) !== sl.canonical) {
+        throw new Error("Assessment changed while sealing");
+      }
+      if (!writeSeal(sl)) throw new Error("Seal storage unavailable");
       setHSeal(sl);
       setLiveHash(sl.sealHash);
-      logDecision("00", "HANDOVER_SEAL", `Mission assessment sealed · SHA-256 ${sl.sealHash.slice(0, 8)} by ${sl.sealedBy}`);
+      recordSealReplacement(sl, previous);
       seal();
       toast.success(`Sealed · ${sl.sealHash.slice(0, 8)}`);
     } catch {
-      toast.error("This browser could not compute the SHA-256 seal. Nothing was sealed.");
+      toast.error("The assessment changed or this browser could not save its seal. No new seal was applied; retry when ready.");
     } finally {
+      sealPending.current = false;
       setSealBusy(false);
     }
   };
   const breakSeal = () => {
-    clearSeal();
+    if (sealPending.current || !hSeal) return;
+    if (!clearSeal()) return toast.error("This browser could not remove the seal. The current baseline is kept.");
+    recordSealBreak(hSeal);
     setHSeal(null);
     setLiveHash("");
     toast.success("Handover seal broken. The mission is unsealed.");
