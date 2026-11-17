@@ -115,6 +115,10 @@ export default function DeltaSimulator({
                 step={0.1}
                 value={sim[key]}
                 onChange={(e) => update(key, parseFloat(e.target.value))}
+                aria-label={`${name} simulated bond score`}
+                aria-valuemin={1}
+                aria-valuemax={5}
+                aria-valuenow={sim[key]}
                 className="w-full min-h-6 accent-[hsl(var(--accent))]"
               />
               <div className="flex justify-between gap-2 text-[10px] text-muted-foreground mt-1">
