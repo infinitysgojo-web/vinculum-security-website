@@ -384,7 +384,15 @@ export default function CompoundShockTester() {
               />
             <span className="font-serif text-2xl text-primary">{fmt(strain)}/100</span>
           </div>
-          <div className="h-2 bg-brass/20">
+          <div
+            className="h-2 bg-brass/20"
+            role="meter"
+            aria-label="Compound strain index"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={strain}
+            aria-valuetext={`${fmt(strain)} of 100 (${band})`}
+          >
             <div className="h-full bg-accent transition-all" style={{ width: `${strain}%` }} />
           </div>
           <p className="mt-3 text-xs uppercase tracking-[0.18em] font-semibold text-accent">{band}</p>
