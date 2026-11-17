@@ -156,10 +156,15 @@ export default function MirrorDesk() {
           </button>
         </div>
       )}
-      <div className="border border-brass/40 bg-navy-tint/40 p-4 sm:p-5">
-        <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70 mb-3">
-          Select two or three theatres
-        </p>
+      <div className="border border-brass/40 bg-navy-tint/40 p-4 sm:p-5" role="group" aria-label="Select two or three documented theatres for comparison">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[10px] uppercase tracking-[0.24em] font-semibold text-primary/70">
+            Select two or three theatres
+          </p>
+          <span className="text-[10px] font-mono text-muted-foreground">
+            {picked.length}/3 selected
+          </span>
+        </div>
         <div className="flex gap-2 flex-wrap">
           {CASES.map((c) => {
             const on = picked.includes(c.slug);
