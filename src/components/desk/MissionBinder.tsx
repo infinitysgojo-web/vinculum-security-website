@@ -139,8 +139,8 @@ export default function MissionBinder({
                   <li key={e.id} className="flex items-center gap-2 border border-border bg-background p-3 text-sm">
                     <span className="font-serif text-accent w-8 shrink-0">{i + 1}</span>
                     <span className="flex-1 min-w-0 truncate text-foreground/85">{e.title}</span>
-                    <button type="button" aria-label="Move up" disabled={i === 0} onClick={() => onMove(e.id, -1)} className="p-2 disabled:opacity-30 hover:text-accent"><ArrowUp size={14} /></button>
-                    <button type="button" aria-label="Move down" disabled={i === entries.length - 1} onClick={() => onMove(e.id, 1)} className="p-2 disabled:opacity-30 hover:text-accent"><ArrowDown size={14} /></button>
+                    <button type="button" aria-label={`Move ${e.title} up`} disabled={i === 0} onClick={() => onMove(e.id, -1)} className="p-2 disabled:opacity-30 hover:text-accent"><ArrowUp size={14} /></button>
+                    <button type="button" aria-label={`Move ${e.title} down`} disabled={i === entries.length - 1} onClick={() => onMove(e.id, 1)} className="p-2 disabled:opacity-30 hover:text-accent"><ArrowDown size={14} /></button>
                     <button type="button" aria-label={`Remove ${e.title}`} onClick={() => onRemove(e.id)} className="p-2 hover:text-accent"><X size={14} /></button>
                   </li>
                 ))}
