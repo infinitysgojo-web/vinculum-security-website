@@ -261,7 +261,7 @@ export default function ClauseArchitect() {
           </div>
           <div>
             <span className={label}>Enforcement posture</span>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2" role="group" aria-label="Enforcement posture">
               {RIGOUR.map((x, i) => (
                 <button key={x.id} type="button" aria-pressed={rig === i} onClick={() => setRig(i)}
                   className={`min-h-11 px-3 py-2 border text-[10px] font-semibold uppercase tracking-[0.14em] ${rig === i ? "bg-accent text-accent-foreground border-accent" : "border-brass/50 text-primary hover:border-accent"}`}>
