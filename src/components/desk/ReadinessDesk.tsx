@@ -73,6 +73,14 @@ export const GATE_DESK: Record<string, { id: string; label: string }> = {
   "Succession Durability": { id: "succession", label: "Desk 12 · Succession Simulator" },
 };
 
+/** Desk that publishes each Dominum input, matched against dominumIndex()'s missing labels. */
+const DOMINUM_SOURCE: ReadonlyArray<readonly [string, string]> = [
+  ["bond vector", "diagnostics"],
+  ["escrow release", "multiparty"],
+  ["succession survival", "succession"],
+  ["rupture index", "sentinel"],
+];
+
 export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens a desk by id; supplied by the dashboard. */ onOpenDesk?: (id: string) => void;  /** Open Questions in the active workspace's Context Tray; undefined when no workspace is open. */ openQuestions?: number } = {}) {
   const profile = useMission();
   const [mission, setMission] = useState(profile.theatre);
@@ -294,7 +302,15 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
                 <p className="text-xs text-muted-foreground">Awaiting readings from:</p>
                 <ul className="flex flex-wrap gap-2">
                   {dominum.missing.map((m) => (
-                    <li key={m} className="border border-terracotta/60 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-terracotta">{m}</li>
+                    <li key={m}>
+                      {(() => {
+                        const target = DOMINUM_SOURCE.find(([k]) => m.startsWith(k))?.[1];
+                        const cls = "border border-terracotta/60 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-terracotta";
+                        return target && onOpenDesk ? (
+                          <button type="button" onClick={() => onOpenDesk(target)} className={`${cls} hover:bg-terracotta/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent`} aria-label={`Open the desk that supplies the ${m}`}>{m} →</button>
+                        ) : <span className={`inline-block ${cls}`}>{m}</span>;
+                      })()}
+                    </li>
                   ))}
                 </ul>
               </div>

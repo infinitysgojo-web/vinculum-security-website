@@ -281,7 +281,8 @@ export default function SentinelMatrix() {
             <p className={label}>Relational rupture index</p>
             <p className="font-serif text-4xl text-primary">{r.pct}% <span className={`text-lg ${bandTone(r.b.name).text}`}>{r.b.name}</span></p>
             {r.inscribed > 0 && <p className="mt-1 text-[10px] uppercase tracking-[0.16em] text-accent">Includes +{r.inscribed} inscribed shock and trap load</p>}
-            <div className="relative mt-3 h-3 bg-border" aria-hidden>
+            {r.inscribed === 0 && on.length + cOn.length === 0 && <p className="mt-1 text-xs text-muted-foreground">Resting reading: no tripwire recorded and no inscribed load, so the index reads {r.pct}%.</p>}
+            <div className="relative mt-3 h-3 bg-border" role="meter" aria-label="Relational rupture index" aria-valuemin={0} aria-valuemax={100} aria-valuenow={r.pct} aria-valuetext={`${r.pct}% ${r.b.name}`}>
               <div className={`h-3 transition-all ${bandTone(r.b.name).bg}`} style={{ width: `${r.pct}%` }} />
               {[15, 35, 60].map((t) => <span key={t} className="absolute top-0 h-3 w-px bg-primary/50" style={{ left: `${t}%` }} />)}
             </div>
