@@ -309,10 +309,10 @@ export default function CounterpartPrompter() {
                 <Button variant="ghost" type="button" className="mt-2" onClick={() => patch({ stall: "none" })}>Clear condition</Button>
               </div>}
             </div>
-            <div className="flex justify-between items-center gap-3 mt-3">
-              <Button variant="ghost" type="button" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</Button>
-              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">{phase + 1} / 4</span>
-              <Button variant="ghost" type="button" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</Button>
+            <div className="flex justify-between items-center gap-3 mt-3" role="group" aria-label="Meeting phase navigation">
+              <Button variant="ghost" type="button" aria-label="Previous meeting phase" disabled={phase === 0} onClick={() => setPhase(phase - 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-primary disabled:opacity-30">Previous</Button>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-mono">Phase {phase + 1} of 4</span>
+              <Button variant="ghost" type="button" aria-label="Next meeting phase" disabled={phase === 3} onClick={() => setPhase(phase + 1)} className="min-h-11 px-1 text-[10px] uppercase tracking-[0.2em] text-accent disabled:opacity-30">Next</Button>
             </div>
           </div>
         </div>
