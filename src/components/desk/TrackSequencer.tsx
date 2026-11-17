@@ -310,7 +310,15 @@ export default function TrackSequencer({ initialDone = [] }: { /** Steps recorde
                       Phase {t.phase} · Track I lead {lead} of {tolerance} tolerated{shear ? " · shear" : ""}
                     </span>
                   </div>
-                  <div className="relative mt-2 h-2 bg-border" aria-hidden>
+                  <div
+                    className="relative mt-2 h-2 bg-border"
+                    role="meter"
+                    aria-label={`${t.name} track phase progress`}
+                    aria-valuemin={0}
+                    aria-valuemax={6}
+                    aria-valuenow={t.phase}
+                    aria-valuetext={`Phase ${t.phase} of 6, Track I lead ${lead} of ${tolerance} tolerated${shear ? ", structural shear detected" : ""}`}
+                  >
                     <div className="absolute inset-y-0 left-0 bg-accent" style={{ width: `${(Math.min(6, t.phase) / 6) * 100}%` }} />
                     <span className="absolute top-[-3px] h-3.5 w-0.5 bg-primary" style={{ left: `${(Math.min(6, r.a) / 6) * 100}%` }} />
                   </div>
