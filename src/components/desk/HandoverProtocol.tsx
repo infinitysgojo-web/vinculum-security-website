@@ -219,7 +219,15 @@ export default function HandoverProtocol() {
             <p className={label}>Durability quotient</p>
             <span className="font-serif text-2xl text-primary">{r.durability}/100</span>
           </div>
-          <div className="h-2 bg-brass/20">
+          <div
+            className="h-2 bg-brass/20"
+            role="meter"
+            aria-label="Settlement durability quotient"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={r.durability}
+            aria-valuetext={`${r.durability} of 100 (${r.band})`}
+          >
             <div className="h-full bg-accent transition-all" style={{ width: `${r.durability}%` }} />
           </div>
           <p className="mt-3 text-xs uppercase tracking-[0.18em] font-semibold text-accent">{r.band}</p>
