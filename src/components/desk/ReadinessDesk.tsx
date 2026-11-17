@@ -326,7 +326,15 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
               <p className={label}>Clearance progress</p>
               <span className="font-mono text-xs text-primary">{clearedCount}/{clearances.length}</span>
             </div>
-            <div className="h-2 bg-border" aria-hidden>
+            <div
+              className="h-2 bg-border"
+              role="meter"
+              aria-label="Clearance progress"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={clearancePct}
+              aria-valuetext={`${clearedCount} of ${clearances.length} clearances satisfied (${clearancePct}%)`}
+            >
               <div className={`h-2 transition-all ${bindingOpen ? "bg-accent" : "bg-primary"}`} style={{ width: `${clearancePct}%` }} />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">{bindingOpen ? `${bindingOpen} binding article${bindingOpen === 1 ? "" : "s"} still locked.` : "Every binding article is clear."}</p>
