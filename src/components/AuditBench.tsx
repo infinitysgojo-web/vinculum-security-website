@@ -124,7 +124,15 @@ export default function AuditBench({ parties: base }: { parties: readonly Party[
                     <span className="min-w-0 truncate text-sm text-primary">{name}</span>
                     <span className={cn("shrink-0 font-mono text-[10px]", full ? "text-primary" : "text-accent")}>{done}/{CHECKS.length}</span>
                   </span>
-                  <span className="mt-2 block h-1 w-full bg-border" aria-hidden>
+                  <span
+                    className="mt-2 block h-1 w-full bg-border"
+                    role="meter"
+                    aria-label={`${name} safeguard completion`}
+                    aria-valuemin={0}
+                    aria-valuemax={CHECKS.length}
+                    aria-valuenow={done}
+                    aria-valuetext={`${done} of ${CHECKS.length} safeguards satisfied`}
+                  >
                     <span className={cn("block h-1", full ? "bg-primary" : "bg-accent")} style={{ width: `${Math.round((done / CHECKS.length) * 100)}%` }} />
                   </span>
                   <span className="mt-1.5 block text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{full ? "Safeguards complete" : `${CHECKS.length - done} outstanding`}</span>
