@@ -452,7 +452,15 @@ export default function SuccessionSimulator() {
                 {canon.percent.toFixed(1)}<span className="text-lg text-muted-foreground">%</span>{" "}
                 <span className="text-lg text-accent">{bandOf(canon.percent).name}</span>
               </p>
-              <div className="h-1 bg-border mt-3 relative">
+              <div
+                className="h-1 bg-border mt-3 relative"
+                role="meter"
+                aria-label="Treaty stress exposure"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(canon.percent)}
+                aria-valuetext={`${canon.percent.toFixed(1)}% stress exposure against ${SUCCESSION_TRAP.toFixed(1)}% gate`}
+              >
                 <div className="h-1 bg-accent transition-all" style={{ width: `${canon.percent}%` }} />
                 <span className="absolute -top-1 h-3 w-px bg-terracotta" style={{ left: `${SUCCESSION_TRAP}%` }} aria-hidden />
               </div>
