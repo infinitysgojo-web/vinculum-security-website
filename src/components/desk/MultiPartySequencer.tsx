@@ -491,7 +491,7 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
           {RESOURCE_HEADS.map((h, i) => (
             <label key={h} className="mt-2 flex items-center gap-3 text-xs">
               <span className="flex-1 min-w-0 text-primary">{h}{i === 0 && <span className="block text-muted-foreground">Statutory minimum {COMMUNAL_FLOOR}%</span>}</span>
-              <input type="range" min={0} max={100} value={resources[i]} onChange={(e) => setResources(rebalance(resources, i, Number(e.target.value)))} aria-label={`${h} share in per cent`} className="w-28 accent-[hsl(var(--accent))]" />
+              <input type="range" min={0} max={100} value={resources[i]} onChange={(e) => setResources(rebalance(resources, i, Number(e.target.value)))} aria-label={`${h} share in per cent`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={resources[i]} className="w-28 accent-[hsl(var(--accent))]" />
               <span className="w-10 text-right font-mono tabular-nums">{resources[i]}%</span>
             </label>
           ))}
