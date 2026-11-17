@@ -332,7 +332,7 @@ export default function LitigationWorkbench() {
             <p className="text-xs leading-relaxed text-foreground/85">{BOND_RELIEF[bond]}</p>
           </div>
           <div className="flex justify-end">
-            <button type="button" onClick={reset} className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
+            <button type="button" onClick={reset} aria-label="Reset litigation intake form" className="inline-flex items-center gap-2 border border-brass/50 px-3 py-2 min-h-11 text-[10px] uppercase tracking-[0.2em] font-semibold text-primary hover:border-accent hover:text-accent transition-colors">
               <RotateCcw size={13} /> Reset matter
             </button>
           </div>
