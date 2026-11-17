@@ -250,7 +250,15 @@ export default function VerificationLedger() {
             <p className={label}>Compliance</p>
             <span className="font-serif text-2xl text-primary">{r.rate}%</span>
           </div>
-          <div className="h-2 bg-brass/20">
+          <div
+            className="h-2 bg-brass/20"
+            role="meter"
+            aria-label="Independent compliance rate"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={r.rate}
+            aria-valuetext={`${r.rate}% compliance (${r.band})`}
+          >
             <div className="h-full bg-accent transition-all" style={{ width: `${r.rate}%` }} />
           </div>
           <p className="mt-3 text-xs uppercase tracking-[0.18em] font-semibold text-accent">{r.band}</p>
