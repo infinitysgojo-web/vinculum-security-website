@@ -216,10 +216,20 @@ const wrapRef = (v: string, n: number) =>
   }, []);
 
 const at = StyleSheet.create({
+  page: {
+    paddingTop: 52,
+    paddingBottom: 44,
+    paddingHorizontal: 52,
+    fontFamily: "Cormorant",
+    fontSize: 10.5,
+    lineHeight: 1.55,
+    color: INK,
+    backgroundColor: "#FFFFFF",
+  },
   title: { fontSize: 17, color: NAVY, textAlign: "center", letterSpacing: 2.5, textTransform: "uppercase", marginBottom: 2, lineHeight: 1.2 },
   latin: { fontSize: 10, fontStyle: "italic", color: MUTED, textAlign: "center", marginBottom: 8, lineHeight: 1.2 },
   mono: { fontFamily: "Courier", fontSize: 8, color: INK, lineHeight: 1.35 },
-  box: { borderWidth: 0.8, borderColor: NAVY, padding: 8, marginBottom: 10 },
+  box: { borderWidth: 0.8, borderColor: NAVY, padding: 6, marginBottom: 8 },
   label: { fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.4, color: MUTED, textTransform: "uppercase", marginBottom: 6 },
   gateHead: { flexDirection: "row", marginTop: 4, paddingBottom: 1, borderBottomWidth: 0.6, borderBottomColor: NAVY },
   gateHeadName: { flex: 1, fontFamily: "InterDoc", fontSize: 7.4, letterSpacing: 1.3, color: NAVY, textTransform: "uppercase", lineHeight: 1.2 },
