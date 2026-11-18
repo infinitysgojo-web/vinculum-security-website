@@ -375,7 +375,7 @@ export async function buildDeskDossier({
       </Page>
 
       {attestation && (
-        <Page size="A4" style={s.page}>
+        <Page size="A4" style={at.page}>
           <View style={s.runHead} fixed>
             <Text style={[s.runText, s.runHeadLabel]}>Vinculum Security · Instrument of attestation · Sigillum Cancellariae</Text>
             <Text style={[s.runText, s.runHeadClass]}>{classification.length > 34 ? `${classification.slice(0, 32).trimEnd()}…` : classification}</Text>
