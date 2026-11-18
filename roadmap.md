@@ -1,5 +1,9 @@
 # Roadmap
 
+- [ ] Generate and visually inspect every PDF download family, both wall chart orientations, and all case dossiers
+- [ ] Correct confirmed PDF layout defects without changing formulas, records or statutory notices
+- [ ] Verify real download flows, regressions and all affected rendered pages
+
 - [ ] Record full-hash seal breaks and replacement lineage in the existing local Decision Log; prevent failed/stale sealing from appearing successful
 - [ ] Improve seal visibility and existing radar, asymmetry, timeline and proof interactions without changing formulas or publications
 - [ ] Run regressions and authenticated seal/visual flows at desktop and mobile sizes
