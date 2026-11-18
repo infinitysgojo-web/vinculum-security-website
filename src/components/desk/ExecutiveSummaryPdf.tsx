@@ -68,7 +68,7 @@ function BriefingDoc({ m }: { m: ExecSummary }) {
   ];
   return (
     <Document title={`${m.masthead.title} · Executive Action Summary`} author="Vinculum Chancellery">
-      <Page size="A4" orientation="portrait" style={s.page} wrap={false}>
+      <Page size="A4" orientation="portrait" style={s.page}>
         <Neatline inner={s.inner}>
           <View style={s.band}>
             <Text style={s.eyebrow}>Vinculum Chancellery · Executive Action Summary</Text>
