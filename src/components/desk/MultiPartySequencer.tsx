@@ -495,7 +495,25 @@ export default function MultiPartySequencer({ initialPicked = ["state", "youth",
               <span className="w-10 text-right font-mono tabular-nums">{resources[i]}%</span>
             </label>
           ))}
-          <p className="mt-3 text-xs text-muted-foreground">Parity index {res.parity} of 100 = 100 − 1.5 × (largest − smallest share). Total {res.total}%.</p>
+          <div
+            role="meter"
+            aria-label="Resource parity index"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={res.parity}
+            aria-valuetext={`Parity index ${res.parity} of 100`}
+            className="mt-3 flex items-center justify-between text-xs text-muted-foreground"
+          >
+            <span>Parity index {res.parity} of 100 = 100 − 1.5 × (largest − smallest share)</span>
+            <span className="font-mono tabular-nums text-foreground/85">{res.parity}/100</span>
+          </div>
+          <div className="mt-1.5 h-1 w-full overflow-hidden bg-brass/20">
+            <div
+              className={`h-full transition-all duration-300 ${res.deficit ? "bg-terracotta" : "bg-brass"}`}
+              style={{ width: `${Math.max(0, Math.min(100, res.parity))}%` }}
+            />
+          </div>
+          <p className="mt-1 text-[11px] text-muted-foreground">Total {res.total}%. {res.deficit ? "Under statutory threshold." : "Allocation balanced."}</p>
           {res.deficit && <p role="alert" className="mt-1 text-[10px] uppercase tracking-[0.16em] font-semibold text-terracotta">[Legitimacy deficit] Communal share under {COMMUNAL_FLOOR}%; +{LEGITIMACY_PENALTY} strain on the Compound Shock desk</p>}
         </div>
       </div>
