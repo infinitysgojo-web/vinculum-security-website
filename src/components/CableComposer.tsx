@@ -429,14 +429,14 @@ END OF ${cab.tag}`;
 
         <label className="block">
           <span className={lab}>Precedence</span>
-          <select className={`${field} mt-2`} value={prec} onChange={(e) => setPrec(Number(e.target.value))}>
+          <select className={`${field} mt-2`} value={prec} onChange={(e) => setPrec(Number(e.target.value))} aria-label="Cable precedence">
             {PRECEDENCE.map((p, i) => <option key={p} value={i}>{p}</option>)}
           </select>
         </label>
 
         <label className="block">
           <span className={lab}>Handling caveat</span>
-          <select className={`${field} mt-2`} value={cav} onChange={(e) => setCav(Number(e.target.value))}>
+          <select className={`${field} mt-2`} value={cav} onChange={(e) => setCav(Number(e.target.value))} aria-label="Handling caveat">
             {CAVEATS.map((x, i) => <option key={x.id} value={i}>{x.label}</option>)}
           </select>
         </label>
@@ -449,7 +449,7 @@ END OF ${cab.tag}`;
         <div className="md:col-span-2">
           <span className={lab}>Point of strain</span>
 
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Point of strain selection">
             <button
               type="button"
               onClick={() => setAuto(true)}
