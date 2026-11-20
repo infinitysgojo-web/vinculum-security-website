@@ -86,6 +86,11 @@ export default function PatternMatcher() {
                 step={0.1}
                 value={scores[i]}
                 onChange={(e) => setScores((s) => s.map((v, j) => (j === i ? Math.round(Number(e.target.value) * 10) / 10 : v)))}
+                aria-label={`${d} bond strength`}
+                aria-valuemin={1}
+                aria-valuemax={5}
+                aria-valuenow={scores[i]}
+                aria-valuetext={`${LEVELS[i][Math.min(5, Math.max(1, Math.round(scores[i]))) - 1]}, ${scores[i].toFixed(1)} of 5`}
                 className="w-full mt-2 accent-[hsl(var(--accent))]"
               />
             </div>
