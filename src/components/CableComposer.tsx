@@ -375,7 +375,7 @@ END OF ${cab.tag}`;
                 <select className={field} value={oScores[i]} onChange={(e) => setScore(i, Number(e.target.value))} aria-label={`${d} score`}>
                   {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{d}: {n} of 5, {BAND(n)}</option>)}
                 </select>
-                <input className={field} value={oRat[i]} onChange={(e) => setRat(i, e.target.value)} placeholder={`Why the ${d.toLowerCase()} bond scores as it does`} />
+                <input className={field} value={oRat[i]} onChange={(e) => setRat(i, e.target.value)} placeholder={`Why the ${d.toLowerCase()} bond scores as it does`} aria-label={`${d} bond scoring rationale`} />
               </div>
             ))}
           </div>
@@ -385,7 +385,7 @@ END OF ${cab.tag}`;
       <div className="briefing-fields border border-brass/40 bg-navy-tint/40 p-5 md:p-6 grid gap-4 md:grid-cols-2">
         <label className="block">
           <span className={lab}>{ownOn ? "Comparison case of record" : "Case of record"}</span>
-          <select className={`${field} mt-2`} value={ci} onChange={(e) => setCi(Number(e.target.value))}>
+          <select className={`${field} mt-2`} value={ci} onChange={(e) => setCi(Number(e.target.value))} aria-label={ownOn ? "Comparison case of record" : "Case of record"}>
             {CASES.map((x, i) => (
               <option key={x.slug} value={i}>
                 {x.shortTitle}, Section {x.ref}
@@ -397,7 +397,7 @@ END OF ${cab.tag}`;
 
         <label className="block">
           <span className={lab}>Receiving office</span>
-          <select className={`${field} mt-2`} value={rk} onChange={(e) => setRk(e.target.value as RecipientKey)}>
+          <select className={`${field} mt-2`} value={rk} onChange={(e) => setRk(e.target.value as RecipientKey)} aria-label="Receiving office">
             {(Object.keys(RECIPIENTS) as RecipientKey[]).map((k) => (
               <option key={k} value={k}>
                 {RECIPIENTS[k].label}
@@ -408,7 +408,7 @@ END OF ${cab.tag}`;
 
         <label className="block">
           <span className={lab}>Instrument</span>
-          <select className={`${field} mt-2`} value={ck} onChange={(e) => setCk(e.target.value as CableKey)}>
+          <select className={`${field} mt-2`} value={ck} onChange={(e) => setCk(e.target.value as CableKey)} aria-label="Instrument type">
             {(Object.keys(CABLES) as CableKey[]).map((k) => (
               <option key={k} value={k}>
                 {CABLES[k].label}
