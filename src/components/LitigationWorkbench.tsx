@@ -341,7 +341,17 @@ export default function LitigationWorkbench() {
       <div className="mt-8 w-full min-w-0 border border-brass/40 bg-background p-4 sm:p-5" aria-labelledby="lit-pleadings">
         <div className="flex flex-wrap items-baseline justify-between gap-3">
           <p id="lit-pleadings" className={label}>Doctrinal pleading heads · Pleadings Bench</p>
-          <span className="font-mono text-[10px] text-primary">{pleadings.ready} of {pleadings.total} heads ready</span>
+          <span
+            role="meter"
+            aria-label="Pleading heads readiness"
+            aria-valuemin={0}
+            aria-valuemax={pleadings.total}
+            aria-valuenow={pleadings.ready}
+            aria-valuetext={`${pleadings.ready} of ${pleadings.total} heads ready`}
+            className="font-mono text-[10px] text-primary"
+          >
+            {pleadings.ready} of {pleadings.total} heads ready
+          </span>
         </div>
         <div className="mb-4 flex flex-wrap items-center gap-2 border-b border-border pb-3">
           {pleadingVenue ? (
