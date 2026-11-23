@@ -45,6 +45,7 @@
           document.addEventListener("DOMContentLoaded", function () {
             var b = document.createElement("div");
             b.setAttribute("role", "alert");
+            b.setAttribute("data-nosnippet", "");
             b.style.cssText = "position:fixed;inset:0 0 auto 0;z-index:2147483647;padding:14px;background:#7a1f12;color:#fff;font:600 14px/1.4 system-ui;text-align:center";
             b.textContent = "Warning: this is not the official Vinculum Security website. The only official address is www.vinculumsecurity.kidnexus.or.ke; do not enter any information here.";
             document.body.appendChild(b);
@@ -454,6 +455,8 @@
             }
           }
         });
+        var stcm = document.getElementById('stcm-wrapper');
+        if (stcm) stcm.setAttribute('data-nosnippet', '');
       });
     </script>
   </body>
