@@ -364,6 +364,7 @@ class SilktideConsentManager {
   createWrapper() {
     this.wrapper = document.createElement('div');
     this.wrapper.id = 'stcm-wrapper';
+    this.wrapper.setAttribute('data-nosnippet', '');
     document.body.insertBefore(this.wrapper, document.body.firstChild);
   }
 
