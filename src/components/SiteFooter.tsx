@@ -3,7 +3,7 @@ import ScholarlyLinks from "@/components/ScholarlyLinks";
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-background mt-24 border-t border-brass/40">
+    <footer className="bg-background mt-24 border-t border-brass/40" data-nosnippet>
       <div className="container py-10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-wrap justify-center md:justify-start items-center gap-x-4 gap-y-2 text-[10px] uppercase font-semibold tracking-[0.2em] text-primary text-center md:text-left">
           <span className="whitespace-nowrap">
