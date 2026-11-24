@@ -23,23 +23,31 @@ export default function EscrowWaterfall({ reading, terms, onTerms, input: busInp
   };
   const input = "w-16 min-h-9 border border-border bg-background px-2 text-right font-mono tabular-nums text-base sm:text-xs";
   return (
-    <div className={`border bg-background p-4 min-w-0 ${reading.frozen ? "border-terracotta/60" : "border-brass/40"}`}>
+    <div className={`border p-4 min-w-0 transition-colors shadow-sm ${reading.frozen ? "border-destructive/70 bg-destructive/5" : "border-brass/50 bg-navy-tint/30"}`}>
       <div className="flex items-center justify-between gap-2">
         <span className={label}>Conditional escrow · release waterfall</span>
         {busInput && <FormulaProof proof={escrowProof(terms, busInput)} />}
       </div>
-      <p className="font-serif text-3xl text-primary">
-        {pct(reading.released)}<span className="text-base text-muted-foreground">% of {reading.total}% released</span>
-      </p>
+      <div className="mt-1 flex items-baseline gap-2">
+        <p className="font-serif text-3xl text-primary font-medium tracking-tight">
+          {pct(reading.released)}<span className="text-sm font-sans text-muted-foreground font-normal">% of {reading.total}% released</span>
+        </p>
+        <span className={`ml-auto border px-2 py-0.5 text-[9px] uppercase tracking-[0.16em] font-semibold ${
+          reading.frozen ? "border-destructive text-destructive bg-destructive/10" : reading.released > 0 ? "border-accent text-accent bg-accent/10" : "border-brass/40 text-muted-foreground"
+        }`}>
+          {reading.frozen ? "Emergency Freeze" : reading.ceded ? "Final Cession Cleared" : reading.released > 0 ? "Tranches Active" : "Holding Baseline"}
+        </span>
+      </div>
       {reading.frozen && (
-        <p role="alert" className="mt-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-terracotta">
+        <p role="alert" className="mt-2 text-[10px] uppercase tracking-[0.16em] font-semibold text-destructive flex items-center gap-1.5">
+          <span className="inline-block h-2 w-2 rounded-full bg-destructive animate-pulse" />
           [Escrow frozen] Rupture index at or above {ESCROW_FREEZE}%; {pct(reading.gross)}% of met tranches held
         </p>
       )}
-      {reading.total !== 100 && <p className="mt-1 text-[11px] text-terracotta">Tranche shares total {reading.total}%, not 100%.</p>}
-      <div className="mt-3 flex h-3 w-full border border-border" role="img" aria-label={`${pct(reading.released)} per cent released, ${pct(reading.clawbackHeld + reading.bondHeld)} per cent held in reserve`}>
-        <div className={reading.frozen ? "bg-terracotta/40" : "bg-accent"} style={{ width: `${reading.frozen ? reading.gross : reading.released}%` }} />
-        {!reading.frozen && <div className="bg-brass/50" style={{ width: `${reading.clawbackHeld + reading.bondHeld}%` }} />}
+      {reading.total !== 100 && <p className="mt-1 text-[11px] text-destructive">Tranche shares total {reading.total}%, not 100%.</p>}
+      <div className="mt-3 flex h-3.5 w-full border border-brass/40 bg-background/80 overflow-hidden rounded-xs" role="img" aria-label={`${pct(reading.released)} per cent released, ${pct(reading.clawbackHeld + reading.bondHeld)} per cent held in reserve`}>
+        <div className={`transition-all duration-300 ${reading.frozen ? "bg-destructive/50" : "bg-accent shadow-[0_0_8px_hsl(var(--accent)/0.4)]"}`} style={{ width: `${reading.frozen ? reading.gross : reading.released}%` }} />
+        {!reading.frozen && <div className="bg-brass/50 transition-all duration-300 border-l border-background/60" style={{ width: `${reading.clawbackHeld + reading.bondHeld}%` }} />}
       </div>
       <ol className="mt-3 space-y-3">
         {reading.tranches.map((t, i) => (
