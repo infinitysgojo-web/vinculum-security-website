@@ -54,12 +54,18 @@ export default function ShockTimelineScrubber({ steps, title, note }: { steps: T
         className="mt-3 w-full accent-[hsl(var(--accent))]"
         disabled={n === 0}
       />
-      <ol className="mt-1 flex w-full gap-0.5" aria-label="Threshold markers">
+      <ol className="mt-1 flex w-full gap-1" aria-label="Threshold markers">
         {steps.map((s) => (
           <li key={s.t} className="flex-1 min-w-0">
             <Button variant="ghost" type="button" onClick={() => setT(s.t)} title={s.label}
-              className={`block h-8 w-full min-w-0 rounded-none p-0 border-b-4 ${s.t === cur.t ? "border-accent bg-accent/10" : s.flags.length ? "border-terracotta/50" : "border-brass/30"}`} aria-pressed={s.t === cur.t} aria-label={`Go to ${s.label}`} />
-            <span className="block text-center font-mono text-[9px] text-muted-foreground">{s.t}</span>
+              className={`block h-8 w-full min-w-0 rounded-none p-0 border-b-4 transition-all ${
+                s.t === cur.t
+                  ? "border-accent bg-accent/15 shadow-[0_-2px_6px_hsl(var(--accent)/0.25)] font-semibold"
+                  : s.flags.length
+                    ? "border-destructive/60 bg-destructive/5 hover:border-destructive"
+                    : "border-brass/35 bg-navy-tint/20 hover:border-brass"
+              }`} aria-pressed={s.t === cur.t} aria-label={`Go to ${s.label}`} />
+            <span className={`block text-center font-mono text-[9px] transition-colors ${s.t === cur.t ? "text-accent font-bold" : "text-muted-foreground"}`}>{s.t}</span>
           </li>
         ))}
       </ol>
