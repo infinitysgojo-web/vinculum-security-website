@@ -43,29 +43,38 @@ export default function BondRadar({
         {caption ?? "Four-bond radar and balance gauge"}
       </p>
       <div className="flex flex-col lg:flex-row items-center gap-6">
-        <svg width={size} height={size} className="max-w-full shrink-0" viewBox={`0 0 ${size} ${size}`} role="group" aria-label="Four bond radar">
+        <svg width={size} height={size} className="max-w-full shrink-0 drop-shadow-sm" viewBox={`0 0 ${size} ${size}`} role="group" aria-label="Four bond radar">
+          <defs>
+            <radialGradient id="radar-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.32" />
+              <stop offset="70%" stopColor="hsl(var(--accent))" stopOpacity="0.14" />
+              <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0.02" />
+            </radialGradient>
+          </defs>
           {rings.map((ring) => (
             <polygon
               key={ring}
               points={[0, 1, 2, 3].map((i) => pt(i, ring).join(",")).join(" ")}
-              fill="none"
+              fill={ring === 5 ? "rgba(0,0,0,0.18)" : "none"}
               stroke="hsl(var(--brass))"
-              strokeOpacity={ring === 5 ? 0.55 : 0.2}
+              strokeOpacity={ring === 5 ? 0.65 : ring === 3 ? 0.35 : 0.2}
+              strokeDasharray={ring === 3 ? "2 2" : undefined}
             />
           ))}
           {[0, 1, 2, 3].map((i) => {
             const [x, y] = pt(i, 5);
-            return <line key={i} x1={c} y1={c} x2={x} y2={y} stroke="hsl(var(--brass))" strokeOpacity={0.25} />;
+            return <line key={i} x1={c} y1={c} x2={x} y2={y} stroke="hsl(var(--brass))" strokeOpacity={0.3} strokeWidth={1} />;
           })}
-          <polygon points={poly} fill="hsl(var(--accent))" fillOpacity={0.22} stroke="hsl(var(--accent))" strokeWidth={2} />
+          <polygon points={poly} fill="url(#radar-glow)" stroke="hsl(var(--accent))" strokeWidth={2.2} className="transition-all duration-300" />
           {scores.map((v, i) => {
             const [x, y] = pt(i, v);
             return <g key={i} role="button" tabIndex={0} aria-label={`${BONDS[i]} bond: ${v} of 5`} aria-pressed={inspected === i}
-              className="cursor-pointer outline-none" onPointerEnter={() => setInspected(i)} onFocus={() => setInspected(i)} onClick={() => setInspected(i)}
+              className="cursor-pointer outline-none group" onPointerEnter={() => setInspected(i)} onFocus={() => setInspected(i)} onClick={() => setInspected(i)}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setInspected(i); } }}>
               <title>{BONDS[i]}: {v} / 5</title>
-              <circle cx={x} cy={y} r={13} fill="transparent" />
-              <circle cx={x} cy={y} r={inspected === i ? 6 : 3.5} fill="hsl(var(--accent))" stroke="hsl(var(--background))" strokeWidth={inspected === i ? 2 : 0} />
+              <circle cx={x} cy={y} r={14} fill="transparent" />
+              {inspected === i && <circle cx={x} cy={y} r={9} fill="none" stroke="hsl(var(--accent))" strokeOpacity={0.5} strokeWidth={1} className="animate-ping" />}
+              <circle cx={x} cy={y} r={inspected === i ? 6.5 : 4} fill="hsl(var(--accent))" stroke="hsl(var(--background))" strokeWidth={2} className="transition-all duration-200" />
             </g>;
           })}
           {BONDS.map((b, i) => {
