@@ -205,15 +205,21 @@ export default function TelemetryStrip({ signals, onOpenDesk }: { signals: Signa
                   {p.laws.map((l) => {
                     const st = STATUS_STYLE[l.status];
                     return (
-                      <li key={l.name} className={`min-w-0 border-l-2 pl-3 ${l.status === "breach" ? "border-destructive/60" : "border-brass/40"}`}>
+                      <li key={l.name} className={`min-w-0 border-l-2 pl-3 transition-all ${
+                        l.status === "breach"
+                          ? "border-destructive bg-destructive/5 py-1.5 pr-2"
+                          : l.status === "hold"
+                            ? "border-accent bg-accent/5 py-1.5 pr-2"
+                            : "border-brass/50"
+                      }`}>
                         <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
-                          <p className="font-serif text-sm text-primary">{l.name}</p>
-                          <span className={`border px-1.5 text-[9px] uppercase tracking-[0.14em] font-semibold ${st.cls}`}>{st.label}</span>
+                          <p className="font-serif text-sm text-primary font-medium">{l.name}</p>
+                          <span className={`border px-2 py-0.5 text-[9px] uppercase tracking-[0.14em] font-semibold ${st.cls}`}>{st.label}</span>
                         </div>
-                        <p className="mt-0.5 text-xs tabular-nums text-foreground [overflow-wrap:anywhere]">{l.reading}</p>
+                        <p className="mt-0.5 text-xs tabular-nums text-foreground [overflow-wrap:anywhere] font-mono">{l.reading}</p>
                         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{l.principle}</p>
                         {onOpenDesk && (
-                          <button type="button" onClick={() => onOpenDesk(l.desk)} className="mt-1 inline-flex min-h-8 items-center gap-1 text-[10px] uppercase tracking-[0.14em] font-semibold text-primary hover:text-accent">
+                          <button type="button" onClick={() => onOpenDesk(l.desk)} className="mt-1 inline-flex min-h-8 items-center gap-1 text-[10px] uppercase tracking-[0.14em] font-semibold text-accent hover:text-accent/80 transition-colors">
                             Open {l.deskLabel} <ArrowUpRight size={11} />
                           </button>
                         )}
