@@ -1,4 +1,4 @@
-import { BookOpen, FilePlus2, FolderOpen, HardDrive, History, Lock, Play, RotateCcw, ScrollText } from "lucide-react";
+import { BookOpen, FilePlus2, FolderOpen, GraduationCap, HardDrive, History, Lock, Play, RotateCcw, ScrollText } from "lucide-react";
 import GoldRule from "@/components/GoldRule";
 import { LIFECYCLE_LABEL, MODE_LABEL, type Mode, type Workspace } from "./workspace";
 import { btn, btnPrimary, eyebrowCls, localStamp, type NetworkState } from "./ui";
@@ -12,6 +12,7 @@ export type FoyerAction =
   | { kind: "resume-draft" }
   | { kind: "review-ready" }
   | { kind: "sealed" }
+  | { kind: "academy" }
   | { kind: "local-data" };
 
 const byRecent = (a: Workspace, b: Workspace) => (b.updatedAt || "").localeCompare(a.updatedAt || "");
@@ -62,7 +63,7 @@ export default function MissionFoyer({
         </p>
       )}
 
-      <div className="mt-6 grid gap-5 md:grid-cols-2">
+      <div className="mt-6 grid gap-5 md:grid-cols-3">
         <ModeCard
           mode="preset"
           remembered={lastMode === "preset"}
@@ -94,6 +95,22 @@ export default function MissionFoyer({
           <ActionButton icon={<ScrollText size={13} />} label="Open Review-Ready Work" disabled={!review.length} hint={review.length ? undefined : "Nothing in review preparation"} onClick={() => onAction({ kind: "review-ready" })} />
           <ActionButton icon={<Lock size={13} />} label="Open Sealed Snapshot" disabled={!sealed.length} hint={sealed.length ? undefined : "No sealed snapshot yet"} onClick={() => onAction({ kind: "sealed" })} />
         </ModeCard>
+
+        <article aria-labelledby="foyer-academy" className="flex min-w-0 flex-col border border-brass/50 bg-card/60 p-5 sm:p-6">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <p className={eyebrowCls}>Mandate III · Sovereign Curriculum</p>
+          </div>
+          <h2 id="foyer-academy" className="mt-1 font-serif text-lg text-primary">Chancellery Academy</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Master the jurisprudence, relational mathematics and instrument telemetry of the UDCA.</p>
+          <div className="mt-4 flex-1 space-y-1.5 border-t border-border/40 pt-3 text-xs text-muted-foreground">
+            <p>5 Doctrinal Modules</p>
+            <p>18 Desk Instrument Telemetry</p>
+            <p>Air-gapped & browser-local</p>
+          </div>
+          <div className="mt-5 space-y-2">
+            <ActionButton primary icon={<GraduationCap size={13} />} label="Enter Chancellery Academy" onClick={() => onAction({ kind: "academy" })} />
+          </div>
+        </article>
       </div>
       {missions[0] && (
         <p className="mt-4 text-xs text-muted-foreground">
