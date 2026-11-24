@@ -1784,14 +1784,8 @@ export default function Dashboard() {
             </p>
           )}
         </div>
-        {!orientationDismissed && !orientationOpen && (
-          <div data-testid="orientation-invitation" className="mb-5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-3 border-y border-brass/40 py-3 print:hidden">
-            <BookOpen size={17} className="shrink-0 text-accent" aria-hidden />
-            <p className="min-w-0 text-sm text-primary sm:flex-1">First time at the desks?</p>
-            <Button size="sm" variant="outline" onClick={openOrientation}>Take the desk orientation</Button>
-            <Button variant="ghost" size="icon" onClick={rememberOrientation} aria-label="Dismiss desk orientation invitation" title="Dismiss invitation"><X aria-hidden /></Button>
-          </div>
-        )}
+        {/* Desk surfaces are kept austere; comprehensive guidance lives in the Chancellery Academy */}
+          
         {orientationOpen && <DeskOrientation desks={DESKS} divisions={DIVISIONS} deskId={desk} onDesk={(id) => { const d = DESKS.find((x) => x.id === id); if (d) goTo(d); }} onClose={() => closeOrientation()} onWork={() => closeOrientation(true)} />}
         {guideOn && activeWs && (
           <div className={`max-w-3xl ${focus ? "hidden" : ""}`}>
