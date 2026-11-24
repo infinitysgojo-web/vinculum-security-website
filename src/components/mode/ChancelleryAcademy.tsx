@@ -1,7 +1,31 @@
 import { useState } from "react";
-import { ArrowLeft, BookOpen, CheckCircle2, ChevronRight, GraduationCap, ShieldCheck, Sparkles } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Award, 
+  BookOpen, 
+  CheckCircle2, 
+  ChevronRight, 
+  Compass, 
+  GraduationCap, 
+  Layers, 
+  RotateCcw, 
+  Scale, 
+  ShieldCheck, 
+  SlidersHorizontal, 
+  Sparkles 
+} from "lucide-react";
 import GoldRule from "@/components/GoldRule";
 import { Button } from "@/components/ui/button";
+
+export interface AcademyChapter {
+  id: string;
+  title: string;
+  lede: string;
+  content: string[];
+  formula?: string;
+  statutoryNote?: string;
+  drillType?: "border" | "ddr" | "escrow" | "capstone";
+}
 
 export interface AcademyModule {
   id: string;
@@ -9,14 +33,7 @@ export interface AcademyModule {
   title: string;
   eyebrow: string;
   summary: string;
-  chapters: {
-    id: string;
-    title: string;
-    lede: string;
-    content: string[];
-    formula?: string;
-    statutoryNote?: string;
-  }[];
+  chapters: AcademyChapter[];
 }
 
 const MODULES: AcademyModule[] = [
@@ -30,10 +47,10 @@ const MODULES: AcademyModule[] = [
       {
         id: "death-of-ambiguity",
         title: "1.1 The Death of Constructive Ambiguity in Modern Treaties",
-        lede: "For over a century, diplomatic practice relied on 'constructive ambiguity'—intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations.",
+        lede: "For over a century, diplomatic practice relied on 'constructive ambiguity': intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations.",
         content: [
-          "In modern asymmetric warfare, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability.",
-          "When crisis strikes, ambiguous treaty clauses do not foster compromise. Instead, they serve as the exact fault line along which covenants rupture. The stronger party exploits the textual ambiguity to justify unilateral action, while the vulnerable party suffers catastrophic institutional erosion.",
+          "In modern asymmetric statecraft, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability.",
+          "When crisis strikes, ambiguous treaty clauses do not foster compromise. Instead, they serve as the exact fault line along which covenants rupture. The stronger party exploits textual ambiguity to justify unilateral action, while the vulnerable party suffers catastrophic institutional erosion.",
           "The Unified Deterministic Chancellery Apparatus (UDCA) rejects linguistic elasticity. In its place, the UDCA introduces Relational Determinism: statecraft defined not by aspirational rhetoric, but by quantifiable, verifiable structural thresholds.",
         ],
         statutoryNote: "Invariant: Ambiguity is the mathematical precursor to treaty rupture. If an enforcement obligation cannot be computed or audited, it does not exist.",
@@ -41,13 +58,13 @@ const MODULES: AcademyModule[] = [
       {
         id: "imperium-to-dominium",
         title: "1.2 From Imperium to Dominium: Custody vs. Kinetic Coercion",
-        lede: "Traditional geopolitical systems operate on the principle of Imperium—the projection of kinetic force, military supremacy, surveillance scraping, and punitive sanctions.",
+        lede: "Traditional geopolitical systems operate on the principle of Imperium: the projection of kinetic force, military supremacy, surveillance scraping, and punitive sanctions.",
         content: [
           "Imperium creates a fragile equilibrium. It demands exponential military expenditure to suppress inevitable resistance, generating resentment and deep communal alienation.",
           "The Vinculum Security Doctrine shifts statecraft from Imperium to Dominium: the solemn responsibility of sovereign custody, relational stewardship, and intergenerational durability.",
           "Under Dominium, a state's security is measured not by how many adversaries it can incinerate, but by the structural integrity of its relational bonds across four non-negotiable dimensions.",
         ],
-        formula: "Dominium Quotient \\; \\Phi = \\frac{\\text{Relational Yield}}{\\text{Coercive Friction}} \\ge 1.0",
+        formula: "\\Phi = \\frac{\\text{Relational Yield}}{\\text{Coercive Friction}} \\ge 1.0",
         statutoryNote: "Doctrinal Warrant: Coercion produces immediate compliance but guaranteed structural decay. Custodial stewardship produces enduring sovereign stability.",
       },
       {
@@ -68,10 +85,10 @@ const MODULES: AcademyModule[] = [
       {
         id: "seven-sectors",
         title: "1.4 Operationalization Across the Seven Sectors of Statecraft",
-        lede: "The UDCA is not an abstract philosophical construct; it is operationalized across seven distinct arenas of sovereign governance.",
+        lede: "The UDCA is operationalized across seven distinct arenas of sovereign governance.",
         content: [
           "1. Border Demarcation & Territorial Cessions: Transforming volatile disputed lines into cooperative ecological and economic corridors.",
-          "2. Post-Conflict Peace Accords & DDR: Phasing disarmament and demobilization through verifiable decay horizons rather than arbitrary deadlines.",
+          "2. Post-Conflict Peace Accords & DDR: Phasing disarmament and demobilization through verifiable decay horizons rather than arbitrary political deadlines.",
           "3. Bilateral Treaties & State Immunity: Establishing absolute jurisdictional clarity without surrender of sovereign dignity.",
           "4. Natural Resource Sharing & Sovereign Wealth: Locking joint-revenue extraction into deterministic escrow waterfalls.",
           "5. Constitutional Transitions & Governance: Detecting Façade Syndrome before institutional collapse occurs.",
@@ -86,27 +103,52 @@ const MODULES: AcademyModule[] = [
     number: "02",
     eyebrow: "Module II · Instrument Mechanics",
     title: "Divisional Cadence & Mathematical Telemetry",
-    summary: "The operational rhythm across the 18 desks, organized across the four divisions of statecraft.",
+    summary: "The operational rhythm across the 18 desks, organized across the four divisions of sovereign statecraft.",
     chapters: [
       {
         id: "division-1",
         title: "2.1 Division I (Desks 01–04): The Diagnostics of Tension",
         lede: "Division I establishes the empirical baseline of tension before any negotiation commences.",
         content: [
-          "Desk 01 (Precedent Pattern Matcher): Measures normalized Euclidean distance between current disputes and historic settlements.",
-          "Desk 02 (Sentinel Matrix): The central radar tracking all 4 state vector bonds, calculating Façade Syndrome and the Liebig Minimum.",
-          "Desk 03 (Compound Shock Tester): Simulates geopolitical shocks (currency devaluation, border skirmishes, leadership succession) across 6-to-36-month timelines.",
-          "Desk 04 (Counterpart Mirror): Uncovers structural asymmetry between delegations, ensuring negotiations do not collapse under power imbalances.",
+          "Desk 01 (Precedent Pattern Matcher): Measures normalized Euclidean distance between current disputes and historic settlements, preventing historical amnesia.",
+          "Desk 02 (Sentinel Matrix / The Eye of Humanity): The central radar tracking all 4 state vector bonds, calculating Façade Syndrome and the Liebig Minimum.",
+          "Desk 03 (Compound Shock Tester): Simulates geopolitical shocks (currency devaluation, border skirmishes, leadership succession) across 6 to 36 month timelines.",
+          "Desk 04 (Counterpart Mirror): Uncovers structural asymmetry between delegations, ensuring negotiations do not collapse under hidden power imbalances.",
         ],
       },
       {
-        id: "division-2-3-4",
-        title: "2.2 Divisions II, III & IV: Dialogue, Covenants & Verification",
-        lede: "From structured diplomatic cables to cryptographic attestation and handover.",
+        id: "division-2",
+        title: "2.2 Division II (Desks 05–09): Dialogue, Cadence & Field Parity",
+        lede: "Division II transforms raw diplomatic dialogue into structured, audit-ready operational records.",
         content: [
-          "Division II (Desks 05–09): Composes high-precision diplomatic cables, manages counterpart questioning scripts, balances multi-party resource parity, and executes field audits.",
-          "Division III (Desks 10–14): Drafts binding clauses, simulates succession stress, manages adversarial litigation pleadings, and locks escrow waterfalls.",
-          "Division IV (Desks 15–18): Synthesizes the Dominum Index, conducts forensic ledger audits, validates handover durability, and binds the final statutory mission dossier.",
+          "Desk 05 (Strategic Cable Composer): Drafts formal chancellery communiqués with explicit doctrinal classification and sensitivity parameters.",
+          "Desk 06 (Counterpart Questioning Script): Executes non-leading inquiry protocols to detect tactical evasion, stonewalling, or deceptive positioning.",
+          "Desk 07 (Multi-Party Roster & Delegation Grid): Allocates committee seating and voting weights based on sovereign legitimacy rather than coercive leverage.",
+          "Desk 08 (Field Verification Audit): Correlates ground-level physical compliance with treaty stipulations, preventing paper-only accords.",
+          "Desk 09 (Adversarial Stress Test): Red-teams draft articles against predatory legal interpretations and unilateral sovereign withdrawal.",
+        ],
+      },
+      {
+        id: "division-3",
+        title: "2.3 Division III (Desks 10–14): Covenants, Litigation & Fiduciary Escrow",
+        lede: "Division III binds agreements into enforceable statutory covenants and economic instruments.",
+        content: [
+          "Desk 10 (Covenant Redliner & Treaty Editor): Compares competing draft texts, flagging constructive ambiguity and structural vulnerabilities in real time.",
+          "Desk 11 (Dispute Forum Enforceability Matrix): Evaluates international arbitral venues (PCA, ICSID, LCIA, ICC, Swiss, SIAC) across teeth, pace, and immunity defence.",
+          "Desk 12 (Succession & Fracture Simulator): Forecasts institutional decay following leadership changes or constitutional crises.",
+          "Desk 13 (Litigation Workbench): Organizes evidentiary submissions, affidavits, and legal arguments for arbitral proceedings.",
+          "Desk 14 (Sovereign Escrow Waterfall): Manages milestone-based fiduciary releases, guaranteeing economic commitments are honoured before assets transfer.",
+        ],
+      },
+      {
+        id: "division-4",
+        title: "2.4 Division IV (Desks 15–18): Readiness, Handover & Statutory Dossier",
+        lede: "Division IV synthesizes all operational signals into a tamper-evident, archivable mission seal.",
+        content: [
+          "Desk 15 (Mission Readiness & Dominum Synthesis): Computes the holistic Dominum Index, verifying all statutory clearance gates are satisfied.",
+          "Desk 16 (Chronological Decision Log): Records an immutable audit trail of operator decisions, shock tests, and gate overrides with UTC timestamps.",
+          "Desk 17 (Handover Seal & Divergence Verifier): Generates a cryptographic SHA-256 digest of the canonical mission state to detect retrospective tampering.",
+          "Desk 18 (Mission Dossier & Statutory Export): Binds executive summaries, analytical charts, and legal proofs into publication-grade, archival PDF packages.",
         ],
       },
     ],
@@ -116,16 +158,16 @@ const MODULES: AcademyModule[] = [
     number: "03",
     eyebrow: "Module III · Cryptographic Evidence",
     title: "Computational Sovereignty & Anti-Tamper Sealing",
-    summary: "Why zero-cloud, deterministic signal buses and SHA-256 canonical hashing guarantee subpoena-proof chancellery integrity.",
+    summary: "Why zero-cloud, deterministic signal buses and SHA-256 canonical hashing guarantee independent chancellery integrity.",
     chapters: [
       {
         id: "zero-cloud-signal-bus",
         title: "3.1 The Deterministic Signal Bus (Zero-Cloud)",
-        lede: "Traditional enterprise diplomatic software sends sensitive cables and negotiation data to third-party cloud servers.",
+        lede: "Traditional enterprise diplomatic software sends sensitive cables and negotiation data to third-party commercial cloud servers.",
         content: [
-          "In modern statecraft, foreign cloud hosting creates an unacceptable vector for foreign intelligence interception, corporate data mining, and cross-border subpoenas.",
-          "The UDCA operates strictly within the operator's local browser runtime. All 18 desks communicate through a closed, deterministic event loop (MissionEngine). No data is ever transmitted to an external server.",
-          "If the device is air-gapped, the UDCA functions with 100% operational fidelity.",
+          "In modern statecraft, foreign cloud hosting creates an unacceptable vector for foreign intelligence interception, corporate data mining, and cross-border discovery.",
+          "The UDCA operates strictly within the operator's local browser runtime. All 18 desks communicate through a closed, deterministic event loop (MissionEngine). No operational data is transmitted to an external server.",
+          "If the physical host is air-gapped from the internet, the UDCA functions with 100% operational fidelity.",
         ],
       },
       {
@@ -135,7 +177,143 @@ const MODULES: AcademyModule[] = [
         content: [
           "The UDCA sorts all mission signals, ledger entries, and profile parameters into canonical JSON and hashes them using Web Crypto SubtleCrypto SHA-256.",
           "Any subsequent alteration of even a single bond score or covenant text triggers an instant Divergence Warning.",
-          "Reseals and breaks are irrevocably stamped into the Decision Log with UTC timestamps, guaranteeing unbroken chain-of-custody.",
+          "Reseals and breaks are irrevocably stamped into the Decision Log with UTC timestamps, guaranteeing an unbroken chain of custody.",
+        ],
+        formula: "\\text{Digest} = \\text{SHA-256}(\\text{CanonicalJSON}(S_{\\text{mission}}))",
+        statutoryNote: "Notice: Cryptographic sealing proves document integrity and divergence detection; it does not replace sovereign legal ratification.",
+      },
+      {
+        id: "buffer-zeroization",
+        title: "3.3 Ephemeral State & Buffer Zeroization",
+        lede: "Sensitive cryptographic keys and temporary plaintext representations must never linger in memory longer than necessary.",
+        content: [
+          "When saving to the browser enclave, encryption salts and initialization vectors (IVs) are zeroized immediately after ciphertext generation.",
+          "In the event of an emergency, the Chancellery Sentinel Panic mechanism purges active sessionStorage and reinitializes working registers to zero.",
+          "No unencrypted mission drafts remain on non-volatile storage unless explicitly archived by the operator.",
+        ],
+      },
+    ],
+  },
+  {
+    id: "relational-mathematics",
+    number: "04",
+    eyebrow: "Module IV · Applied Mathematics",
+    title: "Relational Mathematics in Sovereign Practice",
+    summary: "The formal mathematical formulations governing state vectors, composite rupture, Euclidean distance, exponential decay, and escrow waterfalls.",
+    chapters: [
+      {
+        id: "rupture-index-math",
+        title: "4.1 Composite Rupture Index Formulation",
+        lede: "Quantifying treaty fragility through the combination of observed breach share, inscribed load, and dynamic trend multipliers.",
+        content: [
+          "The Rupture Index R measures immediate covenant breakdown risk on an integer scale from 0 to 100.",
+          "It aggregates observed breaches (from field audits and monitoring reports) with inscribed structural loads (unresolved historical grievances and resource depletion).",
+          "This sum is modulated by a verified trend multiplier: Improving (0.85), Static (1.00), or Deteriorating (1.15).",
+        ],
+        formula: "R = \\min\\Big(100,\\; \\text{round}\\big((\\text{Observed Share} + \\text{Inscribed Load}) \\times \\text{Trend Multiplier}\\big)\\Big)",
+        statutoryNote: "Rule of Escalation: An R score of 60 or higher automatically freezes escrow disbursements and triggers provisional pleadings.",
+      },
+      {
+        id: "euclidean-asymmetry",
+        title: "4.2 Normalized Euclidean Separation in Counterpart Mirroring",
+        lede: "Measuring ideological, economic, and institutional distance between negotiating delegations.",
+        content: [
+          "Disputes often fail because parties assume symmetrical capacities and incentives when profound asymmetry exists.",
+          "Desk 04 evaluates counterparts across multi-dimensional criteria, computing the normalized Euclidean separation D between their respective capability vectors.",
+          "Distances approaching 1.0 indicate severe structural imbalance requiring third-party guarantees or asymmetric escrow buffers.",
+        ],
+        formula: "D = \\frac{1}{D_{\\max}} \\sqrt{\\sum_{i=1}^{n} (P_i - Q_i)^2}",
+      },
+      {
+        id: "decay-horizon-physics",
+        title: "4.3 Temporal Decay Physics & The Half-Life Horizon",
+        lede: "Modeling the natural erosion of diplomatic goodwill in the absence of active institutional maintenance.",
+        content: [
+          "Treaties do not remain static; relational bonds decay exponentially under unmitigated exposure and unresolved tensions.",
+          "The decay constant \\lambda is determined by the combined pressure of unmitigated exposure U and the composite rupture index R.",
+          "The relational half-life t_{1/2} indicates the number of days until initial trust deteriorates by half if no proactive diplomatic maintenance occurs.",
+        ],
+        formula: "\\lambda = \\frac{U + R}{2000}, \\qquad t_{1/2} = \\frac{\\ln 2}{\\lambda}, \\qquad B(t) = \\max\\big(1.0,\\; B_0 \\cdot e^{-\\lambda t}\\big)",
+        statutoryNote: "Succession Principle: When the projected mean bond drops below the 2.0 fracture floor within 180 days, leadership transition risks acute covenant failure.",
+      },
+      {
+        id: "escrow-conservation",
+        title: "4.4 Fiduciary Escrow Waterfall & Pledge Conservation",
+        lede: "The mathematical conservation law ensuring sovereign resource allocations remain balanced across four milestone tranches.",
+        content: [
+          "Desk 14 partitions financial and resource commitments into four sequential tranches: Mobilization, Demarcation, Operational Commissioning, and Final Cession.",
+          "The system enforces the strict Pledge Conservation Law: the sum of all tranche shares must equal exactly 100.0%.",
+          "Prior to Final Cession, releases are disciplined by clawback reserves and sovereign bond holdbacks. At Final Cession, provided all bonds remain above 3.0, both reserves discharge in full.",
+        ],
+        formula: "\\sum_{k=1}^{4} \\text{Tranche}_k = 100.0\\%, \\qquad \\text{Released} = \\max\\big(0,\\; \\text{Gross} \\times (1 - \\text{Clawback}) - \\text{Bond}\\big)",
+      },
+      {
+        id: "dominum-quotient",
+        title: "4.5 The Dominum Index Formulation",
+        lede: "The synthesis of bond health, fiduciary execution, succession durability, and rupture containment into a unified sovereign metric.",
+        content: [
+          "The Dominum Index \\Phi synthesizes four weighted pillars on a 0 to 100 scale:",
+          "1. Bond Anchor (A, 30% weight): Derived from the mean bond score \\mu_B normalized above baseline.",
+          "2. Fiduciary Anchor (F, 25% weight): Based on the percentage of escrow legitimately released.",
+          "3. Succession Durability (S, 25% weight): Institutional survival rating across constitutional transitions.",
+          "4. Containment (C, 20% weight): The inverse of composite rupture (1 - R/100).",
+          "Four operational phases govern the mandate: Imperium-Bound (<40), Fiduciary Anchor (40–59), Custodial Inversion (60–79), and Self-Reinforcing Dominium (80–100, requiring all bonds above the 3.0 floor).",
+        ],
+        formula: "\\Phi = 100 \\times \\big(0.30 \\cdot A + 0.25 \\cdot F + 0.25 \\cdot S + 0.20 \\cdot C\\big)",
+        statutoryNote: "Doctrinal Gate: Self-Reinforcing Dominium cannot be attained if any individual bond violates the viable floor, regardless of the aggregate score.",
+      },
+    ],
+  },
+  {
+    id: "practicum-drills",
+    number: "05",
+    eyebrow: "Module V · Sovereign Practicum",
+    title: "Scenario Drills & Practitioner Capstone",
+    summary: "Simulated diplomatic crises, guided scenario walkthroughs, and official curriculum attestation.",
+    chapters: [
+      {
+        id: "drill-border",
+        title: "5.1 Drill Alpha: Border Demarcation & River Basin Corridor",
+        lede: "A volatile territorial dispute between State A and State B along a shared transboundary water system.",
+        drillType: "border",
+        content: [
+          "Scenario Context: State A claims historical riparian rights over the northern river basin, while State B cites an upstream agricultural irrigation treaty from 1982.",
+          "Diagnostic Profile: Interpersonal trust between foreign ministers is Viable (3.8), but communal resonance is Failing (1.9) due to downstream water rationing.",
+          "Strategic Objective: Transition the dispute from military fortification to a joint ecological and hydroelectric commission governed by a milestone-based escrow waterfall.",
+          "Apply the interactive simulator below to evaluate how elevating communal resonance mitigates composite rupture and prevents unilateral sovereign withdrawal.",
+        ],
+      },
+      {
+        id: "drill-ddr",
+        title: "5.2 Drill Beta: Post-Conflict DDR & Succession Fracture",
+        lede: "Phasing disarmament, demobilization, and reintegration amidst upcoming national legislative elections.",
+        drillType: "ddr",
+        content: [
+          "Scenario Context: Following an eight-year civil conflict, a coalition peace accord establishes cantonment zones for former combatants.",
+          "Vulnerability: General elections are scheduled in 140 days. The succession simulator warns that leadership transition could rupture the fragile Institutional bond (2.4).",
+          "Strategic Action: Deploy the Dispute Forum Enforceability Matrix to bind cantonment oversight to an independent arbitral body, shielding the accord from partisan legislative capture.",
+        ],
+      },
+      {
+        id: "drill-escrow",
+        title: "5.3 Drill Gamma: Cross-Border Mineral Wealth & Sovereign Escrow",
+        lede: "Structuring joint-extraction royalties in a disputed offshore maritime economic zone.",
+        drillType: "escrow",
+        content: [
+          "Scenario Context: Offshore natural gas discoveries straddle an un-demarcated maritime median line. Neither state possesses the kinetic capacity to drill unilaterally without catastrophic conflict.",
+          "Resolution Mechanism: Establish a neutral escrow trust with 4 gated tranches: Tranche 1 (Joint seismic survey), Tranche 2 (Environmental baseline verification), Tranche 3 (Platform commissioning), and Tranche 4 (Final boundary cession and revenue distribution).",
+          "Statutory Safeguard: If either state deploys naval vessels within 12 nautical miles of the exploration zone, Desk 14 triggers an immediate Escrow Freeze, halting all disbursements.",
+        ],
+      },
+      {
+        id: "capstone-attestation",
+        title: "5.4 Official Capstone Attestation & Covenant",
+        lede: "Formal completion of the Sovereign Chancellery Academy curriculum and practitioner covenant.",
+        drillType: "capstone",
+        content: [
+          "Congratulations on completing the theoretical and applied modules of the Sovereign Chancellery Academy.",
+          "As an operator of the Unified Deterministic Chancellery Apparatus (UDCA), you carry the solemn responsibility of upholding relational integrity, mathematical truth, and sovereign dignity.",
+          "By sealing your attestation below, you affirm your commitment to the Vinculum Security Doctrine: rejecting constructive ambiguity, preserving the Liebig Minimum, and maintaining rigorous custodial care across all statecraft mandates.",
         ],
       },
     ],
@@ -146,8 +324,44 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
   const [activeModIdx, setActiveModIdx] = useState(0);
   const [activeChapIdx, setActiveChapIdx] = useState(0);
 
+  // Interactive Live Simulator State (Browser-local only)
+  const [bIp, setBIp] = useState(3.8);
+  const [bComm, setBComm] = useState(2.8);
+  const [bIgen, setBIgen] = useState(4.1);
+  const [bInst, setBInst] = useState(3.6);
+  const [inscribedLoad, setInscribedLoad] = useState(15);
+  const [trend, setTrend] = useState<"improving" | "static" | "deteriorating">("static");
+  const [attested, setAttested] = useState(false);
+
+  // Deterministic computations for simulator
+  const bonds = [bIp, bComm, bIgen, bInst];
+  const meanBond = Number((bonds.reduce((a, b) => a + b, 0) / 4).toFixed(2));
+  const liebigMin = Math.min(...bonds);
+  const liebigBondName = 
+    liebigMin === bIp ? "Interpersonal (B_ip)" :
+    liebigMin === bComm ? "Communal (B_comm)" :
+    liebigMin === bIgen ? "Intergenerational (B_igen)" : "Institutional (B_inst)";
+
+  const trendMultiplier = trend === "improving" ? 0.85 : trend === "deteriorating" ? 1.15 : 1.0;
+  const observedBreachShare = Math.max(0, Math.round((5 - liebigMin) * 8));
+  const ruptureScore = Math.min(100, Math.round((observedBreachShare + inscribedLoad) * trendMultiplier));
+  
+  // Dominum Quotient estimation
+  const bondAnchor = Math.min(1, Math.max(0, (meanBond - 1) / 4));
+  const containment = 1 - (ruptureScore / 100);
+  const dominumQuotient = Math.round(100 * (0.30 * bondAnchor + 0.25 * 0.70 + 0.25 * 0.80 + 0.20 * containment));
+
   const activeModule = MODULES[activeModIdx] || MODULES[0];
   const activeChapter = activeModule.chapters[activeChapIdx] || activeModule.chapters[0];
+
+  const handleResetSimulator = () => {
+    setBIp(3.8);
+    setBComm(2.8);
+    setBIgen(4.1);
+    setBInst(3.6);
+    setInscribedLoad(15);
+    setTrend("static");
+  };
 
   return (
     <div className="py-2">
@@ -159,7 +373,7 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
             <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground">The Sovereign Chancellery Academy</p>
           </div>
           <h1 className="mt-1 font-serif text-2xl text-primary sm:text-3xl">Curriculum of the UDCA</h1>
-          <p className="mt-1 text-xs text-muted-foreground">Master the jurisprudence, relational mathematics and instrument telemetry of sovereign statecraft.</p>
+          <p className="mt-1 text-xs text-muted-foreground">Master the jurisprudence, relational mathematics, and instrument telemetry of sovereign statecraft.</p>
         </div>
         <Button variant="outline" size="sm" onClick={onExit} className="self-start sm:self-auto gap-1.5 border-brass/50 hover:border-brass">
           <ArrowLeft size={13} />
@@ -223,7 +437,7 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
               <ShieldCheck size={13} className="text-accent" />
               Air-Gapped Sovereign Curriculum
             </p>
-            <p>All progress is preserved strictly within browser session memory. No data is shared or transmitted externally.</p>
+            <p>All progress is preserved strictly within browser session memory. No data is transmitted externally.</p>
           </div>
         </aside>
 
@@ -262,6 +476,180 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
             <div className="mt-5 border-l-2 border-primary bg-primary/5 px-4 py-3 text-xs text-primary/90">
               <span className="font-semibold text-primary">Statutory Rule: </span>
               {activeChapter.statutoryNote}
+            </div>
+          )}
+
+          {/* Interactive Relational Simulator (Available in Module IV and Practicum Drills) */}
+          {(activeModule.id === "relational-mathematics" || activeChapter.drillType) && (
+            <div className="mt-8 border border-brass/60 bg-card p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-border/50 pb-3">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal size={15} className="text-accent" />
+                  <h3 className="font-serif text-base text-primary">Interactive Relational Laboratory</h3>
+                </div>
+                <Button variant="ghost" size="sm" onClick={handleResetSimulator} className="h-7 text-xs gap-1 text-muted-foreground">
+                  <RotateCcw size={11} /> Reset
+                </Button>
+              </div>
+
+              <p className="text-xs text-muted-foreground">
+                Manipulate the live state vector and structural parameters below to observe deterministic Liebig Minimum rupture and Dominum Index response:
+              </p>
+
+              {/* Sliders Grid */}
+              <div className="grid gap-4 sm:grid-cols-2 text-xs">
+                <div className="space-y-1.5 border border-border/40 p-3 bg-card/40">
+                  <div className="flex justify-between font-mono">
+                    <span className="text-muted-foreground">B_ip (Interpersonal):</span>
+                    <span className="font-bold text-primary">{bIp.toFixed(1)} / 5.0</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.0"
+                    max="5.0"
+                    step="0.1"
+                    value={bIp}
+                    onChange={(e) => setBIp(parseFloat(e.target.value))}
+                    className="w-full accent-brass cursor-pointer"
+                  />
+                </div>
+
+                <div className="space-y-1.5 border border-border/40 p-3 bg-card/40">
+                  <div className="flex justify-between font-mono">
+                    <span className="text-muted-foreground">B_comm (Communal):</span>
+                    <span className="font-bold text-primary">{bComm.toFixed(1)} / 5.0</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.0"
+                    max="5.0"
+                    step="0.1"
+                    value={bComm}
+                    onChange={(e) => setBComm(parseFloat(e.target.value))}
+                    className="w-full accent-brass cursor-pointer"
+                  />
+                </div>
+
+                <div className="space-y-1.5 border border-border/40 p-3 bg-card/40">
+                  <div className="flex justify-between font-mono">
+                    <span className="text-muted-foreground">B_igen (Intergenerational):</span>
+                    <span className="font-bold text-primary">{bIgen.toFixed(1)} / 5.0</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.0"
+                    max="5.0"
+                    step="0.1"
+                    value={bIgen}
+                    onChange={(e) => setBIgen(parseFloat(e.target.value))}
+                    className="w-full accent-brass cursor-pointer"
+                  />
+                </div>
+
+                <div className="space-y-1.5 border border-border/40 p-3 bg-card/40">
+                  <div className="flex justify-between font-mono">
+                    <span className="text-muted-foreground">B_inst (Institutional):</span>
+                    <span className="font-bold text-primary">{bInst.toFixed(1)} / 5.0</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="1.0"
+                    max="5.0"
+                    step="0.1"
+                    value={bInst}
+                    onChange={(e) => setBInst(parseFloat(e.target.value))}
+                    className="w-full accent-brass cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {/* Stress Parameters */}
+              <div className="grid gap-4 sm:grid-cols-2 pt-2 border-t border-border/40 text-xs">
+                <div className="space-y-1.5">
+                  <label className="text-muted-foreground font-mono">Inscribed Historical Load: {inscribedLoad} / 50</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="50"
+                    step="1"
+                    value={inscribedLoad}
+                    onChange={(e) => setInscribedLoad(parseInt(e.target.value))}
+                    className="w-full accent-accent cursor-pointer"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-muted-foreground font-mono">Dynamic Trend Multiplier</label>
+                  <div className="flex gap-2">
+                    {(["improving", "static", "deteriorating"] as const).map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setTrend(t)}
+                        className={`flex-1 py-1.5 text-[11px] font-mono uppercase tracking-wider border capitalize transition-colors ${
+                          trend === t ? "border-brass bg-accent/20 text-primary font-semibold" : "border-border/50 text-muted-foreground hover:text-primary"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Deterministic Telemetry Readout */}
+              <div className="grid gap-3 sm:grid-cols-3 pt-3 border-t border-brass/30 font-mono text-xs">
+                <div className="border border-border/50 bg-background/50 p-2.5">
+                  <p className="text-[10px] text-muted-foreground uppercase">Liebig Minimum</p>
+                  <p className="mt-1 text-sm font-bold text-primary">{liebigMin.toFixed(1)} / 5.0</p>
+                  <p className="mt-0.5 text-[10px] text-accent truncate">{liebigBondName}</p>
+                </div>
+
+                <div className="border border-border/50 bg-background/50 p-2.5">
+                  <p className="text-[10px] text-muted-foreground uppercase">Composite Rupture (R)</p>
+                  <p className={`mt-1 text-sm font-bold ${ruptureScore >= 60 ? "text-destructive" : ruptureScore >= 35 ? "text-amber-500" : "text-primary"}`}>
+                    {ruptureScore} / 100
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">
+                    {ruptureScore >= 60 ? "Escrow Freeze Triggered" : ruptureScore >= 35 ? "Elevated Tension" : "Contained"}
+                  </p>
+                </div>
+
+                <div className="border border-border/50 bg-background/50 p-2.5">
+                  <p className="text-[10px] text-muted-foreground uppercase">Dominum Quotient (Φ)</p>
+                  <p className="mt-1 text-sm font-bold text-accent">{dominumQuotient} / 100</p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">
+                    {dominumQuotient >= 80 && liebigMin >= 3.0 ? "Self-Reinforcing" : dominumQuotient >= 60 ? "Custodial Inversion" : "Fiduciary Anchor"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Capstone Official Attestation Card */}
+          {activeChapter.drillType === "capstone" && (
+            <div className="mt-8 border-2 border-brass bg-card p-6 text-center space-y-4">
+              <Award size={36} className="mx-auto text-brass" />
+              <h3 className="font-serif text-xl text-primary">Sovereign Chancellery Attestation</h3>
+              <p className="text-xs text-muted-foreground max-w-lg mx-auto">
+                Having mastered the 5 curriculum modules of the Unified Deterministic Chancellery Apparatus (UDCA), you are authorized to seal this record into the local session registry.
+              </p>
+
+              <div className="pt-2">
+                {attested ? (
+                  <div className="inline-flex items-center gap-2 border border-emerald-500/50 bg-emerald-500/10 px-4 py-2 text-xs font-mono text-emerald-400">
+                    <CheckCircle2 size={16} />
+                    <span>CURRICULUM ATTESTED & COMPLETED IN LOCAL SESSION</span>
+                  </div>
+                ) : (
+                  <Button 
+                    onClick={() => setAttested(true)} 
+                    className="border border-brass bg-brass/20 hover:bg-brass/30 text-primary font-mono text-xs tracking-wider uppercase px-6"
+                  >
+                    Confirm & Seal Practitioner Attestation
+                  </Button>
+                )}
+              </div>
             </div>
           )}
 
