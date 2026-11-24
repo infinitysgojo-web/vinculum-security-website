@@ -83,21 +83,21 @@ export function governingLaws(s: Signals): Pillar[] {
 }
 
 const STATUS_STYLE: Record<Status, { label: string; cls: string }> = {
-  breach: { label: "Breached", cls: "border-destructive/60 text-destructive" },
-  hold: { label: "Holding", cls: "border-accent/60 text-accent" },
-  reading: { label: "Live", cls: "border-brass/60 text-primary" },
-  pending: { label: "Awaiting", cls: "border-border text-muted-foreground" },
+  breach: { label: "Breached", cls: "border-destructive text-destructive bg-destructive/15 shadow-[0_0_6px_hsl(var(--destructive)/0.2)]" },
+  hold: { label: "Holding", cls: "border-accent text-accent bg-accent/15 shadow-[0_0_6px_hsl(var(--accent)/0.2)]" },
+  reading: { label: "Live", cls: "border-brass/70 text-primary bg-navy-tint/40" },
+  pending: { label: "Awaiting", cls: "border-brass/30 text-muted-foreground bg-background/50" },
 };
 
 const LAWS_KEY = "vs:lawsOpen";
 
 function Cell({ k, v }: { k: string; v: string }) {
   return (
-    <div className="min-w-0 border-l border-brass/40 pl-3">
-      <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground">
+    <div className="min-w-0 border-l border-brass/45 pl-3 transition-colors hover:border-accent">
+      <p className="text-[9px] uppercase tracking-[0.16em] text-muted-foreground font-medium">
         {LEX_FOR[k] ? <Lex term={LEX_FOR[k]}>{k}</Lex> : k}
       </p>
-      <p className="min-h-10 text-xs sm:text-sm tabular-nums leading-snug [overflow-wrap:anywhere] text-primary">{v}</p>
+      <p className="min-h-10 text-xs sm:text-sm tabular-nums leading-snug [overflow-wrap:anywhere] text-primary font-medium">{v}</p>
     </div>
   );
 }
