@@ -133,9 +133,19 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
                   return (
                     <td
                       key={b.id}
-                      className={`p-1 text-center font-mono tabular-nums ${c === null ? "text-muted-foreground" : c >= 0.25 ? "bg-destructive/10 text-destructive font-semibold" : c >= 0.12 ? "bg-ochre/10 text-primary" : "text-primary"}`}
+                      className={`p-1 text-center font-mono tabular-nums transition-colors ${
+                        c === null
+                          ? "text-muted-foreground"
+                          : pairA?.id === a.id && pairB?.id === b.id
+                            ? "bg-accent/20 ring-1 ring-accent text-accent font-semibold"
+                            : c >= 0.25
+                              ? "bg-destructive/15 text-destructive font-semibold"
+                              : c >= 0.12
+                                ? "bg-brass/15 text-primary"
+                                : "text-primary hover:bg-brass/10"
+                      }`}
                     >
-                      {c === null ? "—" : <Button variant="ghost" size="sm" type="button" className="h-8 min-w-10 rounded-none p-1 font-mono text-inherit"
+                      {c === null ? "—" : <Button variant="ghost" size="sm" type="button" className="h-8 min-w-10 rounded-none p-1 font-mono text-inherit w-full transition-transform active:scale-95"
                         aria-label={`Inspect friction: ${a.label} / ${b.label}, ${c.toFixed(2)}`} aria-pressed={pairA?.id === a.id && pairB?.id === b.id}
                         onClick={() => setPair([a.id, b.id])} title={`${a.label} / ${b.label}: ${vec(a).join(", ")} versus ${vec(b).join(", ")}`}>
                         {c.toFixed(2)}
