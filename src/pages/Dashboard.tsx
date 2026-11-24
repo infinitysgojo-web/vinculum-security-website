@@ -1741,7 +1741,7 @@ export default function Dashboard() {
 
       <div className={`container ${focus ? "py-4" : "py-4 sm:py-5"}`}>
         {academyOpen ? (
-          <div className="mb-8 pb-12">
+          <div className="pb-12">
             <ChancelleryAcademy onExit={() => setAcademyOpen(false)} />
           </div>
         ) : foyer ? (
