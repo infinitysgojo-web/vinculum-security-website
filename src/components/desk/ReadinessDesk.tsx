@@ -275,39 +275,49 @@ export default function ReadinessDesk({ openQuestions, onOpenDesk }: { /** Opens
               <>
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-serif text-4xl leading-none text-primary">D {dominum.index}%</p>
-                    <p className="mt-2 inline-block border border-primary/50 bg-primary/5 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">{dominum.phase}</p>
+                    <p className="font-serif text-4xl leading-none text-primary font-medium">D {dominum.index}%</p>
+                    <p className={`mt-2 inline-block border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] ${
+                      dominum.phase === "Self-Reinforcing Dominium"
+                        ? "border-accent text-accent bg-accent/15 shadow-[0_0_8px_hsl(var(--accent)/0.25)]"
+                        : dominum.phase === "Custodial Inversion"
+                          ? "border-brass text-primary bg-brass/15"
+                          : "border-destructive text-destructive bg-destructive/15"
+                    }`}>{dominum.phase}</p>
                   </div>
                   <FormulaProof proof={dominumProof(dominum)} />
                 </div>
-                <div className="h-2 bg-border" aria-hidden>
-                  <div className="h-2 bg-primary transition-all" style={{ width: `${dominum.index}%` }} />
+                <div className="h-2.5 bg-background border border-brass/40 overflow-hidden rounded-xs" aria-hidden>
+                  <div className={`h-full transition-all duration-500 ${
+                    dominum.phase === "Imperium-Bound"
+                      ? "bg-destructive shadow-[0_0_8px_hsl(var(--destructive)/0.35)]"
+                      : "bg-accent shadow-[0_0_8px_hsl(var(--accent)/0.35)]"
+                  }`} style={{ width: `${dominum.index}%` }} />
                 </div>
                 <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {dominum.terms.map((t) => (
-                    <li key={t.key} className="border border-border bg-background p-2 min-w-0">
+                    <li key={t.key} className="border border-brass/35 bg-navy-tint/20 p-2 min-w-0 transition-colors hover:border-brass">
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="text-xs font-semibold text-foreground/90">{t.key} · {t.label}</span>
-                        <span className="font-mono text-xs text-primary">{Math.round(t.input * 100)}%</span>
+                        <span className="font-mono text-xs text-primary font-medium">{Math.round(t.input * 100)}%</span>
                       </div>
                       <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">weight {Math.round(t.weight * 100)}% · adds {(t.value * 100).toFixed(1)}</p>
                     </li>
                   ))}
                 </ul>
-                {!dominum.floorHeld && <p className="border-l-2 border-terracotta pl-3 text-xs text-muted-foreground">Self-Reinforcing Dominium is withheld while a bond sits at or below the 3.0 viable floor.</p>}
+                {!dominum.floorHeld && <p className="border-l-2 border-destructive pl-3 text-xs text-destructive/90 bg-destructive/5 py-1">Self-Reinforcing Dominium is withheld while a bond sits at or below the 3.0 viable floor.</p>}
               </>
             ) : (
-              <div className="space-y-2">
-                <p className="font-serif text-lg text-muted-foreground">Not yet assessed</p>
+              <div className="space-y-2 border border-dashed border-brass/40 bg-navy-tint/15 p-3 rounded-xs">
+                <p className="font-serif text-lg text-primary/80">Not yet assessed</p>
                 <p className="text-xs text-muted-foreground">Awaiting readings from:</p>
                 <ul className="flex flex-wrap gap-2">
                   {dominum.missing.map((m) => (
                     <li key={m}>
                       {(() => {
                         const target = DOMINUM_SOURCE.find(([k]) => m.startsWith(k))?.[1];
-                        const cls = "border border-terracotta/60 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-terracotta";
+                        const cls = "border border-accent/60 bg-accent/10 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-accent transition-all";
                         return target && onOpenDesk ? (
-                          <button type="button" onClick={() => onOpenDesk(target)} className={`${cls} hover:bg-terracotta/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent`} aria-label={`Open the desk that supplies the ${m}`}>{m} →</button>
+                          <button type="button" onClick={() => onOpenDesk(target)} className={`${cls} hover:bg-accent/20 hover:border-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent`} aria-label={`Open the desk that supplies the ${m}`}>{m} →</button>
                         ) : <span className={`inline-block ${cls}`}>{m}</span>;
                       })()}
                     </li>
