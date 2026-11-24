@@ -50,6 +50,7 @@ import { LexiconDrawer } from "@/components/desk/Lexicon";
 import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 import { canonicalJson, mintChancelleryApostille, verifyChancelleryApostille } from "@/components/desk/registry";
 import MissionFoyer, { type FoyerAction } from "@/components/mode/MissionFoyer";
+import ChancelleryAcademy from "@/components/mode/ChancelleryAcademy";
 import LocalDataDialog from "@/components/mode/LocalDataDialog";
 import ModeHeader, { ModeBadges, modeStatusText, type HeaderAction } from "@/components/mode/ModeHeader";
 import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
@@ -827,6 +828,7 @@ export default function Dashboard() {
   // Sovereign Navigation Hotkeys: one listener for [, ], ?, Esc, Ctrl/Cmd+K and Ctrl/Cmd+S.
   // Navigation keys are ignored while typing in a field; the panic keys stay with the Sentinel.
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [academyOpen, setAcademyOpen] = useState(false);
   const [orientationOpen, setOrientationOpen] = useState(false);
   const [orientationDismissed, setOrientationDismissed] = useState(() => {
     try { return orientationInvited(window.localStorage); } catch { return false; }
@@ -1155,6 +1157,7 @@ export default function Dashboard() {
     else if (a.kind === "resume-draft") setDialog("pick-draft");
     else if (a.kind === "review-ready") setDialog("pick-review");
     else if (a.kind === "sealed") setDialog("pick-sealed");
+    else if (a.kind === "academy") setAcademyOpen(true);
     else if (a.kind === "local-data") setDialog("local-data");
   };
 
@@ -1737,7 +1740,11 @@ export default function Dashboard() {
       )}
 
       <div className={`container ${focus ? "py-4" : "py-4 sm:py-5"}`}>
-        {inFoyer ? (
+        {academyOpen ? (
+          <div className="mb-8 pb-12">
+            <ChancelleryAcademy onExit={() => setAcademyOpen(false)} />
+          </div>
+        ) : foyer ? (
           <div className="mb-8 pb-12">
             <MissionFoyer workspaces={workspaces} lastMode={lastMode} network={network} legacyDraft={legacyDraft} storeError={wsStore.error} quarantined={wsStore.store.quarantine.length} onAction={onFoyer} />
           </div>
