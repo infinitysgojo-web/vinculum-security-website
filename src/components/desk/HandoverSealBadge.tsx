@@ -40,7 +40,11 @@ export default function HandoverSealBadge({
         type="button"
         disabled={sealing}
         onClick={() => setOpen(true)}
-        className={`${base} ${status.state === "intact" ? "border-emerald/60 text-emerald hover:text-emerald" : "border-destructive bg-destructive/10 text-destructive hover:text-destructive font-semibold"}`}
+        className={`${base} ${
+          status.state === "intact"
+            ? "border-emerald/80 bg-emerald/10 text-emerald hover:bg-emerald/15 hover:text-emerald shadow-[0_0_8px_hsl(var(--emerald)/0.25)] font-semibold"
+            : "border-destructive bg-destructive/15 text-destructive hover:bg-destructive/20 hover:text-destructive font-semibold shadow-[0_0_8px_hsl(var(--destructive)/0.3)] animate-pulse"
+        }`}
         title={status.state === "intact" ? `Integrity intact · sealed by ${status.seal.sealedBy}` : "Divergence detected: open the inspection"}
         aria-label={status.state === "intact" ? `Sealed, integrity intact, ${sha8(status.seal.sealHash)}` : `Divergence detected in ${status.parameters.map(sealParameterLabel).join(", ")}`}
         data-testid="seal-badge"
