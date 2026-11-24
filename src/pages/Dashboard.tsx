@@ -1744,7 +1744,7 @@ export default function Dashboard() {
           <div className="pb-12">
             <ChancelleryAcademy onExit={() => setAcademyOpen(false)} />
           </div>
-        ) : foyer ? (
+        ) : infoyer ? (
           <div className="mb-8 pb-12">
             <MissionFoyer workspaces={workspaces} lastMode={lastMode} network={network} legacyDraft={legacyDraft} storeError={wsStore.error} quarantined={wsStore.store.quarantine.length} onAction={onFoyer} />
           </div>
