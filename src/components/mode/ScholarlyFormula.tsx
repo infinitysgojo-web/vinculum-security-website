@@ -1,11 +1,12 @@
 import React from "react";
 
 export interface FormulaParameter {
-  symbol: string;
+  /** Typeset symbol: plain text or a node built from the Math helpers below. */
+  symbol: React.ReactNode;
   name: string;
-  domain: string;
-  description: string;
-  threshold?: string;
+  domain: React.ReactNode;
+  description: React.ReactNode;
+  threshold?: React.ReactNode;
 }
 
 export interface ScholarlyFormulaProps {
@@ -13,11 +14,12 @@ export interface ScholarlyFormulaProps {
   expression: {
     lhs: React.ReactNode;
     rhs: React.ReactNode;
-    condition?: string;
+    /** Typeset qualifying condition, shown beside the expression. */
+    condition?: React.ReactNode;
   };
   classification?: string;
   parameters: FormulaParameter[];
-  statutoryInvariant?: string;
+  statutoryInvariant?: React.ReactNode;
   className?: string;
 }
 
@@ -54,13 +56,13 @@ export default function ScholarlyFormula({
       </div>
 
       {/* Main Mathematical Display */}
-      <div className="my-5 flex flex-wrap items-center justify-center gap-3 overflow-x-auto py-2 text-center">
-        <div className="flex items-center gap-3 font-serif text-lg md:text-xl text-primary font-normal tracking-wide">
-          <span className="italic">{expression.lhs}</span>
-          <span className="text-brass font-sans">=</span>
-          <div className="inline-flex items-center">{expression.rhs}</div>
+      <div className="my-5 overflow-x-auto py-2 text-center" data-testid="scholarly-formula-display">
+        <div className="inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-2 font-serif text-lg md:text-xl text-primary font-normal tracking-wide">
+          <span className="inline-flex items-center">{expression.lhs}</span>
+          <span className="text-brass">=</span>
+          <span className="inline-flex flex-wrap items-center justify-center">{expression.rhs}</span>
           {expression.condition && (
-            <span className="ml-2 font-mono text-xs text-muted-foreground">
+            <span className="ml-1 inline-flex items-center text-sm md:text-base text-muted-foreground">
               {expression.condition}
             </span>
           )}
@@ -79,7 +81,7 @@ export default function ScholarlyFormula({
                 key={idx}
                 className="flex items-start gap-2 border border-border/30 bg-background/40 p-2 rounded-sm"
               >
-                <span className="font-serif italic font-semibold text-brass shrink-0 min-w-[2.2rem]">
+                <span className="font-serif font-semibold text-brass shrink-0 min-w-[2.6rem] text-sm">
                   {param.symbol}
                 </span>
                 <div className="space-y-0.5 min-w-0">
@@ -87,15 +89,15 @@ export default function ScholarlyFormula({
                     <span className="font-medium text-[11px] text-foreground">
                       {param.name}
                     </span>
-                    <span className="font-mono text-[9px] text-muted-foreground shrink-0">
-                      [{param.domain}]
+                    <span className="font-serif text-[10px] text-muted-foreground shrink-0">
+                      {param.domain}
                     </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground leading-snug">
                     {param.description}
                   </p>
                   {param.threshold && (
-                    <p className="font-mono text-[10px] text-accent pt-0.5">
+                    <p className="font-serif text-[11px] text-accent pt-0.5">
                       Invariant: {param.threshold}
                     </p>
                   )}
@@ -129,14 +131,14 @@ export function MathFraction({
   denominator: React.ReactNode;
 }) {
   return (
-    <div className="inline-flex flex-col items-center align-middle px-1.5">
-      <span className="border-b border-primary/70 pb-0.5 text-center text-sm md:text-base leading-tight">
+    <span className="inline-flex flex-col items-center align-middle px-1 text-[0.85em]" data-math="frac">
+      <span className="border-b border-current pb-0.5 text-center leading-tight">
         {numerator}
       </span>
-      <span className="pt-0.5 text-center text-sm md:text-base leading-tight">
+      <span className="pt-0.5 text-center leading-tight">
         {denominator}
       </span>
-    </div>
+    </span>
   );
 }
 
@@ -146,9 +148,9 @@ export function MathFraction({
  */
 export function MathVector({ elements }: { elements: React.ReactNode[] }) {
   return (
-    <span className="inline-flex items-center font-serif">
-      <span className="text-xl font-light text-brass/80">[</span>
-      <span className="inline-flex gap-2 px-1 text-sm md:text-base">
+    <span className="inline-flex items-center font-serif" data-math="vector">
+      <span className="text-[1.3em] font-light text-brass">[</span>
+      <span className="inline-flex gap-1.5 px-1 text-[0.9em]">
         {elements.map((el, idx) => (
           <React.Fragment key={idx}>
             {el}
@@ -156,7 +158,56 @@ export function MathVector({ elements }: { elements: React.ReactNode[] }) {
           </React.Fragment>
         ))}
       </span>
-      <span className="text-xl font-light text-brass/80">]</span>
+      <span className="text-[1.3em] font-light text-brass">]</span>
+    </span>
+  );
+}
+
+/**
+ * MathRadical
+ * A square root with a true vinculum over its radicand.
+ */
+export function MathRadical({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-stretch align-middle" data-math="sqrt">
+      <span className="pr-px text-[1.15em] leading-none text-primary" aria-hidden>√</span>
+      <span className="border-t border-current px-0.5 pt-0.5 leading-tight">{children}</span>
+    </span>
+  );
+}
+
+/**
+ * MathBigOperator
+ * A large summation or product sign with stacked lower and upper limits.
+ */
+export function MathBigOperator({ symbol, lower, upper }: { symbol: "∑" | "∏"; lower?: React.ReactNode; upper?: React.ReactNode }) {
+  return (
+    <span className="inline-flex flex-col items-center align-middle px-0.5 leading-none" data-math="bigop">
+      <span className="text-[0.6em] leading-none">{upper ?? "\u00a0"}</span>
+      <span className="text-[1.5em] leading-none">{symbol}</span>
+      <span className="text-[0.6em] leading-none">{lower ?? "\u00a0"}</span>
+    </span>
+  );
+}
+
+/**
+ * MathCases
+ * A piecewise definition: a tall left brace and one row per case.
+ */
+export function MathCases({ rows }: { rows: { value: React.ReactNode; when: React.ReactNode }[] }) {
+  return (
+    <span className="inline-flex items-stretch align-middle" data-math="cases">
+      <span className="mr-1.5 inline-flex items-center font-light text-brass" aria-hidden>
+        <span className="inline-block text-[1.4em] leading-none" style={{ transform: `scaleY(${Math.max(1, rows.length) * 1.05})` }}>{"{"}</span>
+      </span>
+      <span className="inline-grid grid-cols-[auto_auto] gap-x-4 gap-y-1 text-left text-[0.9em]">
+        {rows.map((r, i) => (
+          <React.Fragment key={i}>
+            <span className="inline-flex items-center">{r.value}</span>
+            <span className="inline-flex items-center text-muted-foreground">{r.when}</span>
+          </React.Fragment>
+        ))}
+      </span>
     </span>
   );
 }

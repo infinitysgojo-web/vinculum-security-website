@@ -1,51 +1,30 @@
-export interface ChapterQuizQuestion {
-  id: string;
-  question: string;
-  options: {
-    id: string;
-    text: string;
-    explanation: string;
-    correct: boolean;
-  }[];
-}
+import type { DetailedAcademyModule } from "./academyTypes";
+import {
+  F_DECAY,
+  F_DOMINUM,
+  F_DOMINUM_PHASE,
+  F_ESCROW_CHAIN,
+  F_FORUM_E,
+  F_FORUM_F,
+  F_FRICTION,
+  F_LIEBIG,
+  F_MEAN,
+  F_RUPTURE,
+  F_SEAL,
+  F_STATE_VECTOR,
+  F_SUCCESSION,
+  F_TRACK,
+} from "./academyFormulas";
 
-export interface DetailedLectureSection {
-  heading: string;
-  subheading?: string;
-  paragraphs: string[];
-  caseStudy?: {
-    title: string;
-    jurisdiction: string;
-    precedent: string;
-    analysis: string[];
-    failureMechanism: string;
-  };
-  statutoryRule?: string;
-}
+export type {
+  AcademyFormula,
+  ChapterQuizQuestion,
+  DetailedAcademyChapter,
+  DetailedAcademyModule,
+  DetailedLectureSection,
+} from "./academyTypes";
 
-export interface DetailedAcademyChapter {
-  id: string;
-  number: string;
-  title: string;
-  eyebrow: string;
-  estimatedMinutes: number;
-  executiveLede: string;
-  statutoryNotice: string;
-  learningOutcomes: string[];
-  sections: DetailedLectureSection[];
-  quiz: ChapterQuizQuestion[];
-  drillType?: "border" | "ddr" | "escrow" | "capstone";
-}
-
-export interface DetailedAcademyModule {
-  id: string;
-  number: string;
-  eyebrow: string;
-  title: string;
-  summary: string;
-  chapters: DetailedAcademyChapter[];
-}
-
+/** Modules I and II. Types live in academyTypes.ts; formulas in academyFormulas.ts. */
 export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
   {
     id: "jurisprudence",
@@ -61,6 +40,11 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         title: "The Fallacy of Constructive Ambiguity in Sovereign Statecraft",
         estimatedMinutes: 25,
         executiveLede: "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability that guarantees post-hoc divergence and treaty rupture.",
+        synopsis: [
+          "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability.",
+          "When crisis strikes, ambiguous clauses do not foster compromise. They become the fault line along which covenants rupture: the stronger party exploits the ambiguity to justify unilateral action, while the vulnerable party suffers institutional erosion.",
+          "The Unified Deterministic Chancellery Apparatus (UDCA) rejects linguistic elasticity. In its place it introduces Relational Determinism: statecraft defined not by aspirational rhetoric but by quantifiable, verifiable structural thresholds.",
+        ],
         statutoryNotice: "Statutory Invariant: Ambiguity is the mathematical precursor to treaty rupture. If an enforcement obligation cannot be computed, audited, or falsified, it does not exist as sovereign law.",
         learningOutcomes: [
           "Deconstruct the historical reliance on diplomatic vagueness in twentieth-century accords.",
@@ -182,10 +166,16 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         title: "From Imperium to Dominium: Custody vs. Kinetic Coercion",
         estimatedMinutes: 25,
         executiveLede: "Traditional geopolitical systems operate on the principle of Imperium: the projection of kinetic force, military hegemony, surveillance scraping, and punitive economic sanctions. The Vinculum Security Doctrine shifts statecraft from Imperium to Dominium: the solemn responsibility of sovereign custody, relational stewardship, and intergenerational durability.",
+        synopsis: [
+          "Traditional geopolitical systems operate on Imperium: the projection of kinetic force, surveillance and punitive sanctions. Imperium creates a fragile equilibrium that demands ever greater expenditure to suppress the resistance it generates.",
+          "The Vinculum Security Doctrine shifts statecraft to Dominium: the responsibility of sovereign custody, relational stewardship and intergenerational durability. Under Dominium, security is measured by the structural integrity of the relational bonds across four non-negotiable dimensions.",
+          "The platform reads that shift on Mission Readiness (Desk 15) as the Dominum Index, whose phases run from Imperium-Bound through Fiduciary Anchor and Custodial Inversion to Self-Reinforcing Dominium.",
+        ],
+        formulas: [F_DOMINUM_PHASE],
         statutoryNotice: "Doctrinal Warrant: Coercion produces immediate behavioral compliance at the cost of guaranteed structural decay. Custodial stewardship produces enduring sovereign stability.",
         learningOutcomes: [
           "Contrast the thermodynamic fragility of Imperium with the structural resilience of Dominium.",
-          "Calculate the Dominum Quotient to evaluate whether an accord relies on relational yield or coercive friction.",
+          "Read the Dominum Index and its phases to judge whether an accord rests on custody or on the command of its makers.",
           "Articulate the custodial responsibilities of plenipotentiaries under the Vinculum Security Doctrine.",
           "Identify how surveillance scraping and punitive sanctions induce hidden relational fatigue."
         ],
@@ -216,9 +206,9 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
             paragraphs: [
               "The Vinculum Security Doctrine replaces the logic of conquest with the logic of custody. Dominium represents the moral and mathematical stewardship of sovereign relationships. Under Dominium, an operator does not ask: 'How much leverage can I exert to force the counterpart to surrender?' Instead, the operator asks: 'What structural configuration will maximize the relational yield while minimizing coercive friction across generations?'",
               "Relational yield represents the voluntary, self-sustaining benefits that flow from a well-engineered covenant: secure commercial trade, ecological preservation, shared intelligence, cultural exchange, and mutual security. Coercive friction represents the ongoing resource expenditure required to police, threaten, and enforce compliance against an unwilling counterpart.",
-              "When a covenant achieves a Dominum Quotient greater than or equal to 1.0, the relationship becomes self-stabilizing. Both parties recognize that the benefits of voluntary compliance far exceed any temporary advantage gained by defection. In this state, sovereign dignity is preserved on both sides of the table, eliminating the toxic resentment that fuels future revanchism."
+              "When relational yield outweighs coercive friction, the relationship becomes self-stabilizing. The platform does not measure that balance as a ratio; it reads it through the Dominum Index on Desk 15, which reaches Self-Reinforcing Dominium at 75 or more with every bond above the 3.0 viable floor. Both parties recognize that the benefits of voluntary compliance far exceed any temporary advantage gained by defection. In this state, sovereign dignity is preserved on both sides of the table, eliminating the toxic resentment that fuels future revanchism."
             ],
-            statutoryRule: "Rule 1.2-A: A mission cannot be certified for Handover Sealing if its computed Dominum Quotient relies on active kinetic or economic coercion without a verified transition plan to voluntary custodial compliance."
+            statutoryRule: "Rule 1.2-A: A mission cannot be certified for Handover Sealing if its Dominum reading relies on active kinetic or economic coercion without a verified transition plan to voluntary custodial compliance."
           }
         ],
         quiz: [
@@ -261,7 +251,13 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         title: "The 4-Dimensional Relational State Vector & The Liebig Minimum",
         estimatedMinutes: 30,
         executiveLede: "Every bilateral treaty, multilateral peace accord, or sovereign border covenant is modeled in the UDCA as a 4-dimensional relational state vector. Crucially, the structural resilience of this vector is governed by the Law of the Liebig Minimum: A diplomatic covenant does not rupture at its average strength; it shatters at its weakest link.",
-        statutoryNotice: "Mathematical Axiom: If any single relational bond drops below its critical rupture threshold, the entire covenant enters acute systemic failure regardless of the elevated scores of the remaining three bonds.",
+        synopsis: [
+          "Every bilateral treaty, multilateral peace accord or sovereign border covenant is modelled as a four-dimensional relational state vector. Each bond is scored from 1.0 to 5.0 in steps of 0.1 and read in four bands: Failing (1.0 to 2.0), Fragile (2.1 to 3.0), Viable (3.1 to 4.0) and Fortified (4.1 to 5.0).",
+          "The four bonds are the Interpersonal bond between the negotiators on whom the process rests, the Communal bond across divided populations, the Intergenerational bond that carries the settlement across successions, and the Institutional-Relational bond between the governed and the organs of state.",
+          "The health of the covenant is governed by the Law of the Liebig Minimum: a chain does not rupture at its average strength; it shatters at its weakest link. If the Communal bond is 1.8, an Institutional-Relational bond of 4.8 cannot avert collapse.",
+        ],
+        formulas: [F_STATE_VECTOR, F_LIEBIG],
+        statutoryNotice: "Mathematical Axiom: If any single relational bond sits at or below the 3.0 viable floor, the covenant fails its Vector Integrity gate regardless of the elevated scores of the remaining three bonds.",
         learningOutcomes: [
           "Calibrate the 4-Dimensional Relational State Vector across all four canonical bond domains.",
           "Mathematically prove why mean trust metrics conceal fatal structural vulnerabilities.",
@@ -274,12 +270,12 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
             subheading: "Deconstructing Relational Architecture into Orthogonal Coordinates",
             paragraphs: [
               "In conventional diplomatic reporting, state relationships are often summarized using subjective, aggregate terms such as 'warm relations', 'strained ties', or 'constructive dialogue'. These generalizations are dangerously misleading because they average distinct, orthogonal dimensions of trust into a single impressionistic narrative.",
-              "The UDCA formalizes the relationship between sovereign parties as a four-dimensional state vector denoted as S_B = [B_ip, B_comm, B_igen, B_inst]. Each bond coordinate is measured on a strictly bounded continuum from 0.00 (complete systemic rupture) to 1.00 (absolute structural integrity):",
-              "1. Interpersonal Bond (B_ip): Measures the direct psychological attunement, candor, and reciprocal reliability between primary plenipotentiaries, heads of state, and lead negotiators.",
-              "2. Commercial & Transactional Bond (B_comm): Measures the mutually beneficial economic flows, trade velocity, debt servicing, and supply-chain interdependence linking the two states.",
-              "3. Intergenerational & Cultural Bond (B_igen): Measures the shared historical memory, diaspora ties, ecological stewardship, and perceived legitimacy across generational cohorts.",
-              "4. Institutional & Statutory Bond (B_inst): Measures the formal treaties, ratified statutes, joint commissions, and constitutional mechanisms that legally bind the parties.",
-              "These four bonds are not interchangeable. A surplus of commercial trade cannot compensate for the total absence of institutional legitimacy. Similarly, close personal rapport between two sitting presidents cannot prevent a treaty from collapsing if the broader population harbors intense, unaddressed communal grievances."
+              "The UDCA formalizes the relationship between sovereign parties as a four-dimensional state vector \\(S_{B} = \\vec{B_{ip}}{B_{comm}}{B_{igen}}{B_{inst}}\\). Each bond is scored on a bounded scale from 1.0, the sovereign baseline, to 5.0, in steps of 0.1:",
+              "1. Interpersonal Bond \\(B_{ip}\\): The direct reciprocal trust, personal integrity and communicative access between the primary negotiators, heads of state or factional commanders on whom a process actually rests. Would the relationship survive a bad-faith moment intact?",
+              "2. Communal Bond \\(B_{comm}\\): The inter-group cohesion, civic trust and grassroots solidarity across divided populations. Does an actor's authority survive contact with the community, and not merely with the institution?",
+              "3. Intergenerational Bond \\(B_{igen}\\): The plane that connects past sacrifices, present agreements and future cohorts: institutional memory, youth stake and the capacity to transmit a settlement across successions.",
+              "4. Institutional-Relational Bond \\(B_{inst}\\): The structural channel linking the governed population to the formal organs of state power, the judiciary, the security services and the administration. Would the bond survive a change in personnel or office?",
+              "These four bonds are not interchangeable. Strength in the institutions cannot compensate for the absence of communal trust. Similarly, close personal rapport between two sitting presidents cannot prevent a treaty from collapsing if the broader population harbors intense, unaddressed communal grievances."
             ]
           },
           {
@@ -287,17 +283,18 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
             subheading: "Why Average Trust Metrics Are Mathematically Fatal",
             paragraphs: [
               "In 1840, agricultural chemist Justus von Liebig formulated his celebrated Law of the Minimum: plant growth is dictated not by total available nutrients, but by the scarcest nutrient available (the limiting factor). If a crop has abundant nitrogen, phosphorus, and potassium, but lacks zinc, its growth is capped strictly by the availability of zinc. Adding more nitrogen will not make the plant grow; it will simply poison the soil.",
-              "The Vinculum Security Doctrine applies this exact law to sovereign statecraft. In any diplomatic architecture, the overall structural load capacity is governed strictly by the minimum bond value: min(B_ip, B_comm, B_igen, B_inst).",
-              "When an analyst or diplomat calculates the arithmetic mean of the four bonds, they create an illusion of security. For instance, if B_ip = 0.90, B_comm = 0.85, B_igen = 0.80, but B_inst = 0.15, the arithmetic mean is 0.675 (a seemingly respectable and healthy reading). Yet in reality, this treaty sits on the brink of total rupture. Because the institutional apparatus is completely fractured, any sudden change in political leadership or a challenge in the domestic courts will instantly invalidate the agreement.",
+              "The Vinculum Security Doctrine applies this exact law to sovereign statecraft. In any diplomatic architecture, the overall structural load capacity is governed strictly by the minimum bond value, \\(\\min(B_{ip},\\, B_{comm},\\, B_{igen},\\, B_{inst})\\).",
+              "When an analyst or diplomat calculates the arithmetic mean of the four bonds, they create an illusion of security. For instance, if the Interpersonal bond reads 4.6, the Communal 4.4 and the Intergenerational 4.2, but the Institutional-Relational bond reads 1.6, the arithmetic mean is 3.7, a seemingly respectable Contested standing. Yet in reality, this treaty sits on the brink of total rupture. Because the institutional apparatus is completely fractured, any sudden change in political leadership or a challenge in the domestic courts will instantly invalidate the agreement.",
               "The operator must continually identify the limiting bond and direct diplomatic energy toward elevating that specific coordinate before subjecting the relationship to increased stress."
             ],
+            formulas: [F_LIEBIG, F_MEAN],
             caseStudy: {
               title: "The Pre-1914 European Economic Interdependence Paradox",
               jurisdiction: "Great Britain, Imperial Germany, and Continental Europe",
               precedent: "Norman Angell's 'The Great Illusion' and the fallacy of commercial pacification",
               analysis: [
-                "Prior to the outbreak of the First World War in 1914, European intellectuals and financiers argued that a major war had become impossible due to unprecedented economic integration. Bilateral trade volumes (B_comm) between Great Britain and Germany were at historic highs, cross-border financial credit was deeply intertwined, and monarchical families enjoyed close personal correspondence (B_ip).",
-                "However, the institutional mechanisms for conflict resolution (B_inst) were rigid, secret, and militarized, while public jingoism, intense nationalism, and naval competition had severely eroded communal trust (B_comm / B_igen).",
+                "Prior to the outbreak of the First World War in 1914, European intellectuals and financiers argued that a major war had become impossible due to unprecedented economic integration. Trade between Great Britain and Germany was at historic highs, cross-border credit was deeply intertwined, and the reigning families enjoyed close personal correspondence, a strong Interpersonal bond at the summit. Commercial interdependence, it should be noted, is not one of the four bonds at all.",
+                "However, the institutional mechanisms for conflict resolution (the Institutional-Relational bond) were rigid, secret and militarized, while public jingoism, intense nationalism and naval competition had severely eroded the Communal and Intergenerational bonds.",
                 "When the assassination of Archduke Franz Ferdinand delivered a sharp exogenous shock, the high commercial and familial ties proved utterly irrelevant. The system fractured along its weakest links: rigid military mobilization timetables and hostile public sentiment. Within weeks, the entire continent plunged into total war."
               ],
               failureMechanism: "Placing faith in elevated commercial trade while ignoring catastrophic weaknesses in institutional dispute resolution caused systemic world war."
@@ -307,30 +304,30 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         quiz: [
           {
             id: "q1-3-1",
-            question: "Given a mission state vector of B_ip = 0.85, B_comm = 0.90, B_igen = 0.75, and B_inst = 0.20, what is the effective structural resilience of the relationship under Liebig's Law of the Minimum?",
+            question: "Given a mission state vector \\(S_{B} = \\vec{4.4}{4.6}{4.0}{1.8}\\), what sets the structural resilience of the relationship under Liebig's Law of the Minimum?",
             options: [
               {
                 id: "opt-a",
-                text: "0.675 (The arithmetic mean of all four bonds)",
+                text: "3.7 (the arithmetic mean of all four bonds)",
                 explanation: "Incorrect. The arithmetic mean is mathematically forbidden in the UDCA because it creates a false impression of stability while hiding the fatal weakness.",
                 correct: false
               },
               {
                 id: "opt-b",
-                text: "0.20 (The minimum bond coordinate: B_inst)",
-                explanation: "Correct. Under Liebig's Law of the Minimum, the relationship ruptures at its weakest link: min(B) = 0.20. The system has an institutional bottleneck and cannot withstand significant exogenous load.",
+                text: "1.8 (the minimum bond: the Institutional-Relational bond, Failing)",
+                explanation: "Correct. Under Liebig's Law of the Minimum, the relationship ruptures at its weakest link: \\(\\min(B) = 1.8\\). The system has an institutional bottleneck and cannot withstand significant exogenous load.",
                 correct: true
               },
               {
                 id: "opt-c",
-                text: "0.90 (The maximum bond coordinate: B_comm)",
-                explanation: "Incorrect. High commercial trade cannot substitute for near-zero institutional durability.",
+                text: "4.6 (the maximum bond: the Communal bond)",
+                explanation: "Incorrect. A strong Communal bond cannot substitute for a Failing Institutional-Relational bond.",
                 correct: false
               },
               {
                 id: "opt-d",
-                text: "1.00 (Normalized baseline)",
-                explanation: "Incorrect. Normalized baselines apply only to pristine, unstressed systems.",
+                text: "5.0 (the top of the scale)",
+                explanation: "Incorrect. The top of the scale is a bound, not a reading of this relationship.",
                 correct: false
               }
             ]
@@ -344,12 +341,17 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         title: "The Chancellery Covenant & The Operator's Custodial Duty",
         estimatedMinutes: 25,
         executiveLede: "The operator of the Unified Deterministic Chancellery Apparatus carries a solemn, non-negotiable custodial duty: to preserve evidentiary truth without partisan spin, political flattery, or retrospective redaction. The Chancellery Covenant defines the ethical and operational boundary separating sovereign statecraft from political theater.",
+        synopsis: [
+          "The operator of the UDCA carries a custodial duty: to preserve evidentiary truth without partisan spin, political flattery or retrospective redaction. The Chancellery Covenant separates sovereign statecraft from political theatre.",
+          "That duty is exercised across seven arenas of sovereign governance: border demarcation and territorial cessions; post-conflict peace accords and DDR; bilateral treaties and state immunity; natural resource sharing and sovereign wealth; constitutional transitions and governance; international arbitration and pre-litigation; and diplomatic transition and mandate handover.",
+          "This chapter sets out the custodial separation of powers, the Non-Redaction Principle that governs every record, and how the seven sectors map onto the desks.",
+        ],
         statutoryNotice: "Custodial Oath: The operator serves the mathematical integrity of the covenant, not the transient political convenience of sitting administrations.",
         learningOutcomes: [
           "Understand the fiduciary distinction between custodial statecraft and partisan advocacy.",
           "Enforce the zero-redaction principle across all mission logs and decision ledgers.",
           "Operate within the air-gapped security perimeter to protect sensitive bilateral assessments.",
-          "Uphold the statutory mandate of James Wesley Ndua in the architecture of sovereign peace."
+          "Map the seven sectors of statecraft onto the desks that serve them."
         ],
         sections: [
           {
@@ -366,15 +368,30 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
             subheading: "Preserving the Historical Record Against Retrospective Revision",
             paragraphs: [
               "One of the most corrosive practices in modern diplomacy is retrospective revisionism: altering past records, classified minutes, or treaty commitments to conceal errors, shift blame, or align with changing domestic political winds.",
-              "The UDCA enforces the Non-Redaction Principle through its browser-local immutable decision ledger (Desk 16) and cryptographic handover seal (Desk 17). Once an operator records a finding, notes a redline breach, or seals a mission state, that record is permanently fixed with an ISO UTC timestamp. The system does not permit the deletion or in-place modification of historical log entries.",
-              "If subsequent intelligence reveals that an earlier assessment was incorrect, the operator must append a new corrective record with a full rationale and fresh evidence. Both the original error and the subsequent correction remain visible in the unbroken chain of custody. This absolute transparency protects the integrity of the state and provides future generations with an untampered historical record."
-            ]
+              "The UDCA enforces the Non-Redaction Principle through the browser-local Decision Log and the cryptographic Handover Seal of the Chancellery Wire. Once an operator records a finding, notes a redline breach, or seals a mission state, that record is permanently fixed with an ISO UTC timestamp. The Decision Log is append-only: a correction is a new entry, never an in-place edit.",
+              "If subsequent evidence reveals that an earlier assessment was incorrect, the operator must append a new corrective record with a full rationale and fresh evidence. Both the original error and the subsequent correction remain visible in the unbroken chain of custody. This absolute transparency protects the integrity of the state and provides future generations with an untampered historical record."
+            ],
+            formulas: [F_SEAL]
+          },
+          {
+            heading: "III. Operationalization Across the Seven Sectors of Statecraft",
+            subheading: "Where the Custodial Duty Is Exercised",
+            paragraphs: [
+              "1. Border Demarcation & Territorial Cessions: transforming volatile disputed lines into cooperative ecological and economic corridors, with resources released through the Conditional Escrow Waterfall (Desk 07).",
+              "2. Post-Conflict Peace Accords & DDR: phasing disarmament and demobilization through verifiable decay horizons and survival tests (Desk 12) rather than arbitrary political deadlines.",
+              "3. Bilateral Treaties & State Immunity: establishing jurisdictional clarity through the dispute forum and an express immunity waiver (Desk 11), without surrender of sovereign dignity.",
+              "4. Natural Resource Sharing & Sovereign Wealth: locking joint-revenue extraction into deterministic escrow tranches and the communal resource floor (Desk 07).",
+              "5. Constitutional Transitions & Governance: detecting Facade Syndrome (Desk 01) and drafting office-continuity provisions (Desk 10) before institutional collapse occurs.",
+              "6. International Arbitration & Pre-Litigation: preparing the pleading heads from the live record (Desk 13) and preserving the evidentiary timeline with hashed, append-only records.",
+              "7. Diplomatic Transition & Mandate Handover: passing a mission to its successors (Desk 17) with an unbroken, hash-verified chain of custody (Desk 18 and the Handover Seal)."
+            ],
+            statutoryRule: "Rule 1.4-A: The sector names the arena; the desks supply the readings. No sector carries its own formula or a parallel store."
           }
         ],
         quiz: [
           {
             id: "q1-4-1",
-            question: "Under the Chancellery Covenant, what is an operator required to do when a sitting political minister requests that a critical rupture warning (R >= 1.20) be lowered to prevent public controversy?",
+            question: "Under the Chancellery Covenant, what is an operator required to do when a sitting political minister requests that a critical rupture warning (\\(R \\ge 60\\), the Critical band) be lowered to prevent public controversy?",
             options: [
               {
                 id: "opt-a",
@@ -411,84 +428,115 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
     number: "02",
     eyebrow: "Module II · Divisional Architecture",
     title: "The 18 Operational Desks & Divisional Cadence",
-    summary: "Comprehensive operational treatise on the four operational divisions of the UDCA, tracing signals from diagnostic intake to final handover sealing.",
+    summary: "The operational rhythm of the 18 desks across the four divisions of the dashboard, tracing one signal chain from assessment and early warning, through engagement and legal architecture, to mission governance and handover.",
     chapters: [
       {
         id: "division-1",
         number: "2.1",
         eyebrow: "Module II · Chapter 2.1",
-        title: "Division I (Desks 01–04): Foundation & Perimeter Security",
+        title: "Division I (Desks 01–04): Assessment and Early Warning",
         estimatedMinutes: 30,
-        executiveLede: "Division I establishes the perimeter of the mission. It classifies the sovereign mandate, activates the moral and physical guardrails of the Sentinel Matrix, quantifies structural asymmetries between parties, and profiles counterpart delegation dynamics.",
-        statutoryNotice: "Statutory Directive: No mission may advance to relational stress diagnostics in Division II until the Sentinel Matrix is armed and counterpart asymmetry is mapped.",
+        executiveLede: "Division I establishes the empirical baseline of tension before any negotiation commences. It scores the four bonds and matches the profile against the documented cases, converts observed warning signs into the Rupture Index, stress-tests the settlement against concurrent shocks, and holds the live theatre beside comparable documented theatres.",
+        synopsis: [
+          "Desk 01 (Diagnostics) scores the four bonds from 1.0 to 5.0 and publishes the mean, the variance, the limiting bond and its band, and the three nearest documented cases by Euclidean distance. Desk 02 (Sentinel Matrix, The Eye of Humanity) records observed tripwires across the four bonds and reads the Rupture Index and its latent traps.",
+          "Desk 03 (Compound Shock) applies several shocks at once, reads the amplified strain and names the first provision to break. Desk 04 (Comparative Mirror) reads two or three documented theatres against one rubric, beside the live vector, as context rather than prescription.",
+          "Every reading Division I publishes travels the same bus to every later desk; nothing downstream is computed from a different source.",
+        ],
+        formulas: [F_LIEBIG, F_RUPTURE],
+        statutoryNotice: "Statutory Directive: Stage Gate 1 (Vector Integrity) holds until all four bonds sit above the 3.0 viable floor, and Stage Gate 2 (Rupture Containment) holds until the rupture index is measured and, at 35 per cent or more, an independent verifier is seated.",
         learningOutcomes: [
-          "Configure Desk 01 to establish mandate parameters, territorial scope, and operational legal constraints.",
-          "Arm Desk 02 (Sentinel Matrix & The Eye of Humanity) to protect fundamental human dignity.",
-          "Execute Euclidean distance modeling on Desk 03 (Asymmetry Matrix) across all four power axes.",
-          "Deploy Desk 04 (Counterpart Intelligence) to map psychological tactics and delegation seating."
+          "Score the four bonds on Desk 01 and read the mean, variance, limiting bond, band and relational standing.",
+          "Record tripwires on Desk 02 and read the Rupture Index, its band and the latent traps.",
+          "Apply concurrent shocks on Desk 03 and identify the first provision to break.",
+          "Use Desk 04 to compare documented theatres without treating resemblance as a forecast."
         ],
         sections: [
           {
-            heading: "I. Desk 01: Sovereign Context & Mandate Classification",
-            subheading: "Establishing the Operational Boundaries of Statecraft",
+            heading: "I. Desk 01: Diagnostics and Pattern Matching",
+            subheading: "The Bond Vector and the Nearest Documented Cases",
             paragraphs: [
-              "Every mission within the UDCA begins at Desk 01 (Sovereign Context). Before a single bond score is calibrated or a negotiation script is deployed, the operator must define the legal, territorial, and historical scope of the mandate. Is this an international bilateral border demarcation, an internal peace accord between sovereign factions, an offshore maritime boundary dispute, or a critical mineral resource covenant?",
-              "Desk 01 binds the mandate to its governing international legal instruments: relevant United Nations conventions, historical bilateral treaties, arbitration compromises, and constitutional frameworks. It also records the official delegation titles, plenary powers, and statutory authorizations of all participating negotiators. This ensures that the mission does not operate in an abstract theoretical vacuum, but remains strictly anchored to valid legal authority."
-            ]
+              "Every mission begins at Desk 01. The analyst scores the Interpersonal, Communal, Intergenerational and Institutional-Relational bonds in steps of 0.1 between 1.0 and 5.0. The desk publishes the mean \\(\\mu_{B}\\) and the population variance, the limiting bond and its band (Failing 1.0 to 2.0, Fragile 2.1 to 3.0, Viable 3.1 to 4.0, Fortified 4.1 to 5.0), the Communal band that sets the track tolerance, and the relational standing.",
+              "The desk also measures the Euclidean distance from the live vector to each of the eight documented cases and ranks the three nearest. It flags Facade Syndrome, superficial harmony masking severe rupture, when the variance exceeds 1.25, the strongest bond is at least 4.0 and the weakest is at most 2.0."
+            ],
+            formulas: [F_STATE_VECTOR, F_MEAN, F_LIEBIG],
+            statutoryRule: "Rule 2.1-A: Preset scores are training figures, not field measurements. A nearest case is a mirror, not a template."
           },
           {
-            heading: "II. Desk 02: Sentinel Matrix & The Eye of Humanity",
-            subheading: "Preserving Human Dignity and Moral Redlines",
+            heading: "II. Desk 02: Sentinel Matrix (The Eye of Humanity)",
+            subheading: "Observed Warning Signs and the Rupture Index",
             paragraphs: [
-              "In high-stakes statecraft, negotiators can become so fixated on abstract geopolitical objectives or financial balances that they lose sight of the physical human beings whose lives are governed by their decisions. Desk 02 (Sentinel Matrix) acts as the moral conscience of the chancellery, known doctrinally as The Eye of Humanity.",
-              "Desk 02 establishes immutable human rights invariants: prohibition of forced population displacement, protection of civilian infrastructure, guarantees of humanitarian passage, and the non-negotiability of bodily integrity. If a proposed concession or treaty term violates these core humanitarian boundaries, the Sentinel Matrix flags an immediate statutory breach that freezes mission advancement.",
-              "Furthermore, Desk 02 houses the technical Sentinel that protects the operator's digital workspace: controlling the single inactivity timer, monitoring the DOM canary for tamper attempts, and managing panic zeroization keys."
-            ]
+              "The Eye of Humanity is the descriptive name of the early-warning desk. The analyst records observed tripwires across the four bonds, sets the observation trend and may add custom indicators with a bond and a severity weight. The desk reads the weighted share present as the Rupture Index, in bands Stable, Guarded, Elevated and Critical at 15, 35 and 60 per cent, and publishes the strain on each bond and any latent traps.",
+              "The index reads what the analyst records; it does not observe the theatre, and it is not surveillance or a prediction."
+            ],
+            formulas: [F_RUPTURE],
+            statutoryRule: "Rule 2.1-B: At a rupture index of 35 per cent or more an independent verifier must be seated before the Rupture Containment gate passes."
           },
           {
-            heading: "III. Desk 03: Asymmetry Matrix",
-            subheading: "Quantifying Power Differentials via Normalized Euclidean Distance",
+            heading: "III. Desk 03: Compound Shock and Desk 04: Comparative Mirror",
+            subheading: "Concurrent Stress and Cross-Theatre Context",
             paragraphs: [
-              "Negotiations between states are rarely conducted between equals. Vast asymmetries in military force, gross domestic product, institutional depth, and informational access constantly shape the diplomatic landscape. Desk 03 quantifies these disparities using a normalized multi-dimensional Euclidean distance model.",
-              "By mapping both parties across four normalized axes (Military Capacity, Economic Leverage, Institutional Durability, and Informational Dominance), Desk 03 computes the exact power asymmetry delta. If the asymmetry is extreme, Desk 03 warns the operator that the stronger party will likely attempt to bypass formal compromise in favor of coercive dictation. The operator must then utilize third-party forums or escrow structures to restore structural balance."
-            ]
-          },
-          {
-            heading: "IV. Desk 04: Counterpart Intelligence & Psychological Profiling",
-            subheading: "Mapping Delegation Dynamics and Seating Rosters",
-            paragraphs: [
-              "A treaty is negotiated not by monolithic state entities, but by living human plenipotentiaries with specific psychological profiles, internal domestic rivalries, and institutional mandates. Desk 04 provides rigorous intelligence mapping of the opposing delegation.",
-              "Desk 04 records lead negotiator psychological profiles, decision-making styles (authoritarian, consultative, legalistic, delay-oriented), and internal delegation factionalism. It also structures the seating roster, mapping counter-tactics to specific counterpart seats. By identifying which counterpart delegates act as hardline ideological anchors and which act as pragmatic bridge-builders, the operator can tailor negotiation inquiry to maximize constructive movement."
+              "Desk 03 applies several shocks at once (currency collapse, a border incident, a leadership succession) and reads the amplified strain, because concurrent shocks compound rather than add. It names the first provision to break. With two or more shocks active, the Structural Covenants gate requires at least two covenants.",
+              "Desk 04 places two or three documented theatres side by side against the same four-bond rubric, optionally plotted beside the live mission vector. Historical resemblance is context; it is never a predicted outcome or a prescription."
             ]
           }
         ],
         quiz: [
           {
             id: "q2-1-1",
-            question: "What is the primary operational purpose of Desk 02 (Sentinel Matrix & The Eye of Humanity)?",
+            question: "What is the operational purpose of Desk 02 (Sentinel Matrix, The Eye of Humanity)?",
             options: [
               {
                 id: "opt-a",
                 text: "To calculate tariff schedules for agricultural goods.",
-                explanation: "Incorrect. Commercial tariff schedules are managed in Division III.",
+                explanation: "Incorrect. No desk computes tariffs.",
                 correct: false
               },
               {
                 id: "opt-b",
-                text: "To enforce non-negotiable moral and humanitarian redlines, ensuring that human dignity and civilian protection are never traded away for political expediency.",
-                explanation: "Correct. Desk 02 anchors the entire system to fundamental human rights, preventing agreements that sacrifice human life or dignity.",
+                text: "To record observed warning signs across the four bonds and read the weighted Rupture Index, its band and the latent traps.",
+                explanation: "Correct. Desk 02 is the early-warning desk: a rule-based reading of the tripwires the analyst records, not surveillance or a prediction.",
                 correct: true
               },
               {
                 id: "opt-c",
                 text: "To track social media sentiment during the negotiations.",
-                explanation: "Incorrect. The UDCA relies on verified structural telemetry, not social media sentiment.",
+                explanation: "Incorrect. The desk reads only what the analyst records; it observes nothing by itself.",
                 correct: false
               },
               {
                 id: "opt-d",
-                text: "To act as an automated speechwriter for delegation press conferences.",
+                text: "To draft press statements for the delegation.",
                 explanation: "Incorrect. The UDCA is an analytical apparatus, not a public relations tool.",
+                correct: false
+              }
+            ]
+          },
+          {
+            id: "q2-1-2",
+            question: "A vector reads 4.6, 4.4, 4.2 and 1.6. Which Division I reading governs what the relationship can carry?",
+            options: [
+              {
+                id: "opt-a",
+                text: "The mean, 3.7, a Contested standing.",
+                explanation: "Incorrect. The mean characterises the theatre but never overrides the limiting bond.",
+                correct: false
+              },
+              {
+                id: "opt-b",
+                text: "The limiting bond, 1.6, in the Failing band.",
+                explanation: "Correct. Under the Liebig minimum the weakest bond sets the ceiling, and a Failing bond trips a critical alert.",
+                correct: true
+              },
+              {
+                id: "opt-c",
+                text: "The strongest bond, 4.6.",
+                explanation: "Incorrect. Strength elsewhere cannot compensate for a failing bond.",
+                correct: false
+              },
+              {
+                id: "opt-d",
+                text: "The nearest documented case.",
+                explanation: "Incorrect. A nearest case is context, not a governing reading.",
                 correct: false
               }
             ]
@@ -499,78 +547,78 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         id: "division-2",
         number: "2.2",
         eyebrow: "Module II · Chapter 2.2",
-        title: "Division II (Desks 05–09): Relational Dynamics & Stress Diagnostics",
+        title: "Division II (Desks 05–09): Diplomatic Engagement",
         estimatedMinutes: 30,
-        executiveLede: "Division II forms the diagnostic engine of the UDCA. It calibrates the four-bond state vector, measures inscribed environmental loads, calculates the mathematical Rupture Index, forecasts temporal decay horizons, and audits historical precedent coordinates.",
-        statutoryNotice: "Diagnostic Axiom: Exogenous load does not rupture a relationship; it merely reveals the pre-existing fragility of the limiting bond.",
+        executiveLede: "Division II carries the assessment into the room. It composes the chancellery memorandum, prepares ordered examination questions for each counterpart, seats the parties and sets resource and escrow terms, keeps the principals' track and the communal track in step, and audits the safeguards owed to each affected party.",
+        synopsis: [
+          "Desk 05 (Briefing Desk) assembles a formal memorandum from the documented case record and the analyst's entries. Desk 06 (Counterpart Prompter) walks a meeting phase by phase with ordered examination questions for each counterpart, without inferring any answer.",
+          "Desk 07 (De-confliction Bench) seats delegations, reads inter-party friction, sets the three resource heads and runs the Conditional Escrow Waterfall. Desk 08 (Track Sequencing) holds Track I within the tolerance the Communal bond allows. Desk 09 (Field Audit) records the stakeholder safeguard checks for each affected party.",
+          "Division II publishes the readings the gates of Division IV will test: the track gap and tolerance, the friction pairs, the escrow release and the resource parity.",
+        ],
+        formulas: [F_TRACK, F_FRICTION],
+        statutoryNotice: "Diagnostic Axiom: an accord signed above the communities it governs looks like peace and behaves like a ceasefire. Stage Gate 3 (Track Synchronization) holds while Track I leads beyond the communal tolerance.",
         learningOutcomes: [
-          "Calibrate the four relational bonds on Desk 05 using empirical diplomatic evidence.",
-          "Quantify domestic and geopolitical stress loads on Desk 06 (Inscribed Stress).",
-          "Compute and interpret the live Rupture Index (R) on Desk 07.",
-          "Model temporal decay horizons (tau) on Desk 08 to determine crisis half-life.",
-          "Audit historical treaties and boundary precedents on Desk 09 (Historical Resonance)."
+          "Compose a chancellery memorandum on Desk 05 from recorded inputs and existing wording.",
+          "Prepare ordered, non-leading examination scripts on Desk 06 without inferring counterpart answers.",
+          "Seat parties, read friction and set resource and escrow terms on Desk 07.",
+          "Apply the communal tolerance rule on Desk 08 and record safeguards on Desk 09."
         ],
         sections: [
           {
-            heading: "I. Desk 05: Bond Architecture & Vector Calibration",
-            subheading: "Translating Qualitative Intelligence into Normalized Coordinates",
+            heading: "I. Desk 05: Briefing Desk and Desk 06: Counterpart Prompter",
+            subheading: "From Record to Meeting Script",
             paragraphs: [
-              "Desk 05 is the bedrock upon which all relational physics in the UDCA operates. It takes qualitative diplomatic intelligence (reports from bilateral meetings, economic indicators, public polls, constitutional legal challenges) and translates them into the four bounded coordinates: B_ip, B_comm, B_igen, and B_inst.",
-              "Each coordinate must be defended with empirical justifications before being inscribed into the MissionEngine bus. Desk 05 prevents 'score inflation' by requiring the operator to satisfy specific evidential criteria before assigning scores above 0.70. Once calibrated, Desk 05 continuously exposes the Liebig bottleneck to the rest of the dashboard."
+              "Desk 05 composes a formal memorandum from a documented case or the analyst's own theatre, problem statement and bond scores, with receiving office, instrument, precedence and handling caveat. The text is assembled deterministically from recorded inputs and existing wording; composition is not dispatch.",
+              "Desk 06 prepares ordered examination questions for each seated counterpart. Nonblank custom-script lines are treated as ordered questions, and counterpart tactics are read from the shared mission notes. When a counterpart stalls, the operator selects the condition and the desk offers the matching follow-up question; it never infers an answer, advances a phase or clears a gate."
             ]
           },
           {
-            heading: "II. Desk 06: Inscribed Stress & Environmental Load",
-            subheading: "Measuring Exogenous Pressures on the Diplomatic Architecture",
+            heading: "II. Desk 07: De-confliction Bench",
+            subheading: "Seating, Friction, Resources and Escrow",
             paragraphs: [
-              "Relationships do not exist in sterile isolation. They are subjected to continuous exogenous pressures: domestic electoral cycles, currency inflation, crop failures, border provocations, cyber intrusions, and third-party imperial interference. Desk 06 measures this total inscribed stress load (L).",
-              "Stress is classified across three operational tiers: Acute Shock (sudden, high-impact events like an armed border skirmish), Chronic Friction (sustained low-level drag like ongoing trade sanctions or hostile media rhetoric), and Latent Vulnerability (unresolved historical grievances that flare up under pressure). Desk 06 sums and weights these loads to determine the total pressure currently bearing down on the relational bonds."
-            ]
+              "The De-confliction Bench seats delegations and reads the friction coefficient of every pair from their tolerance vectors. Named friction pairs feed the contagion coefficient, and a spoiler-coalition warning is raised when two or more pairs are active while the rupture index is 35 or more or the Elite-Pact alert holds.",
+              "The bench also sets the three resource heads (a community restitution trust, a cross-border corridor fund, and joint demarcation and monitoring). A communal share below 30 per cent raises a legitimacy deficit. Its Conditional Escrow Waterfall releases four tranches in order on verified bus readings and freezes at a rupture index of 60 or more."
+            ],
+            formulas: [F_FRICTION, F_ESCROW_CHAIN],
+            statutoryRule: "Rule 2.2-A: Resource and escrow figures are design terms, not commitments. The release conditions are read from the bus and never negotiated at the desk."
           },
           {
-            heading: "III. Desk 07: Rupture Index (R)",
-            subheading: "The Mathematical Fragility Quotient",
+            heading: "III. Desk 08: Track Sequencing and Desk 09: Field Audit",
+            subheading: "Keeping the Tracks in Step and the Affected Parties Heard",
             paragraphs: [
-              "Desk 07 synthesizes the bond coordinates from Desk 05 and the stress load from Desk 06 to calculate the primary fragility indicator of the UDCA: the Rupture Index (R).",
-              "When R < 0.80, the system is in the Stable Zone: the bonds possess sufficient structural capacity to absorb ongoing stress without permanent distortion. When 0.80 <= R < 1.20, the system enters the Warning Zone: micro-fractures begin appearing, and the limiting bond begins undergoing plastic deformation. When R >= 1.20, the system enters Acute Rupture: structural collapse is imminent or already underway, and all discretionary negotiation must halt in favor of emergency stabilization."
-            ]
-          },
-          {
-            heading: "IV. Desk 08: Decay Horizon (tau) & Desk 09: Historical Resonance",
-            subheading: "Temporal Half-Life and Historical Precedent",
-            paragraphs: [
-              "Desk 08 calculates the Decay Horizon (tau), which models the temporal half-life of an unaddressed diplomatic crisis. If a severe rupture warning is ignored, how many days remain before the relationship undergoes irrevocable institutional dissolution? Desk 08 demonstrates that high stress accelerates time: crises that could have been resolved in six months during peace can cause complete collapse in forty-eight hours under acute rupture.",
-              "Desk 09 anchors the assessment to historical precedent. It audits past treaties, boundary demarcations, and prior peace agreements between the two parties, identifying historical cycles of compliance and breach. By understanding where past accords fractured, the operator avoids repeating identical structural mistakes."
-            ]
+              "Desk 08 records the phases completed on the principals' track and the communal track. The tolerated lead is zero phases when the Communal bond is Failing, one when Fragile and two when Viable or Fortified. A lead beyond tolerance raises the Elite-Pact Mirage alert, fails the Track Synchronization gate and holds Escrow Tranche 3.",
+              "Desk 09 records, for each affected party, whether evidence was reviewed, the party heard directly and independent verification recorded. Completion is not certification and never replaces protection obligations."
+            ],
+            formulas: [F_TRACK]
           }
         ],
         quiz: [
           {
             id: "q2-2-1",
-            question: "If Desk 07 indicates a Rupture Index of R = 1.35, what is the mandatory operational protocol for the chancellery operator?",
+            question: "The Communal bond reads 2.6 (Fragile) and Track I leads Track II by two phases. What does the engine do?",
             options: [
               {
                 id: "opt-a",
-                text: "Proceed with normal economic concession trading on Desk 13.",
-                explanation: "Incorrect. In Acute Rupture, trading non-essential concessions while the foundation is fracturing leads to catastrophic collapse.",
+                text: "Nothing; two phases are always tolerated.",
+                explanation: "Incorrect. Two phases are tolerated only when the Communal bond is Viable or Fortified.",
                 correct: false
               },
               {
                 id: "opt-b",
-                text: "Halt discretionary negotiations immediately, activate emergency stabilization protocols, and direct all efforts toward reinforcing the limiting bond.",
-                explanation: "Correct. An index of R >= 1.20 signifies Acute Rupture. Normal statecraft must pause immediately to prevent irreversible covenant failure.",
+                text: "It raises the Elite-Pact Mirage alert, fails the Track Synchronization gate and holds Escrow Tranche 3.",
+                explanation: "Correct. A Fragile Communal bond tolerates a lead of one phase; a lead of two exceeds it.",
                 correct: true
               },
               {
                 id: "opt-c",
-                text: "Recalibrate Desk 05 to raise the bond scores so R drops back below 1.00.",
-                explanation: "Incorrect. Artificially falsifying bond scores to conceal an acute rupture is a severe violation of the Chancellery Covenant.",
+                text: "It lowers the Communal bond automatically.",
+                explanation: "Incorrect. Desks never change another desk's inputs.",
                 correct: false
               },
               {
                 id: "opt-d",
-                text: "Issue an immediate declaration of war against the counterpart.",
-                explanation: "Incorrect. The UDCA is an instrument for preserving sovereign peace and structural integrity, not a mechanism for hasty militarization.",
+                text: "It freezes the whole escrow account.",
+                explanation: "Incorrect. Only a rupture index of 60 or more freezes the account; the track gap holds Tranche 3.",
                 correct: false
               }
             ]
@@ -581,76 +629,77 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         id: "division-3",
         number: "2.3",
         eyebrow: "Module II · Chapter 2.3",
-        title: "Division III (Desks 10–14): Negotiation Tactics, Forum & Fiduciary Escrow",
+        title: "Division III (Desks 10–14): Legal Architecture",
         estimatedMinutes: 35,
-        executiveLede: "Division III governs the tactical workbench of negotiation. It executes non-coercive Socratic inquiry, neutralizes counterpart stalling maneuvers, evaluates arbitral forum fitness, optimizes mutual concession trade-offs, and enforces multi-tranche fiduciary escrow waterfalls.",
-        statutoryNotice: "Operational Requirement: No financial disbursement or territorial concession may be executed without an auditable verification trigger in Desk 14.",
+        executiveLede: "Division III binds the engagement into enforceable law. It drafts continuity provisions that bind offices rather than officeholders, audits draft clauses and chooses the dispute forum, stress-tests the instrument against succession, prepares the litigation checklist and pleading heads, and rehearses the standing objections of the doctrine's critics.",
+        synopsis: [
+          "Desk 10 (Clause Architect) turns each chosen fragility into a covenant of record. Desk 11 (Clause Redliner) reads a draft provision against the doctrine's seven recorded failure modes and carries the Dispute Forum Enforceability Matrix across seven venues.",
+          "Desk 12 (Succession Simulator) tests the instrument against leadership change, funding loss and capture, publishes the survival score and carries the Decay Horizon. Desk 13 (Legal Desk) fills the pleading heads from the bus, adding a provisional-measures head at a rupture of 40 per cent or more. Desk 14 (Adversarial Chamber) rehearses the objections of record.",
+          "Stage Gate 4 (Structural Covenants) and Stage Gate 5 (Succession Durability) are cleared here.",
+        ],
+        formulas: [F_FORUM_E, F_FORUM_F, F_SUCCESSION],
+        statutoryNotice: "Operational Requirement: at a rupture index of 35 per cent or more an office-continuity provision is mandatory, and survival below the 55 per cent Succession Trap holds the Succession Durability gate.",
         learningOutcomes: [
-          "Deploy Desk 10 (Questioning Engine) to conduct structured, non-leading inquiry.",
-          "Identify and counter stalling tactics on Desk 11 (Tactic Countermeasures).",
-          "Score international legal venues on Desk 12 (Forum Fitness & Admissibility).",
-          "Structure balanced value exchanges on Desk 13 (Concession Matrix).",
-          "Design and verify a four-tranche escrow waterfall on Desk 14 (Escrow Mechanics)."
+          "Draft covenants on Desk 10 that bind offices, not officeholders.",
+          "Score dispute venues on Desk 11 from teeth, immunity exposure and pace, with the immunity and seat deductions.",
+          "Read survival, decay and the fracture window on Desk 12.",
+          "Prepare pleading heads on Desk 13 and rehearse the standing objections on Desk 14."
         ],
         sections: [
           {
-            heading: "I. Desk 10: Questioning Engine & Desk 11: Tactic Countermeasures",
-            subheading: "Non-Coercive Elicitation and Countering Bad-Faith Stalling",
+            heading: "I. Desk 10: Clause Architect and Desk 11: Clause Redliner",
+            subheading: "Continuity Provisions and the Dispute Forum",
             paragraphs: [
-              "Desk 10 (Questioning Engine) replaces aggressive cross-examination with disciplined Socratic elicitation. It guides the operator in asking precise, open-ended questions that reveal the counterpart's true operational constraints without triggering defensive hostility. By mapping inquiries to specific seats, Desk 10 ensures that questions are addressed to the officials who possess actual decision-making authority.",
-              "Desk 11 (Tactic Countermeasures) monitors counterpart behavior for bad-faith negotiation tactics: procedural filibustering, artificial delegation turnover, last-minute demands, and selective leaks. When a stall pattern is detected, Desk 11 provides deterministic countermeasures: conditioning continued talks on verified benchmark fulfillment, freezing discretionary concessions, or invoking formal time-bound procedural deadlines."
-            ]
+              "Desk 10 drafts treaty clauses that survive a change of leadership. Each fragility the analyst picks becomes one covenant; the gates count covenants and look for an office-continuity provision. Picking the asymmetric-verification fragility also marks a verifier seated on the bus.",
+              "Desk 11 audits a pasted provision against seven recorded failure modes and offers substitute wording, and carries the Forum Matrix. Each venue's base enforceability combines teeth, exposure to an immunity defence and pace on doctrinal ordinal scales: ICSID 80, PCA 74, LCIA 72, ICC 70, Swiss Arbitration Centre 68, SIAC 66 and ICJ Advisory 46. Fitness deducts 18 while immunity is unaddressed and 8 when the seat lies in a party's territory; enforcement friction is the remainder to 100."
+            ],
+            formulas: [F_FORUM_E, F_FORUM_F],
+            statutoryRule: "Rule 2.3-A: Venue ratings are doctrinal ordinal judgements, not legal advice for a particular filing."
           },
           {
-            heading: "II. Desk 12: Forum Fitness & Admissibility Scoring",
-            subheading: "Selecting the Optimal Venue for Sovereign Dispute Resolution",
+            heading: "II. Desk 12: Succession Simulator",
+            subheading: "Survival Under Leadership Change, and the Decay Horizon",
             paragraphs: [
-              "When disputes arise, the choice of arbitral forum often determines the outcome. Desk 12 evaluates competing dispute resolution venues (such as the International Court of Justice, the Permanent Court of Arbitration, ad-hoc bilateral tribunals, or regional treaty secretariats) across five objective criteria:",
-              "1. Jurisdictional Invariant: Does the venue possess unambiguous, binding jurisdiction recognized by both sovereign states?",
-              "2. Procedural Speed: Can the forum deliver interim protective measures before irreversible physical damage occurs?",
-              "3. Sovereign Immunity Protection: Does the forum respect state assets against commercial seizure or third-party attachment?",
-              "4. Enforcement Mechanism: Are decisions backed by multilateral compliance guarantees or escrow penalties?",
-              "5. Neutrality Index: Is the forum free from political manipulation by external regional powers?",
-              "Desk 12 scores each candidate venue, providing an objective Admissibility Score that prevents parties from being dragged into biased or unenforceable judicial traps."
-            ]
+              "Desk 12 tests the drafted instrument against succession, funding loss and capture. Provisions in force insulate the shocks they guard against; insulated shocks count at a quarter of their severity. The desk publishes the survival score that Stage Gate 5 and Escrow Tranche 4 read, and the Decay Horizon: the decay constant, the stability half-life and the critical fracture window."
+            ],
+            formulas: [F_SUCCESSION, F_DECAY]
           },
           {
-            heading: "III. Desk 13: Concession Matrix & Desk 14: Escrow Waterfall",
-            subheading: "Conservation of Value and Verifiable Tranche Releases",
+            heading: "III. Desk 13: Legal Desk and Desk 14: Adversarial Chamber",
+            subheading: "Pleading Heads and the Critics of Record",
             paragraphs: [
-              "Desk 13 maps and prices all proposed treaty concessions. It prevents the dangerous practice of 'concession unbalancing', where one state yields permanent territorial or military ground in exchange for temporary, revocable commercial favors. Desk 13 ensures that value is conserved and that every concession granted is met with an equivalent, durable return.",
-              "Desk 14 represents the fiduciary pinnacle of Division III: the Escrow Waterfall. Rather than transferring assets, funds, or sovereign rights immediately upon signature, Desk 14 locks the assets into a multi-tranche escrow trust governed by strict mathematical conservation: the sum of all tranches must equal total escrowed assets at all times.",
-              "Tranches are released only upon cryptographic or field-audit proof that milestone conditions have been fully satisfied. If a party breaches a redline or halts compliance, Desk 14 triggers an immediate freeze, protecting sovereign wealth from bad-faith confiscation."
+              "Desk 13 compiles a litigation checklist and fills three standing pleading heads only from the bus: jurisdictional foundation from the dispute forum, substantive breach from the weakest bond, and covenants at risk. At a rupture index of 40 per cent or more it adds a fourth head for provisional measures. A missing input is named as missing.",
+              "Desk 14 rehearses the standing objections to the doctrine and the answers of record, each marked answered, partly conceded or held open. The chamber does not score the instrument."
             ]
           }
         ],
         quiz: [
           {
             id: "q2-3-1",
-            question: "Why does Desk 14 require an Escrow Waterfall with gated tranches instead of an immediate lump-sum transfer upon treaty signature?",
+            question: "A PCA clause is drafted with immunity unaddressed and the seat in one party's capital. What is its venue fitness on Desk 11?",
             options: [
               {
                 id: "opt-a",
-                text: "To allow the bank to earn higher interest on the escrowed capital.",
-                explanation: "Incorrect. The purpose of escrow is relational security and milestone enforcement, not commercial banking profit.",
+                text: "74",
+                explanation: "Incorrect. 74 is the base enforceability before the deductions.",
                 correct: false
               },
               {
                 id: "opt-b",
-                text: "To ensure that assets are released strictly in response to verified compliance benchmarks, maintaining continuous leverage and preventing post-signature defection.",
-                explanation: "Correct. Gated tranches eliminate the moral hazard of bad-faith defection after receiving payment, guaranteeing that compliance is verified at every step.",
+                text: "48",
+                explanation: "Correct. \\(F = \\max(0,\\, 74 - 18 - 8) = 48\\), and enforcement friction is 52.",
                 correct: true
               },
               {
                 id: "opt-c",
-                text: "Because international law prohibits financial transactions larger than one million dollars.",
-                explanation: "Incorrect. There is no such limitation in sovereign transactions.",
+                text: "56",
+                explanation: "Incorrect. Both the immunity and the seat deductions apply.",
                 correct: false
               },
               {
                 id: "opt-d",
-                text: "To give the diplomats time to convert the funds into physical gold.",
-                explanation: "Incorrect. Currency conversions are irrelevant to the structural enforcement purpose of the waterfall.",
+                text: "100",
+                explanation: "Incorrect. No venue reaches 100.",
                 correct: false
               }
             ]
@@ -661,71 +710,78 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         id: "division-4",
         number: "2.4",
         eyebrow: "Module II · Chapter 2.4",
-        title: "Division IV (Desks 15–18): Readiness, Handover & Statutory Dossier",
+        title: "Division IV (Desks 15–18): Mission Governance and Handover",
         estimatedMinutes: 30,
-        executiveLede: "Division IV synthesizes all operational signals into a finalized mission architecture. It audits holistic readiness on Desk 15, maintains the immutable UTC audit trail on Desk 16, executes cryptographic SHA-256 sealing on Desk 17, and binds publication-grade archival packages on Desk 18.",
-        statutoryNotice: "Statutory Mandate: No mission record is legally complete until it is cryptographically sealed and bound into an archival PDF dossier with verified provenance.",
+        executiveLede: "Division IV clears the mission and passes custody on. It audits readiness against the five stage gates and twenty statutory clearances and reads the Dominum Index on Desk 15, seats independent verifiers on Desk 16, tests whether the settlement can stand without the external presence on Desk 17, and binds the staged outputs into a sealed binder on Desk 18.",
+        synopsis: [
+          "Desk 15 (Mission Readiness) reads five stage gates (Vector Integrity, Rupture Containment, Track Synchronization, Structural Covenants and Succession Durability) and itemises them as twenty statutory clearances, Articles 1.1 to 5.4, read from the live chain. Any failed gate locks the mission disposition. The desk also shows the Dominum Index with its proof.",
+          "Desk 16 (Verification Ledger) seats the verifiers and fixes the reporting interval. Desk 17 (Mandate Handover) reads a durability quotient: 80 per cent clears, 60 to 79 is conditional, and each residual dependence on the departing presence costs 7 points. Desk 18 (Mission Binder) compiles the staged documents and mints a SHA-256 apostille over the live signals and tabs.",
+          "Alongside the desks, the Chancellery Wire holds the Signal Inspector, the Decision Log and the Handover Seal, each a view of the same bus.",
+        ],
+        formulas: [F_DOMINUM],
+        statutoryNotice: "Statutory Mandate: no disposition is cleared while any stage gate fails. Sign-off on the desk is a desk record, not institutional approval, and the apostille proves integrity of what was hashed, not truth of its content.",
         learningOutcomes: [
-          "Evaluate holistic mission readiness and the Dominum Index on Desk 15.",
-          "Audit the chronological UTC decision trail on Desk 16 (Decision Log).",
-          "Execute Web Crypto SHA-256 canonical hashing on Desk 17 (Handover Seal).",
-          "Verify divergence alerts and detect retrospective tampering.",
-          "Compile publication-grade archival PDF dossiers on Desk 18."
+          "Read the five stage gates and the twenty statutory clearances on Desk 15.",
+          "Seat verifiers on Desk 16 and explain which gates and tranches respond.",
+          "Read the handover durability quotient on Desk 17.",
+          "Compile and seal the mission binder on Desk 18, and distinguish the apostille from the Handover Seal."
         ],
         sections: [
           {
-            heading: "I. Desk 15: Mission Readiness & Dominum Synthesis",
-            subheading: "The Final Clearance Audit Before Diplomatic Execution",
+            heading: "I. Desk 15: Mission Readiness and the Dominum Index",
+            subheading: "Five Gates, Twenty Clearances",
             paragraphs: [
-              "Desk 15 acts as the comprehensive pre-flight audit for the mission. It interrogates all prior desks to confirm that every statutory clearance gate has been satisfied: Are all four bonds calibrated? Is the Rupture Index in the stable zone? Have all counterpart stalls been neutralized? Are escrow tranches fully funded? Has the Sentinel Matrix certified civilian protections?",
-              "Desk 15 synthesizes these diverse metrics into the holistic Dominum Index (D). If any clearance gate remains red, Desk 15 blocks handover, displaying the precise operational deficiency that must be resolved before the mission can proceed."
+              "Each stage gate decomposes into four articles. Binding clearances decompose their gate exactly; six advisory clearances (vector cohesion within a spread of 1.5, no latent trap active, communal track opened, no open redline flag, mandate handover viability of 60 per cent or more, and an oversight body named) are recorded on the schedule and the attestation but never lock the mission.",
+              "The Dominum Index is shown on the same desk once the bond vector, the escrow release, the succession survival and the rupture index are all on the bus."
+            ],
+            formulas: [F_DOMINUM],
+            statutoryRule: "Rule 2.4-A: The stage gate audit is the sole authority on locks; the clearance schedule only itemises it."
+          },
+          {
+            heading: "II. Desk 16: Verification Ledger and Desk 17: Mandate Handover",
+            subheading: "Independent Verification and Durability Without the Mission",
+            paragraphs: [
+              "Seating an independent verifier on Desk 16 satisfies the Rupture Containment gate while the rupture index is 35 or more, releases the independent-verifier lock and meets the Mobilisation condition of the escrow. Seating records a design choice; it does not appoint anyone.",
+              "Desk 17 tests whether the settlement has taken root locally before the external presence departs. Handover is withheld while any critical test is open, and the successor office is named as the oversight body."
             ]
           },
           {
-            heading: "II. Desk 16: Chronological Decision Log & Desk 17: Handover Seal",
-            subheading: "Cryptographic Tamper-Evidence and the Chain of Custody",
+            heading: "III. Desk 18: Mission Binder and the Chancellery Wire",
+            subheading: "Apostille, Decision Log and Handover Seal",
             paragraphs: [
-              "Desk 16 maintains an immutable, append-only record of every operator decision, redline flag, bond adjustment, and shock test conducted throughout the mission. Every record is stamped with a high-precision ISO UTC timestamp, creating an auditable ledger that cannot be manipulated.",
-              "Desk 17 executes the ultimate technological guarantee of the UDCA: the Handover Seal. When an assessment is finalized, Desk 17 sorts all mission signals, profiles, and ledger entries into normalized canonical JSON and computes a cryptographic SHA-256 digest using the browser's native Web Crypto API.",
-              "If any actor subsequently attempts to alter a single number, name, or covenant term in the local storage or exported file, Desk 17 detects the divergence instantly upon loading, illuminating a red Divergence Warning and identifying the exact modified field. Resealing leaves an immutable break stamp in the ledger, guaranteeing that tampering cannot be hidden."
-            ]
-          },
-          {
-            heading: "III. Desk 18: Mission Dossier & Statutory Export",
-            subheading: "Binding Publication-Grade Archival Packages",
-            paragraphs: [
-              "The final operational step of the UDCA occurs at Desk 18 (Mission Dossier). This desk takes the sealed mission data, analytical charts, mathematical proofs, and statutory attestations, and compiles them into publication-grade, archival PDF packages.",
-              "The exported dossiers adhere to strict diplomatic design invariants: bounded running headers, clear statutory disclaimers, high-legibility typographic hierarchy, and embedded cryptographic digests. These documents serve as the formal instruments of sovereign handover, ready for archival preservation in national registries."
-            ]
+              "Desk 18 compiles the staged outputs into one numbered binder and seals it with a SHA-256 apostille over the canonical JSON of the signals and tabs; the seal is marked superseded if anything changes after sealing.",
+              "The Chancellery Wire carries the Decision Log, an append-only view of the ledger with UTC timestamps, and the Handover Seal, which hashes the active mission and lists the exact parameters that moved when it diverges."
+            ],
+            formulas: [F_SEAL]
           }
         ],
         quiz: [
           {
             id: "q2-4-1",
-            question: "What occurs if an external actor modifies a single bond coordinate inside a previously sealed mission file before loading it back into the UDCA?",
+            question: "What occurs if a bond score inside a sealed mission is changed after the Handover Seal was taken?",
             options: [
               {
                 id: "opt-a",
-                text: "The application crashes and deletes all local session data.",
-                explanation: "Incorrect. The UDCA never erases records upon detecting corruption; it protects data and isolates irregularities.",
+                text: "The application deletes all local session data.",
+                explanation: "Incorrect. The UDCA never erases records on detecting a change; unreadable records are quarantined, not erased.",
                 correct: false
               },
               {
                 id: "opt-b",
-                text: "Desk 17 automatically recalculates the digest and silently accepts the new value.",
-                explanation: "Incorrect. Silently accepting modified data without warning would defeat the entire purpose of tamper evidence.",
+                text: "The seal silently recomputes and accepts the new value.",
+                explanation: "Incorrect. Silent acceptance would defeat the purpose of tamper evidence.",
                 correct: false
               },
               {
                 id: "opt-c",
-                text: "Desk 17 detects the cryptographic divergence immediately, displays a Divergence Warning badge, and reveals the exact fields that were modified.",
-                explanation: "Correct. The Web Crypto SHA-256 canonical digest fails to match the recalculated payload, immediately surfacing the divergence and preserving evidence of tampering.",
+                text: "The recomputed digest no longer matches, a divergence is shown with the exact parameters that moved, and any reseal leaves the break on the Decision Log.",
+                explanation: "Correct. The SHA-256 digest of the canonical state changes with any edit, and the divergence is surfaced, not hidden.",
                 correct: true
               },
               {
                 id: "opt-d",
-                text: "The browser sends an automated alert to the United Nations security server.",
-                explanation: "Incorrect. The UDCA operates strictly browser-local with zero network egress; it never contacts foreign servers.",
+                text: "The browser sends an alert to an external security server.",
+                explanation: "Incorrect. The UDCA is browser-local and contacts no server.",
                 correct: false
               }
             ]

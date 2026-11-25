@@ -71,6 +71,16 @@ export function ruptureIndex(observedShare: number, inscribedLoad: number, trend
   return Math.max(0, Math.min(100, Math.round((nonNegative(observedShare) + nonNegative(inscribedLoad)) * m)));
 }
 
+export type RuptureBandName = "Stable" | "Guarded" | "Elevated" | "Critical";
+
+/** Canonical rupture bands (Sentinel Matrix): Stable below 15, Guarded 15 to 34, Elevated 35 to 59, Critical 60 and above. */
+export const RUPTURE_BANDS = Object.freeze({ guarded: 15, elevated: 35, critical: 60 } as const);
+
+export function ruptureBand(pct: number): RuptureBandName {
+  const r = finiteOr(pct, 0);
+  return r >= RUPTURE_BANDS.critical ? "Critical" : r >= RUPTURE_BANDS.elevated ? "Elevated" : r >= RUPTURE_BANDS.guarded ? "Guarded" : "Stable";
+}
+
 /** Canonical trend multipliers applied to the rupture index. */
 export const TREND_MULT = Object.freeze({ improving: 0.85, static: 1.0, deteriorating: 1.15 } as const);
 
@@ -118,6 +128,16 @@ const TIE_EPSILON = 1e-9;
 
 /** Largest possible Euclidean distance between two four-bond vectors on a 1 to 5 scale. */
 export const MAX_DISTANCE = Math.sqrt(4 * 16);
+
+/**
+ * Inter-party friction coefficient (Desk 07 asymmetry instrument): the Euclidean distance
+ * between two four-bond tolerance vectors over the maximum distance of 8, clamped to 0..1
+ * and rounded to two decimals. A non-finite distance reads as 0.
+ */
+export function frictionCoefficient(a: readonly number[], b: readonly number[]): number {
+  const d = Math.sqrt(a.reduce((n, x, i) => n + (x - (b[i] ?? x)) ** 2, 0)) / MAX_DISTANCE;
+  return Number.isFinite(d) ? Math.round(Math.max(0, Math.min(1, d)) * 100) / 100 : 0;
+}
 
 /**
  * The state-vector reading: mean, population variance, spread, limiting factor
