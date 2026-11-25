@@ -12,10 +12,18 @@ import {
   Scale, 
   ShieldCheck, 
   SlidersHorizontal, 
-  Sparkles 
+  Sparkles,
+  ExternalLink,
+  HelpCircle,
+  FileText,
+  Clock,
+  AlertTriangle,
+  X
 } from "lucide-react";
 import GoldRule from "@/components/GoldRule";
 import { Button } from "@/components/ui/button";
+import ScholarlyFormula, { MathFraction, MathVector } from "./ScholarlyFormula";
+import { ACADEMY_MODULES_PART_1, DetailedAcademyChapter, ChapterQuizQuestion } from "./academyCurriculumPart1";
 
 export interface AcademyChapter {
   id: string;
@@ -324,6 +332,18 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
   const [activeModIdx, setActiveModIdx] = useState(0);
   const [activeChapIdx, setActiveChapIdx] = useState(0);
 
+  // Tier 2 Lecture Modal & Quiz Verification State
+  const [selectedLecture, setSelectedLecture] = useState<DetailedAcademyChapter | null>(null);
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
+  const [verifiedGates, setVerifiedGates] = useState<Record<string, boolean>>({
+    mod1: false,
+    mod2: false,
+    mod3: false,
+    mod4: false,
+    sim: false,
+    covenant: false,
+  });
+
   // Interactive Live Simulator State (Browser-local only)
   const [bIp, setBIp] = useState(3.8);
   const [bComm, setBComm] = useState(2.8);
@@ -461,6 +481,47 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
             {activeChapter.content.map((paragraph, pIdx) => (
               <p key={pIdx}>{paragraph}</p>
             ))}
+          </div>
+
+          {/* Action Trigger: Tier 2 Full Lecture Modal */}
+          <div className="mt-6 pt-4 border-t border-border/40">
+            <Button
+              onClick={() => {
+                const detailedMod = ACADEMY_MODULES_PART_1.find(m => m.id === activeModule.id);
+                const detailedChap = detailedMod?.chapters.find(c => c.id === activeChapter.id);
+                if (detailedChap) {
+                  setSelectedLecture(detailedChap);
+                } else {
+                  setSelectedLecture({
+                    id: activeChapter.id,
+                    number: activeChapter.id,
+                    title: activeChapter.title,
+                    eyebrow: activeModule.eyebrow,
+                    estimatedMinutes: 25,
+                    executiveLede: activeChapter.lede,
+                    statutoryNotice: activeChapter.statutoryNote || "All sovereign covenants must maintain mathematical auditability.",
+                    learningOutcomes: [
+                      "Master the relational invariants of the chapter mandate.",
+                      "Analyze structural statecraft precedents and failure mechanisms.",
+                      "Apply canonical mathematical formulas to live mission diagnostics."
+                    ],
+                    sections: [
+                      {
+                        heading: "Operational Treatise",
+                        paragraphs: activeChapter.content
+                      }
+                    ],
+                    quiz: [],
+                    drillType: activeChapter.drillType
+                  });
+                }
+              }}
+              className="border border-brass bg-brass/20 hover:bg-brass/30 text-primary font-mono text-xs tracking-wider uppercase px-5 py-2.5 flex items-center gap-2"
+            >
+              <BookOpen size={14} className="text-brass" />
+              <span>Open Full Chapter Lecture & Practicum</span>
+              <ChevronRight size={14} />
+            </Button>
           </div>
 
           {/* Canonical Mathematical Formulation */}
@@ -634,6 +695,244 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
               <p className="text-xs text-muted-foreground max-w-lg mx-auto">
                 Having mastered the 5 curriculum modules of the Unified Deterministic Chancellery Apparatus (UDCA), you are authorized to seal this record into the local session registry.
               </p>
+
+          {/* Tier 2: Focus-Optimized Lecture Reading Surface */}
+      {selectedLecture && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 backdrop-blur-md p-3 md:p-6 overflow-y-auto"
+          data-testid="tier-2-lecture-surface"
+        >
+          <div className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-sm border-2 border-brass/60 bg-card p-6 md:p-10 shadow-2xl space-y-8">
+            {/* Modal Header */}
+            <div className="sticky top-0 z-10 -mt-6 -mx-6 md:-mt-10 md:-mx-10 bg-card/95 backdrop-blur-md border-b border-brass/40 px-6 py-4 flex items-center justify-between gap-4">
+              <div className="space-y-0.5">
+                <span className="font-mono text-[10px] text-brass uppercase tracking-widest font-semibold">
+                  {selectedLecture.eyebrow}
+                </span>
+                <h3 className="font-serif text-lg md:text-xl text-primary font-normal truncate max-w-xl">
+                  {selectedLecture.title}
+                </h3>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedLecture(null)}
+                className="shrink-0 border-border/80 hover:border-brass text-xs flex items-center gap-1 font-mono"
+              >
+                <X size={14} />
+                <span>Close Lecture</span>
+              </Button>
+            </div>
+
+            {/* Reading Metadata & Lede */}
+            <div className="space-y-3 pt-2">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground font-mono">
+                <span className="flex items-center gap-1">
+                  <Clock size={13} className="text-brass" /> {selectedLecture.estimatedMinutes} Minute Postgraduate Lecture
+                </span>
+                <span>•</span>
+                <span>Doctoral Relational Jurisprudence</span>
+              </div>
+              <p className="text-base text-foreground leading-relaxed font-sans border-l-2 border-brass pl-4 italic">
+                {selectedLecture.executiveLede}
+              </p>
+            </div>
+
+            {/* Statutory Invariant Banner */}
+            <div className="rounded-sm border border-border/60 bg-background/60 p-4 text-xs text-muted-foreground">
+              <span className="font-mono font-semibold text-primary uppercase text-[10px] tracking-wider block mb-1">
+                Statutory Invariant & Author Designation
+              </span>
+              <p className="leading-relaxed">
+                {selectedLecture.statutoryNotice}
+              </p>
+              <p className="mt-2 text-[10px] text-brass/90 font-mono">
+                Principal Architect: James Wesley Ndua | Sovereign Relational Infrastructure
+              </p>
+            </div>
+
+            {/* Learning Outcomes Checklist */}
+            <div className="rounded-sm border border-border/40 bg-card/40 p-5 space-y-2.5">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-primary font-semibold flex items-center gap-2">
+                <ShieldCheck size={15} className="text-brass" />
+                <span>Doctrinal Learning Outcomes</span>
+              </h4>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                {selectedLecture.learningOutcomes.map((outcome, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-brass font-bold">•</span>
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Lecture Sections */}
+            <div className="space-y-8 pt-2">
+              {selectedLecture.sections.map((section, sIdx) => (
+                <div key={sIdx} className="space-y-4 border-t border-border/40 pt-6">
+                  <div className="space-y-1">
+                    <h4 className="font-serif text-xl text-primary font-normal">
+                      {section.heading}
+                    </h4>
+                    {section.subheading && (
+                      <p className="font-mono text-xs text-brass tracking-wide">
+                        {section.subheading}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-3 text-sm text-foreground/90 leading-relaxed font-sans">
+                    {section.paragraphs.map((p, pIdx) => (
+                      <p key={pIdx}>{p}</p>
+                    ))}
+                  </div>
+
+                  {/* Case Study Block */}
+                  {section.caseStudy && (
+                    <div className="my-5 rounded-sm border border-border/70 bg-background/60 p-5 space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-2">
+                        <span className="font-mono text-[10px] font-semibold uppercase text-accent tracking-wider">
+                          Historical Treaty Autopsy & Precedent Analysis
+                        </span>
+                        <span className="font-mono text-[9px] text-muted-foreground">
+                          {section.caseStudy.jurisdiction}
+                        </span>
+                      </div>
+
+                      <h5 className="font-serif text-base text-primary font-medium">
+                        {section.caseStudy.title}
+                      </h5>
+
+                      <p className="font-mono text-xs text-brass">
+                        Precedent: {section.caseStudy.precedent}
+                      </p>
+
+                      <div className="space-y-2 text-xs text-muted-foreground leading-relaxed">
+                        {section.caseStudy.analysis.map((item, aIdx) => (
+                          <p key={aIdx}>{item}</p>
+                        ))}
+                      </div>
+
+                      <div className="border-t border-border/40 pt-2 text-xs font-mono text-destructive/90">
+                        <span className="font-bold">Failure Mechanism: </span>
+                        {section.caseStudy.failureMechanism}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Statutory Rule */}
+                  {section.statutoryRule && (
+                    <div className="border-l-2 border-accent bg-accent/5 p-3 font-mono text-xs text-accent">
+                      {section.statutoryRule}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Diagnostic Comprehension Quiz */}
+            {selectedLecture.quiz.length > 0 && (
+              <div className="mt-10 border-t-2 border-brass/40 pt-8 space-y-6">
+                <div className="flex items-center gap-2">
+                  <HelpCircle size={18} className="text-brass" />
+                  <h4 className="font-serif text-lg text-primary">
+                    Diagnostic Comprehension & Doctrinal Verification
+                  </h4>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Complete these evaluation checks to verify your understanding of the chapter invariants and illuminate your prerequisite attestation matrix.
+                </p>
+
+                <div className="space-y-6">
+                  {selectedLecture.quiz.map((q, qIdx) => {
+                    const selectedOptId = quizAnswers[q.id];
+                    const selectedOpt = q.options.find(o => o.id === selectedOptId);
+
+                    return (
+                      <div key={qIdx} className="rounded-sm border border-border/60 bg-background/50 p-5 space-y-3">
+                        <p className="font-sans font-medium text-sm text-foreground">
+                          {qIdx + 1}. {q.question}
+                        </p>
+
+                        <div className="space-y-2">
+                          {q.options.map((opt) => {
+                            const isSelected = selectedOptId === opt.id;
+                            return (
+                              <button
+                                key={opt.id}
+                                type="button"
+                                onClick={() => {
+                                  setQuizAnswers(prev => ({ ...prev, [q.id]: opt.id }));
+                                  if (opt.correct) {
+                                    if (selectedLecture.id.startsWith("1.")) {
+                                      setVerifiedGates(g => ({ ...g, mod1: true }));
+                                    } else if (selectedLecture.id.startsWith("2.")) {
+                                      setVerifiedGates(g => ({ ...g, mod2: true }));
+                                    }
+                                  }
+                                }}
+                                className={`w-full text-left p-3 rounded-sm border text-xs transition-all flex items-start gap-2 ${
+                                  isSelected
+                                    ? opt.correct
+                                      ? "border-emerald-500/60 bg-emerald-500/10 text-emerald-300 font-medium"
+                                      : "border-destructive/60 bg-destructive/10 text-destructive-foreground font-medium"
+                                    : "border-border/50 bg-card hover:border-brass/50 text-muted-foreground"
+                                }`}
+                              >
+                                <span className="font-mono font-bold uppercase shrink-0">
+                                  {opt.id.slice(-1)}.
+                                </span>
+                                <span>{opt.text}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Doctrinal Feedback */}
+                        {selectedOpt && (
+                          <div className={`mt-3 p-3 rounded-sm border text-xs leading-relaxed ${
+                            selectedOpt.correct
+                              ? "border-emerald-500/40 bg-emerald-500/5 text-emerald-300"
+                              : "border-destructive/40 bg-destructive/5 text-destructive/90"
+                          }`}>
+                            <span className="font-mono font-bold block mb-1">
+                              {selectedOpt.correct ? "✓ DOCTRINAL VALIDATION CONFIRMED" : "✗ REJECTED BY DOCTRINAL INVARIANT"}
+                            </span>
+                            <p>{selectedOpt.explanation}</p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Lecture Footer Navigation */}
+            <div className="border-t border-border/60 pt-6 flex flex-wrap items-center justify-between gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedLecture(null)}
+                className="border-border/70 text-xs font-mono"
+              >
+                ← Return to Syllabus Overview
+              </Button>
+
+              <Button
+                size="sm"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="border border-brass/50 bg-brass/20 hover:bg-brass/30 text-primary text-xs font-mono"
+              >
+                Back to Top of Lecture ↑
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
               <div className="pt-2">
                 {attested ? (
