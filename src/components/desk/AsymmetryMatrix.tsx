@@ -1,13 +1,11 @@
 import { useMemo, useState } from "react";
-import { useEngine, usePublish, VIABLE_FLOOR } from "./engine";
+import { frictionCoefficient, useEngine, usePublish, VIABLE_FLOOR } from "./engine";
 import FormulaProof from "./FormulaProof";
 import { asymmetryProof } from "./formulaProofs";
 import { Button } from "@/components/ui/button";
 
 const BONDS = ["Interpersonal", "Communal", "Intergenerational", "Institutional-Relational"] as const;
 const SHORT = ["Inter.", "Comm.", "Gen.", "Inst."];
-/** Largest possible distance between two four-bond tolerance vectors on the 1.0 to 5.0 scale. */
-const MAX_DIST = Math.sqrt(4 * 16);
 
 type Party = { id: string; label: string; bond: number; /** Fixed tolerance vector for inscribed parties. */ tol?: number[]; custom?: boolean };
 
@@ -32,12 +30,8 @@ export default function AsymmetryMatrix({ parties }: { parties: Party[] }) {
     setTol((t) => ({ ...t, [p.id]: (t[p.id] ?? defaultTol(p)).map((x, j) => (j === i ? Math.max(1, Math.min(5, Math.round(v * 10) / 10)) : x)) }));
   };
 
-  const coeff = (a: Party, b: Party) => {
-    const va = vec(a);
-    const vb = vec(b);
-    const d = Math.sqrt(va.reduce((n, x, i) => n + (x - (vb[i] ?? x)) ** 2, 0)) / MAX_DIST;
-    return Number.isFinite(d) ? Math.round(Math.max(0, Math.min(1, d)) * 100) / 100 : 0;
-  };
+  // The coefficient is the engine's own, so the Academy and this desk cannot disagree.
+  const coeff = (a: Party, b: Party) => frictionCoefficient(vec(a), vec(b));
 
   const limIdx = Math.max(0, BONDS.findIndex((b) => b === signals.weakestBond));
   const liveLim = signals.weakestScore ?? (signals.bonds ? [signals.bonds.interpersonal, signals.bonds.communal, signals.bonds.intergenerational, signals.bonds.institutional][limIdx] : undefined);

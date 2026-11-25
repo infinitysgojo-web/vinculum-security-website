@@ -3,7 +3,7 @@ import { useTheatreSeed } from "./theatres";
 import { DOMAINS } from "@/content/cases";
 import DeskOutput, { field, label, panel } from "./DeskOutput";
 import { useMission } from "./mission";
-import { usePublish, useEngine, TREND_MULT, inscribedRuptureLoad, ruptureIndex } from "./engine";
+import { usePublish, useEngine, TREND_MULT, inscribedRuptureLoad, ruptureIndex, ruptureBand, type RuptureBandName } from "./engine";
 import SyncPanel from "./SyncPanel";
 import FormulaProof from "./FormulaProof";
 import { sentinelRuptureProof } from "./formulaProofs";
@@ -48,11 +48,17 @@ const TREND = [
   { id: "improving", label: "Improving (signs cleared this quarter)", mult: TREND_MULT.improving, note: "Rupture velocity is falling; verify the clearance independently before relaxing." },
 ] as const;
 
+const BAND_ADVICE: Record<RuptureBandName, string> = {
+  Critical: "Convene principals and verifier within 14 days; activate continuity provisions.",
+  Elevated: "Open a protected channel on the weakest bond and schedule independent verification.",
+  Guarded: "Monitor monthly; document handovers and confirm community standing.",
+  Stable: "Maintain quarterly review; no immediate intervention indicated.",
+};
+
+/** Band thresholds live in the engine (ruptureBand), so the Academy and this desk agree. */
 function band(pct: number) {
-  if (pct >= 60) return { name: "Critical", advice: "Convene principals and verifier within 14 days; activate continuity provisions." };
-  if (pct >= 35) return { name: "Elevated", advice: "Open a protected channel on the weakest bond and schedule independent verification." };
-  if (pct >= 15) return { name: "Guarded", advice: "Monitor monthly; document handovers and confirm community standing." };
-  return { name: "Stable", advice: "Maintain quarterly review; no immediate intervention indicated." };
+  const name = ruptureBand(pct);
+  return { name, advice: BAND_ADVICE[name] };
 }
 
 type Custom = { id: string; bond: number; text: string; w: number };
