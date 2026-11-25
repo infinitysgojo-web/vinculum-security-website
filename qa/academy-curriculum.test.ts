@@ -9,6 +9,7 @@ import * as instruments from "../src/components/desk/instruments";
 import * as proofs from "../src/components/desk/formulaProofs";
 import * as seal from "../src/components/desk/handoverSeal";
 import * as registry from "../src/components/desk/registry";
+import { CASES } from "../src/content/cases";
 import { ACADEMY_CURRICULUM, QUIZ_GATES, EXPANDED_MODULES, chapterProseWords, gateSatisfied, readingMinutes } from "../src/components/mode/academyCurriculum";
 import * as attest from "../src/components/mode/academyAttestation";
 import * as inst from "../src/components/mode/academyInstruments";
@@ -401,6 +402,35 @@ describe("lecture figures agree with the engine", () => {
     expect([(Math.LN2 / 0.027).toFixed(1), instruments.decayHorizon(v(3.4, 3.2, 3.1, 2.4), 26, 28, 30).halfLifeDays!.toFixed(1)]).toEqual(["25.7", "25.7"]);
     expect([instruments.decayHorizon(v(3, 3, 3, 3), 46.5, 100, 30).halfLifeDays!.toFixed(1), instruments.decayHorizon(v(3, 3, 3, 3), 46.5, 0, 30).halfLifeDays!.toFixed(1)]).toEqual(["9.5", "29.8"]);
     has("102.7 days"); has("19.1 days"); has("116.8"); has("46.2"); has("1.75");
+  });
+
+  test("Chapter 4.3 distances, resonance floors, metric comparison, inscribed bounds and veto", () => {
+    const f = engine.frictionCoefficient;
+    const alpha = engine.distanceTable([3.8, 1.9, 3.2, 3.0]);
+    const ranked = alpha.filter((r) => r.rank).sort((a, b) => a.rank! - b.rank!).map((r) => [r.shortTitle, r.distance.toFixed(3), r.resonance]);
+    expect(ranked).toEqual([["Kenya", "1.221", 84.7], ["Colombia", "1.300", 83.8], ["Rwanda", "2.071", 74.1]]);
+    expect(engine.rankCases([3.8, 1.9, 3.2, 3.0]).map((m) => m.resonance)).toEqual([85, 84, 74]);
+    const beta = engine.distanceTable([3.4, 3.2, 3.1, 2.4]).filter((r) => r.rank).sort((a, b) => a.rank! - b.rank!).map((r) => [r.shortTitle, r.distance.toFixed(3), r.resonance]);
+    expect(beta).toEqual([["Liberia", "0.985", 87.7], ["Rwanda", "1.253", 84.3], ["South Africa", "1.253", 84.3]]);
+    const floors = Object.fromEntries(CASES.map((c) => [c.shortTitle, Math.round((1 - Math.sqrt(c.scores.reduce((a, x) => a + Math.max(x - 1, 5 - x) ** 2, 0)) / 8) * 1000) / 10]));
+    expect(floors).toEqual({ "Northern Ireland": 22.9, Colombia: 36.3, Cambodia: 25, Liberia: 36.3, Rwanda: 36.3, Kenya: 30.4, "South Africa": 36.3, "Tuvalu and Kiribati": 36.3 });
+    const L = (a: number[], b: number[], p: number) => (p === Infinity ? Math.max(...a.map((x, i) => Math.abs(x - b[i]))) : a.reduce((s2, x, i) => s2 + Math.abs(x - b[i]) ** p, 0) ** (1 / p));
+    expect([L([5, 1, 3, 3], [1, 5, 3, 3], 1), L([5, 1, 3, 3], [1, 5, 3, 3], 2).toFixed(2), L([5, 1, 3, 3], [1, 5, 3, 3], Infinity)]).toEqual([8, "5.66", 4]);
+    expect([L([4, 4, 4, 4], [3, 3, 3, 3], 1), L([4, 4, 4, 4], [3, 3, 3, 3], 2), L([4, 4, 4, 4], [3, 3, 3, 3], Infinity), f([4, 4, 4, 4], [3, 3, 3, 3])]).toEqual([4, 2, 1, 0.25]);
+    expect([f([4, 3, 3, 3], [3, 3, 3, 3]), f([3, 3, 3, 3], [3.5, 3.5, 3, 3])]).toEqual([0.13, 0.09]);
+    const tol = (lev: number, vul: number, veto: boolean, lim: number) => [0, 1, 2, 3].map((i) => Math.min(5, Math.max(1, Math.round((3 + 0.25 * (lev - vul) + (veto && i === lim ? 1 : 0)) * 10) / 10)));
+    expect([tol(5, 1, true, 1), tol(1, 5, false, 1), tol(1, 5, true, 1)]).toEqual([[4, 5, 4, 4], [2, 2, 2, 2], [2, 3, 2, 2]]);
+    expect([f(tol(5, 1, true, 1), tol(1, 5, false, 1)), f(tol(5, 1, true, 1), tol(1, 5, true, 1)), f(tol(5, 1, false, 1), tol(1, 5, false, 1)), f(tol(4, 2, false, 1), tol(2, 4, false, 1))]).toEqual([0.57, 0.5, 0.5, 0.25]);
+    expect([f([3, 3, 3, 4], [3, 4, 3, 3]), engine.mathReading([3.4, 3.2, 3.1, 2.4]).limitingIndex]).toEqual([0.18, 3]);
+    expect([f([2, 2, 2, 2], [1, 1, 1, 1]), f([5, 1, 1, 1], [1, 1, 1, 1]), f([3, 3, 3, 3], [1, 1, 1, 1])]).toEqual([0.25, 0.5, 0.5]);
+    expect((100 * 0.3 * (0.1 / 4 / 4)).toFixed(2)).toBe("0.19");
+    expect(engine.rankCases([3.8, 1.9, 3.3, 3.0]).slice(0, 2).map((m) => [m.shortTitle, m.distance.toFixed(3)])).toEqual([["Colombia", "1.319"], ["Kenya", "1.319"]]);
+    expect(engine.rankCases([3.8, 1.9, 3.2, 3.1]).slice(0, 2).map((m) => [m.shortTitle, m.distance.toFixed(3)])).toEqual([["Colombia", "1.225"], ["Kenya", "1.225"]]);
+    expect(((1.3 - 1.2206555615733705) / 2).toFixed(3)).toBe("0.040");
+    const bv = { interpersonal: 3.4, communal: 3.2, intergenerational: 3.1, institutional: 2.4 };
+    const un = instruments.decayHorizon(bv, 26, 38, 30), ins = instruments.decayHorizon(bv, 6.5, 38, 30);
+    expect([un.bonds[3].then, (Math.log(2.4) / un.lambda).toFixed(1), ins.bonds[3].then, (Math.log(2.4) / ins.lambda).toFixed(1)]).toEqual([1, "27.4", 1.23, "39.3"]);
+    has("22.9"); has("30.4"); has("0.57"); has("87.7");
   });
 
   test("Capstone Gate 5 worked case", () => {
