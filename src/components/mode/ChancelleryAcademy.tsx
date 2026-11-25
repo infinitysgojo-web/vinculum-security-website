@@ -485,6 +485,7 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
         { id: "lecture-overview", label: "Chapter Overview" },
         ...selectedLecture.sections.map((s, i) => ({ id: `lecture-s-${i}`, label: s.heading, sub: s.subheading })),
         ...(selectedLecture.quiz.length ? [{ id: "lecture-quiz", label: LECTURE_HEADINGS.quiz }] : []),
+        ...(selectedLecture.readingList?.length ? [{ id: "lecture-reading", label: "Sources & Reading List" }] : []),
       ]
     : [];
 
@@ -698,6 +699,31 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
                   </div>
                 )}
 
+                {section.subsections?.map((sub, subIdx) => (
+                  <div key={subIdx} className={`${PROSE} mt-8 space-y-4 text-foreground/90`} data-lecture-subsection={`${sIdx}-${subIdx}`}>
+                    <h5 className="font-serif text-xl font-normal text-primary">{sub.title}</h5>
+                    {sub.paragraphs.map((p, pIdx) => (
+                      <p key={pIdx}><MathText text={p} /></p>
+                    ))}
+                    {sub.callout && (
+                      <aside
+                        className={`rounded-sm border-l-2 p-4 text-[0.95em] leading-relaxed ${sub.callout.kind === "bridge" ? "border-brass bg-brass/5" : "border-accent bg-accent/5"}`}
+                        aria-label={`${sub.callout.kind === "bridge" ? "Bridge to the code" : "Key definition"}: ${sub.callout.title}`}
+                      >
+                        <p className="font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          {sub.callout.kind === "bridge" ? "Bridge to the code" : "Key definition"}
+                        </p>
+                        <p className="mt-1 font-serif text-base text-primary">{sub.callout.title}</p>
+                        <div className="mt-2 space-y-2">
+                          {sub.callout.paragraphs.map((p, cIdx) => (
+                            <p key={cIdx}><MathText text={p} /></p>
+                          ))}
+                        </div>
+                      </aside>
+                    )}
+                  </div>
+                ))}
+
                 {section.statutoryRule && (
                   <div className={`${PROSE} my-5 border-l-2 border-accent bg-accent/5 p-3 font-mono text-xs leading-relaxed text-accent`}>
                     <MathText text={section.statutoryRule} />
@@ -725,6 +751,21 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
                       : "Answer every question correctly to open this module's knowledge-check gate on the capstone attestation. Your answers are kept for this browser session, including when you close the lecture."}
                   </p>
                 </div>
+
+                {selectedLecture.practice && selectedLecture.practice.length > 0 && (
+                  <div className={`${PROSE} mt-6 space-y-5 text-foreground/90`} data-testid="lecture-practice">
+                    <h5 className="font-serif text-xl font-normal text-primary">Practice Problems with Worked Answers</h5>
+                    {selectedLecture.practice.map((pr, prIdx) => (
+                      <div key={prIdx} className="space-y-2 rounded-sm border border-border/60 bg-background/50 p-4 sm:p-5">
+                        <p className="font-medium text-foreground"><span className="font-mono text-brass">Problem {prIdx + 1}. </span><MathText text={pr.problem} /></p>
+                        {pr.solution.map((p, sIdx2) => (
+                          <p key={sIdx2} className="text-muted-foreground"><MathText text={p} /></p>
+                        ))}
+                      </div>
+                    ))}
+                    <h5 className="font-serif text-xl font-normal text-primary">Knowledge-Check Questions</h5>
+                  </div>
+                )}
 
                 <div className={`${PROSE} mt-6 space-y-6`}>
                   {selectedLecture.quiz.map((q, qIdx) => {
@@ -770,6 +811,28 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
                       </fieldset>
                     );
                   })}
+                </div>
+              </section>
+            )}
+
+            {selectedLecture.readingList && selectedLecture.readingList.length > 0 && (
+              <section id="lecture-reading" tabIndex={-1} className="mt-12 scroll-mt-4 border-t border-border/40 pt-6 outline-none" data-testid="lecture-reading-list">
+                <div className={`${PROSE} space-y-4`}>
+                  <h4 className="font-serif text-2xl font-normal text-primary">Sources &amp; Reading List</h4>
+                  <ol className="list-decimal space-y-3 pl-5 text-[0.95em] text-foreground/90">
+                    {selectedLecture.readingList.map((r, rIdx) => (
+                      <li key={rIdx} className="break-words">
+                        {r.url ? (
+                          <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-primary underline decoration-brass/60 underline-offset-2 hover:decoration-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                            {r.citation}
+                          </a>
+                        ) : (
+                          <span className="text-primary">{r.citation}</span>
+                        )}
+                        <span className="block text-muted-foreground">{r.note}</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               </section>
             )}
