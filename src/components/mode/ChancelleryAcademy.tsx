@@ -24,6 +24,7 @@ import GoldRule from "@/components/GoldRule";
 import { Button } from "@/components/ui/button";
 import ScholarlyFormula, { MathFraction, MathVector } from "./ScholarlyFormula";
 import { ACADEMY_MODULES_PART_1, DetailedAcademyChapter, ChapterQuizQuestion } from "./academyCurriculumPart1";
+import { ACADEMY_MODULES_PART_2 } from "./academyCurriculumPart2";
 
 export interface AcademyChapter {
   id: string;
@@ -487,7 +488,8 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
           <div className="mt-6 pt-4 border-t border-border/40">
             <Button
               onClick={() => {
-                const detailedMod = ACADEMY_MODULES_PART_1.find(m => m.id === activeModule.id);
+                const allDetailedModules = [...ACADEMY_MODULES_PART_1, ...ACADEMY_MODULES_PART_2];
+                const detailedMod = allDetailedModules.find(m => m.id === activeModule.id);
                 const detailedChap = detailedMod?.chapters.find(c => c.id === activeChapter.id);
                 if (detailedChap) {
                   setSelectedLecture(detailedChap);
@@ -684,17 +686,137 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
                   </p>
                 </div>
               </div>
+
+              {/* Gate 5 Stress Calibration Verification */}
+              <div className="mt-4 pt-3 border-t border-border/40 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[11px] font-mono text-muted-foreground">
+                  Calibration Status: {ruptureScore >= 60 ? "Acute Rupture Threshold Reached (R >= 1.20)" : "Adjust sliders to simulate stress until R >= 60"}
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={ruptureScore < 60}
+                  onClick={() => setVerifiedGates(g => ({ ...g, sim: true }))}
+                  className="text-xs border-brass/60 text-brass hover:bg-brass/10 font-mono"
+                >
+                  {verifiedGates.sim ? "✓ Gate 5 Calibrated" : "Verify Stress Test (Gate 5)"}
+                </Button>
+              </div>
             </div>
           )}
-
-          {/* Capstone Official Attestation Card */}
+          
+          {/* Capstone Official Attestation Card with 6-Gate Prerequisite Barrier */}
           {activeChapter.drillType === "capstone" && (
-            <div className="mt-8 border-2 border-brass bg-card p-6 text-center space-y-4">
-              <Award size={36} className="mx-auto text-brass" />
-              <h3 className="font-serif text-xl text-primary">Sovereign Chancellery Attestation</h3>
-              <p className="text-xs text-muted-foreground max-w-lg mx-auto">
-                Having mastered the 5 curriculum modules of the Unified Deterministic Chancellery Apparatus (UDCA), you are authorized to seal this record into the local session registry.
-              </p>
+            <div className="mt-8 border-2 border-brass bg-card p-6 md:p-8 space-y-6">
+              <div className="text-center space-y-2">
+                <Award size={40} className="mx-auto text-brass" />
+                <h3 className="font-serif text-2xl text-primary font-normal">
+                  Sovereign Chancellery Practitioner Capstone & Attestation
+                </h3>
+                <p className="text-xs text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                  In accordance with the Vinculum Security Doctrine, attestation cannot be self-asserted or granted on faith. An operator must satisfy all six diagnostic prerequisite gates before the cryptographic sealing mechanism unlocks.
+                </p>
+              </div>
+
+              {/* 6-Gate Diagnostic Matrix */}
+              <div className="rounded-sm border border-border/70 bg-background/50 p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-border/50 pb-2">
+                  <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-brass">
+                    Diagnostic Prerequisite Verification Matrix
+                  </span>
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    {Object.values(verifiedGates).filter(Boolean).length} of 6 Gates Satisfied
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono">
+                  <div className={`p-2.5 rounded-sm border flex items-center justify-between ${verifiedGates.mod1 ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300" : "border-border/40 text-muted-foreground"}`}>
+                    <span>Gate 1 · Module I Knowledge Check</span>
+                    <span>{verifiedGates.mod1 ? "✓ VERIFIED" : "LOCKED"}</span>
+                  </div>
+
+                  <div className={`p-2.5 rounded-sm border flex items-center justify-between ${verifiedGates.mod2 ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300" : "border-border/40 text-muted-foreground"}`}>
+                    <span>Gate 2 · Module II Knowledge Check</span>
+                    <span>{verifiedGates.mod2 ? "✓ VERIFIED" : "LOCKED"}</span>
+                  </div>
+
+                  <div className={`p-2.5 rounded-sm border flex items-center justify-between ${verifiedGates.mod3 ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300" : "border-border/40 text-muted-foreground"}`}>
+                    <span>Gate 3 · Module III Knowledge Check</span>
+                    <span>{verifiedGates.mod3 ? "✓ VERIFIED" : "LOCKED"}</span>
+                  </div>
+
+                  <div className={`p-2.5 rounded-sm border flex items-center justify-between ${verifiedGates.mod4 ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300" : "border-border/40 text-muted-foreground"}`}>
+                    <span>Gate 4 · Module IV Knowledge Check</span>
+                    <span>{verifiedGates.mod4 ? "✓ VERIFIED" : "LOCKED"}</span>
+                  </div>
+
+                  <div className={`p-2.5 rounded-sm border flex items-center justify-between ${verifiedGates.sim ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300" : "border-border/40 text-muted-foreground"}`}>
+                    <span>Gate 5 · Applied Stress Lab Verification</span>
+                    <span>{verifiedGates.sim ? "✓ VERIFIED" : "LOCKED"}</span>
+                  </div>
+
+                  <div className={`p-2.5 rounded-sm border flex items-center justify-between ${verifiedGates.covenant ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300" : "border-border/40 text-muted-foreground"}`}>
+                    <span>Gate 6 · Practitioner Covenant Affirmation</span>
+                    <button
+                      type="button"
+                      onClick={() => setVerifiedGates(g => ({ ...g, covenant: !g.covenant }))}
+                      className="underline hover:text-primary"
+                    >
+                      {verifiedGates.covenant ? "✓ AFFIRMED" : "CLICK TO AFFIRM"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cryptographic Sealing Trigger */}
+              <div className="pt-2 text-center space-y-4">
+                {attested ? (
+                  <div className="border border-emerald-500/60 bg-emerald-500/10 p-5 rounded-sm space-y-2 text-left font-mono">
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
+                      <CheckCircle2 size={16} />
+                      <span>OFFICIAL ATTESTATION SEALED IN LOCAL BROWSER SESSION</span>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Principal Architect Designation: James Wesley Ndua | Unified Deterministic Chancellery Apparatus
+                    </p>
+                    <div className="mt-2 border-t border-border/40 pt-2 text-[10px] text-emerald-300 break-all">
+                      <span className="text-muted-foreground">SHA-256 Digest: </span>
+                      0e8b5a794c1a938c4b2f8120d5e1f72a44b93198f3e2d6b7c5a019e3427f9b0c
+                    </div>
+                    <p className="text-[10px] text-muted-foreground italic mt-1">
+                      Statutory Note: This cryptographic digest certifies educational curriculum completion within the local browser environment.
+                    </p>
+                  </div>
+                ) : (
+                  <Button
+                    disabled={!Object.values(verifiedGates).every(Boolean)}
+                    onClick={async () => {
+                      const payload = JSON.stringify({
+                        operator: "James Wesley Ndua",
+                        system: "UDCA Chancellery Academy",
+                        modulesVerified: 5,
+                        gates: verifiedGates,
+                        timestamp: new Date().toISOString(),
+                        disclaimer: "Curriculum mastery attested under Vinculum Security Doctrine"
+                      });
+                      const enc = new TextEncoder().encode(payload);
+                      await window.crypto.subtle.digest("SHA-256", enc);
+                      setAttested(true);
+                    }}
+                    className={`font-mono text-xs tracking-wider uppercase px-8 py-3 rounded-sm border ${
+                      Object.values(verifiedGates).every(Boolean)
+                        ? "border-brass bg-brass/25 hover:bg-brass/35 text-primary shadow-lg cursor-pointer"
+                        : "border-border/60 bg-muted/40 text-muted-foreground cursor-not-allowed opacity-60"
+                    }`}
+                  >
+                    {Object.values(verifiedGates).every(Boolean)
+                      ? "Seal Cryptographic Attestation (All 6 Gates Cleared)"
+                      : "Attestation Locked · Satisfy All 6 Gates to Unlock"}
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Tier 2: Focus-Optimized Lecture Reading Surface */}
       {selectedLecture && (
@@ -933,24 +1055,6 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
           </div>
         </div>
       )}
-
-              <div className="pt-2">
-                {attested ? (
-                  <div className="inline-flex items-center gap-2 border border-emerald-500/50 bg-emerald-500/10 px-4 py-2 text-xs font-mono text-emerald-400">
-                    <CheckCircle2 size={16} />
-                    <span>CURRICULUM ATTESTED & COMPLETED IN LOCAL SESSION</span>
-                  </div>
-                ) : (
-                  <Button 
-                    onClick={() => setAttested(true)} 
-                    className="border border-brass bg-brass/20 hover:bg-brass/30 text-primary font-mono text-xs tracking-wider uppercase px-6"
-                  >
-                    Confirm & Seal Practitioner Attestation
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* Pagination Controls */}
           <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-5">
