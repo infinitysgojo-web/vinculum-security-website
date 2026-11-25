@@ -32,7 +32,6 @@ export const CHAPTER_4_1: DetailedAcademyChapter = {
     "The index is read in four bands: Stable below 15, Guarded from 15 to 34, Elevated from 35 to 59 and Critical at 60 and above. The bands carry consequences on other desks. At 35 an independent verifier must be seated and an office-continuity covenant drafted; at 40 the Legal Desk drafts a provisional-measures head; at 60 the Conditional Escrow Waterfall freezes every disbursement.",
     "The lecture opens with the Arusha Accords of 1993, read as a register of tripwires that filled in plain view, then derives the index from its register, proves its step granularity, places it on the desks, and closes with the failure modes that make an analyst misread it.",
   ],
-  formulas: [F_RUPTURE],
   statutoryNotice:
     "Canonical Rule (Desk 02): \\(R = \\min(100,\\, \\round((\\frac{100\\, \\sigma}{W} + I) \\times \\tau))\\). The index is a rule applied to what the analyst recorded; it does not observe the theatre and it predicts nothing.",
   learningOutcomes: [
@@ -193,7 +192,6 @@ export const CHAPTER_4_2: DetailedAcademyChapter = {
     "The stability half-life \\(t_{1/2} = \\frac{\\ln 2}{\\lambda}\\) states how many days it would take for a bond to lose half its strength if nothing were done. The critical fracture window states when the mean bond would reach the 2.0 fracture level. When the projected mean falls below 2.0 within the horizon, a change of leadership risks acute covenant failure.",
     "These are not forecasts. They are the arithmetic consequence of a declared law applied to declared inputs. The lecture reads the Oslo interim period of 1993 to 1999 as a settlement whose deferred core decayed while the clock ran, then derives the law and places it on the desks.",
   ],
-  formulas: [F_DECAY, F_HALF_LIFE, F_PRESERVED],
   statutoryNotice:
     "Canonical Rule (Desk 12): \\(\\lambda = \\frac{\\max(0,\\, U + R)}{2000}\\) per day; \\(t_{1/2} = \\frac{\\ln 2}{\\lambda}\\); \\(B_{i}(t) = \\max(1.0,\\, B_{i}(0)\\, e^{-\\lambda t})\\). Decay and fracture figures are rules applied to the inputs, not forecasts.",
   learningOutcomes: [
@@ -347,7 +345,6 @@ export const CHAPTER_4_3: DetailedAcademyChapter = {
     "On Desk 07 each party carries a tolerance vector, and the friction coefficient of a pair is the distance between their vectors divided by 8, rounded to two decimals. The largest pairwise coefficient is published as the party friction reading, and the veto holder is the party whose tolerance on the limiting bond most exceeds the live limiting score. The engine attaches no breach threshold to the coefficient; it tells the operator where third-party guarantees or neutral holdbacks are needed.",
     "The axes are the four bonds, not military, economic or informational power. The lecture reads the Indus Waters Treaty of 1960 as an instrument that answered a stark geographic asymmetry with a neutral guarantor and a graded dispute ladder.",
   ],
-  formulas: [F_CASE_DISTANCE, F_FRICTION],
   statutoryNotice:
     "Canonical Rule: distances in the four-bond space are normalised by \\(8 = \\sqrt{4 \\times 16}\\). Asymmetry proofs use the normalised Euclidean distance of actual inputs and never invented party coordinates.",
   learningOutcomes: [
@@ -430,7 +427,7 @@ export const CHAPTER_4_3: DetailedAcademyChapter = {
         "Failure mode, the averaged gap. An analyst reports that two parties are close because the mean of their tolerance vectors is the same. Two vectors of 5, 1, 3 and 3 and of 1, 5, 3 and 3 have the same mean and stand about 5.66 apart, a coefficient of 0.71. Asymmetry lives in the components, not the average, and the countermeasure is the bond-by-bond gap table that the asymmetry instrument draws beside the coefficient.",
       ],
       statutoryRule:
-        "Rule 4.3-D: Asymmetry proofs use the normalised Euclidean distance of actual inputs and never invented party coordinates.",
+        "Rule 4.3-D: Every asymmetry reading is computed from the tolerance vectors the parties actually stated. A coordinate supplied by the analyst to complete a proof is a breach of the record, not an estimate.",
     },
     {
       heading: H.instrument,

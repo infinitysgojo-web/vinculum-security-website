@@ -21,12 +21,12 @@ describe("Security Hardening Batch 3: Measures 66 to 100", () => {
     const result = scrubExportPayload(rawDossier);
 
     expect(result.data.theatre).toBe("Strait of Hormuz");
-    expect((result.data as any).producer).toBeUndefined();
-    expect((result.data as any).creator).toBeUndefined();
-    expect((result.data as any)._internalId).toBeUndefined();
-    expect((result.data.signals as any).domId).toBeUndefined();
-    expect((result.data.signals.bonds as any)._debug).toBeUndefined();
-    expect((result.data.decisions[0] as any)._transientToken).toBeUndefined();
+    expect((result.data as Record<string, unknown>).producer).toBeUndefined();
+    expect((result.data as Record<string, unknown>).creator).toBeUndefined();
+    expect((result.data as Record<string, unknown>)._internalId).toBeUndefined();
+    expect((result.data.signals as Record<string, unknown>).domId).toBeUndefined();
+    expect((result.data.signals.bonds as Record<string, unknown>)._debug).toBeUndefined();
+    expect((result.data.decisions[0] as Record<string, unknown>)._transientToken).toBeUndefined();
     expect(result.scrubbedKeysCount).toBe(6);
     expect(Object.isFrozen(result.data)).toBe(true);
   });
@@ -47,7 +47,7 @@ describe("Security Hardening Batch 3: Measures 66 to 100", () => {
     expect(Object.isFrozen(OPERATIONAL_SECURITY_POLICY)).toBe(true);
 
     expect(() => {
-      (OPERATIONAL_SECURITY_POLICY as any).zeroEgress = false;
+      (OPERATIONAL_SECURITY_POLICY as Record<string, unknown>).zeroEgress = false;
     }).toThrow();
   });
 });

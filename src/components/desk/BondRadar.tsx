@@ -9,11 +9,24 @@ export default function BondRadar({
   scores,
   size = 260,
   caption,
+  variant = "default",
+  highlight,
+  ghost,
 }: {
   scores: [number, number, number, number];
   size?: number;
   caption?: string;
+  /**
+   * "stacked" lays the radar above its readings at every width and lets the SVG scale to
+   * its container (for narrow hosts such as the Academy reader). The default is unchanged.
+   */
+  variant?: "default" | "stacked";
+  /** Index of a bond to mark as limiting on the radar (stacked variant only). */
+  highlight?: number;
+  /** A faint earlier vector drawn behind the live one (stacked variant only). */
+  ghost?: [number, number, number, number];
 }) {
+  const stacked = variant === "stacked";
   const [inspected, setInspected] = useState<number | null>(null);
   const c = size / 2;
   const r = size / 2 - 42;
@@ -42,8 +55,8 @@ export default function BondRadar({
       <p className="text-[10px] uppercase tracking-[0.22em] font-semibold text-primary/70 mb-4">
         {caption ?? "Four-bond radar and balance gauge"}
       </p>
-      <div className="flex flex-col lg:flex-row items-center gap-6">
-        <svg width={size} height={size} className="max-w-full shrink-0 drop-shadow-sm" viewBox={`0 0 ${size} ${size}`} role="group" aria-label="Four bond radar">
+      <div className={stacked ? "flex flex-col items-center gap-5" : "flex flex-col lg:flex-row items-center gap-6"}>
+        <svg width={stacked ? "100%" : size} height={stacked ? undefined : size} className={stacked ? "h-auto w-full max-w-[320px] drop-shadow-sm" : "max-w-full shrink-0 drop-shadow-sm"} viewBox={`0 0 ${size} ${size}`} role="group" aria-label="Four bond radar">
           <defs>
             <radialGradient id="radar-glow" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.32" />
@@ -65,16 +78,19 @@ export default function BondRadar({
             const [x, y] = pt(i, 5);
             return <line key={i} x1={c} y1={c} x2={x} y2={y} stroke="hsl(var(--brass))" strokeOpacity={0.3} strokeWidth={1} />;
           })}
+          {stacked && ghost && <polygon points={ghost.map((v, i) => pt(i, v).join(",")).join(" ")} fill="none" stroke="hsl(var(--muted-foreground))" strokeOpacity={0.55} strokeDasharray="4 3" strokeWidth={1.2} data-testid="radar-ghost" />}
+          {stacked && <text x={c + 3} y={pt(0, 3)[1] - 3} fontSize={8} fill="hsl(var(--brass))" data-testid="radar-floor-label">3.0 floor</text>}
           <polygon points={poly} fill="url(#radar-glow)" stroke="hsl(var(--accent))" strokeWidth={2.2} className="transition-all duration-300" />
           {scores.map((v, i) => {
             const [x, y] = pt(i, v);
             return <g key={i} role="button" tabIndex={0} aria-label={`${BONDS[i]} bond: ${v} of 5`} aria-pressed={inspected === i}
               className="cursor-pointer outline-none group" onPointerEnter={() => setInspected(i)} onFocus={() => setInspected(i)} onClick={() => setInspected(i)}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setInspected(i); } }}>
-              <title>{BONDS[i]}: {v} / 5</title>
+              <title>{`${BONDS[i]}: ${v} / 5`}</title>
               <circle cx={x} cy={y} r={14} fill="transparent" />
               {inspected === i && <circle cx={x} cy={y} r={9} fill="none" stroke="hsl(var(--accent))" strokeOpacity={0.5} strokeWidth={1} className="animate-ping" />}
-              <circle cx={x} cy={y} r={inspected === i ? 6.5 : 4} fill="hsl(var(--accent))" stroke="hsl(var(--background))" strokeWidth={2} className="transition-all duration-200" />
+              {stacked && highlight === i && <circle cx={x} cy={y} r={9} fill="none" stroke="hsl(var(--destructive))" strokeWidth={2} data-testid="radar-limiting" />}
+              <circle cx={x} cy={y} r={inspected === i ? 6.5 : 4} fill={stacked && highlight === i ? "hsl(var(--destructive))" : "hsl(var(--accent))"} stroke="hsl(var(--background))" strokeWidth={2} className="transition-all duration-200" />
             </g>;
           })}
           {BONDS.map((b, i) => {
@@ -104,7 +120,7 @@ export default function BondRadar({
           </div>
           {BONDS.map((b, i) => (
             <div key={b} className="flex items-center gap-3">
-              <span className="w-32 shrink-0 text-xs text-muted-foreground">{b}</span>
+              <span className={stacked ? "w-36 min-w-[7rem] shrink text-xs text-muted-foreground" : "w-32 shrink-0 text-xs text-muted-foreground"}>{b}{stacked && highlight === i ? " · limiting" : ""}</span>
               <div className="h-1.5 flex-1 bg-brass/20">
                 <div className="h-full bg-accent" style={{ width: `${(scores[i] / 5) * 100}%` }} />
               </div>

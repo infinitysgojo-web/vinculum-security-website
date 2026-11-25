@@ -21,7 +21,6 @@ export const CHAPTER_5_3: DetailedAcademyChapter = {
     "Strategic objective: select a venue on the Forum Matrix that can reach both states and their assets, using the engine's seven venue scores: base enforceability of ICSID 80, PCA 74, LCIA 72, ICC 70, Swiss Arbitration Centre 68, SIAC 66 and ICJ Advisory 46, less 18 while immunity is unaddressed and 8 when the seat is not neutral. The venue must also have a jurisdictional basis for an inter-state maritime dispute, which the score does not measure.",
     "The precedents are the South China Sea Arbitration between the Philippines and China, administered by the Permanent Court of Arbitration, award of 12 July 2016; the Cod Wars between Iceland and the United Kingdom from 1958 to 1976; and Maritime Delimitation in the Indian Ocean between Somalia and Kenya, judgment of the International Court of Justice of 12 October 2021. Each shows a different relation between a forum's decision and a party's compliance.",
   ],
-  formulas: [F_FORUM_F, F_RUPTURE],
   statutoryNotice:
     "Drill Rule: the engine has no distance-based naval trigger. Enforcement at sea enters the desks only as observed tripwires, inscribed load and trend; the joint fund freezes when, and only when, the Rupture Index reaches 60. Venue fitness measures enforceability, not jurisdiction, and the states in the scenario are fictional.",
   learningOutcomes: [

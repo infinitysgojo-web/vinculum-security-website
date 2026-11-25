@@ -67,6 +67,11 @@ export interface DetailedLectureSection {
   statutoryRule?: string;
   /** An interactive instrument rendered after the section text. */
   instrument?: AcademyInstrumentKind;
+  /**
+   * Capstone practicum surfaces rendered after the instrument: the Interactive Relational
+   * Laboratory (which carries the Gate 5 stress simulation) and the six-gate attestation.
+   */
+  practicum?: ("laboratory" | "attestation")[];
 }
 
 /**
@@ -82,10 +87,12 @@ export interface DetailedAcademyChapter {
   eyebrow: string;
   estimatedMinutes: number;
   executiveLede: string;
-  /** Chapter overview shown before the reader enters the full lecture. */
+  /**
+   * The lecture's opening overview, read inside the reader before Section I. The chapter
+   * page (Tier 1) carries only the number, eyebrow, title, executive lede, statutory notice,
+   * reading time, learning outcomes and the button that opens the lecture.
+   */
   synopsis: string[];
-  /** Canonical formulas shown on the chapter overview (typeset). */
-  formulas?: AcademyFormula[];
   statutoryNotice: string;
   learningOutcomes: string[];
   sections: DetailedLectureSection[];

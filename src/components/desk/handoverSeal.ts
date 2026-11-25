@@ -151,7 +151,7 @@ export function sealParameterLabel(path: string): string {
     stabilityHalfLifeDays: "Desk 12 · Stability half-life", survivalScore: "Desk 12 · Succession durability", unmitigatedExposure: "Desk 12 · Unmitigated exposure",
     fractureMonths: "Desk 12 · Fracture horizon", fractureSeverity: "Desk 12 · Fracture severity",
   };
-  const match = /^signals\.([^.\[]+)(?:\.([^.\[]+))?/.exec(path);
+  const match = /^signals\.([^.[]+)(?:\.([^.[]+))?/.exec(path);
   if (match) {
     const label = labels[match[1]];
     if (!label) return path;

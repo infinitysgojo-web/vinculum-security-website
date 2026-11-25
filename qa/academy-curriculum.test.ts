@@ -11,17 +11,19 @@ import * as seal from "../src/components/desk/handoverSeal";
 import * as registry from "../src/components/desk/registry";
 import { ACADEMY_CURRICULUM, QUIZ_GATES, chapterProseWords, gateSatisfied, readingMinutes } from "../src/components/mode/academyCurriculum";
 import * as attest from "../src/components/mode/academyAttestation";
+import * as inst from "../src/components/mode/academyInstruments";
 import { AcademyInstrument } from "../src/components/mode/academyInstruments";
+import * as reader from "../src/components/mode/academyReaderState";
 import { LECTURE_HEADINGS, SEVEN_PART_ORDER } from "../src/components/mode/academyLectureHeadings";
 import { AcademyFormulaBlock, MathText, parseMath, splitInlineMath } from "../src/components/mode/academyMath";
 import type { AcademyFormula, AcademyInstrumentKind, DetailedAcademyChapter } from "../src/components/mode/academyTypes";
-import ChancelleryAcademy from "../src/components/mode/ChancelleryAcademy";
+import ChancelleryAcademy, { ChapterTier1 } from "../src/components/mode/ChancelleryAcademy";
 
 const chapters = ACADEMY_CURRICULUM.flatMap((m) => m.chapters.map((c) => ({ m, c })));
 const mod = (id: string) => ACADEMY_CURRICULUM.find((m) => m.id === id)!;
 
 /** Every formula object reachable from a chapter. */
-const formulasOf = (c: DetailedAcademyChapter): AcademyFormula[] => [...(c.formulas ?? []), ...c.sections.flatMap((s) => s.formulas ?? [])];
+const formulasOf = (c: DetailedAcademyChapter): AcademyFormula[] => c.sections.flatMap((s) => s.formulas ?? []);
 
 /** Every prose string of a chapter (anything that may carry inline math). */
 function proseOf(c: DetailedAcademyChapter): string[] {
@@ -433,8 +435,10 @@ describe("section instruments", () => {
   });
 
   test("instruments never publish to the MissionEngine bus", () => {
-    const code = readFileSync("src/components/mode/academyInstruments.tsx", "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
-    expect(code).not.toMatch(/usePublish|useEngine|EngineContext|publish\(/);
+    for (const f of ["academyInstruments.tsx", "academyReader.tsx", "academyReaderState.ts"]) {
+      const code = readFileSync(`src/components/mode/${f}`, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+      expect(code).not.toMatch(/usePublish|useEngine|EngineContext|publish\(/);
+    }
   });
 });
 
@@ -465,7 +469,7 @@ describe("the Academy view", () => {
   });
 
   test("progress stays in the browser: no network, no telemetry, no persistent storage", () => {
-    for (const f of ["ChancelleryAcademy.tsx", "academyAttestation.ts", "academyInstruments.tsx"]) {
+    for (const f of ["ChancelleryAcademy.tsx", "academyAttestation.ts", "academyInstruments.tsx", "academyReader.tsx", "academyReaderState.ts"]) {
       const text = readFileSync(`src/components/mode/${f}`, "utf8");
       expect(text).not.toMatch(/fetch\(|XMLHttpRequest|sendBeacon|localStorage|WebSocket|analytics|telemetry\(/);
     }
@@ -474,7 +478,7 @@ describe("the Academy view", () => {
   });
 
   test("standing rules: semantic tokens, no emoji glyphs, no private routes, no fixed digest", () => {
-    const files = ["ChancelleryAcademy.tsx", "academyMath.tsx", "ScholarlyFormula.tsx", "academyFormulas.ts", "academyModuleIV.ts", "academyModuleIVChapters1.ts", "academyModuleIVChapters2.ts", "academyCurriculumPart1.ts", "academyCurriculumPart2.ts", "academyCurriculumPart3.ts", "academyModuleVAlpha.ts", "academyModuleVBeta.ts", "academyModuleVGamma.ts", "academyModuleVCapstone.ts", "academyAttestation.ts", "academyInstruments.tsx", "academyCurriculum.ts", "academyLectureHeadings.ts"]
+    const files = ["ChancelleryAcademy.tsx", "academyMath.tsx", "ScholarlyFormula.tsx", "academyFormulas.ts", "academyModuleIV.ts", "academyModuleIVChapters1.ts", "academyModuleIVChapters2.ts", "academyCurriculumPart1.ts", "academyCurriculumPart2.ts", "academyCurriculumPart3.ts", "academyModuleVAlpha.ts", "academyModuleVBeta.ts", "academyModuleVGamma.ts", "academyModuleVCapstone.ts", "academyAttestation.ts", "academyInstruments.tsx", "academyCurriculum.ts", "academyLectureHeadings.ts", "academyReader.tsx", "academyReaderState.ts"]
       .map((f) => readFileSync(`src/components/mode/${f}`, "utf8"));
     for (const f of files) {
       expect(f).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(/);
@@ -485,5 +489,206 @@ describe("the Academy view", () => {
     }
     expect(src).not.toContain("0e8b5a794c1a938c");
     expect(src).not.toContain('operator: "');
+  });
+});
+
+describe("Tier 1 chapter pages show only Tier 1", () => {
+  const md = (t: string) => renderToStaticMarkup(createElement(MathText, { text: t }));
+  const sentences = (t: string) => t.split(/(?<=[.:;])\s+/).map((x) => x.trim()).filter((x) => x.length > 40);
+
+  test.each(chapters.map(({ m, c }) => [c.number, m, c] as const))("chapter %s", (_, m, c) => {
+    const html = renderToStaticMarkup(createElement(ChapterTier1, { module: m, chapter: c, position: m.chapters.indexOf(c), onOpen: () => {} }));
+    // The Tier 1 fields, in every chapter.
+    expect(html).toContain(md(m.eyebrow));
+    expect(html).toContain(md(`${c.number} ${c.title}`));
+    expect(html).toContain(md(c.executiveLede));
+    expect(html).toContain(md(c.statutoryNotice));
+    expect(html).toContain(`Reading time ${readingMinutes(c)} min`);
+    for (const o of c.learningOutcomes) expect(html).toContain(md(o));
+    expect(html).toContain("Open Full Chapter Lecture &amp; Practicum");
+    // Nothing that belongs to the lecture.
+    for (const p of [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.statutoryRule ? [s.statutoryRule] : [])])]) expect({ c: c.number, leaked: html.includes(md(p)) }).toEqual({ c: c.number, leaked: false });
+    for (const s of c.sections) {
+      expect(html.includes(md(s.heading))).toBe(false);
+      if (s.caseStudy) expect(html.includes(md(s.caseStudy.title))).toBe(false);
+    }
+    for (const id of ["scholarly-formula", "instrument-", "academy-laboratory", "academy-attestation", "lecture-quiz"]) expect({ c: c.number, id, present: html.includes(id) }).toEqual({ c: c.number, id, present: false });
+    expect("formulas" in c).toBe(false);
+  });
+
+  test("no lecture text is duplicated in Tier 1", () => {
+    for (const { c } of chapters) {
+      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.statutoryRule ? [s.statutoryRule] : [])])].join("\n");
+      for (const t of [c.executiveLede, c.statutoryNotice, ...c.learningOutcomes])
+        for (const sn of sentences(t)) expect({ c: c.number, sn, duplicated: lecture.includes(sn) }).toEqual({ c: c.number, sn, duplicated: false });
+    }
+  });
+
+  test("the Academy page renders the Tier 1 component and no laboratory or capstone outside the lecture", () => {
+    const html = renderToStaticMarkup(createElement(ChancelleryAcademy, { onExit: () => {} }));
+    expect(html).toContain('data-testid="chapter-tier-1"');
+    for (const id of ["academy-laboratory", "academy-attestation", "scholarly-formula", 'data-testid="instrument-']) expect(html.includes(id)).toBe(false);
+    const cap = ACADEMY_CURRICULUM.flatMap((m) => m.chapters).find((c) => c.drillType === "capstone")!;
+    expect(cap.sections[5].practicum).toEqual(["laboratory", "attestation"]);
+  });
+});
+
+describe("the lecture reader", () => {
+  const src = readFileSync("src/components/mode/academyReader.tsx", "utf8");
+  const view = readFileSync("src/components/mode/ChancelleryAcademy.tsx", "utf8");
+
+  test("Escape closes the lecture, and closes an open menu first", () => {
+    expect(reader.readerKeyAction("Escape", { menuOpen: false })).toBe("close-lecture");
+    expect(reader.readerKeyAction("Escape", { menuOpen: true })).toBe("close-menu");
+    expect(reader.readerKeyAction("Tab", { menuOpen: false })).toBe(null);
+    // Captured on the document, so a slider, an input, a quiz option or the menu cannot swallow it.
+    expect(src).toContain('document.addEventListener("keydown", onKey, true)');
+    expect(src).toMatch(/action === "close-lecture"[\s\S]{0,80}onClose\(\)/);
+  });
+
+  test("the X closes the lecture, is labelled and stays in the sticky header", () => {
+    expect(src).toContain('aria-label="Close lecture"');
+    expect(src).toMatch(/onClick=\{onClose\}\s*aria-label="Close lecture"/);
+    expect(src).toMatch(/min-h-11 min-w-11[^"]*focus-visible:outline/);
+    expect(src).toContain('role="dialog"');
+    expect(src).toContain('aria-modal="true"');
+    expect(src).toContain("aria-labelledby={titleId}");
+    expect(view).toContain("onClose={closeLecture}");
+    expect(view).not.toMatch(/confirm\(/);
+  });
+
+  test("closing returns focus to the opener and saves the reading position", () => {
+    expect(view).toContain("ref={openerRef}");
+    expect(view).toMatch(/const closeLecture = useCallback\([\s\S]*?savePosition\([\s\S]*?openerRef\.current\?\.focus/);
+    const mem = new Map<string, string>();
+    const store = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v) };
+    reader.savePosition(store, "rupture-index-proof", 0.4213);
+    expect(reader.loadPositions(store)).toEqual({ "rupture-index-proof": 0.421 });
+    reader.savePosition(store, "rupture-index-proof", 0.01);
+    expect(reader.loadPositions(store)).toEqual({});
+    expect(reader.loadPositions({ getItem: () => "{bad", setItem: () => {} })).toEqual({});
+  });
+
+  test("quiz progress survives a close and a reopen", () => {
+    const mem = new Map<string, string>();
+    const store = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v) };
+    const q = chapters[0].c.quiz[0];
+    mem.set(reader.SESSION_KEY, JSON.stringify({ answers: { [q.id]: "opt-b" }, covenantAffirmed: false, stress: null, passedAt: {} }));
+    reader.savePosition(store, chapters[0].c.id, 0.5); // what a close writes
+    expect(reader.loadAcademySession(store).answers).toEqual({ [q.id]: "opt-b" });
+    const closeBody = view.match(/const closeLecture = useCallback\(\(\) => \{([\s\S]*?)\}, \[\]\);/)![1];
+    expect(closeBody).not.toMatch(/setQuizAnswers|removeItem/);
+  });
+
+  test("progress, time left and the current section", () => {
+    expect(reader.readingProgress(0, 1000, 500)).toBe(0);
+    expect(reader.readingProgress(250, 1000, 500)).toBe(0.5);
+    expect(reader.readingProgress(0, 400, 500)).toBe(1);
+    expect(reader.minutesLeft(13, 0.5)).toBe(7);
+    expect(reader.minutesLeft(13, 1)).toBe(0);
+    expect(reader.activeSection([0, 800, 1600], 0)).toBe(0);
+    expect(reader.activeSection([0, 800, 1600], 720)).toBe(1);
+    expect(reader.activeSection([200, 800], 0)).toBe(-1);
+  });
+
+  test("the reader's dimensions follow the brief at each breakpoint", () => {
+    expect(src).toContain("xl:h-[94dvh] xl:w-[96vw] xl:max-w-[1600px]");
+    expect(src).toContain("md:h-[calc(100dvh-16px)] md:w-[calc(100vw-16px)]");
+    expect(src).toContain("h-[100dvh] w-screen");
+    expect(src).toContain("pt-[env(safe-area-inset-top)]");
+    expect(src).toContain("pb-[env(safe-area-inset-bottom)]");
+    expect(src).toContain("w-[260px]");
+    expect(view).toContain('const PROSE = "mx-auto max-w-[70ch]"');
+    expect(view).toContain("max-w-[1040px]");
+  });
+
+  test("every chapter's lecture shares the seven-heading frame where it has those sections, and the same quiz heading and footer", () => {
+    expect(view).toContain("{LECTURE_HEADINGS.quiz}");
+    expect((view.match(/data-testid="lecture-footer"/g) ?? []).length).toBe(1);
+  });
+});
+
+describe("instrument presets agree with the engine", () => {
+  test("radar presets", () => {
+    for (const p of inst.RADAR_PRESETS) {
+      const r = inst.radarReading(p.value);
+      expect(r.reading).toEqual(engine.mathReading(p.value));
+      expect(r.facade).toEqual(engine.facadeSyndrome(p.value));
+      for (const b of r.bonds) expect(b.breaches).toBe(engine.breachesFloor(b.score));
+      if (engine.breachesFloor(r.reading.limitingScore)) expect(engine.holdsFloor(r.reading.limitingScore + r.need)).toBe(true);
+    }
+    expect(inst.radarReading([3.8, 1.9, 3.2, 3.0]).need).toBe(1.2);
+  });
+
+  test("asymmetry presets", () => {
+    for (const p of inst.ASYM_PRESETS) expect(inst.asymmetryReading(p.value).friction).toBe(engine.frictionCoefficient(p.value.a, p.value.b));
+    expect(inst.ASYM_PRESETS.map((p) => inst.asymmetryReading(p.value).friction)).toEqual([0.5, 0.71, 1, 0]);
+  });
+
+  test("timeline presets", () => {
+    for (const p of inst.TIMELINE_PRESETS) {
+      const steps = inst.timelineSteps(p.value);
+      const shocks = inst.timelineShocks(p.value.size);
+      expect(steps.length).toBe(shocks.length + 1);
+      for (const st of steps) {
+        expect(st.rupture).toBe(engine.ruptureIndex(p.value.observed, engine.inscribedRuptureLoad(shocks.slice(0, st.t), 0), engine.TREND_MULT[p.value.trend]));
+        const lambda = instruments.decayHorizon({ interpersonal: 3, communal: 3, intergenerational: 3, institutional: 3 }, p.value.exposure, st.rupture!, 0).lambda;
+        expect(st.lambda).toBe(Math.round(lambda * 10000) / 10000);
+      }
+    }
+    expect(inst.timelineSteps(inst.TIMELINE_PRESETS[4].value).at(-1)!.rupture).toBeGreaterThanOrEqual(60);
+  });
+
+  test("escrow presets: engine output, shares summing to 100 and conservation", () => {
+    for (const p of inst.ESCROW_PRESETS) {
+      const r = inst.escrowReading(p.value);
+      const e = instruments.escrowWaterfall(p.value.terms, p.value.input);
+      expect([r.released, r.frozen, r.gross, r.clawbackHeld, r.bondHeld]).toEqual([e.released, e.frozen, e.gross, e.clawbackHeld, e.bondHeld]);
+      expect(p.value.terms.shares.reduce((a, b) => a + b, 0)).toBe(100);
+      expect(r.balanced).toBe(true);
+      expect(r.conserved).toBe(true);
+    }
+    expect(inst.ESCROW_PRESETS.map((p) => inst.escrowReading(p.value).released)).toEqual([17.5, 40, 100, 0, 31]);
+    expect(inst.escrowReading(inst.ESCROW_PRESETS[3].value).frozen).toBe(true);
+  });
+
+  test("the escrow freeze triggers at exactly R = 60", () => {
+    const at = (rupture: number) => inst.escrowReading({ ...inst.ESCROW_DEFAULT, input: { ...inst.ESCROW_DEFAULT.input, rupture } });
+    expect(at(59).frozen).toBe(false);
+    expect(at(60).frozen).toBe(true);
+    expect(at(60).released).toBe(0);
+    expect(instruments.ESCROW_FREEZE).toBe(60);
+  });
+
+  test("dominum presets and the phase lift", () => {
+    for (const p of inst.DOMINUM_PRESETS) {
+      const d = engine.dominumIndex({ bonds: { interpersonal: p.value.bonds[0], communal: p.value.bonds[1], intergenerational: p.value.bonds[2], institutional: p.value.bonds[3] }, escrowReleasedPercent: p.value.released, escrowFrozen: p.value.frozen, survivalScore: p.value.survival, rupture: p.value.rupture });
+      expect(inst.dominumReadingOf(p.value)).toEqual(d as engine.DominumReading);
+    }
+    expect(inst.DOMINUM_PRESETS.map((p) => inst.dominumReadingOf(p.value).index)).toEqual([76, 56, 79.8, 25, 68.7]);
+    expect(inst.dominumLift(inst.DOMINUM_PRESETS[0].value).top).toBe(true);
+    const floor = inst.dominumLift(inst.DOMINUM_PRESETS[2].value);
+    expect(floor.best).toMatchObject({ id: "bond", steps: 1, to: "raise to 3.1" });
+    expect(inst.dominumLift(inst.DOMINUM_PRESETS[1].value).levers.find((l) => l.id === "freeze")?.steps).toBe(1);
+  });
+
+  test("forum presets", () => {
+    for (const p of inst.FORUM_PRESETS) for (const row of inst.forumRows(p.value)) expect(row.r).toEqual(instruments.forumFitness(row.f, p.value));
+    expect(inst.forumRows(inst.FORUM_PRESETS[0].value).map((x) => x.r.fitness)).toEqual([54, 48, 46, 44, 42, 40, 20]);
+    expect(inst.forumRows(inst.FORUM_PRESETS[3].value).find((x) => x.f.id === "pca")!.r.fitness).toBe(74);
+  });
+
+  test("inputs clamp to the engine's valid ranges", () => {
+    expect(inst.clampStep(7, 1, 5, 0.1)).toBe(5);
+    expect(inst.clampStep(0.2, 1, 5, 0.1)).toBe(1);
+    expect(inst.clampStep(3.04, 1, 5, 0.1)).toBe(3);
+    expect(inst.clampStep(Number.NaN, 0, 100, 1)).toBe(0);
+    expect(inst.clampStep(101, 0, 100, 1)).toBe(100);
+    expect(inst.RANGES.bond).toEqual({ min: 1, max: 5, step: 0.1 });
+  });
+
+  test.each(["radar", "asymmetry", "timeline", "escrow", "dominum", "forum"] as AcademyInstrumentKind[])("%s carries presets, a verdict, the working, live readouts and copy settings", (kind) => {
+    const html = renderToStaticMarkup(createElement(AcademyInstrument, { kind }));
+    for (const id of ["instrument-presets", "instrument-verdict", "instrument-working", "aria-live=\"polite\"", "Copy settings", "@container", "Reset"]) expect({ kind, id, present: html.includes(id) }).toEqual({ kind, id, present: true });
   });
 });

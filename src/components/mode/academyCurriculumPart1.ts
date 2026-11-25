@@ -41,7 +41,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
         estimatedMinutes: 25,
         executiveLede: "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability that guarantees post-hoc divergence and treaty rupture.",
         synopsis: [
-          "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability.",
           "When crisis strikes, ambiguous clauses do not foster compromise. They become the fault line along which covenants rupture: the stronger party exploits the ambiguity to justify unilateral action, while the vulnerable party suffers institutional erosion.",
           "The Unified Deterministic Chancellery Apparatus (UDCA) rejects linguistic elasticity. In its place it introduces Relational Determinism: statecraft defined not by aspirational rhetoric but by quantifiable, verifiable structural thresholds.",
         ],
@@ -171,7 +170,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
           "The Vinculum Security Doctrine shifts statecraft to Dominium: the responsibility of sovereign custody, relational stewardship and intergenerational durability. Under Dominium, security is measured by the structural integrity of the relational bonds across four non-negotiable dimensions.",
           "The platform reads that shift on Mission Readiness (Desk 15) as the Dominum Index, whose phases run from Imperium-Bound through Fiduciary Anchor and Custodial Inversion to Self-Reinforcing Dominium.",
         ],
-        formulas: [F_DOMINUM_PHASE],
         statutoryNotice: "Doctrinal Warrant: Coercion produces immediate behavioral compliance at the cost of guaranteed structural decay. Custodial stewardship produces enduring sovereign stability.",
         learningOutcomes: [
           "Contrast the thermodynamic fragility of Imperium with the structural resilience of Dominium.",
@@ -208,6 +206,7 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
               "Relational yield represents the voluntary, self-sustaining benefits that flow from a well-engineered covenant: secure commercial trade, ecological preservation, shared intelligence, cultural exchange, and mutual security. Coercive friction represents the ongoing resource expenditure required to police, threaten, and enforce compliance against an unwilling counterpart.",
               "When relational yield outweighs coercive friction, the relationship becomes self-stabilizing. The platform does not measure that balance as a ratio; it reads it through the Dominum Index on Desk 15, which reaches Self-Reinforcing Dominium at 75 or more with every bond above the 3.0 viable floor. Both parties recognize that the benefits of voluntary compliance far exceed any temporary advantage gained by defection. In this state, sovereign dignity is preserved on both sides of the table, eliminating the toxic resentment that fuels future revanchism."
             ],
+            formulas: [F_DOMINUM_PHASE],
             statutoryRule: "Rule 1.2-A: A mission cannot be certified for Handover Sealing if its Dominum reading relies on active kinetic or economic coercion without a verified transition plan to voluntary custodial compliance."
           }
         ],
@@ -256,7 +255,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
           "The four bonds are the Interpersonal bond between the negotiators on whom the process rests, the Communal bond across divided populations, the Intergenerational bond that carries the settlement across successions, and the Institutional-Relational bond between the governed and the organs of state.",
           "The health of the covenant is governed by the Law of the Liebig Minimum: a chain does not rupture at its average strength; it shatters at its weakest link. If the Communal bond is 1.8, an Institutional-Relational bond of 4.8 cannot avert collapse.",
         ],
-        formulas: [F_STATE_VECTOR, F_LIEBIG],
         statutoryNotice: "Mathematical Axiom: If any single relational bond sits at or below the 3.0 viable floor, the covenant fails its Vector Integrity gate regardless of the elevated scores of the remaining three bonds.",
         learningOutcomes: [
           "Calibrate the 4-Dimensional Relational State Vector across all four canonical bond domains.",
@@ -276,7 +274,8 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
               "3. Intergenerational Bond \\(B_{igen}\\): The plane that connects past sacrifices, present agreements and future cohorts: institutional memory, youth stake and the capacity to transmit a settlement across successions.",
               "4. Institutional-Relational Bond \\(B_{inst}\\): The structural channel linking the governed population to the formal organs of state power, the judiciary, the security services and the administration. Would the bond survive a change in personnel or office?",
               "These four bonds are not interchangeable. Strength in the institutions cannot compensate for the absence of communal trust. Similarly, close personal rapport between two sitting presidents cannot prevent a treaty from collapsing if the broader population harbors intense, unaddressed communal grievances."
-            ]
+            ],
+            formulas: [F_STATE_VECTOR]
           },
           {
             heading: "II. Justus von Liebig's Bottleneck in Sovereign Physics",
@@ -442,7 +441,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
           "Desk 03 (Compound Shock) applies several shocks at once, reads the amplified strain and names the first provision to break. Desk 04 (Comparative Mirror) reads two or three documented theatres against one rubric, beside the live vector, as context rather than prescription.",
           "Every reading Division I publishes travels the same bus to every later desk; nothing downstream is computed from a different source.",
         ],
-        formulas: [F_LIEBIG, F_RUPTURE],
         statutoryNotice: "Statutory Directive: Stage Gate 1 (Vector Integrity) holds until all four bonds sit above the 3.0 viable floor, and Stage Gate 2 (Rupture Containment) holds until the rupture index is measured and, at 35 per cent or more, an independent verifier is seated.",
         learningOutcomes: [
           "Score the four bonds on Desk 01 and read the mean, variance, limiting bond, band and relational standing.",
@@ -555,7 +553,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
           "Desk 07 (De-confliction Bench) seats delegations, reads inter-party friction, sets the three resource heads and runs the Conditional Escrow Waterfall. Desk 08 (Track Sequencing) holds Track I within the tolerance the Communal bond allows. Desk 09 (Field Audit) records the stakeholder safeguard checks for each affected party.",
           "Division II publishes the readings the gates of Division IV will test: the track gap and tolerance, the friction pairs, the escrow release and the resource parity.",
         ],
-        formulas: [F_TRACK, F_FRICTION],
         statutoryNotice: "Diagnostic Axiom: an accord signed above the communities it governs looks like peace and behaves like a ceasefire. Stage Gate 3 (Track Synchronization) holds while Track I leads beyond the communal tolerance.",
         learningOutcomes: [
           "Compose a chancellery memorandum on Desk 05 from recorded inputs and existing wording.",
@@ -637,7 +634,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
           "Desk 12 (Succession Simulator) tests the instrument against leadership change, funding loss and capture, publishes the survival score and carries the Decay Horizon. Desk 13 (Legal Desk) fills the pleading heads from the bus, adding a provisional-measures head at a rupture of 40 per cent or more. Desk 14 (Adversarial Chamber) rehearses the objections of record.",
           "Stage Gate 4 (Structural Covenants) and Stage Gate 5 (Succession Durability) are cleared here.",
         ],
-        formulas: [F_FORUM_E, F_FORUM_F, F_SUCCESSION],
         statutoryNotice: "Operational Requirement: at a rupture index of 35 per cent or more an office-continuity provision is mandatory, and survival below the 55 per cent Succession Trap holds the Succession Durability gate.",
         learningOutcomes: [
           "Draft covenants on Desk 10 that bind offices, not officeholders.",
@@ -718,7 +714,6 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
           "Desk 16 (Verification Ledger) seats the verifiers and fixes the reporting interval. Desk 17 (Mandate Handover) reads a durability quotient: 80 per cent clears, 60 to 79 is conditional, and each residual dependence on the departing presence costs 7 points. Desk 18 (Mission Binder) compiles the staged documents and mints a SHA-256 apostille over the live signals and tabs.",
           "Alongside the desks, the Chancellery Wire holds the Signal Inspector, the Decision Log and the Handover Seal, each a view of the same bus.",
         ],
-        formulas: [F_DOMINUM],
         statutoryNotice: "Statutory Mandate: no disposition is cleared while any stage gate fails. Sign-off on the desk is a desk record, not institutional approval, and the apostille proves integrity of what was hashed, not truth of its content.",
         learningOutcomes: [
           "Read the five stage gates and the twenty statutory clearances on Desk 15.",

@@ -21,7 +21,6 @@ export const CHAPTER_5_2: DetailedAcademyChapter = {
     "Strategic objective: structure the swap proceeds and the concession revenues as a multi-tranche escrow whose conditions are read from the bus and whose custody sits outside the debtor, lift the Institutional-Relational bond with an office-continuity covenant before the election, and insulate the succession shock so that the decay clock slows. With a verifier seated, the waterfall releases 40 per cent at first, 67 per cent once the institutions hold, and the whole pledge at Final Cession.",
     "The precedents are the Seychelles debt conversion of 2016 and its sovereign blue bond of 2018, which tied debt relief to a marine protection commitment held by an independent trust, and Ecuador's Galápagos debt-for-nature conversion of 2023, which tied a bond buyback to conservation funding under credit guarantees. The lecture closes with the escrow balance bar, on which the conservation of the pledge can be watched under every condition.",
   ],
-  formulas: [F_ESCROW_RELEASE, F_SUCCESSION],
   statutoryNotice:
     "Drill Rule: at a Rupture Index of 35 or more an independent verifier and an office-continuity provision are mandatory; survival below 55 per cent holds the Succession Durability gate and withholds Final Cession. Collateral is never released by the party that pledged it.",
   learningOutcomes: [
