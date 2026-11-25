@@ -9,7 +9,7 @@ import * as instruments from "../src/components/desk/instruments";
 import * as proofs from "../src/components/desk/formulaProofs";
 import * as seal from "../src/components/desk/handoverSeal";
 import * as registry from "../src/components/desk/registry";
-import { ACADEMY_CURRICULUM, QUIZ_GATES, chapterProseWords, gateSatisfied, readingMinutes } from "../src/components/mode/academyCurriculum";
+import { ACADEMY_CURRICULUM, QUIZ_GATES, EXPANDED_MODULES, chapterProseWords, gateSatisfied, readingMinutes } from "../src/components/mode/academyCurriculum";
 import * as attest from "../src/components/mode/academyAttestation";
 import * as inst from "../src/components/mode/academyInstruments";
 import { AcademyInstrument } from "../src/components/mode/academyInstruments";
@@ -31,7 +31,9 @@ function proseOf(c: DetailedAcademyChapter): string[] {
   for (const s of c.sections) {
     out.push(s.heading, ...(s.subheading ? [s.subheading] : []), ...s.paragraphs, ...(s.statutoryRule ? [s.statutoryRule] : []));
     if (s.caseStudy) out.push(s.caseStudy.title, s.caseStudy.jurisdiction, s.caseStudy.precedent, ...s.caseStudy.analysis, s.caseStudy.failureMechanism);
+    for (const sub of s.subsections ?? []) out.push(sub.title, ...sub.paragraphs, ...(sub.callout ? [sub.callout.title, ...sub.callout.paragraphs] : []));
   }
+  for (const pr of c.practice ?? []) out.push(pr.problem, ...pr.solution);
   for (const q of c.quiz) out.push(q.question, ...q.options.flatMap((o) => [o.text, o.explanation]));
   for (const f of formulasOf(c)) {
     out.push(f.title, ...(f.statutoryInvariant ? [f.statutoryInvariant] : []));
@@ -40,6 +42,7 @@ function proseOf(c: DetailedAcademyChapter): string[] {
   return out;
 }
 
+const ENGINE_EXPORTS: Record<string, unknown> = { ...engine, ...instruments, ...inst };
 const allProse = chapters.flatMap(({ c }) => proseOf(c));
 const allText = allProse.join("\n");
 
@@ -89,7 +92,9 @@ describe("one curriculum source", () => {
   test("Modules IV and V lectures carry substantial prose, and reading time follows it", () => {
     for (const c of [...mod("relational-mathematics").chapters, ...mod("practicum-drills").chapters]) {
       expect({ c: c.id, enough: chapterProseWords(c) >= 1500 }).toEqual({ c: c.id, enough: true });
-      expect(readingMinutes(c)).toBe(Math.ceil(chapterProseWords(c) / 200));
+      // Phase B: expanded modules (Module IV first) read at 230 words a minute; the rest stay at 200 until expanded.
+      const wpm = EXPANDED_MODULES.has(ACADEMY_CURRICULUM.find((m) => m.chapters.includes(c))!.id) ? 230 : 200;
+      expect(readingMinutes(c)).toBe(Math.ceil(chapterProseWords(c) / wpm));
     }
   });
 
@@ -147,7 +152,13 @@ describe("mathematics is typeset, never shown as source", () => {
     for (const text of allProse) {
       for (const part of splitInlineMath(text)) {
         if (part.math) expect({ src: part.s, errors: parseMath(part.s).errors }).toEqual({ src: part.s, errors: [] });
-        else expect({ text, bad: part.s.match(/[\\_^=≥≤×÷√]/g) }).toEqual({ text, bad: null });
+        else {
+          // Prose may name an engine constant (e.g. ESCROW_FREEZE) in a bridge paragraph; every such name must be a real export.
+          const names = part.s.match(/\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g) ?? [];
+          for (const name of names) expect({ name, exported: name in ENGINE_EXPORTS }).toEqual({ name, exported: true });
+          const rest = names.reduce((t, n) => t.split(n).join(" "), part.s);
+          expect({ text, bad: rest.match(/[\\_^=≥≤×÷√]/g) }).toEqual({ text, bad: null });
+        }
       }
     }
   });
@@ -322,6 +333,41 @@ describe("lecture figures agree with the engine", () => {
     expect(fit(false, false)).toEqual({ icsid: 54, pca: 48, lcia: 46, icc: 44, swiss: 42, siac: 40, icj: 20 });
     expect([fit(true, false).pca, fit(true, false).icj, fit(false, true).pca, fit(false, true).icj, fit(true, true).pca]).toEqual([66, 38, 56, 28, 74]);
     has("ICSID 54, PCA 48, LCIA 46, ICC 44, Swiss Arbitration Centre 42, SIAC 40 and ICJ Advisory 20"); has("64");
+  });
+
+  test("Chapter 4.1 threshold table, worked example, practice problems and cutaway walkthrough", () => {
+    const first = (T: number, m: number, load = 0) => { for (let w = 0; w <= 56; w++) if (engine.ruptureIndex((100 * w) / 56, load, m) >= T) return w; return -1; };
+    const t = engine.TREND_MULT;
+    expect([first(15, t.static), first(35, t.static), first(60, t.static)]).toEqual([9, 20, 34]);
+    expect([first(15, t.deteriorating), first(35, t.deteriorating), first(60, t.deteriorating)]).toEqual([8, 17, 29]);
+    expect([first(15, t.improving), first(35, t.improving), first(60, t.improving)]).toEqual([10, 23, 40]);
+    expect(first(60, t.deteriorating, 6)).toBe(26);
+    expect(engine.ruptureIndex((100 * 25) / 56, 6, 1.15)).toBe(58);
+    expect(engine.ruptureIndex(100, 0, 0.85)).toBe(85);
+    expect(engine.ruptureIndex(100, 30, 0.85)).toBe(100);
+    const load = engine.inscribedRuptureLoad([{ deltas: { interpersonal: -0.5, communal: -1.0, intergenerational: 0, institutional: 0 } }], 1);
+    expect(load).toBe(14);
+    expect(engine.inscribedRuptureLoad([], 5)).toBe(30);
+    expect(engine.inscribedRuptureLoad([], 4)).toBe(24);
+    expect(engine.inscribedRuptureLoad([{ deltas: { interpersonal: -2, communal: -2, intergenerational: -2, institutional: 0 } }], 0)).toBe(30);
+    expect(engine.ruptureIndex((100 * 22) / 56, load, 1.15)).toBe(61);
+    expect(engine.ruptureIndex((100 * 22) / 56, load, 1)).toBe(53);
+    expect(engine.ruptureIndex((100 * 34) / 56, 0, 0.85)).toBe(52);
+    expect(engine.ruptureIndex((100 * 10) / 56, 0, 1)).toBe(18);
+    expect(engine.ruptureIndex(1000 / 62, 0, 1)).toBe(16);
+    expect(engine.ruptureIndex(1600 / 62, 0, 1)).toBe(26);
+    expect(instruments.PROVISIONAL_THRESHOLD).toBe(40);
+    expect(instruments.ESCROW_FREEZE).toBe(60);
+    const steps = (id: string) => inst.timelineSteps(inst.TIMELINE_PRESETS.find((p) => p.id === id)!.value);
+    expect(steps("default").map((s) => s.rupture)).toEqual([25, 32, 40, 50]);
+    expect(steps("default").map((s) => s.halfLifeDays)).toEqual([39.6, 33, 27.7, 23.1]);
+    expect(steps("deteriorating").map((s) => s.rupture)).toEqual([29, 37, 46, 57]);
+    expect(steps("deteriorating")[3].halfLifeDays).toBe(20.7);
+    expect(steps("improving").map((s) => s.rupture)).toEqual([21, 27, 34, 43]);
+    expect(steps("severe").map((s) => s.rupture)).toEqual([29, 40, 54, 63]);
+    expect([steps("severe")[3].meanBond, steps("severe")[3].halfLifeDays, steps("severe")[3].fractureDays]).toEqual([1.7, 19, 0]);
+    expect(steps("beta").map((s) => s.rupture)).toEqual([25, 32, 40, 50]);
+    expect(steps("beta").map((s) => s.halfLifeDays)).toEqual([27.2, 23.9, 21, 18.2]);
   });
 
   test("Capstone Gate 5 worked case", () => {
@@ -518,7 +564,7 @@ describe("Tier 1 chapter pages show only Tier 1", () => {
 
   test("no lecture text is duplicated in Tier 1", () => {
     for (const { c } of chapters) {
-      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.statutoryRule ? [s.statutoryRule] : [])])].join("\n");
+      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.subsections ?? []).flatMap((x) => [...x.paragraphs, ...(x.callout?.paragraphs ?? [])]), ...(s.statutoryRule ? [s.statutoryRule] : [])]), ...(c.practice ?? []).flatMap((x) => [x.problem, ...x.solution])].join("\n");
       for (const t of [c.executiveLede, c.statutoryNotice, ...c.learningOutcomes])
         for (const sn of sentences(t)) expect({ c: c.number, sn, duplicated: lecture.includes(sn) }).toEqual({ c: c.number, sn, duplicated: false });
     }

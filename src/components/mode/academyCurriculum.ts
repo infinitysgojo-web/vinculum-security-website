@@ -47,16 +47,34 @@ export function gateProgress(gate: QuizGate, answers: Readonly<Record<string, st
 
 const proseWords = (t: string) => t.replace(/\\\(.*?\\\)/g, " x ").split(/\s+/).filter(Boolean).length;
 
-/** Words of lecture prose in a chapter: lede, synopsis, section text, case studies and rules (quiz and formulas excluded). */
+/** Words of lecture prose in a chapter: lede, synopsis, section text, subsections, callouts, case studies, rules and worked practice problems (quiz items, formulas and reading lists excluded). */
 export function chapterProseWords(c: DetailedAcademyChapter): number {
   const parts = [c.executiveLede, ...c.synopsis];
   for (const s of c.sections) {
     parts.push(...s.paragraphs);
     if (s.caseStudy) parts.push(...s.caseStudy.analysis, s.caseStudy.failureMechanism);
+    for (const sub of s.subsections ?? []) {
+      parts.push(...sub.paragraphs);
+      if (sub.callout) parts.push(...sub.callout.paragraphs);
+    }
     if (s.statutoryRule) parts.push(s.statutoryRule);
   }
+  for (const pr of c.practice ?? []) parts.push(pr.problem, ...pr.solution);
   return parts.reduce((n, p) => n + proseWords(p), 0);
 }
 
-/** Reading time of the lecture prose at 200 words a minute, rounded up. */
-export const readingMinutes = (c: DetailedAcademyChapter) => Math.max(1, Math.ceil(chapterProseWords(c) / 200));
+/** Reading pace of a lecture not yet expanded in Phase B, in words a minute. */
+export const READING_WPM = 200;
+/** Reading pace of the expanded (Phase B) graduate lectures, in words a minute. */
+export const EXPANDED_READING_WPM = 230;
+/** Modules whose lectures have been expanded in Phase B and read at the expanded pace. */
+export const EXPANDED_MODULES: ReadonlySet<string> = new Set(["relational-mathematics"]);
+
+/** Words a minute for a chapter: 230 for an expanded module's lectures, otherwise 200. */
+export function readingWpm(c: DetailedAcademyChapter): number {
+  const m = ACADEMY_CURRICULUM.find((x) => x.chapters.some((y) => y.id === c.id));
+  return m && EXPANDED_MODULES.has(m.id) ? EXPANDED_READING_WPM : READING_WPM;
+}
+
+/** Reading time of the lecture prose at the chapter's pace, rounded up. */
+export const readingMinutes = (c: DetailedAcademyChapter) => Math.max(1, Math.ceil(chapterProseWords(c) / readingWpm(c)));
