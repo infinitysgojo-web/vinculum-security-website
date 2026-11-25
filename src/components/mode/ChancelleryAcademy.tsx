@@ -38,7 +38,7 @@ import { AcademyFormulaBlock, MathText } from "./academyMath";
 import { ACADEMY_CURRICULUM, chapterHeading, readingMinutes } from "./academyCurriculum";
 import { AcademyInstrument } from "./academyInstruments";
 import AcademyReader, { type ReaderTocEntry } from "./academyReader";
-import { SESSION_KEY, loadAcademySession, loadPositions, savePosition, type SessionState } from "./academyReaderState";
+import { SESSION_KEY, loadAcademySession, loadPositions, readingProgress, savePosition, type SessionState } from "./academyReaderState";
 import { LECTURE_HEADINGS } from "./academyLectureHeadings";
 import {
   BOND_KEYS,
@@ -217,6 +217,9 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
   };
 
   const closeLecture = useCallback(() => {
+    // Read the position at the moment of closing, not from the last animation frame.
+    const el = lectureRef.current;
+    if (el) progressRef.current = readingProgress(el.scrollTop, el.scrollHeight, el.clientHeight);
     setSelectedLecture((cur) => {
       if (cur) savePosition(storage(), cur.id, progressRef.current);
       return null;
@@ -229,7 +232,8 @@ export default function ChancelleryAcademy({ onExit }: { onExit: () => void }) {
   const openLectureAt = (i: number) => {
     const target = FLAT_CHAPTERS[i];
     if (!target) return;
-    if (selectedLecture) savePosition(storage(), selectedLecture.id, progressRef.current);
+    const el = lectureRef.current;
+    if (selectedLecture) savePosition(storage(), selectedLecture.id, el ? readingProgress(el.scrollTop, el.scrollHeight, el.clientHeight) : progressRef.current);
     setActiveModIdx(target.mIdx);
     setActiveChapIdx(target.cIdx);
     progressRef.current = 0;

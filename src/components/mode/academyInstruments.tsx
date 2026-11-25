@@ -179,7 +179,7 @@ function Verdict({ tone, children }: { tone: Tone; children: ReactNode }) {
 function Working({ formula, steps, result }: { formula: AcademyFormula; steps: string[]; result: string }) {
   return (
     <details className="group border border-border/60 bg-background/40" data-testid="instrument-working">
-      <summary className="flex min-h-11 cursor-pointer items-center px-3 font-mono text-[11px] uppercase tracking-[0.14em] text-primary">Show the working</summary>
+      <summary className="flex min-h-11 cursor-pointer items-center px-3 font-mono text-[11px] uppercase tracking-[0.14em] text-primary">Show the working · {formula.title}</summary>
       <div className="px-3 pb-3">
         <ScholarlyFormula title={formula.title} classification={formula.classification} expression={{ lhs: <MathExpr src={formula.lhs} />, rhs: <MathExpr src={formula.rhs} /> }} parameters={[]} className="my-3" />
         <ol className="academy-scroll-x space-y-1.5 py-1 font-serif text-base text-primary" aria-live="polite">
