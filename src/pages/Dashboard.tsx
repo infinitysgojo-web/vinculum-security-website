@@ -1,5 +1,5 @@
 import DeskErrorBoundary from "@/components/desk/DeskErrorBoundary";
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Archive, ArrowLeft, BookOpen, ChevronDown, GitBranch, Keyboard, Maximize2, Minimize2, Monitor, MoreHorizontal, PanelRight, ScrollText, Search, Shield, ShieldAlert, ShieldCheck, ShieldOff, Siren, SlidersHorizontal, Timer, Volume2, VolumeX, X } from "lucide-react";
 import ChancelleryWire from "@/components/desk/ChancelleryWire";
@@ -50,6 +50,7 @@ import { LexiconDrawer } from "@/components/desk/Lexicon";
 import { ChancelleryBreviary } from "@/components/desk/ChancelleryBreviary";
 import { canonicalJson, mintChancelleryApostille, verifyChancelleryApostille } from "@/components/desk/registry";
 import MissionFoyer, { type FoyerAction } from "@/components/mode/MissionFoyer";
+import ChancelleryAcademy from "@/components/mode/ChancelleryAcademy";
 import LocalDataDialog from "@/components/mode/LocalDataDialog";
 import ModeHeader, { ModeBadges, modeStatusText, type HeaderAction } from "@/components/mode/ModeHeader";
 import ContextTray, { type TrayTab } from "@/components/mode/ContextTray";
@@ -119,9 +120,6 @@ import CompoundShockTester from "@/components/desk/CompoundShockTester";
 import VerificationLedger from "@/components/desk/VerificationLedger";
 import HandoverProtocol from "@/components/desk/HandoverProtocol";
 import MirrorDesk from "@/components/desk/MirrorDesk";
-
-/** The Academy carries the full lecture text of all five modules, so it loads in its own chunk only when the operator enters it. */
-const ChancelleryAcademy = lazy(() => import("@/components/mode/ChancelleryAcademy"));
 
 
 /** Without an unsealed enclave, an idle terminal signs out after the Sentinel's 15 minutes. */
@@ -1744,9 +1742,7 @@ export default function Dashboard() {
       <div className={`container ${focus ? "py-4" : "py-4 sm:py-5"}`}>
         {academyOpen ? (
           <div className="pb-12">
-            <Suspense fallback={<div className="min-h-44 border border-brass/50 bg-card/40" role="status" aria-busy="true" aria-label="Loading the Chancellery Academy" />}>
-              <ChancelleryAcademy onExit={() => setAcademyOpen(false)} />
-            </Suspense>
+            <ChancelleryAcademy onExit={() => setAcademyOpen(false)} />
           </div>
         ) : inFoyer ? (
           <div className="mb-8 pb-12">

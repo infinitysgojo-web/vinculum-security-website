@@ -48,6 +48,10 @@ function vendorChunk(id: string): string | undefined {
   // to the always-loaded core chunk so the lazy PDF vendor chunk is never pulled into
   // the entry's static imports (and modulepreloaded on every public page).
   if (id.includes("commonjsHelpers")) return "vendor-react-core";
+  // Academy lecture text is the largest body of static data in the dashboard. It stays a static
+  // import (the air-gapped terminal never fetches a chunk on demand) but ships in its own chunk,
+  // so the entry chunk does not grow as the lectures are expanded.
+  if (/\/src\/components\/mode\/academy(?:CurriculumPart\d|ModuleIV\w*|ModuleV\w*|LectureHeadings|Formulas)\.ts$/.test(id.replace(/\\/g, "/"))) return "academy-lectures";
   const m = id.replace(/\\/g, "/").match(/\/node_modules\/((?:@[^/]+\/)?[^/]+)\//g);
   if (!m) return undefined;
   const pkg = m[m.length - 1].replace(/^\/node_modules\//, "").replace(/\/$/, "");
