@@ -74,7 +74,6 @@ export const CHAPTER_5_4: DetailedAcademyChapter = {
     "The seal stays disabled until all six gates stand satisfied. On sealing, the browser builds an attestation record (the designation, the verification manifest of the six gates, the simulation values, the time each gate passed, a statutory educational disclaimer and the UTC time of sealing), serialises it as canonical JSON with sorted keys and hashes it with the browser's own SHA-256. The 64-character digest, a verification stamp and the record itself are shown, and the record can be copied. Nothing is transmitted.",
     "The lecture reads the Belfast Agreement of 1998 as a settlement whose custody survived the suspension of its own institutions, sets out the chain the gates test, proves the determinism of the seal, and closes with the Dominum synthesis cutaway.",
   ],
-  formulas: [F_LIEBIG, F_RUPTURE],
   statutoryNotice:
     "Attestation Rule: completion is attested only when all six gates are satisfied in this browser session. The digest proves the integrity of the attestation record; it is an educational record, not institutional accreditation, and it carries no personal identifier.",
   learningOutcomes: [
@@ -170,9 +169,11 @@ export const CHAPTER_5_4: DetailedAcademyChapter = {
       subheading: "The Whole Chain in One Reading",
       paragraphs: [
         "Use the Dominum synthesis cutaway as a final rehearsal of the chain. Start at the base case: bonds of 4.0, escrow 80, durability 70, rupture 20, which reads 76.0, Self-Reinforcing Dominium. Raise the rupture to 60 and freeze the escrow, as the Critical band requires, and watch the fiduciary term vanish and the containment term fall. Drop one bond to 3.0 and watch the final phase withheld. Each move is one link of the chain the six gates test. The cutaway computes through Mission Readiness's own function and never publishes to the bus.",
+        "Below the cutaway sit the two capstone surfaces. The Interactive Relational Laboratory joins the state vector, the stress inputs, the escrow, succession, decay and the Dominum Index in one bench; drive its Rupture Index into the Critical band, name the limiting bond and verify, and Gate 5 opens. The attestation then lists all six gates, locked until the work behind each one is verified, and seals the record only at six of six.",
       ],
       formulas: [F_DOMINUM_PHASE],
       instrument: "dominum",
+      practicum: ["laboratory", "attestation"],
     },
   ],
   quiz: CAPSTONE_QUIZ,

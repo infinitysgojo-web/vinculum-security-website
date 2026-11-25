@@ -21,7 +21,6 @@ export const CHAPTER_5_1: DetailedAcademyChapter = {
     "Strategic objective: move the dispute from fortification to a joint basin commission whose resources release through the Conditional Escrow Waterfall, with a graded route for disagreement. With the Communal bond Failing, the track tolerance is zero phases, so the principals' track may not lead the communal track at all, and the Demarcation tranche cannot release until the Communal bond rises above 3.0. The drought enters as a deteriorating trend: a register score of 20 that reads 36 under a static trend reads 41 under a deteriorating one, which crosses the provisional-measures threshold of 40 on the Legal Desk.",
     "The precedents are the Indus Waters Treaty of 1960, which answered an upstream and downstream asymmetry with allocation by rule and a neutral ladder, and the Nile Basin, where allocation among the downstream states left the states holding the headwaters outside the settlement. The lecture walks the corridor through the desks in seven parts and closes with the radar cutaway, on which the reader can watch the limiting bond move.",
   ],
-  formulas: [F_LIEBIG, F_TRACK],
   statutoryNotice:
     "Drill Rule: with a Failing Communal bond the track tolerance is zero, the Vector Integrity gate holds, and no corridor resource may release past Mobilisation. Preset scores are training figures, not field measurements, and the states in the scenario are fictional.",
   learningOutcomes: [

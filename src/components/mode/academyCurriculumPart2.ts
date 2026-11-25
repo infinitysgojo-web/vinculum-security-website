@@ -108,7 +108,6 @@ export const ACADEMY_MODULES_PART_2: DetailedAcademyModule[] = [
           "Every later change recomputes the hash. A mismatch is a divergence, and the inspector lists the exact parameters that moved. Seals and their breaks are recorded in the Decision Log with UTC timestamps, so tampering cannot be hidden by resealing.",
           "Cryptographic sealing proves integrity and detects divergence; it does not replace sovereign legal ratification, and it proves nothing about the truth of what was sealed.",
         ],
-        formulas: [F_SEAL],
         statutoryNotice: "Cryptographic Rule: Changing a single bond score, operator identifier, or punctuation mark generates a completely different SHA-256 digest, illuminating an immediate Divergence Warning.",
         learningOutcomes: [
           "Understand the mathematical properties of deterministic canonical JSON serialization.",

@@ -25,7 +25,6 @@ export const CHAPTER_4_4: DetailedAcademyChapter = {
     "Four phases govern the mandate: Imperium-Bound below 40, Fiduciary Anchor from 40, Custodial Inversion from 60, and Self-Reinforcing Dominium at 75 and above, which further requires every bond above the 3.0 viable floor. A high index over a bond at or below the floor is recorded as Custodial Inversion.",
     "The lecture reads the Helsinki Memorandum of Understanding on Aceh of 2005 as a settlement in which custody passed from commanders to offices, derives the index and its phase rule, and works the canonical cases.",
   ],
-  formulas: [F_DOMINUM, F_DOMINUM_PHASE],
   statutoryNotice:
     "Doctrinal Gate (Desk 15): Self-Reinforcing Dominium cannot be attained while any bond sits at or below the 3.0 viable floor, regardless of the aggregate score. The index is read, never predicted.",
   learningOutcomes: [
@@ -179,7 +178,6 @@ export const CHAPTER_4_5: DetailedAcademyChapter = {
     "Before Final Cession, releases are disciplined by a clawback reserve (10 per cent of the gross) and a performance bond (5 per cent of the pledge, capped at what remains after the clawback). At Final Cession both reserves discharge and the released share equals the gross. At a rupture index of 60 or more the whole account is frozen.",
     "The lecture reads the Chad-Cameroon pipeline revenue law of 1999 as an escrow whose conditions were rewritten by the party that held the account, then derives the release arithmetic and works the canonical figures.",
   ],
-  formulas: [F_ESCROW_CONSERVATION, F_ESCROW_RELEASE],
   statutoryNotice:
     "Conservation Law (Desk 07): \\(\\sum_{k=1}^{4} s_{k} = 100\\). No tranche releases out of order, no release occurs at \\(R \\ge 60\\), and the conditions are read from the bus, never negotiated at the desk.",
   learningOutcomes: [
