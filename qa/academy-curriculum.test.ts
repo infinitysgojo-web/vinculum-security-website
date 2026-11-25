@@ -370,6 +370,39 @@ describe("lecture figures agree with the engine", () => {
     expect(steps("beta").map((s) => s.halfLifeDays)).toEqual([27.2, 23.9, 21, 18.2]);
   });
 
+  test("Chapter 4.2 worked figures, floor-arrival times, load bounds and cutaway walkthrough", () => {
+    const v = (a: number, b: number, c: number, d: number) => ({ interpersonal: a, communal: b, intergenerational: c, institutional: d });
+    const A = instruments.decayHorizon(v(3.8, 2.6, 2.2, 3.4), 4.5, 9, 30);
+    expect([A.lambda, A.halfLifeDays!.toFixed(1), A.bonds.map((b) => b.then), A.meanLoss]).toEqual([0.00675, "102.7", [3.1, 2.12, 1.8, 2.78], 0.55]);
+    expect(Math.round(A.lambda * 10000) / 10000).toBe(0.0068);
+    const B = instruments.decayHorizon(v(3.8, 2.6, 2.2, 3.4), 30.5, 42, 30);
+    expect([B.lambda, B.halfLifeDays!.toFixed(1), B.bonds.map((b) => b.then), B.meanLoss]).toEqual([0.03625, "19.1", [1.28, 1, 1, 1.15], 1.89]);
+    expect((72.5 / 13.5).toFixed(2)).toBe("5.37");
+    const floorAt = (b0: number, l: number) => Math.log(b0) / l;
+    expect([floorAt(2.2, 0.00675).toFixed(1), floorAt(2.2, 0.03625).toFixed(1), floorAt(4, 0.02325).toFixed(1), floorAt(3, 0.02325).toFixed(1), floorAt(2, 0.02325).toFixed(1)]).toEqual(["116.8", "21.8", "59.6", "47.3", "29.8"]);
+    expect(instruments.preservedBond(2.2, 0.00675, floorAt(2.2, 0.00675))).toBeCloseTo(1, 9);
+    expect(instruments.fractureWindow(3.0, 0.00675)).toMatchObject({ days: 60, months: 2, severity: "imminent" });
+    expect(instruments.decayHorizon(v(3.8, 2.6, 2.2, 3.4), 4.5, 9, 180).curve.find((c) => c.day === 60)!.mean).toBe(2);
+    expect(instruments.fractureWindow(3.0, 0.03625)).toMatchObject({ days: 11, months: 0.4, severity: "imminent" });
+    expect([90, 180, 365].map((d) => instruments.decayHorizon(v(4, 2, 2, 3), 6.5, 40, d).meanLoss)).toEqual([1.75, 1.75, 1.75]);
+    expect([30, 90, 180, 365].map((T) => ((2000 * Math.LN2) / T).toFixed(1))).toEqual(["46.2", "15.4", "7.7", "3.8"]);
+    expect(((2000 * Math.LN2) / 90 - 9).toFixed(1)).toBe("6.4");
+    expect(instruments.decayHorizon(v(3, 3, 3, 3), 46, 40, 30).halfLifeDays!.toFixed(0)).toBe("16");
+    expect(instruments.decayHorizon(v(3, 3, 3, 3), 11.5, 40, 30).halfLifeDays!.toFixed(0)).toBe("27");
+    expect(instruments.decayHorizon(v(3, 3, 3, 3), 186, 100, 30).halfLifeDays!.toFixed(1)).toBe("4.8");
+    const steps = (id: string) => inst.timelineSteps(inst.TIMELINE_PRESETS.find((p) => p.id === id)!.value);
+    expect(steps("default").map((s) => s.fractureDays)).toEqual([32, 22, 13, 5]);
+    expect(steps("beta").map((s) => s.fractureDays)).toEqual([22, 16, 10, 4]);
+    expect(steps("deteriorating").map((s) => s.halfLifeDays)).toEqual([35.5, 29.5, 24.8, 20.7]);
+    expect(steps("improving").map((s) => s.halfLifeDays)).toEqual([44.7, 37.5, 31.5, 26.2]);
+    expect(instruments.decayHorizon(v(3, 3, 3, 3), 35, 25, 30).halfLifeDays!.toFixed(1)).toBe("23.1");
+    expect(instruments.decayHorizon(v(3, 3, 3, 3), 0, 50, 30).halfLifeDays!.toFixed(1)).toBe("27.7");
+    expect([Math.exp(-0.02325).toFixed(4), (1 / 0.02325).toFixed(0), (Math.log(2.75 / 2) / 0.02325).toFixed(1), instruments.fractureWindow(2.75, 0.02325).days]).toEqual(["0.9770", "43", "13.7", 14]);
+    expect([(Math.LN2 / 0.027).toFixed(1), instruments.decayHorizon(v(3.4, 3.2, 3.1, 2.4), 26, 28, 30).halfLifeDays!.toFixed(1)]).toEqual(["25.7", "25.7"]);
+    expect([instruments.decayHorizon(v(3, 3, 3, 3), 46.5, 100, 30).halfLifeDays!.toFixed(1), instruments.decayHorizon(v(3, 3, 3, 3), 46.5, 0, 30).halfLifeDays!.toFixed(1)]).toEqual(["9.5", "29.8"]);
+    has("102.7 days"); has("19.1 days"); has("116.8"); has("46.2"); has("1.75");
+  });
+
   test("Capstone Gate 5 worked case", () => {
     expect(engine.ruptureIndex(25, 10, 1)).toBe(35);
     expect(engine.ruptureIndex(50, 10, 1)).toBe(60);
