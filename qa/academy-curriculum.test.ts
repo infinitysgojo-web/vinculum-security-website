@@ -31,7 +31,9 @@ function proseOf(c: DetailedAcademyChapter): string[] {
   for (const s of c.sections) {
     out.push(s.heading, ...(s.subheading ? [s.subheading] : []), ...s.paragraphs, ...(s.statutoryRule ? [s.statutoryRule] : []));
     if (s.caseStudy) out.push(s.caseStudy.title, s.caseStudy.jurisdiction, s.caseStudy.precedent, ...s.caseStudy.analysis, s.caseStudy.failureMechanism);
+    for (const sub of s.subsections ?? []) out.push(sub.title, ...sub.paragraphs, ...(sub.callout ? [sub.callout.title, ...sub.callout.paragraphs] : []));
   }
+  for (const pr of c.practice ?? []) out.push(pr.problem, ...pr.solution);
   for (const q of c.quiz) out.push(q.question, ...q.options.flatMap((o) => [o.text, o.explanation]));
   for (const f of formulasOf(c)) {
     out.push(f.title, ...(f.statutoryInvariant ? [f.statutoryInvariant] : []));
@@ -40,6 +42,7 @@ function proseOf(c: DetailedAcademyChapter): string[] {
   return out;
 }
 
+const ENGINE_EXPORTS: Record<string, unknown> = { ...engine, ...instruments, ...inst };
 const allProse = chapters.flatMap(({ c }) => proseOf(c));
 const allText = allProse.join("\n");
 
@@ -153,7 +156,12 @@ describe("mathematics is typeset, never shown as source", () => {
     for (const text of allProse) {
       for (const part of splitInlineMath(text)) {
         if (part.math) expect({ src: part.s, errors: parseMath(part.s).errors }).toEqual({ src: part.s, errors: [] });
-        else expect({ text, bad: part.s.match(/[\\_^=≥≤×÷√]/g) }).toEqual({ text, bad: null });
+        else {
+          const names = part.s.match(/\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g) ?? [];
+          for (const name of names) expect({ name, exported: name in ENGINE_EXPORTS }).toEqual({ name, exported: true });
+          const rest = names.reduce((t, n) => t.split(n).join(" "), part.s);
+          expect({ text, bad: rest.match(/[\\_^=≥≤×÷√]/g) }).toEqual({ text, bad: null });
+        }
       }
     }
   });
@@ -552,7 +560,7 @@ describe("Tier 1 chapter pages show only Tier 1", () => {
 
   test("no lecture text is duplicated in Tier 1", () => {
     for (const { c } of chapters) {
-      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.statutoryRule ? [s.statutoryRule] : [])])].join("\n");
+      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.subsections ?? []).flatMap((x) => [...x.paragraphs, ...(x.callout?.paragraphs ?? [])]), ...(s.statutoryRule ? [s.statutoryRule] : [])]), ...(c.practice ?? []).flatMap((x) => [x.problem, ...x.solution])].join("\n");
       for (const t of [c.executiveLede, c.statutoryNotice, ...c.learningOutcomes])
         for (const sn of sentences(t)) expect({ c: c.number, sn, duplicated: lecture.includes(sn) }).toEqual({ c: c.number, sn, duplicated: false });
     }
