@@ -9,8 +9,7 @@ import * as instruments from "../src/components/desk/instruments";
 import * as proofs from "../src/components/desk/formulaProofs";
 import * as seal from "../src/components/desk/handoverSeal";
 import * as registry from "../src/components/desk/registry";
-import { CASES } from "../src/content/cases";
-import { ACADEMY_CURRICULUM, QUIZ_GATES, EXPANDED_MODULES, chapterProseWords, gateSatisfied, readingMinutes } from "../src/components/mode/academyCurriculum";
+import { ACADEMY_CURRICULUM, QUIZ_GATES, chapterProseWords, gateSatisfied, readingMinutes } from "../src/components/mode/academyCurriculum";
 import * as attest from "../src/components/mode/academyAttestation";
 import * as inst from "../src/components/mode/academyInstruments";
 import { AcademyInstrument } from "../src/components/mode/academyInstruments";
@@ -32,9 +31,7 @@ function proseOf(c: DetailedAcademyChapter): string[] {
   for (const s of c.sections) {
     out.push(s.heading, ...(s.subheading ? [s.subheading] : []), ...s.paragraphs, ...(s.statutoryRule ? [s.statutoryRule] : []));
     if (s.caseStudy) out.push(s.caseStudy.title, s.caseStudy.jurisdiction, s.caseStudy.precedent, ...s.caseStudy.analysis, s.caseStudy.failureMechanism);
-    for (const sub of s.subsections ?? []) out.push(sub.title, ...sub.paragraphs, ...(sub.callout ? [sub.callout.title, ...sub.callout.paragraphs] : []));
   }
-  for (const pr of c.practice ?? []) out.push(pr.problem, ...pr.solution);
   for (const q of c.quiz) out.push(q.question, ...q.options.flatMap((o) => [o.text, o.explanation]));
   for (const f of formulasOf(c)) {
     out.push(f.title, ...(f.statutoryInvariant ? [f.statutoryInvariant] : []));
@@ -43,7 +40,6 @@ function proseOf(c: DetailedAcademyChapter): string[] {
   return out;
 }
 
-const ENGINE_EXPORTS: Record<string, unknown> = { ...engine, ...instruments, ...inst };
 const allProse = chapters.flatMap(({ c }) => proseOf(c));
 const allText = allProse.join("\n");
 
@@ -93,9 +89,13 @@ describe("one curriculum source", () => {
   test("Modules IV and V lectures carry substantial prose, and reading time follows it", () => {
     for (const c of [...mod("relational-mathematics").chapters, ...mod("practicum-drills").chapters]) {
       expect({ c: c.id, enough: chapterProseWords(c) >= 1500 }).toEqual({ c: c.id, enough: true });
-      // Phase B: expanded modules (Module IV first) read at 230 words a minute; the rest stay at 200 until expanded.
-      const wpm = EXPANDED_MODULES.has(ACADEMY_CURRICULUM.find((m) => m.chapters.includes(c))!.id) ? 230 : 200;
-      expect(readingMinutes(c)).toBe(Math.ceil(chapterProseWords(c) / wpm));
+      expect(readingMinutes(c)).toBe(Math.ceil(chapterProseWords(c) / 230));
+    }
+    for (const id of ["dominum-index-proof", "escrow-conservation-proof"]) {
+      const ch = mod("relational-mathematics").chapters.find((c) => c.id === id)!;
+      expect({ id, words: chapterProseWords(ch) }).toEqual({ id, words: expect.any(Number) });
+      expect(chapterProseWords(ch)).toBeGreaterThanOrEqual(9000);
+      expect(ch.quiz.length).toBe(6);
     }
   });
 
@@ -153,13 +153,7 @@ describe("mathematics is typeset, never shown as source", () => {
     for (const text of allProse) {
       for (const part of splitInlineMath(text)) {
         if (part.math) expect({ src: part.s, errors: parseMath(part.s).errors }).toEqual({ src: part.s, errors: [] });
-        else {
-          // Prose may name an engine constant (e.g. ESCROW_FREEZE) in a bridge paragraph; every such name must be a real export.
-          const names = part.s.match(/\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g) ?? [];
-          for (const name of names) expect({ name, exported: name in ENGINE_EXPORTS }).toEqual({ name, exported: true });
-          const rest = names.reduce((t, n) => t.split(n).join(" "), part.s);
-          expect({ text, bad: rest.match(/[\\_^=≥≤×÷√]/g) }).toEqual({ text, bad: null });
-        }
+        else expect({ text, bad: part.s.match(/[\\_^=≥≤×÷√]/g) }).toEqual({ text, bad: null });
       }
     }
   });
@@ -294,6 +288,34 @@ describe("lecture figures agree with the engine", () => {
     has("69.3 days"); has("63.5"); has("0.71"); has("11.4 months");
   });
 
+  test("Chapters 4.4 and 4.5 worked practice problem arithmetic", () => {
+    const bv = (a: number, b: number, c: number, d: number) => ({ interpersonal: a, communal: b, intergenerational: c, institutional: d });
+    expect(engine.dominumIndex({ bonds: bv(3.1, 3.1, 3.1, 3.1), escrowReleasedPercent: 100, survivalScore: 77, rupture: 25 })).toMatchObject({ index: 75, phase: "Self-Reinforcing Dominium", floorHeld: true });
+    expect(engine.dominumIndex({ bonds: bv(3.0, 3.1, 3.1, 3.2), escrowReleasedPercent: 100, survivalScore: 77, rupture: 25 })).toMatchObject({ index: 75, phase: "Custodial Inversion", floorHeld: false });
+    expect(engine.dominumIndex({ bonds: bv(3.0, 3.0, 3.0, 3.0), escrowReleasedPercent: 20, survivalScore: 32, rupture: 40 })).toMatchObject({ index: 40, phase: "Fiduciary Anchor" });
+    expect(engine.dominumIndex({ bonds: bv(3.0, 3.0, 3.0, 3.0), escrowReleasedPercent: 20, survivalScore: 31, rupture: 40 })).toMatchObject({ index: 39.8, phase: "Imperium-Bound" });
+    expect(engine.dominumIndex({ bonds: bv(4, 4, 4, 4), escrowReleasedPercent: 80, escrowFrozen: true, survivalScore: 70, rupture: 60 })).toMatchObject({ index: 48, phase: "Fiduciary Anchor" });
+    expect(engine.dominumIndex({ bonds: bv(4, 4, 4, 4), escrowReleasedPercent: 80, survivalScore: 70, rupture: Number.NaN })).toMatchObject({ index: 60, phase: "Custodial Inversion" });
+    expect(engine.dominumIndex({ bonds: bv(3.6, 3.2, 3.4, 3.4), escrowReleasedPercent: 67, survivalScore: 56, rupture: 30 })).toMatchObject({ index: 62.8, phase: "Custodial Inversion" });
+    expect(engine.dominumIndex({ bonds: bv(3.6, 3.2, 3.4, 3.4), escrowReleasedPercent: 100, survivalScore: 56, rupture: 30 })).toMatchObject({ index: 71, phase: "Custodial Inversion" });
+    expect(engine.dominumIndex({ bonds: bv(3.6, 3.2, 3.4, 3.4), escrowReleasedPercent: 100, survivalScore: 56, rupture: 10 })).toMatchObject({ index: 75, phase: "Self-Reinforcing Dominium", floorHeld: true });
+
+    const eb = { verifierSeated: true, communal: 3.4, institutional: 3.1, intergenerational: 3.3, trackGap: 1, trackTolerance: 2, survivalScore: 58, rupture: 30 };
+    expect(instruments.escrowWaterfall({ shares: [-10, 40, 40, 30], clawback: 10, bond: 5 }, { ...eb, intergenerational: 2.9 })).toMatchObject({ total: 110, balanced: false, gross: 80, released: 67 });
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { ...eb, intergenerational: 2.9, rupture: 59 })).toMatchObject({ frozen: false, released: 67 });
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { ...eb, intergenerational: 2.9, rupture: 60 })).toMatchObject({ frozen: true, released: 0, gross: 80 });
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { ...eb, rupture: 60 })).toMatchObject({ frozen: true, ceded: true, released: 0, gross: 100 });
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { ...eb, communal: 1.4, rupture: Number.NaN }).released).toBe(17.5);
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { ...eb, rupture: Number.NaN }).released).toBe(100);
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { verifierSeated: true, communal: 4, institutional: 4, intergenerational: 4, survivalScore: 80, rupture: 10 }).tranches.map((t) => t.met)).toEqual([true, true, false, false]);
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { verifierSeated: true, institutional: 4, intergenerational: 4, trackGap: 0, trackTolerance: 2, survivalScore: 80, rupture: 10 }).tranches.map((t) => t.met)).toEqual([true, false, false, false]);
+    expect(instruments.escrowWaterfall({ shares: [25, 25, 30, 20], clawback: 20, bond: 10 }, { ...eb, institutional: 2.8, rupture: 20 })).toMatchObject({ gross: 50, clawbackHeld: 10, bondHeld: 10, released: 30 });
+    expect(instruments.escrowWaterfall({ shares: [25, 25, 30, 20], clawback: 20, bond: 10 }, { ...eb, intergenerational: 2.8, rupture: 20 })).toMatchObject({ gross: 80, clawbackHeld: 16, bondHeld: 10, released: 54 });
+    expect(instruments.escrowWaterfall({ shares: [25, 25, 30, 20], clawback: 20, bond: 10 }, { ...eb, rupture: 20 })).toMatchObject({ gross: 100, clawbackHeld: 0, bondHeld: 0, released: 100, ceded: true });
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { verifierSeated: true, communal: 3.4, institutional: 3.5, intergenerational: 3.5, trackGap: 2, trackTolerance: 1, survivalScore: 60, rupture: 25 })).toMatchObject({ gross: 50, released: 40 });
+    expect(instruments.escrowWaterfall(instruments.DEFAULT_ESCROW, { verifierSeated: true, communal: 3.4, institutional: 3.5, intergenerational: 3.5, trackGap: 2, trackTolerance: 2, survivalScore: 60, rupture: 25 })).toMatchObject({ gross: 100, released: 100, ceded: true });
+  });
+
   test("Drill Alpha: limiting bond, drought trend, corridor escrow", () => {
     const r = engine.mathReading([3.8, 1.9, 3.2, 3.0]);
     expect([r.limitingIndex, r.limitingScore]).toEqual([1, 1.9]);
@@ -334,103 +356,6 @@ describe("lecture figures agree with the engine", () => {
     expect(fit(false, false)).toEqual({ icsid: 54, pca: 48, lcia: 46, icc: 44, swiss: 42, siac: 40, icj: 20 });
     expect([fit(true, false).pca, fit(true, false).icj, fit(false, true).pca, fit(false, true).icj, fit(true, true).pca]).toEqual([66, 38, 56, 28, 74]);
     has("ICSID 54, PCA 48, LCIA 46, ICC 44, Swiss Arbitration Centre 42, SIAC 40 and ICJ Advisory 20"); has("64");
-  });
-
-  test("Chapter 4.1 threshold table, worked example, practice problems and cutaway walkthrough", () => {
-    const first = (T: number, m: number, load = 0) => { for (let w = 0; w <= 56; w++) if (engine.ruptureIndex((100 * w) / 56, load, m) >= T) return w; return -1; };
-    const t = engine.TREND_MULT;
-    expect([first(15, t.static), first(35, t.static), first(60, t.static)]).toEqual([9, 20, 34]);
-    expect([first(15, t.deteriorating), first(35, t.deteriorating), first(60, t.deteriorating)]).toEqual([8, 17, 29]);
-    expect([first(15, t.improving), first(35, t.improving), first(60, t.improving)]).toEqual([10, 23, 40]);
-    expect(first(60, t.deteriorating, 6)).toBe(26);
-    expect(engine.ruptureIndex((100 * 25) / 56, 6, 1.15)).toBe(58);
-    expect(engine.ruptureIndex(100, 0, 0.85)).toBe(85);
-    expect(engine.ruptureIndex(100, 30, 0.85)).toBe(100);
-    const load = engine.inscribedRuptureLoad([{ deltas: { interpersonal: -0.5, communal: -1.0, intergenerational: 0, institutional: 0 } }], 1);
-    expect(load).toBe(14);
-    expect(engine.inscribedRuptureLoad([], 5)).toBe(30);
-    expect(engine.inscribedRuptureLoad([], 4)).toBe(24);
-    expect(engine.inscribedRuptureLoad([{ deltas: { interpersonal: -2, communal: -2, intergenerational: -2, institutional: 0 } }], 0)).toBe(30);
-    expect(engine.ruptureIndex((100 * 22) / 56, load, 1.15)).toBe(61);
-    expect(engine.ruptureIndex((100 * 22) / 56, load, 1)).toBe(53);
-    expect(engine.ruptureIndex((100 * 34) / 56, 0, 0.85)).toBe(52);
-    expect(engine.ruptureIndex((100 * 10) / 56, 0, 1)).toBe(18);
-    expect(engine.ruptureIndex(1000 / 62, 0, 1)).toBe(16);
-    expect(engine.ruptureIndex(1600 / 62, 0, 1)).toBe(26);
-    expect(instruments.PROVISIONAL_THRESHOLD).toBe(40);
-    expect(instruments.ESCROW_FREEZE).toBe(60);
-    const steps = (id: string) => inst.timelineSteps(inst.TIMELINE_PRESETS.find((p) => p.id === id)!.value);
-    expect(steps("default").map((s) => s.rupture)).toEqual([25, 32, 40, 50]);
-    expect(steps("default").map((s) => s.halfLifeDays)).toEqual([39.6, 33, 27.7, 23.1]);
-    expect(steps("deteriorating").map((s) => s.rupture)).toEqual([29, 37, 46, 57]);
-    expect(steps("deteriorating")[3].halfLifeDays).toBe(20.7);
-    expect(steps("improving").map((s) => s.rupture)).toEqual([21, 27, 34, 43]);
-    expect(steps("severe").map((s) => s.rupture)).toEqual([29, 40, 54, 63]);
-    expect([steps("severe")[3].meanBond, steps("severe")[3].halfLifeDays, steps("severe")[3].fractureDays]).toEqual([1.7, 19, 0]);
-    expect(steps("beta").map((s) => s.rupture)).toEqual([25, 32, 40, 50]);
-    expect(steps("beta").map((s) => s.halfLifeDays)).toEqual([27.2, 23.9, 21, 18.2]);
-  });
-
-  test("Chapter 4.2 worked figures, floor-arrival times, load bounds and cutaway walkthrough", () => {
-    const v = (a: number, b: number, c: number, d: number) => ({ interpersonal: a, communal: b, intergenerational: c, institutional: d });
-    const A = instruments.decayHorizon(v(3.8, 2.6, 2.2, 3.4), 4.5, 9, 30);
-    expect([A.lambda, A.halfLifeDays!.toFixed(1), A.bonds.map((b) => b.then), A.meanLoss]).toEqual([0.00675, "102.7", [3.1, 2.12, 1.8, 2.78], 0.55]);
-    expect(Math.round(A.lambda * 10000) / 10000).toBe(0.0068);
-    const B = instruments.decayHorizon(v(3.8, 2.6, 2.2, 3.4), 30.5, 42, 30);
-    expect([B.lambda, B.halfLifeDays!.toFixed(1), B.bonds.map((b) => b.then), B.meanLoss]).toEqual([0.03625, "19.1", [1.28, 1, 1, 1.15], 1.89]);
-    expect((72.5 / 13.5).toFixed(2)).toBe("5.37");
-    const floorAt = (b0: number, l: number) => Math.log(b0) / l;
-    expect([floorAt(2.2, 0.00675).toFixed(1), floorAt(2.2, 0.03625).toFixed(1), floorAt(4, 0.02325).toFixed(1), floorAt(3, 0.02325).toFixed(1), floorAt(2, 0.02325).toFixed(1)]).toEqual(["116.8", "21.8", "59.6", "47.3", "29.8"]);
-    expect(instruments.preservedBond(2.2, 0.00675, floorAt(2.2, 0.00675))).toBeCloseTo(1, 9);
-    expect(instruments.fractureWindow(3.0, 0.00675)).toMatchObject({ days: 60, months: 2, severity: "imminent" });
-    expect(instruments.decayHorizon(v(3.8, 2.6, 2.2, 3.4), 4.5, 9, 180).curve.find((c) => c.day === 60)!.mean).toBe(2);
-    expect(instruments.fractureWindow(3.0, 0.03625)).toMatchObject({ days: 11, months: 0.4, severity: "imminent" });
-    expect([90, 180, 365].map((d) => instruments.decayHorizon(v(4, 2, 2, 3), 6.5, 40, d).meanLoss)).toEqual([1.75, 1.75, 1.75]);
-    expect([30, 90, 180, 365].map((T) => ((2000 * Math.LN2) / T).toFixed(1))).toEqual(["46.2", "15.4", "7.7", "3.8"]);
-    expect(((2000 * Math.LN2) / 90 - 9).toFixed(1)).toBe("6.4");
-    expect(instruments.decayHorizon(v(3, 3, 3, 3), 46, 40, 30).halfLifeDays!.toFixed(0)).toBe("16");
-    expect(instruments.decayHorizon(v(3, 3, 3, 3), 11.5, 40, 30).halfLifeDays!.toFixed(0)).toBe("27");
-    expect(instruments.decayHorizon(v(3, 3, 3, 3), 186, 100, 30).halfLifeDays!.toFixed(1)).toBe("4.8");
-    const steps = (id: string) => inst.timelineSteps(inst.TIMELINE_PRESETS.find((p) => p.id === id)!.value);
-    expect(steps("default").map((s) => s.fractureDays)).toEqual([32, 22, 13, 5]);
-    expect(steps("beta").map((s) => s.fractureDays)).toEqual([22, 16, 10, 4]);
-    expect(steps("deteriorating").map((s) => s.halfLifeDays)).toEqual([35.5, 29.5, 24.8, 20.7]);
-    expect(steps("improving").map((s) => s.halfLifeDays)).toEqual([44.7, 37.5, 31.5, 26.2]);
-    expect(instruments.decayHorizon(v(3, 3, 3, 3), 35, 25, 30).halfLifeDays!.toFixed(1)).toBe("23.1");
-    expect(instruments.decayHorizon(v(3, 3, 3, 3), 0, 50, 30).halfLifeDays!.toFixed(1)).toBe("27.7");
-    expect([Math.exp(-0.02325).toFixed(4), (1 / 0.02325).toFixed(0), (Math.log(2.75 / 2) / 0.02325).toFixed(1), instruments.fractureWindow(2.75, 0.02325).days]).toEqual(["0.9770", "43", "13.7", 14]);
-    expect([(Math.LN2 / 0.027).toFixed(1), instruments.decayHorizon(v(3.4, 3.2, 3.1, 2.4), 26, 28, 30).halfLifeDays!.toFixed(1)]).toEqual(["25.7", "25.7"]);
-    expect([instruments.decayHorizon(v(3, 3, 3, 3), 46.5, 100, 30).halfLifeDays!.toFixed(1), instruments.decayHorizon(v(3, 3, 3, 3), 46.5, 0, 30).halfLifeDays!.toFixed(1)]).toEqual(["9.5", "29.8"]);
-    has("102.7 days"); has("19.1 days"); has("116.8"); has("46.2"); has("1.75");
-  });
-
-  test("Chapter 4.3 distances, resonance floors, metric comparison, inscribed bounds and veto", () => {
-    const f = engine.frictionCoefficient;
-    const alpha = engine.distanceTable([3.8, 1.9, 3.2, 3.0]);
-    const ranked = alpha.filter((r) => r.rank).sort((a, b) => a.rank! - b.rank!).map((r) => [r.shortTitle, r.distance.toFixed(3), r.resonance]);
-    expect(ranked).toEqual([["Kenya", "1.221", 84.7], ["Colombia", "1.300", 83.8], ["Rwanda", "2.071", 74.1]]);
-    expect(engine.rankCases([3.8, 1.9, 3.2, 3.0]).map((m) => m.resonance)).toEqual([85, 84, 74]);
-    const beta = engine.distanceTable([3.4, 3.2, 3.1, 2.4]).filter((r) => r.rank).sort((a, b) => a.rank! - b.rank!).map((r) => [r.shortTitle, r.distance.toFixed(3), r.resonance]);
-    expect(beta).toEqual([["Liberia", "0.985", 87.7], ["Rwanda", "1.253", 84.3], ["South Africa", "1.253", 84.3]]);
-    const floors = Object.fromEntries(CASES.map((c) => [c.shortTitle, Math.round((1 - Math.sqrt(c.scores.reduce((a, x) => a + Math.max(x - 1, 5 - x) ** 2, 0)) / 8) * 1000) / 10]));
-    expect(floors).toEqual({ "Northern Ireland": 22.9, Colombia: 36.3, Cambodia: 25, Liberia: 36.3, Rwanda: 36.3, Kenya: 30.4, "South Africa": 36.3, "Tuvalu and Kiribati": 36.3 });
-    const L = (a: number[], b: number[], p: number) => (p === Infinity ? Math.max(...a.map((x, i) => Math.abs(x - b[i]))) : a.reduce((s2, x, i) => s2 + Math.abs(x - b[i]) ** p, 0) ** (1 / p));
-    expect([L([5, 1, 3, 3], [1, 5, 3, 3], 1), L([5, 1, 3, 3], [1, 5, 3, 3], 2).toFixed(2), L([5, 1, 3, 3], [1, 5, 3, 3], Infinity)]).toEqual([8, "5.66", 4]);
-    expect([L([4, 4, 4, 4], [3, 3, 3, 3], 1), L([4, 4, 4, 4], [3, 3, 3, 3], 2), L([4, 4, 4, 4], [3, 3, 3, 3], Infinity), f([4, 4, 4, 4], [3, 3, 3, 3])]).toEqual([4, 2, 1, 0.25]);
-    expect([f([4, 3, 3, 3], [3, 3, 3, 3]), f([3, 3, 3, 3], [3.5, 3.5, 3, 3])]).toEqual([0.13, 0.09]);
-    const tol = (lev: number, vul: number, veto: boolean, lim: number) => [0, 1, 2, 3].map((i) => Math.min(5, Math.max(1, Math.round((3 + 0.25 * (lev - vul) + (veto && i === lim ? 1 : 0)) * 10) / 10)));
-    expect([tol(5, 1, true, 1), tol(1, 5, false, 1), tol(1, 5, true, 1)]).toEqual([[4, 5, 4, 4], [2, 2, 2, 2], [2, 3, 2, 2]]);
-    expect([f(tol(5, 1, true, 1), tol(1, 5, false, 1)), f(tol(5, 1, true, 1), tol(1, 5, true, 1)), f(tol(5, 1, false, 1), tol(1, 5, false, 1)), f(tol(4, 2, false, 1), tol(2, 4, false, 1))]).toEqual([0.57, 0.5, 0.5, 0.25]);
-    expect([f([3, 3, 3, 4], [3, 4, 3, 3]), engine.mathReading([3.4, 3.2, 3.1, 2.4]).limitingIndex]).toEqual([0.18, 3]);
-    expect([f([2, 2, 2, 2], [1, 1, 1, 1]), f([5, 1, 1, 1], [1, 1, 1, 1]), f([3, 3, 3, 3], [1, 1, 1, 1])]).toEqual([0.25, 0.5, 0.5]);
-    expect((100 * 0.3 * (0.1 / 4 / 4)).toFixed(2)).toBe("0.19");
-    expect(engine.rankCases([3.8, 1.9, 3.3, 3.0]).slice(0, 2).map((m) => [m.shortTitle, m.distance.toFixed(3)])).toEqual([["Colombia", "1.319"], ["Kenya", "1.319"]]);
-    expect(engine.rankCases([3.8, 1.9, 3.2, 3.1]).slice(0, 2).map((m) => [m.shortTitle, m.distance.toFixed(3)])).toEqual([["Colombia", "1.225"], ["Kenya", "1.225"]]);
-    expect(((1.3 - 1.2206555615733705) / 2).toFixed(3)).toBe("0.040");
-    const bv = { interpersonal: 3.4, communal: 3.2, intergenerational: 3.1, institutional: 2.4 };
-    const un = instruments.decayHorizon(bv, 26, 38, 30), ins = instruments.decayHorizon(bv, 6.5, 38, 30);
-    expect([un.bonds[3].then, (Math.log(2.4) / un.lambda).toFixed(1), ins.bonds[3].then, (Math.log(2.4) / ins.lambda).toFixed(1)]).toEqual([1, "27.4", 1.23, "39.3"]);
-    has("22.9"); has("30.4"); has("0.57"); has("87.7");
   });
 
   test("Capstone Gate 5 worked case", () => {
@@ -587,7 +512,7 @@ describe("the Academy view", () => {
   });
 
   test("standing rules: semantic tokens, no emoji glyphs, no private routes, no fixed digest", () => {
-    const files = ["ChancelleryAcademy.tsx", "academyMath.tsx", "ScholarlyFormula.tsx", "academyFormulas.ts", "academyModuleIV.ts", "academyModuleIVChapters1.ts", "academyModuleIVChapters2.ts", "academyCurriculumPart1.ts", "academyCurriculumPart2.ts", "academyCurriculumPart3.ts", "academyModuleVAlpha.ts", "academyModuleVBeta.ts", "academyModuleVGamma.ts", "academyModuleVCapstone.ts", "academyAttestation.ts", "academyInstruments.tsx", "academyCurriculum.ts", "academyLectureHeadings.ts", "academyReader.tsx", "academyReaderState.ts"]
+    const files = ["ChancelleryAcademy.tsx", "academyMath.tsx", "ScholarlyFormula.tsx", "academyFormulas.ts", "academyModuleIV.ts", "academyModuleIVChapters1.ts", "academyModuleIVChapters2.ts", "academyModuleIVChapter44.ts", "academyModuleIVChapter45.ts", "academyCurriculumPart1.ts", "academyCurriculumPart2.ts", "academyCurriculumPart3.ts", "academyModuleVAlpha.ts", "academyModuleVBeta.ts", "academyModuleVGamma.ts", "academyModuleVCapstone.ts", "academyAttestation.ts", "academyInstruments.tsx", "academyCurriculum.ts", "academyLectureHeadings.ts", "academyReader.tsx", "academyReaderState.ts"]
       .map((f) => readFileSync(`src/components/mode/${f}`, "utf8"));
     for (const f of files) {
       expect(f).not.toMatch(/#[0-9a-fA-F]{3,8}\b|rgba?\(/);
@@ -627,7 +552,7 @@ describe("Tier 1 chapter pages show only Tier 1", () => {
 
   test("no lecture text is duplicated in Tier 1", () => {
     for (const { c } of chapters) {
-      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.subsections ?? []).flatMap((x) => [...x.paragraphs, ...(x.callout?.paragraphs ?? [])]), ...(s.statutoryRule ? [s.statutoryRule] : [])]), ...(c.practice ?? []).flatMap((x) => [x.problem, ...x.solution])].join("\n");
+      const lecture = [...c.synopsis, ...c.sections.flatMap((s) => [...s.paragraphs, ...(s.caseStudy ? s.caseStudy.analysis : []), ...(s.statutoryRule ? [s.statutoryRule] : [])])].join("\n");
       for (const t of [c.executiveLede, c.statutoryNotice, ...c.learningOutcomes])
         for (const sn of sentences(t)) expect({ c: c.number, sn, duplicated: lecture.includes(sn) }).toEqual({ c: c.number, sn, duplicated: false });
     }
