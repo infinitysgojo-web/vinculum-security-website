@@ -55,6 +55,33 @@ export interface LectureCaseStudy {
   failureMechanism: string;
 }
 
+/** A boxed definition or bridge paragraph inside a lecture subsection (at most two per section). */
+export interface LectureCallout {
+  kind: "definition" | "bridge";
+  title: string;
+  paragraphs: string[];
+}
+
+/** A titled run of lecture prose inside a section, so long sections carry a subheading every few hundred words. */
+export interface LectureSubsection {
+  title: string;
+  paragraphs: string[];
+  callout?: LectureCallout;
+}
+
+/** A Part VII practice problem with its fully worked answer (prose, read before the quiz). */
+export interface PracticeProblem {
+  problem: string;
+  solution: string[];
+}
+
+/** One entry of a chapter's reading list: an open source the lecture relied on, with its link. */
+export interface ReadingListEntry {
+  citation: string;
+  url?: string;
+  note: string;
+}
+
 /** Section VI instrument cutaways (academyInstruments.tsx), read-only and never on the bus. */
 export type AcademyInstrumentKind = "radar" | "asymmetry" | "timeline" | "escrow" | "dominum" | "forum";
 
@@ -64,6 +91,8 @@ export interface DetailedLectureSection {
   paragraphs: string[];
   formulas?: AcademyFormula[];
   caseStudy?: LectureCaseStudy;
+  /** Further titled prose after the opening paragraphs, case study and formulas. */
+  subsections?: LectureSubsection[];
   statutoryRule?: string;
   /** An interactive instrument rendered after the section text. */
   instrument?: AcademyInstrumentKind;
@@ -87,16 +116,15 @@ export interface DetailedAcademyChapter {
   eyebrow: string;
   estimatedMinutes: number;
   executiveLede: string;
-  /**
-   * The lecture's opening overview, read inside the reader before Section I. The chapter
-   * page (Tier 1) carries only the number, eyebrow, title, executive lede, statutory notice,
-   * reading time, learning outcomes and the button that opens the lecture.
-   */
   synopsis: string[];
   statutoryNotice: string;
   learningOutcomes: string[];
   sections: DetailedLectureSection[];
   quiz: ChapterQuizQuestion[];
+  /** Part VII practice problems with worked answers, rendered before the quiz. */
+  practice?: PracticeProblem[];
+  /** Sources and further reading, rendered after the quiz. */
+  readingList?: ReadingListEntry[];
   drillType?: DrillType;
 }
 
