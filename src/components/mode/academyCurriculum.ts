@@ -47,14 +47,19 @@ export function gateProgress(gate: QuizGate, answers: Readonly<Record<string, st
 
 const proseWords = (t: string) => t.replace(/\\\(.*?\\\)/g, " x ").split(/\s+/).filter(Boolean).length;
 
-/** Words of lecture prose in a chapter: lede, synopsis, section text, case studies and rules (quiz and formulas excluded). */
+/** Words of lecture prose in a chapter: lede, synopsis, section text, subsections, callouts, case studies, rules and worked practice problems (quiz items, formulas and reading lists excluded). */
 export function chapterProseWords(c: DetailedAcademyChapter): number {
   const parts = [c.executiveLede, ...c.synopsis];
   for (const s of c.sections) {
     parts.push(...s.paragraphs);
     if (s.caseStudy) parts.push(...s.caseStudy.analysis, s.caseStudy.failureMechanism);
+    for (const sub of s.subsections ?? []) {
+      parts.push(...sub.paragraphs);
+      if (sub.callout) parts.push(...sub.callout.paragraphs);
+    }
     if (s.statutoryRule) parts.push(s.statutoryRule);
   }
+  for (const pr of c.practice ?? []) parts.push(pr.problem, ...pr.solution);
   return parts.reduce((n, p) => n + proseWords(p), 0);
 }
 
