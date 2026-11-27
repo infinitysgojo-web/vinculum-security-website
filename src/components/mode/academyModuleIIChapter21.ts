@@ -274,7 +274,7 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
       problem: "An analyst records a four-bond vector of (4.4, 3.8, 1.9, 4.1). Calculate the arithmetic mean, the population variance, identify the Liebig limiting bond, determine whether Façade Syndrome is present, and state the status of Stage Gate 1.",
       solution: [
         "1. Arithmetic Mean: \\(\\mu_{B} = \\frac{4.4 + 3.8 + 1.9 + 4.1}{4} = \\frac{14.2}{4} = 3.55\\).",
-        "2. Deviations from mean: (4.4 - 3.55 = +0.85), (3.8 - 3.55 = +0.25), (1.9 - 3.55 = -1.65), (4.1 - 3.55 = +0.55).",
+        "2. Deviations from mean: \\(4.4 - 3.55 = +0.85\\), \\(3.8 - 3.55 = +0.25\\), \\(1.9 - 3.55 = -1.65\\), \\(4.1 - 3.55 = +0.55\\).",
         "3. Squared deviations: \\(0.85^{2} = 0.7225\\), \\(0.25^{2} = 0.0625\\), \\((-1.65)^{2} = 2.7225\\), \\(0.55^{2} = 0.3025\\).",
         "4. Sum of squared deviations: \\(0.7225 + 0.0625 + 2.7225 + 0.3025 = 3.8100\\).",
         "5. Population Variance: \\(\\sigma_{B}^{2} = \\frac{3.81}{4} = 0.9525\\).",
