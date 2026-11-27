@@ -3,22 +3,10 @@ import { CHAPTER_1_1 } from "./academyModuleIChapter11";
 import { CHAPTER_1_2 } from "./academyModuleIChapter12";
 import { CHAPTER_1_3 } from "./academyModuleIChapter13";
 import { CHAPTER_1_4 } from "./academyModuleIChapter14";
-import {
-  F_DECAY,
-  F_DOMINUM,
-  F_DOMINUM_PHASE,
-  F_ESCROW_CHAIN,
-  F_FORUM_E,
-  F_FORUM_F,
-  F_FRICTION,
-  F_LIEBIG,
-  F_MEAN,
-  F_RUPTURE,
-  F_SEAL,
-  F_STATE_VECTOR,
-  F_SUCCESSION,
-  F_TRACK,
-} from "./academyFormulas";
+import { CHAPTER_2_1 } from "./academyModuleIIChapter21";
+import { CHAPTER_2_2 } from "./academyModuleIIChapter22";
+import { CHAPTER_2_3 } from "./academyModuleIIChapter23";
+import { CHAPTER_2_4 } from "./academyModuleIIChapter24";
 
 export type {
   AcademyFormula,
@@ -44,7 +32,9 @@ export const ACADEMY_MODULES_PART_1: DetailedAcademyModule[] = [
     eyebrow: "Module II · Divisional Architecture",
     title: "The 18 Operational Desks & Divisional Cadence",
     summary: "The operational rhythm of the 18 desks across the four divisions of the dashboard, tracing one signal chain from assessment and early warning, through engagement and legal architecture, to mission governance and handover.",
-    chapters: [
+    chapters: [CHAPTER_2_1, CHAPTER_2_2, CHAPTER_2_3, CHAPTER_2_4],
+  },
+];
       {
         id: "division-1",
         number: "2.1",
