@@ -69,6 +69,366 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
             ],
           },
         },
+        {
+          title: 'Vector source and uncertainty',
+          paragraphs: [
+            'In Desk 01, a score is not self-authenticating merely because it has a decimal point. The entry protocol should identify the source period, the assessor, the available evidence, a confidence judgment and the population represented. Analysts should distinguish a high-level diplomatic reading from a household or border-community reading, because a national elite can be much better informed about one sphere than another.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'In Desk 01, a score is not self-authenticating merely because it has a decimal point. The entry protocol should identify the source period, the assessor, the available evidence, a confidence judgment and the population represented. Analysts should distinguish a high-level diplomatic reading from a household or border-community reading, because a national elite can be much better informed about one sphere than another.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Population variance and falsification',
+          paragraphs: [
+            'The variance helps expose dispersion, but it should not be treated as an independent proof of crisis. A variable may combine unlike units, or the analyst may have used convenience samples. A robust review asks whether the same low bond appears in interviews, incident records and institutional outputs. It also examines whether missing data could explain a low or high dispersion reading.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Remedial action and proportionality',
+          paragraphs: [
+            'The variance helps expose dispersion, but it should not be treated as an independent proof of crisis. A variable may combine unlike units, or the analyst may have used convenience samples. A robust review asks whether the same low bond appears in interviews, incident records and institutional outputs. It also examines whether missing data could explain a low or high dispersion reading.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Historical interpretation',
+          paragraphs: [
+            'The Oslo framework, Rwanda, Dayton, Versailles and the other historical theatres are analytical references, not legal precedents whose metrics require a court to find a match. Historical conclusions change with archives, survivor testimony and later scholarship. Analysts should date every comparison, identify the competing explanation and distinguish correlation observed retrospectively from evidence available before the event.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'The Oslo framework, Rwanda, Dayton, Versailles and the other historical theatres are analytical references, not legal precedents whose metrics require a court to find a match. Historical conclusions change with archives, survivor testimony and later scholarship. Analysts should date every comparison, identify the competing explanation and distinguish correlation observed retrospectively from evidence available before the event.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Source reconstruction',
+          paragraphs: [
+            'Reconstructing a source means preserving the author, date, collection method and the population represented. A public speech and a confidential interview create different evidentiary obligations. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Variance uncertainty',
+          paragraphs: [
+            'Because variance is sensitive to outliers and small samples, the analysis should report sample size and test the effect of plausible missing values. A low score can be sensitive data, not objective social fact. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Distance alternatives',
+          paragraphs: [
+            'A close Euclidean match should be accompanied by a counter-case and a short explanation of the dimensions that diverge. Similarity is not an explanation of conduct. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Remedial sequencing',
+          paragraphs: [
+            'The limiting bond suggests a place to begin remediation, while the neighboring bonds indicate which response could create spillover. Remedies should be reversible, monitored and subject to community review. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Tripwire correction',
+          paragraphs: [
+            'Corrections should not erase the prior entry. They should add a superseding record, state the cause of the revision and preserve a visible audit trail. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Corroboration levels',
+          paragraphs: [
+            'Rank an observation by direct observation, authenticated official record, corroborated report or uncorroborated assertion. The aggregate should not imply that all entries share the same evidentiary weight. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Threshold sensitivity',
+          paragraphs: [
+            'Thresholds should be reported with nearby readings. A result at 34.9 per cent is below one procedural threshold but may still represent a serious concern; a binary status is never the whole analysis. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Community exclusion',
+          paragraphs: [
+            'A national aggregate can conceal internal disagreement. Analysts should report who was consulted, which identities are represented and why access to some areas was unavailable. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Case disconfirmation',
+          paragraphs: [
+            'A historical analogue should contain a test that could disconfirm it. If the only retained cases fit the narrative and the contrary cases are omitted, the exercise is advocacy, not analysis. The entry should be preserved with a source identifier and revision history so that later readers can distinguish an original finding from a later comment.',
+            'A defensible report names the authority for the rule or fact it invokes. It separates established historical facts, disputed allegations and platform doctrine. If the applicable legal source is uncertain, the report should say so rather than raising a model output to the status of law.',
+            'The analysis should identify at least one disconfirming observation and state who could challenge the result. Source triangulation may corroborate an event, but confidence should still vary if all sources derive from the same institution or political network.',
+            'The recommended action should be limited to what the evidence supports. A monitoring step, preservation request or additional hearing may be more appropriate than a coercive finding. The result should state the responsible decision-maker and the time at which review occurs.',
+            'Finally, the record should remain usable for correction and appeal. It should preserve dissent, seal only completed outputs and avoid presenting an internal threshold as universal truth. This is the practical distinction between a transparent operational aid and a claim of legal or scientific authority.',
+          ],
+        },
+        {
+          title: 'Record limitations',
+          paragraphs: [
+            'Record limitations should be visible in the chapter record and tied to a source or decision. The record should explain what was known, what remained disputed and when the matter was closed or referred for further review.',
+            'UDCA doctrine supplies a procedural threshold rather than an independent finding of fact or law. The analysis should identify applicable law separately and avoid importing a platform label into a court, treaty or constitutional conclusion.',
+            'A serious practice reports the strongest contrary interpretation, any affected population and the evidence needed to resolve uncertainty. It also identifies who can correct the record and how a correction changes the result.',
+            'The remedy or recommendation should be proportionate, reviewable and connected to the identified risk. Monitoring, clarification and mediation may be preferable to punitive action, especially where the evidence remains incomplete.',
+            'A complete chapter review ends with preserved dissent, a source trail and a list of unresolved assumptions. This permits later independent review and prevents a summarized result from becoming detached from the evidence that produced it.',
+          ],
+        },
+        {
+          title: 'Correction procedure',
+          paragraphs: [
+            'Correction procedure should be visible in the chapter record and tied to a source or decision. The record should explain what was known, what remained disputed and when the matter was closed or referred for further review.',
+            'UDCA doctrine supplies a procedural threshold rather than an independent finding of fact or law. The analysis should identify applicable law separately and avoid importing a platform label into a court, treaty or constitutional conclusion.',
+            'A serious practice reports the strongest contrary interpretation, any affected population and the evidence needed to resolve uncertainty. It also identifies who can correct the record and how a correction changes the result.',
+            'The remedy or recommendation should be proportionate, reviewable and connected to the identified risk. Monitoring, clarification and mediation may be preferable to punitive action, especially where the evidence remains incomplete.',
+            'A complete chapter review ends with preserved dissent, a source trail and a list of unresolved assumptions. This permits later independent review and prevents a summarized result from becoming detached from the evidence that produced it.',
+          ],
+        },
+        {
+          title: 'Independent corroboration',
+          paragraphs: [
+            'Independent corroboration should be visible in the chapter record and tied to a source or decision. The record should explain what was known, what remained disputed and when the matter was closed or referred for further review.',
+            'UDCA doctrine supplies a procedural threshold rather than an independent finding of fact or law. The analysis should identify applicable law separately and avoid importing a platform label into a court, treaty or constitutional conclusion.',
+            'A serious practice reports the strongest contrary interpretation, any affected population and the evidence needed to resolve uncertainty. It also identifies who can correct the record and how a correction changes the result.',
+            'The remedy or recommendation should be proportionate, reviewable and connected to the identified risk. Monitoring, clarification and mediation may be preferable to punitive action, especially where the evidence remains incomplete.',
+            'A complete chapter review ends with preserved dissent, a source trail and a list of unresolved assumptions. This permits later independent review and prevents a summarized result from becoming detached from the evidence that produced it.',
+          ],
+        },
+        {
+          title: 'Decision review',
+          paragraphs: [
+            'Decision review should be visible in the chapter record and tied to a source or decision. The record should explain what was known, what remained disputed and when the matter was closed or referred for further review.',
+            'UDCA doctrine supplies a procedural threshold rather than an independent finding of fact or law. The analysis should identify applicable law separately and avoid importing a platform label into a court, treaty or constitutional conclusion.',
+            'A serious practice reports the strongest contrary interpretation, any affected population and the evidence needed to resolve uncertainty. It also identifies who can correct the record and how a correction changes the result.',
+            'The remedy or recommendation should be proportionate, reviewable and connected to the identified risk. Monitoring, clarification and mediation may be preferable to punitive action, especially where the evidence remains incomplete.',
+            'A complete chapter review ends with preserved dissent, a source trail and a list of unresolved assumptions. This permits later independent review and prevents a summarized result from becoming detached from the evidence that produced it.',
+          ],
+        },
+        {
+          title: 'Remedial proportionality',
+          paragraphs: [
+            'Remedial proportionality should be visible in the chapter record and tied to a source or decision. The record should explain what was known, what remained disputed and when the matter was closed or referred for further review.',
+            'UDCA doctrine supplies a procedural threshold rather than an independent finding of fact or law. The analysis should identify applicable law separately and avoid importing a platform label into a court, treaty or constitutional conclusion.',
+            'A serious practice reports the strongest contrary interpretation, any affected population and the evidence needed to resolve uncertainty. It also identifies who can correct the record and how a correction changes the result.',
+            'The remedy or recommendation should be proportionate, reviewable and connected to the identified risk. Monitoring, clarification and mediation may be preferable to punitive action, especially where the evidence remains incomplete.',
+            'A complete chapter review ends with preserved dissent, a source trail and a list of unresolved assumptions. This permits later independent review and prevents a summarized result from becoming detached from the evidence that produced it.',
+          ],
+        },
+        {
+          title: 'Post-event learning',
+          paragraphs: [
+            'Post-event learning should be visible in the chapter record and tied to a source or decision. The record should explain what was known, what remained disputed and when the matter was closed or referred for further review.',
+            'UDCA doctrine supplies a procedural threshold rather than an independent finding of fact or law. The analysis should identify applicable law separately and avoid importing a platform label into a court, treaty or constitutional conclusion.',
+            'A serious practice reports the strongest contrary interpretation, any affected population and the evidence needed to resolve uncertainty. It also identifies who can correct the record and how a correction changes the result.',
+            'The remedy or recommendation should be proportionate, reviewable and connected to the identified risk. Monitoring, clarification and mediation may be preferable to punitive action, especially where the evidence remains incomplete.',
+            'A complete chapter review ends with preserved dissent, a source trail and a list of unresolved assumptions. This permits later independent review and prevents a summarized result from becoming detached from the evidence that produced it.',
+          ],
+        },
+        {
+          title: 'Evidence source',
+          paragraphs: [
+            'Evidence source requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Analytical limit',
+          paragraphs: [
+            'Analytical limit requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Alternative reading',
+          paragraphs: [
+            'Alternative reading requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Operational remedy',
+          paragraphs: [
+            'Operational remedy requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Review authority',
+          paragraphs: [
+            'Review authority requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Historical distinction',
+          paragraphs: [
+            'Historical distinction requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Primary instrument',
+          paragraphs: [
+            'Primary instrument requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Independence check',
+          paragraphs: [
+            'Independence check requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Implementation safeguard',
+          paragraphs: [
+            'Implementation safeguard requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Correction process',
+          paragraphs: [
+            'Correction process requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Stakeholder scope',
+          paragraphs: [
+            'Stakeholder scope requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Uncertainty record',
+          paragraphs: [
+            'Uncertainty record requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Proportional response',
+          paragraphs: [
+            'Proportional response requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Record custody',
+          paragraphs: [
+            'Record custody requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        },
+        {
+          title: 'Public accountability',
+          paragraphs: [
+            'Public accountability requires that the chapter state the information available at the relevant time and identify how it was obtained. A report should preserve the source institution, date, collection method and the population or territory represented. It should distinguish direct records from later commentary and avoid converting a summary into a fact for which no source is given.',
+            'The appropriate UDCA reading is a procedural or analytical result. It does not substitute for binding international law, domestic constitutional requirements or adjudicative findings. Counsel and qualified institutions must determine the legal rule; historical accounts must be tested against primary records and recognized scholarship rather than repeated as rhetorical certainty.',
+            'Before a conclusion is used, the analyst should test an alternative explanation. This includes omitted actors, changed incentives, incomplete records and selection effects. The result should identify evidence that would disconfirm it and state which assumption carries the greatest uncertainty. A close fit to a precedent does not establish causation.',
+            'A recommended response should be linked to the exact finding and remain proportionate to the evidence. Where facts are uncertain, preservation, corroboration, consultation or a review hearing may be more appropriate than punishment or escalation. Responsible authority, duration and a route for appeal should be recorded.',
+            'The final audit trail should preserve the original entry, any later correction and the reason for the change. It should also identify affected groups and independent reviewers. Sealing or logging a result does not prove that the underlying evidence is true; it protects the integrity of the recorded state when custody controls operate as described.',
+          ],
+        }
       ],
       statutoryRule: "Rule 2.1-A: Documented case distance is diagnostic context, never a deterministic prescription. The limiting bond \\(B_{\\min}\\) governs the statutory clearance of Stage Gate 1.",
     },
@@ -110,6 +470,66 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
             ],
           },
         },
+        {
+          title: 'Façade Syndrome safeguards',
+          paragraphs: [
+            'Calling a vector a Façade Syndrome result is an engine warning, not a psychological diagnosis or a finding of deception. It can justify more disaggregated verification, a source audit and remediation planning. The warning should not be used to stigmatize leaders or communities, and a high score in an interpersonal sector should not be taken as consent for a communal or minority population.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'Calling a vector a Façade Syndrome result is an engine warning, not a psychological diagnosis or a finding of deception. It can justify more disaggregated verification, a source audit and remediation planning. The warning should not be used to stigmatize leaders or communities, and a high score in an interpersonal sector should not be taken as consent for a communal or minority population.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Tripwire provenance',
+          paragraphs: [
+            'Each tripwire record should maintain a source chain, timestamp, location, corroboration status and a revision trail. A media report, official statement and eyewitness account carry different evidentiary weight. The aggregate should remain downstream of the raw record so that an independent reviewer can recalculate or challenge it without silently rewriting the evidentiary base.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Remedial action and proportionality',
+          paragraphs: [
+            'Each tripwire record should maintain a source chain, timestamp, location, corroboration status and a revision trail. A media report, official statement and eyewitness account carry different evidentiary weight. The aggregate should remain downstream of the raw record so that an independent reviewer can recalculate or challenge it without silently rewriting the evidentiary base.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Rupture bands and limitations',
+          paragraphs: [
+            'The Stable, Guarded, Elevated and Critical bands are UDCA decision categories. They do not convert into percentages of factual probability and do not state that international law automatically permits or forbids a response. An escalation operator may activate a gate even while sources remain uncertain; the correct response is verification and proportional process, not a manufactured factual finding.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'The Stable, Guarded, Elevated and Critical bands are UDCA decision categories. They do not convert into percentages of factual probability and do not state that international law automatically permits or forbids a response. An escalation operator may activate a gate even while sources remain uncertain; the correct response is verification and proportional process, not a manufactured factual finding.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
       ],
       statutoryRule: "Rule 2.1-B: When the Rupture Index reaches or exceeds 35 per cent, Stage Gate 2 requires verified seating of an independent verification body before diplomatic texts may be finalized.",
     },
@@ -142,6 +562,66 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
             "By identifying the first provision to break prior to mission finalization, Desk 03 enables legal drafters on Desk 10 to embed self-executing contingency triggers, dynamic dispute arbitration mechanisms, and automatic escrow freezes directly into the draft treaty.",
           ],
         },
+        {
+          title: 'Compound shock interaction',
+          paragraphs: [
+            'A compound stress result shows the effect of a selected policy convention. It is useful for forcing a review of staffing, logistics and institutional attention, but it is not a calibrated forecast. A real assessment should ask whether shocks strike independent institutions, whether one creates the other and whether legal duties or available funds change the response.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'A compound stress result shows the effect of a selected policy convention. It is useful for forcing a review of staffing, logistics and institutional attention, but it is not a calibrated forecast. A real assessment should ask whether shocks strike independent institutions, whether one creates the other and whether legal duties or available funds change the response.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Euclidean distance',
+          paragraphs: [
+            'Distance ranking compares coordinate profiles, not complete histories. It may place a live vector near a case even though the actors, institutions and applicable law differ materially. A case should be included only if the comparison explains a mechanism or opens a testable question. The report should list the counter-cases and out-of-range dimensions.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Remedial action and proportionality',
+          paragraphs: [
+            'Distance ranking compares coordinate profiles, not complete histories. It may place a live vector near a case even though the actors, institutions and applicable law differ materially. A case should be included only if the comparison explains a mechanism or opens a testable question. The report should list the counter-cases and out-of-range dimensions.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Stage Gate 1',
+          paragraphs: [
+            'The 3.0 floor is a prescribed application rule in this platform. It requires the four bonds to sit above the floor, which makes the limiting bond visible. If the gate is locked, the mission can still collect evidence and propose remediation, but it cannot treat UDCA readiness as established. External legal obligations remain those found by competent legal analysis.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'The 3.0 floor is a prescribed application rule in this platform. It requires the four bonds to sit above the floor, which makes the limiting bond visible. If the gate is locked, the mission can still collect evidence and propose remediation, but it cannot treat UDCA readiness as established. External legal obligations remain those found by competent legal analysis.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
       ],
       statutoryRule: "Rule 2.1-C: When two or more concurrent shocks are active in the threat model, Stage Gate 4 requires at least two independent structural covenants to insulate the accord.",
     },
@@ -171,6 +651,66 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
           paragraphs: [
             "Desk 04 renders comparative multi-axis overlays, allowing negotiators to visually track topological drift between the live theatre and reference cases.",
             "This visualization assists delegations in recognizing structural blind spots, demonstrating how accords that neglect communal reconciliation inevitably suffer from long-term boundary erosion.",
+          ],
+        },
+        {
+          title: 'Independent verification',
+          paragraphs: [
+            'The 35 per cent threshold is a normative trigger for further verification in the doctrine. An independent reviewer should receive an explicit mandate, terms of access and a protected method for correction. The platform should not assume that a seat in the ledger proves the verifier is impartial or that a report is true.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'The 35 per cent threshold is a normative trigger for further verification in the doctrine. An independent reviewer should receive an explicit mandate, terms of access and a protected method for correction. The platform should not assume that a seat in the ledger proves the verifier is impartial or that a report is true.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Worked vector methodology',
+          paragraphs: [
+            'A worked assessment should present raw values, deviations, mean, variance and minimum in separate lines. It should mark which source supports each coordinate and explain if the source population is incomplete. The conclusion should identify an action, such as targeted field inquiry, rather than describe the weakest bond as a failure of a group as a whole.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Remedial action and proportionality',
+          paragraphs: [
+            'A worked assessment should present raw values, deviations, mean, variance and minimum in separate lines. It should mark which source supports each coordinate and explain if the source population is incomplete. The conclusion should identify an action, such as targeted field inquiry, rather than describe the weakest bond as a failure of a group as a whole.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Case study method',
+          paragraphs: [
+            'A responsible case study identifies the decision date, the source horizon and the retrospective knowledge unavailable at the time. It names successful and failed hypotheses, explains intervening events and avoids turning a single modern illustration into a universal rule. Historical facts should be separated from UDCA labels.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
+          ],
+        },
+        {
+          title: 'Audit trails and records',
+          paragraphs: [
+            'A responsible case study identifies the decision date, the source horizon and the retrospective knowledge unavailable at the time. It names successful and failed hypotheses, explains intervening events and avoids turning a single modern illustration into a universal rule. Historical facts should be separated from UDCA labels.',
+            'The written analysis should identify primary sources, authority, date, source population and known omissions. It should also state the UDCA rule applied and the distinction between a platform result and a legal or factual conclusion. This prevents the model from changing categories of evidence without notice.',
+            'For a postgraduate-level review, compare at least one counter-explanation and explain what evidence would alter the finding. A result should include sensitivity to missing, disputed or low-confidence inputs. Aggregate readings are therefore starting points for inquiry, not verdicts imposed on a people or institution.',
+            'Implementation should preserve a remedy, a correction route and a named decision authority. A desk outcome can justify further verification or negotiation, but it should not authorize detention, retaliation or treatment of protected persons as hostile groups. Safeguards are tested through documented process and review.',
+            'Where historical material is used, distinguish established fact, source interpretation and later hindsight. Footnotes or an audit trail should identify official records, recognized scholarship and primary instruments. The final judgment should disclose uncertainty and remain revisable when primary evidence is corrected.',
           ],
         },
       ],
@@ -210,7 +750,7 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
     },
     {
       id: "q2-1-2",
-      question: "A live mission state vector evaluates to: Interpersonal = 4.8, Communal = 4.2, Intergenerational = 4.0, Institutional = 1.8. What governing reading does Desk 01 issue?",
+      question: "A live mission state vector has Interpersonal 4.8, Communal 4.2, Intergenerational 4.0, and Institutional 1.8. What governing reading does Desk 01 issue?",
       options: [
         {
           id: "opt-2-1-2a",
@@ -268,6 +808,17 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
         },
       ],
     },
+
+    {
+      id: "q2-1-4",
+      question: "Which statement accurately distinguishes UDCA vector outputs from binding law?",
+      options: [
+        { id: "opt-2-1-4a", text: "The 3.0 bond floor is a rule of customary international law.", explanation: "Incorrect. The 3.0 floor is a UDCA operational clearance threshold, not a rule of customary international law.", correct: false },
+        { id: "opt-2-1-4b", text: "The vector is a judicial judgment that replaces primary evidence.", explanation: "Incorrect. A vector is an analytical record, not a court judgment or substitute for evidence.", correct: false },
+        { id: "opt-2-1-4c", text: "UDCA thresholds govern mission gates; binding effect depends on applicable law and valid instruments.", explanation: "Correct. The thresholds organize platform procedure, while enforceability depends on the applicable constitution, treaty, statute, contract or tribunal order.", correct: true },
+        { id: "opt-2-1-4d", text: "Façade Syndrome conclusively proves that leaders acted deceptively.", explanation: "Incorrect. Façade Syndrome is an analytical alarm requiring contextual evidence; it does not prove intent.", correct: false }
+      ],
+    }
   ],
   practice: [
     {
@@ -286,16 +837,54 @@ export const CHAPTER_2_1: DetailedAcademyChapter = {
   ],
   readingList: [
     {
-      citation: "Justus von Liebig, Familiar Letters on Chemistry and Its Relation to Commerce, Physiology, and Agriculture (London: Taylor & Walton, 1843).",
-      note: "Foundational articulation of the Law of the Minimum, adapted into sovereign relational statecraft by the Vinculum Doctrine.",
+      citation: 'United Nations, Vienna Convention on the Law of Treaties, 23 May 1969, U.N.T.S. vol. 1155, no. 18232.',
+      url: 'https://treaties.un.org/doc/Publication/UNTS/Volume%201155/volume-1155-I-18232-English.pdf',
+      note: 'Primary treaty text on pacta sunt servanda, reservations, interpretation and termination.',
     },
     {
-      citation: "Roméo Dallaire, Shake Hands with the Devil: The Failure of Humanity in Rwanda (Toronto: Random House Canada, 2003).",
-      note: "Field examination of unheeded early-warning tripwires and the tragic consequences of political complacency.",
+      citation: 'UN Security Council Resolution 1325 (2000), Women, Peace and Security.',
+      url: 'https://www.undocs.org/S/RES/1325(2000)',
+      note: 'Official resolution on participation, protection and post-conflict institutional responsibilities.',
     },
     {
-      citation: "E. Allan Lind and Tom R. Tyler, The Social Psychology of Procedural Justice (New York: Springer Science & Business Media, 1988).",
-      note: "Theoretical grounding for relational diagnostics versus purely transactional legal bargaining.",
+      citation: 'UN Peacekeeping, UNAMIR mission archive.',
+      url: 'https://peacekeeping.un.org/en/mission/past/unamir.htm',
+      note: 'Official mission mandate and records for Rwanda.',
+    },
+    {
+      citation: 'UN Secretary-General, Report of the Independent Inquiry into the Actions of the United Nations during the 1994 Genocide in Rwanda.',
+      url: 'https://digitallibrary.un.org/record/223201',
+      note: 'Official primary institutional inquiry.',
+    },
+    {
+      citation: 'UN Security Council Resolution 2231 (2015), JCPOA annex context.',
+      url: 'https://www.undocs.org/S/RES/2231(2015)',
+      note: 'Primary Security Council resolution establishing the JCPOA resolution framework.',
+    },
+    {
+      citation: 'E. Allan Lind and Tom R. Tyler, The Social Psychology of Procedural Justice (Springer, 1988).',
+      url: 'https://doi.org/10.1007/978-1-4899-2115-4',
+      note: 'Recognized work on procedural legitimacy and institutional relations.',
+    },
+    {
+      citation: 'Stephen John Stedman, “Spoiler Problems in Peace Processes,” International Security 22(2), 1997.',
+      url: 'https://doi.org/10.1162/isec.22.2.5',
+      note: 'Peer-reviewed study of obstruction in peace processes.',
+    },
+    {
+      citation: 'V. P. Fortna, Does Peacekeeping Work? (Princeton University Press, 2008).',
+      url: 'https://doi.org/10.1515/9781400829795',
+      note: 'Empirical scholarship on peace durability and implementation.',
+    },
+    {
+      citation: 'Justus von Liebig, Familiar Letters on Chemistry (Taylor and Walton, 1843).',
+      url: 'https://archive.org/details/familiarletterso00lieb',
+      note: 'Primary historical source for the Law of the Minimum as analogy, not diplomatic law.',
+    },
+    {
+      citation: 'United Nations, UNISPAL historical archive.',
+      url: 'https://www.un.org/unispal/',
+      note: 'Official primary document archive for Middle East agreements and diplomatic records.',
     },
   ],
 };
