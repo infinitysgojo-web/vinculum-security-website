@@ -6,18 +6,18 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
   number: "1.1",
   eyebrow: "Module I · Chapter 1.1",
   title: "The Fallacy of Constructive Ambiguity in Sovereign Statecraft",
-  estimatedMinutes: 42,
-  executiveLede: "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability that guarantees post-hoc divergence, bad-faith exploitation, and catastrophic treaty rupture.",
+  estimatedMinutes: 109,
+  executiveLede: "Diplomatic agreements sometimes use open-textured or deliberately deferred language to secure consent where parties cannot yet agree on every detail. Such choices can preserve room for negotiation, but they can also leave important questions to later interpretation and implementation. This chapter examines how to distinguish productive flexibility from unmanaged uncertainty, how power and institutional capacity affect the risks of unresolved terms, and how clear procedures, evidence rules, and review mechanisms can make commitments more usable without pretending that numbers or technology eliminate legal judgment.",
   synopsis: [
-    "When crisis strikes, ambiguous clauses do not foster compromise. They become the fault line along which covenants rupture: the stronger party exploits the ambiguity to justify unilateral action, while the vulnerable party suffers institutional erosion and domestic delegitimization.",
-    "The Unified Deterministic Chancellery Apparatus (UDCA) rejects linguistic elasticity. In its place it introduces Relational Determinism: statecraft defined not by aspirational rhetoric or malleable communiqués, but by quantifiable, verifiable structural thresholds.",
-    "This chapter performs an exhaustive structural autopsy on historical treaties, analyzes the mathematical mechanism by which semantic vagueness induces load concentration, deconstructs the fatal failures of twentieth-century accords, and establishes the five statutory invariants required for permanent sovereign drafting.",
+    "Unresolved wording can create divergent expectations, but it does not by itself prove bad faith, determine who has the stronger legal claim, or predict that an agreement will fail. Historical outcomes depend on the instrument's text and legal form, the parties' conduct, institutional capacity, political context, and the procedures available when disagreement arises.",
+    "The Chancellery's Relational Determinism is presented here as a design and audit framework, not as a rule of international law binding all states. Measurement and verification can clarify factual questions; applicable law, agreed interpretive methods, and authorized decision-makers remain essential where legal judgment is required.",
+    "Through primary texts, judicial decisions, and comparative exercises, this chapter distinguishes ambiguity from vagueness, tests claims against documentary evidence, and develops practical methods for making obligations, evidence, exceptions, and dispute procedures understandable to the parties who must use them.",
   ],
-  statutoryNotice: "Statutory Invariant: Ambiguity is the mathematical precursor to treaty rupture. If an enforcement obligation cannot be computed, audited, or falsified through deterministic telemetry, it does not exist as sovereign law.",
+  statutoryNotice: "Doctrinal notice: The Chancellery's preference for measurable obligations is an institutional design principle, not a universal legal test. A term that requires interpretation may still form part of a valid legal commitment; its meaning and effect depend on the instrument, applicable law, and authorized interpretive process.",
   learningOutcomes: [
     "Deconstruct the historical reliance on diplomatic vagueness in twentieth-century bilateral and multilateral accords.",
-    "Identify how asymmetric leverage converts linguistic ambiguity into unilateral exploitation and strategic entrapment.",
-    "Apply Relational Determinism to replace aspirational clauses with mathematically falsifiable operational thresholds.",
+    "Assess how asymmetries of power, information, and capacity may affect the distribution of risks created by an unresolved term.",
+    "Use the Relational Determinism framework to identify measurable questions while preserving legal standards that require interpretation.",
     "Master the Chancellery protocol for auditing covenant texts prior to sovereign ratification using the Sovereign Redliner.",
   ],
   sections: [
@@ -25,10 +25,10 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       heading: "I. The Historical Genesis of Constructive Ambiguity",
       subheading: "Linguistic Compromise as an Instrument of Postponed Conflict",
       paragraphs: [
-        "In classical twentieth-century diplomacy, the professional merit of the plenipotentiary was almost universally evaluated by the achievement of a signed instrument rather than the long-term structural viability of the underlying covenants. When bilateral or multilateral negotiations reached an intractable impasse over foundational questions such as territorial borders, sovereign resource ownership, military demilitarization, or mutual security guarantees, negotiators frequently resorted to what Lord Caradon famously termed constructive ambiguity. This practice entails the deliberate drafting of treaty provisions that permit competing sovereign entities to extract divergent, mutually incompatible legal interpretations from the exact same agreed text.",
-        "The underlying doctrinal assumption of constructive ambiguity was that the passage of time, accompanied by economic trade, diplomatic socialization, and commercial intercourse, would naturally soften ideological rivalries and reconcile conflicting parties. Diplomatic architects argued that securing signatures on a vaguely worded document created an irreversible momentum toward peace, allowing future generations of statesmen to resolve contentious details under conditions of enhanced mutual trust.",
-        "This foundational assumption has been decisively disproven by modern geopolitical history. Rather than fostering trust, linguistic elasticity creates a latent constitutional fissure within the international architecture. While both delegations celebrate a tactical diplomatic triumph in domestic press conferences and legislative assemblies, each party immediately begins acting upon its own subjective, self-serving interpretation of the accord.",
-        "As soon as an exogenous shock occurs, such as domestic economic contraction, political leadership succession, currency volatility, natural resource scarcity, or regional military realignment, the latent divergence rapidly metastasizes into an acute international crisis. The militarily or economically dominant party inevitably enforces its preferred reading through coercive pressure, financial sanctions, or military mobilization, while the vulnerable party feels betrayed, alleging bad faith and unilateral treaty breach. Consequently, constructive ambiguity does not prevent war; it merely schedules it for a later date under conditions of increased political cynicism and diminished structural trust.",
+        "Diplomatic texts sometimes leave an issue open, defer it to a later process, or use a standard whose application depends on context. These techniques can help parties conclude an agreement when they cannot settle every detail, but they can also move difficult choices into implementation. Whether a provision is genuinely ambiguous, deliberately flexible, or simply contested must be established from its text, legal form, negotiating record, and subsequent application—not assumed from the mere fact of disagreement.",
+        "One rationale for leaving some questions open is that a negotiated text can secure agreement on immediate steps while permitting later talks on details the parties cannot settle at once. A more critical account is that deferral may conceal disagreement or shift costs to future decision-makers. These possibilities are not mutually exclusive. To assess a particular instrument, analysts need evidence about the negotiations, the text's structure, the parties' stated expectations, and what happened during implementation; a general claim about diplomatic practice cannot substitute for that case-specific work.",
+        "A document may allow different political constituencies to support it for different reasons, but that fact alone does not establish that the text has two legally incompatible meanings. The analyst should identify the exact provision, set out the competing interpretations, and apply the relevant interpretive rules and evidence. The Vienna Convention on the Law of Treaties provides an important framework for interpreting treaties to which it applies; it does not turn every political document or institutional resolution into a treaty.",
+        "External shocks can expose gaps in an agreement, but they do not predetermine how the parties will respond. A leadership change, fiscal constraint, resource shortage, or regional crisis may lead to consultation, renegotiation, lawful suspension, non-performance, or escalation, depending on the instrument and context. Power asymmetries can shape the parties' options and the distribution of consequences, yet they do not establish that the more powerful party will always prevail or that a disputed interpretation is legally correct.",
       ],
       caseStudy: {
         title: "The Structural Autopsy of United Nations Security Council Resolution 242 (1967)",
@@ -45,23 +45,38 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
         {
           title: "The Asymmetry of Textual Exploitation",
           paragraphs: [
-            "Linguistic ambiguity is never neutral in its distribution of strategic risk. In any bilateral or multilateral treaty, the ability to exploit vague wording is directly proportional to a signatory state economic, military, and institutional dominance. When an ambiguous treaty clause is invoked during a dispute, the hegemon possesses the unilateral legal apparatus, international lobbying power, and coercive capacity to assert its interpretation as the de facto operational reality.",
-            "For vulnerable and developing sovereign states, signing an ambiguous accord is tantamount to signing an open-ended concession. Lacking the naval power, currency dominance, or diplomatic leverage to enforce their own reading, they are forced to watch as the stronger signatory expands its operational footprint within the gray zones created by careless drafting.",
-            "In relational statecraft, this dynamic is understood as asymmetric load migration. The ambiguous clause acts as a structural conduit that shunts diplomatic stress away from the hegemon and deposits the entire relational burden upon the weaker partner domestic institutions, eventually provoking civil unrest or governmental collapse.",
+            "Ambiguity can distribute strategic risk unevenly, especially where one party has greater resources, access to information, or ability to shape implementation. That is a hypothesis to test in each case, not a universal law. Power differences do not by themselves establish that a stronger state will prevail in interpretation, that a weaker state lacks legal remedies, or that a disputed provision has one predetermined meaning.",
+            "A practical analysis identifies the specific decision the clause leaves open, who has authority to make that decision, which party can obtain or contest the relevant evidence, and what review or remedy is available. It then asks whether differences in capacity affect those steps. The answer may vary by issue: a state with greater technical resources may still be constrained by a joint commission, domestic law, international adjudication, political costs, or the other party's control over necessary cooperation.",
+            "The Chancellery uses the term 'asymmetric load migration' as an analytical metaphor for examining how costs and risks may shift between parties. It is not a measured physical quantity unless a particular model defines variables, data, and a valid method of estimation. In a case study, students should identify which burdens are observable, who bears them, and what evidence supports the proposed causal link rather than infer institutional collapse from a metaphor.",
           ],
           callout: {
             kind: "bridge",
             title: "Bridge to Desk 10: The Sovereign Redliner",
             paragraphs: [
-              "Inside Desk 10 (Treaty Drafting and Sovereign Redlines), the UDCA incorporates a real-time linguistic scanner that evaluates treaty drafts against the Ambiguity Vulnerability Index. The system highlights non-deterministic qualifiers such as reasonable, customary, equitable, and timely, requiring the operator to either replace them with hard numerical constants or assign a formal reservation before clearance can be granted.",
+              "A drafting-review instrument can flag terms such as 'reasonable,' 'customary,' 'equitable,' and 'timely' for human examination. A flagged term is not automatically defective: it may be a deliberate legal standard whose meaning is supplied by context, practice, or an authorized decision-maker. Reviewers should record why the term is used, what evidence or interpretive process applies, and whether the parties need a definition, examples, procedure, or review mechanism. The instrument supports issue-spotting; it does not decide the legal meaning or require a numerical substitute.",
             ],
           },
         },
         {
-          title: "The Temporal Decay of Diplomatic Goodwill",
+          title: "Open Terms Across the Life of an Agreement",
           paragraphs: [
-            "Proponents of constructive ambiguity argue that ambiguities can be resolved through subsequent protocols once confidence is established. However, empirical telemetry across two hundred post-Cold War accords demonstrates that diplomatic goodwill exhibits a rapid exponential decay rate following the signing of an agreement.",
-            "The celebratory atmosphere of a treaty summit dissipates as soon as implementation costs must be paid. If the implementation terms were left vague to achieve signing, domestic factions on both sides will accuse their negotiators of capitulation. Rather than converging toward harmony, the parties experience divergent political trajectories, converting the initial ambiguity into an insurmountable ideological barrier.",
+            "Some agreements deliberately assign details to later protocols, joint bodies, or continuing negotiations. That choice may be sensible where technical knowledge is incomplete or where a framework is needed before parties can resolve every issue. It can also create risk if the later process lacks a timetable, authority, interim rule, or agreed method for resolving deadlock. Whether the arrangement succeeds depends on the text and the political and institutional conditions in which it operates.",
+            "Goodwill is not a quantity that can be assumed to decay at a universal rate. A claim about declining trust requires evidence, a defined measure, and a specified population or time period; a claim that ambiguity caused the decline additionally requires a causal analysis. Students should avoid invented aggregate statistics and instead trace documented changes in statements, implementation, cooperation, or public opinion, while considering alternative explanations such as leadership change, material incentives, or external events.",
+            "When an agreement reserves an issue for later decision, the drafting team can reduce avoidable uncertainty by recording the reserved question, who will negotiate it, when review occurs, what interim arrangement applies, and what happens if talks do not produce agreement. These measures do not promise that goodwill will persist. They make the parties' procedural expectations clearer and help successors understand which questions remain open.",
+          ],
+        },
+        {
+          title: "When Strategic Ambiguity Can Be Functional",
+          paragraphs: [
+            "The chapter's critique of unmanaged ambiguity should not be mistaken for a claim that every open term is a drafting failure. Negotiators sometimes preserve room for interpretation because a precise formula is not yet possible, because parties need to secure immediate protections before resolving a larger political question, or because several legal systems must operate within one text. The relevant distinction is between an openly managed area of flexibility and a concealed disagreement that each party assumes will later be resolved in its own favor.",
+            "A deliberately open term can function as a bridge only if the parties understand the decision they are postponing. A useful record identifies the unresolved issue, the interpretations that remain possible, the process for narrowing them, and the conduct expected in the meantime. Without that shared recognition, two delegations may sign the same sentence while preparing incompatible explanations for domestic audiences. The term's apparent simplicity then hides a future contest rather than managing one.",
+            "The parties may have reasons to avoid committing to one numerical value before they possess adequate data. For example, a technical standard could be reviewed after a jointly agreed baseline is collected. In that case, the instrument can specify who gathers the evidence, how it is checked, when the review occurs, and what interim rule applies. A later decision is not inherently evasive; it becomes risky when the agreement leaves the authority, timetable, and consequences of delay unstated.",
+            "Strategic flexibility can also protect a negotiation from false precision. If the parties cannot predict the full range of future circumstances, a rigid formula may transfer unacceptable risk to one side or encourage performance that meets the metric while defeating the purpose. An open standard may better accommodate changing facts, provided that its application is bounded by the instrument's purpose, relevant factors, a reason-giving process, and a credible route for review.",
+            "The opposite risk is that openness can shift bargaining power after signature. A party with greater control over facts, institutions, or essential resources may be able to shape how the provision is applied, while the other party bears the costs of waiting. The analyst should therefore ask not only whether flexibility was intended but who controls its exercise, who can invoke the review process, and whether the interim arrangement protects both parties while uncertainty remains.",
+            "A distinction between constructive and destructive ambiguity cannot be made from style alone. Ask whether the parties have a shared understanding that an issue is open; whether they have agreed a process to address it; whether interim conduct is clear; whether the decision-maker is accepted; and whether each side can contest the evidence. If the answer is no on several of these points, the agreement may have deferred the conflict without governing the deferral.",
+            "The term 'constructive ambiguity' is therefore best treated as a claim about a function, not a compliment automatically earned by vague language. To show that ambiguity was constructive, an analyst needs evidence that the negotiated openness enabled agreement or managed a transition and that the parties had a workable way to continue. To show that it was harmful, the analyst needs to identify the unresolved question, its consequences, and the mechanism by which the lack of a shared process affected implementation.",
+            "A seminar exercise can present two draft clauses on the same topic: one with a fixed threshold that depends on unavailable data, and one with an open standard but a transparent review procedure. Students should compare the assumptions, implementation burdens, risks of unilateral control, and options for correction. The better draft is not necessarily the one with more numbers; it is the one whose flexibility or precision matches the parties' information, authority, and consent.",
+            "The written conclusion should identify what evidence would change the analyst's assessment. New minutes might show that a term was deliberately reserved; an agreed protocol might establish a functioning review route; implementation records might show that one party could not access the required information. Stating these evidentiary conditions makes the analysis open to revision and helps distinguish a research conclusion from an untestable judgment about the parties' motives.",
           ],
         },
         {
@@ -75,6 +90,20 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
           ],
         },
         {
+          title: "Read a Security Council Resolution Through Its Institutional Setting",
+          paragraphs: [
+            "Resolution 242 is a Security Council resolution, not a treaty negotiated and ratified by the affected states. That distinction changes the starting point for analysis. The Vienna Convention on the Law of Treaties supplies treaty-interpretation rules for treaties within its scope; it should not be mechanically applied as though the Council's institutional act were itself a bilateral treaty. The resolution's authority and effect must instead be assessed through the UN Charter, the Council's competence, the adopted text, and relevant institutional practice.",
+            "Article 25 of the Charter provides that UN members agree to accept and carry out Security Council decisions in accordance with the Charter. It does not answer, in isolation, whether every sentence in every resolution is a binding decision. The analyst must read the particular instrument, its language, context, the Charter provisions engaged, and the circumstances of adoption. A resolution can contain different kinds of language, and the legal effect of a specific paragraph should not be assumed from its heading alone.",
+            "The International Court of Justice's Namibia advisory opinion provides an institutional reference point for interpreting Security Council resolutions. In discussing the legal effects of Resolution 276, the Court considered the terms of the resolution, the discussions leading to it, the Charter provisions invoked, and the circumstances relevant to the Council's action. The case does not decide the meaning of Resolution 242 or transfer its result automatically to another resolution. It demonstrates why institutional context and the specific text matter when evaluating a Council act.",
+            "For Resolution 242, the researcher should separate what the Council adopted from what individual representatives said during the meeting, what affected parties later asserted, and what subsequent Council resolutions did. The contemporaneous verbatim record can show the public positions of members who spoke; it cannot by itself establish the private understanding of every participant or the legally correct interpretation for all later purposes. The adopted text, the record, and later practice are complementary but non-identical sources.",
+            "A disciplined reading also examines the resolution as a whole. Its preamble, operative paragraphs, references to principles of international law, and treatment of termination of belligerency, sovereignty, territorial integrity, secure and recognized boundaries, and a just settlement interact. Students should not isolate a disputed phrase and treat it as if the rest of the text supplied no constraints. Nor should they claim that a single grammatical choice explains all subsequent political and legal developments.",
+            "The exercise can be conducted in four passes. First, annotate the official text and identify each operative verb, addressee, condition, and institutional reference. Second, read the Council meeting record and attribute each interpretation to its speaker. Third, compare later relevant institutional acts and statements without assuming that they retroactively rewrite the original resolution. Fourth, state a conclusion that distinguishes textual observation, legal interpretation, and historical-causal inference.",
+            "Students should also record the limitations of their source set. A UN document page may provide access to the adopted resolution and verbatim records, while a later case page may summarize an advisory opinion. Detailed legal propositions should be checked against the judgment itself and cited by paragraph. If the student has consulted only an official summary, the paper should say so and avoid presenting a detailed holding that the summary does not contain.",
+            "The broader lesson is that institutional texts cannot be judged by a single drafting test detached from their source of authority. A treaty, a Security Council resolution, a political memorandum, and an implementation protocol may all use similar words while operating through different legal frameworks. Source classification is therefore part of close reading, not a preliminary formality; it determines which interpretive rules and decision-makers are relevant.",
+            "Record that classification with each conclusion so later readers can see which legal framework and evidentiary limits informed the analyst's view.",
+          ],
+        },
+        {
           title: "The Negotiation Record as Evidence, Not Decoration",
           paragraphs: [
             "The primary record surrounding a multilateral text can include draft resolutions, amendments, meeting transcripts, official explanations of vote, letters submitted to the Secretary-General, and later reports by the institution that adopted the instrument. These materials answer different questions. A meeting record can show what a representative publicly argued before adoption; it cannot necessarily reveal the private understanding of every delegation. A proposal that was rejected is evidence that someone advanced it, not evidence that the final text silently incorporates it. A later explanation can show how a government understood its position at that later moment, but it should not be retroactively treated as the common intention of all participants.",
@@ -85,39 +114,39 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 1.1-A: Any treaty clause containing subjective adjectives without explicit mathematical thresholds constitutes a latent rupture point and is rejected by the Sovereign Redliner.",
+      statutoryRule: "Chancellery review rule 1.1-A: Flag open-textured terms for contextual review. A flag is an editorial prompt, not a finding of invalidity, breach, or inevitable rupture under international law.",
     },
     {
       heading: "II. The Mechanics of Relational Determinism",
-      subheading: "Replacing Aspirational Rhetoric with Falsifiable Invariants",
+      subheading: "Using measurable commitments without confusing metrics with law",
       paragraphs: [
-        "The Unified Deterministic Chancellery Apparatus (UDCA) departs radically from the tradition of diplomatic vagueness. In its place, the Vinculum Security Doctrine establishes the principle of Relational Determinism. Under Relational Determinism, every sovereign agreement is treated as a physical structure governed by immutable stress limits, load capacities, and conservation laws.",
-        "Relational Determinism requires that every treaty obligation be expressed in terms that are mathematically falsifiable. If an accord mandates that a signatory reduce military forces within a border corridor, the agreement must not state that forces shall be reduced to reasonable or defensive levels. Instead, the covenant must stipulate exact Euclidean geographic coordinates, precise numerical ceilings, verified sensor telemetry, and an automated suspension of benefits if those parameters are breached.",
-        "By eliminating linguistic latitude, the UDCA protects both parties. The weaker party is insulated from the unilateral reinterpretations of an aggressive neighbor, while the stronger party is provided with verifiable proof of compliance that cannot be undermined by bad-faith accusations. Statecraft is thereby elevated from rhetorical persuasion to rigorous relational engineering.",
+        "The Unified Deterministic Chancellery Apparatus (UDCA) uses Relational Determinism as an internal design framework: where an obligation depends on observable events, define the relevant evidence and process as clearly as the parties can feasibly agree. The framework's structural metaphors can help operators organize questions about capacity, stress, and dependency, but they are not physical laws governing international agreements.",
+        "Not every international obligation can or should be reduced to a numeric threshold. Some commitments are duties of conduct, cooperation, consultation, or due diligence; their application may depend on context and legally relevant judgment. Where an obligation concerns a measurable result, parties can specify a unit, baseline, method, tolerance, time period, and review process. Where the obligation is evaluative, they can state the applicable standard, relevant factors, decision-maker, reasons, and opportunity to contest the decision.",
+        "Clear evidence procedures can reduce factual disputes, but neither a sensor nor a cryptographic digest determines the legal effect of an event. A well-designed mechanism may help parties identify what happened, preserve records, and refer unresolved questions to an agreed process. It cannot guarantee good faith, equal bargaining power, compliance, or peace. The chapter therefore treats measurement as one tool within a larger legal and political arrangement, not as a substitute for it.",
       ],
       caseStudy: {
-        title: "The Collapse of the 1994 US-DPRK Agreed Framework",
-        jurisdiction: "Bilateral Nuclear Non-Proliferation Accord / East Asian Theatre",
-        precedent: "Unsynchronized delivery schedules and non-deterministic financing obligations",
+        title: "Implementation and Breakdown of the 1994 US-DPRK Agreed Framework",
+        jurisdiction: "Bilateral political framework concerning nuclear and energy issues",
+        precedent: "Interdependent commitments, implementation delays, and a contested compliance dispute",
         analysis: [
-          "The 1994 Agreed Framework between the United States and North Korea was hailed as a breakthrough that froze North Korea graphite-moderated nuclear reactors in exchange for two light-water reactors and 500,000 tons of heavy fuel oil annually.",
-          "However, the accord was riddled with constructive ambiguity regarding delivery milestones, financial responsibility, and the normalization of diplomatic relations. The text stated that the two sides would move toward full normalization as progress is made on issues of concern to each side, without defining what constituted progress or what specific concerns were paramount.",
-          "Congress delayed heavy fuel oil funding, the consortium encountered endless bureaucratic and financial hurdles that delayed reactor construction by years, and North Korea pursued covert enrichment activities. Because there were no synchronized, automated milestones and no independent telemetry bus, each side repeatedly accused the other of bad-faith default, leading to the total collapse of the framework in 2002.",
+          "The 1994 Agreed Framework linked several commitments: the Democratic People's Republic of Korea (DPRK) was to freeze and ultimately dismantle specified nuclear facilities under monitoring arrangements; the United States was to organize a light-water-reactor project and provide interim heavy-fuel-oil deliveries; and both sides undertook steps concerning political normalization and security assurances. The agreement therefore depended on coordinated action by governments, the Korean Peninsula Energy Development Organization (KEDO), the International Atomic Energy Agency (IAEA), and other participants.",
+          "The text did leave important political steps open-ended. For example, it described movement toward full normalization as dependent on progress on issues of concern to both sides, without converting that process into a single measurable milestone. At the same time, other provisions set out concrete actions and sequencing. Calling the whole instrument simply vague would miss the difference between detailed operational commitments and broader political objectives.",
+          "Implementation encountered delays and disputes, including delays to the reactor project and interruptions in heavy-fuel-oil deliveries. In 2002, the United States raised allegations of a clandestine uranium-enrichment program; the dispute over compliance developed amid wider deterioration in relations. The public record supports examining these interacting political, technical, and implementation factors. It does not support attributing the framework's breakdown to the absence of cryptographic telemetry, automated monitoring, or any single drafting defect.",
         ],
-        failureMechanism: "Vague sequencing, unsynchronized political milestones, and absence of independent cryptographic telemetry led to mutual recrimination and systemic collapse.",
+        failureMechanism: "Interdependent commitments, delayed implementation, contested compliance, and deteriorating political relations contributed to the breakdown. This case cannot establish that greater textual precision alone would have prevented it.",
       },
       subsections: [
         {
           title: "The Mathematical Representation of Treaty Obligations",
           paragraphs: [
-            "In classical law, obligations are expressed through deontic logic: Party A shall undertake all reasonable endeavors to maintain environmental standards. Under Relational Determinism, the same obligation is formalized as an invariant function bounded by telemetry thresholds.",
-            "Let \\(B\\) represent the relational bond state and \\(L\\) represent the observed operational load. An obligation is valid if and only if there exists a deterministic mapping from observed state telemetry \\(T\\) to a binary compliance state \\(C \\in \\{0, 1\\}\\). If \\(C\\) requires subjective administrative adjudication without reference to hard sensory data, the obligation is functionally non-executable.",
+            "Legal obligations can be described using deontic concepts such as duties, permissions, and prohibitions, but they are not all reducible to a binary telemetry test. Relational Determinism can be used as an operational model when the parties have identified an observable condition and agreed how evidence bears on it. It should not be used to erase the difference between a duty to achieve a result, a duty to exercise due diligence, and a duty to cooperate.",
+            "Let \\(B\\) represent a modelled relational state and \\(L\\) an observed operational load. A system may map defined inputs \\(T\\) to a status \\(C\\), but that status is a result under the chosen model, not a universal legal conclusion. The model must state its scope, assumptions, treatment of missing or disputed data, and the authority responsible for applying it. If an issue requires interpretation, the output should identify that question for the proper decision-maker rather than report legal certainty the inputs cannot support.",
           ],
           callout: {
             kind: "definition",
             title: "Relational Determinism Invariant",
             paragraphs: [
-              "A sovereign covenant is deterministic if and only if two independent, adversarial verifiers provided with the identical telemetry log will compute the exact same compliance digest with zero divergence.",
+              "For an operational check, reproducibility means that independent reviewers applying the same defined method to the same valid inputs should obtain the same computational result. That result does not, by itself, establish the legal meaning of the obligation, the integrity of the original evidence, or the appropriate remedy.",
             ],
           },
         },
@@ -142,6 +171,19 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
           ],
         },
         {
+          title: "Four Judicial Decisions That Show What Determinacy Can—and Cannot—Do",
+          paragraphs: [
+            "The International Court of Justice's case record supplies a useful counterweight to the idea that treaty interpretation can be reduced to a machine-readable threshold. The following decisions concern different questions: the meaning of a geographical term, the legal character of signed records, the application of a purpose-based treaty standard, and the continued operation of a treaty amid serious disagreement. They are not interchangeable precedents. Read together, however, they show why good drafting can make evidence and procedure clearer without eliminating the adjudicator's legal task.",
+            "In Kasikili/Sedudu Island (Botswana/Namibia), the parties disputed which channel around an island was the 'main channel' under an 1890 treaty. The Court considered physical evidence including depth, width, flow, bed profile, and navigability, alongside the treaty's text, object and purpose, preparatory work, subsequent practice, and maps. It found that the subsequent practice had not established an agreement between the parties on interpretation, and it treated the maps with caution because of uncertainty and inconsistency. The lesson is not that every boundary can be decided by sensor readings. It is that technical observations acquire legal significance through an agreed question, an evidentiary record, an applicable instrument, and a reasoned method for weighing competing material.",
+            "The Qatar v. Bahrain proceedings illustrate a different drafting risk: parties may dispute whether records created during negotiations have legal force. The Court held that exchanges of letters and the Doha Minutes constituted international agreements that created rights and obligations, notwithstanding the ordinary label 'Minutes.' It then examined what those instruments required concerning submission of the dispute. For drafters, the case is a reminder to state expressly whether meeting records are binding, who has authority to sign them, and how they relate to the main instrument. For analysts, it cautions against deciding legal effect from a document's title alone.",
+            "In Whaling in the Antarctic (Australia v. Japan), the Court interpreted the phrase 'for purposes of scientific research' in Article VIII of the International Convention for the Regulation of Whaling. It considered whether the design and implementation of the program were reasonable in relation to its stated scientific objectives, then assessed the evidence before it. This is an example of a treaty standard that requires structured evaluation rather than a single numeric test. A drafter may make objectives, reporting, and review procedures more explicit, but should not claim that a checklist or automated score substitutes for the legal standard the parties adopted.",
+            "The Gabčíkovo-Nagymaros Project (Hungary/Slovakia) demonstrates how disputes over suspension, termination, environmental concerns, and changed circumstances can interact. The Court concluded that Hungary was not entitled to suspend and abandon the relevant works as it had, and that Czechoslovakia could not lawfully put the unilateral 'provisional solution' into operation as it did. It treated the 1977 treaty as continuing to bind the parties and called on them to negotiate in good faith in light of the prevailing situation. The decision should not be simplified into a rule that environmental concerns never justify action, or that a treaty must be performed without adaptation. Its value here is the Court's attention to the specific legal grounds, conduct, consequences, and negotiated implementation before it.",
+            "These cases help distinguish three layers that a covenant audit should keep separate. First is the rule the parties adopted: its text, definitions, annexes, and amendment provisions. Second is the evidence: measurements, records, conduct, and the provenance and reliability of each item. Third is the authorized decision process: the forum, interpretive rules, standard of proof where applicable, reasons, and available remedies. A dashboard can organize evidence and expose an unresolved threshold; it cannot decide on its own whether an instrument is binding, how competing evidence should be weighed, or what remedy international law permits.",
+            "A practical review can use each case to test a different question. For a technical term such as 'main channel,' identify the agreed measurement method and what happens if readings conflict. For minutes or side letters, define whether they are binding and how they are authenticated. For a purpose-based standard, specify what information must be reported and which body evaluates it, while preserving the agreed legal standard. For suspension or emergency action, state the grounds, notice, consultation, interim safeguards, review, and path back to ordinary performance. None of these drafting choices guarantees agreement; each makes a different source of uncertainty visible and gives the parties a procedure for addressing it.",
+            "When using the cases, students should consult the judgments themselves for propositions about the Court's reasoning. An official case overview is a reliable route to the procedural history and outcome, but it is not a substitute for the full judgment when making a detailed claim about interpretation. Record the paragraph numbers, distinguish the Court's holding from a party's submission, and identify any point that remains disputed. This method protects the chapter from turning a case into a slogan and gives readers a repeatable path from source to conclusion.",
+          ],
+        },
+        {
           title: "Ambiguity, Vagueness, and Productive Flexibility",
           paragraphs: [
             "Ambiguity and vagueness are related but distinct. A phrase is ambiguous when it supports more than one meaning; it is vague when its application has uncertain boundaries even though its general meaning is understood. A clause requiring a party to withdraw from a named zone may be ambiguous if the zone has two plausible boundaries. A requirement to take reasonable precautions may be vague because the meaning of reasonable depends on context, evidence, and an evaluative standard. The appropriate remedy differs: define competing meanings in the first case, and specify factors, procedures, or review standards in the second.",
@@ -149,6 +191,85 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
             "An exception can be designed as a principled safety valve rather than a loophole. For example, an agreement might permit a temporary departure during an emergency, require prompt notification, limit the departure to what is necessary, require consultation, and mandate a return to ordinary performance when the emergency ends. The particulars must be negotiated for the subject matter and cannot be mechanically copied from another treaty. The analytical point is that flexibility becomes more predictable when the trigger, scope, duration, and oversight are themselves addressed.",
             "The parties may also adopt a framework agreement that deliberately establishes principles while delegating technical details to later protocols. This can be rational where knowledge is incomplete or where technical cooperation must begin before every specification is available. The framework should identify which obligations are immediately binding, which require a later instrument, who negotiates that instrument, the interim rules, and what happens if the follow-on agreement is delayed. Without such signposts, a framework can create expectations that diverge precisely because each side assumes the unresolved detail will later favor it.",
             "The distinction is important for critique. A student should not equate any lack of exhaustive detail with failure. Instead, ask whether the text makes its degree of openness legible, whether the parties have a shared process to manage it, and whether the parties can continue safe performance while an issue is unresolved. The strongest drafting often combines stable core duties with bounded discretion and an orderly process for new information.",
+          ],
+        },
+        {
+          title: "Classify the Uncertainty Before Proposing a Drafting Fix",
+          paragraphs: [
+            "The word 'ambiguity' is often used as a catch-all for several different problems. A useful review separates at least five: semantic uncertainty about what a phrase means; referential uncertainty about which person, place, document, or event it names; temporal uncertainty about when a duty begins or ends; factual uncertainty about what occurred; and institutional uncertainty about who has authority to decide. There may also be strategic uncertainty about what another party intends, which cannot be resolved by editing the text alone.",
+            "Semantic uncertainty can arise because a word supports competing meanings. The analyst should identify each plausible reading in context, not merely list dictionary definitions. Referential uncertainty may arise when a map, annex, or cross-reference is incomplete or inconsistent. The repair may require authenticating a document or fixing a reference, rather than redefining a legal standard. Temporal uncertainty requires attention to triggers, time zones, counting rules, extensions, and the relationship between a deadline and a later stage.",
+            "Factual uncertainty is different from textual uncertainty. Parties may fully agree on the rule yet disagree about whether a shipment arrived, a river reached a level, or a report was filed. Better drafting can specify evidence, custody, access, and challenge procedures, but it does not guarantee that the evidence will be complete or accepted. Conversely, an indisputable measurement may not answer whether the conduct satisfies a broader legal obligation.",
+            "Institutional uncertainty concerns the power to interpret, verify, or respond. The text may identify a joint commission without clarifying whether it can make binding findings, or assign a task to an external organization that has not accepted it. The remedy is to clarify the body, mandate, consent basis, procedure, and limits of authority. Giving a software tool a status field does not confer jurisdiction on the tool or its operator.",
+            "Strategic uncertainty persists even when words and procedures are clear. A party may comply, evade, delay, or reinterpret its policy for reasons unrelated to the clause's wording. Analysts can examine incentives, capabilities, and past conduct, but they should not treat an unverified belief about intent as a textual fact. A carefully designed commitment can manage strategic risk; it cannot make another actor's motives fully observable.",
+            "A diagnostic exercise should label each uncertainty separately and identify what evidence could reduce it. If the problem is semantic, compare the text and interpretive materials. If factual, inspect the record and measurement method. If institutional, examine the mandate and consent. If strategic, state what remains inferential. This classification prevents a common drafting error: adding numbers to a clause when the real problem is authority, evidence access, or political incentives.",
+          ],
+        },
+        {
+          title: "Use a Graduated Repair Strategy Instead of Rewriting Every Open Term",
+          paragraphs: [
+            "Once the uncertainty is classified, choose the least intrusive repair that addresses it. A defined term may be enough where the parties agree on the concept but use it inconsistently. A reference to an authenticated map or annex may resolve a location question. A reporting protocol may address missing evidence. A review body may be needed where the rule requires technical judgment. A negotiated amendment may be necessary if the parties want to change the substance of the commitment. These are different interventions and should not be collapsed into a single rewrite.",
+            "The first step is to preserve the parties' stated objective and identify what must not change without their consent. A reviewer can propose alternatives, but should mark them as proposals and explain their consequences. Replacing 'reasonable efforts' with an absolute result obligation may materially increase risk. Adding a deadline may change the sequence. Creating an automated penalty may alter remedies and affect third parties. A cleaner sentence can therefore be a different bargain.",
+            "The second step is to test whether clarification is mutually available. Ask each party to explain the existing phrase, identify evidence it would accept, and describe the scenario it fears. If the parties share a meaning, a joint interpretation or implementation note may be sufficient if the instrument permits it. If their positions remain incompatible, a one-sided definition would disguise the disagreement rather than resolve it. The text can instead record the issue, set interim rules, and establish a legitimate process for later decision.",
+            "The third step is to assess feasibility. A proposed metric requires reliable data and a responsible institution. A joint body needs membership rules, funding, and continuity. A time limit must account for translation, notice, domestic approval, and technical review. A remedy must be lawful and proportionate. If the parties cannot resource the mechanism, it may be better to begin with a narrow pilot, publish a review date, and agree how the pilot's limitations will be evaluated.",
+            "The fourth step is to stress-test unintended effects. Could a strict threshold encourage concealment or unsafe conduct? Could a public reporting requirement expose sensitive information? Could an extension process be used to delay performance? Could a third party be assigned duties without its consent? Could the selected data source privilege one party's institutions? The aim is not to eliminate every risk but to make the trade-offs visible before the parties accept them.",
+            "Finally, document the residual uncertainty and the reason it remains. The parties may consciously defer an issue because the necessary science is not yet available or because reaching agreement on it would prevent agreement on urgent protections. A transparent deferral names the question, interim arrangement, responsible forum, review date or trigger, and consequences if no resolution is reached. The parties retain agency over the substantive answer while future operators receive a reliable account of the procedural plan.",
+            "The graduated strategy can be summarized as diagnose, preserve, clarify, resource, test, and record. Students should be able to explain why each proposed intervention fits the identified problem and why a more forceful intervention would be inappropriate or unavailable. The quality of a covenant is not measured by how much language has been replaced; it is measured by whether the parties understand the remaining choices and have accepted a workable way to manage them.",
+          ],
+        },
+        {
+          title: "Hard Law, Soft Law, and Deliberate Choices About Legalization",
+          paragraphs: [
+            "A demand for maximum precision can obscure a prior question: what kind of commitment did the parties intend to create? International arrangements vary in obligation, precision, and delegation to third parties. These dimensions are related but distinct. A politically important declaration may be precise without being a treaty; a binding treaty may use standards that require interpretation; and an agreement may delegate technical decisions to a joint body without giving that body authority to resolve every legal dispute.",
+            "Abbott and Snidal's account of hard and soft law is useful because it treats legalization as a set of design choices rather than a binary contest between seriousness and evasion. Greater obligation, precision, and delegation can support credible commitments and adjudication, but they can also impose negotiation costs, reduce flexibility, expose parties to unwanted litigation, or make participation less likely. Softer arrangements can facilitate cooperation where uncertainty is high or where actors are unwilling to accept binding rules, though they may also make expectations and accountability less secure.",
+            "The implication for a covenant audit is that an analyst should not label a document a failure merely because it lacks a particular court, sanction, or metric. First identify its legal form, the parties' intent as reflected in the instrument and surrounding circumstances, the source of any obligation, and the remedies or processes actually available. Then ask whether those design choices fit the problem the parties sought to address. A nonbinding political commitment may still influence conduct; a binding rule may still be difficult to enforce; neither observation alone decides the instrument's legal effect.",
+            "The Rational Design project similarly examines how institutional features vary with the cooperation problem, including uncertainty, distributional conflict, enforcement concerns, and the number of participants. Its central value for this chapter is methodological: design features should be evaluated against the problem and the parties' incentives, not presumed universally optimal. A procedure that suits a narrow technical question may be unsuitable for a constitutional settlement or a dispute that depends on confidential security information.",
+            "Downs, Rocke, and Barsoom warn against inferring the success of cooperation simply from evidence that states comply with agreements. Agreement design, the depth of cooperation sought, and the level of compliance have to be considered together. If parties select obligations that are easy to perform, observed compliance can be high without demonstrating that the agreement solved a difficult collective-action problem. Conversely, demanding obligations can generate visible disputes without proving that the institution has no value. Analysts should state which outcome they are measuring.",
+            "For classroom analysis, create a three-column table: the instrument's legal obligation, its degree of precision, and the authority delegated to a decision-maker. For each column, cite the operative text and distinguish explicit provisions from inference. Add a fourth column for the trade-off the design appears to manage and a fifth for evidence needed to evaluate whether it worked. This makes it possible to criticize an arrangement without treating one preferred institutional form as a universal standard.",
+            "The final question is whether openness was deliberate and governed. A party may choose a political declaration, a framework treaty, a technical annex, or a more detailed dispute clause for reasons that include domestic ratification, unequal capacity, incomplete information, or the need for broad participation. Those reasons do not prove that the choice was wise. They do help the researcher ask the relevant follow-up: what risk did the design accept, who bears it, and did the instrument provide a lawful route to revisit the choice as circumstances changed?",
+          ],
+        },
+        {
+          title: "Precision Also Allocates Costs and Risks",
+          paragraphs: [
+            "A numerical threshold may look neutral because it is expressed as a number, but selecting the threshold, baseline, unit, observation point, and measurement interval distributes practical risks. A strict deadline may benefit a party with a larger administrative system and disadvantage one that must coordinate across multiple jurisdictions. A monitoring method that relies on specialized equipment may favor the party with access to that equipment. A baseline chosen from one unusually wet or dry year can change the apparent burden for every later period.",
+            "Before recommending a metric, identify who proposed it, which data were used to set it, who can reproduce the calculation, and who bears the consequence when the measurement is uncertain. If one party controls the collection site or the data platform, the other may be formally entitled to review yet lack meaningful access. A jointly governed method, shared technical support, or independent sampling can address some of these concerns, but each requires funding, expertise, and a valid mandate.",
+            "A threshold can also obscure differences in impact. The same average result may conceal a severe local shortfall, while a national aggregate may fail to show whether a protected community experienced harm. A metric is fit for purpose only if its scale matches the obligation. If the commitment concerns a particular group, location, or period, a broad average may be an inadequate proxy even when the arithmetic is correct.",
+            "A drafting team should distinguish a threshold used as an early-warning indicator from one that defines a legal trigger. An indicator can prompt review without establishing non-compliance. A legal trigger may activate a duty, protection, or remedy and therefore requires a clear source, agreed evidence rule, and review path. The same number can serve either purpose, but the agreement should not leave operators to decide its legal function after a dispute arises.",
+            "Threshold design also raises the possibility of gaming. If parties know that only one metric is assessed, they may optimize the measured value while neglecting the underlying purpose. This is not a reason to reject measurement; it is a reason to pair indicators with qualitative review, audit rights, and periodic evaluation of whether the metric still captures the intended outcome. A score should be treated as evidence about a defined dimension, not as a complete account of a relationship.",
+            "A classroom exercise can ask students to propose two possible measurement approaches for the same commitment and map who gains or bears risk under each. They should identify the data assumptions, technical limitations, administrative burden, affected groups, and likely incentives. The exercise is successful when students can explain why a particular design might be accepted or rejected by the parties—not when they find a supposedly objective number that removes negotiation.",
+          ],
+        },
+        {
+          title: "Design for Revision Without Making Every Obligation Provisional",
+          paragraphs: [
+            "Agreements must balance stability with adaptation. A commitment that can be changed unilaterally whenever a party dislikes its effect is not a dependable commitment. A commitment that can never be reviewed may become unworkable when the facts, technology, or risks materially change. The drafting question is how the parties can revise details through an agreed process while preserving the distinction between ordinary adjustment and amendment of the underlying bargain.",
+            "A review clause should state its purpose, timing, participants, information requirements, and effect. A review meeting may simply assess implementation; it does not necessarily authorize changes. If the parties want recommendations, the text can say who may issue them and whether they are binding. If an amendment requires a separate approval or ratification process, the review clause should not be read as bypassing it. Precision about the review's authority avoids creating a second, informal amendment route.",
+            "Some technical schedules may need periodic updating while core duties remain fixed. The parties can define which annexes may be adjusted by a joint commission, what consensus or voting rule applies, when a change takes effect, and how the authoritative version is published. They should also identify whether a technical update may alter substantive rights. A change to a measurement method can have substantive effects even when it is labelled administrative, so the parties may require notice, impact assessment, and an opportunity to object.",
+            "Trigger-based review can help focus attention, but a trigger must be chosen carefully. A specified date is transparent but may arrive when no change is needed. A material change in circumstances is legally and factually complex and should not be converted into a self-judging escape clause unless the parties clearly intend that result. A review can be mandatory without predetermining the outcome: parties may be required to meet and consider evidence while remaining bound by the existing terms unless they validly agree otherwise.",
+            "The agreement should explain what applies while revision is under consideration. Does the existing obligation continue? Are temporary safeguards available? Can a party take a protective measure while preserving the dispute? What happens if the review fails to reach agreement? These questions determine whether the review process supports stability or creates a period in which each side can claim that the bargain has been suspended.",
+            "Students can test a proposed review clause against a changing scientific baseline, a new technology, a disputed data series, a change of government, and an emergency. For each case, they identify whether review is triggered, who participates, what evidence is relevant, whether the core obligation continues, and how any adopted change is authenticated. The exercise focuses on lawful adaptation rather than assuming either that the original text is permanent in every detail or that changed conditions erase it.",
+          ],
+        },
+        {
+          title: "Distinguish Interpretation, Amendment, Suspension, and Termination",
+          paragraphs: [
+            "When parties disagree about a commitment, they may use the word 'change' to describe several legally different actions. Interpretation seeks to determine the meaning of an existing provision. Amendment changes the agreement through a procedure the parties accept. Suspension temporarily affects the operation of an obligation under applicable rules or the instrument. Termination ends the agreement or a party's participation according to the governing terms and law. Treating these actions as interchangeable can cause an operator to mistake a proposed negotiation for an effective legal change.",
+            "The Vienna Convention on the Law of Treaties contains rules concerning treaty interpretation, amendment, termination, and suspension for treaties within its scope. The applicable provisions depend on the parties, the treaty, reservations, and any relevant customary international law. An Academy exercise should identify which legal regime applies before offering a conclusion. A course-specific decision log or MissionEngine status cannot itself amend a treaty or determine that a state has lawfully suspended an obligation.",
+            "A joint body's agreed interpretation may clarify how parties understand a term, but the body can only exercise authority the instrument or parties have given it. A technical committee might be authorized to update a table of conversion factors but lack authority to alter an allocation. A tribunal may interpret the instrument within its jurisdiction but cannot necessarily rewrite the bargain. The mandate should be read alongside the appointment procedure, voting rule, review mechanism, and any limits in the agreement.",
+            "A party's public statement that an obligation is suspended is evidence of its position, not conclusive proof that suspension is legally effective. A notice may be procedurally valid while its substantive basis remains disputed. Conversely, a party may continue performing while reserving its legal position. The analyst should record the act, the stated legal basis, the response of the other parties, and any decision by an authorized forum separately.",
+            "A practical version-control protocol can support this distinction. Each record should identify whether it is an official text, an agreed interpretation, an amendment, an implementation instruction, a unilateral notice, or a working draft. Store its date, approving authority, effective date if any, superseded version, and source of legal authority. Clear labels reduce administrative confusion, but the labels must match the actual consent and legal process.",
+            "This distinction is especially important during crises, when parties may announce emergency measures or propose immediate revisions. An operational tool can preserve the timeline and flag relevant clauses; it should not convert a contested assertion into a legal conclusion. The appropriate institution should assess validity, and the parties should continue any obligations that remain in force unless a lawful basis or agreed procedure changes them.",
+          ],
+        },
+        {
+          title: "A Covenant Audit Rubric for Comparative Review",
+          paragraphs: [
+            "A useful audit rubric should guide analysis without pretending that one score can decide whether an agreement is legitimate or successful. Students can assess separate dimensions: clarity of parties and authority; specificity of obligations; accessibility and quality of evidence; treatment of uncertainty; division of implementation responsibility; dispute and review procedures; protections for affected groups; and feasibility of administration. Each dimension should be explained in words and tied to evidence rather than collapsed into a single rating.",
+            "For each dimension, the reviewer should identify the evidence source and confidence level. The operative text may establish that a body exists; an implementation report may show whether it met; a scholarly article may evaluate its political effect. These source types answer different questions. A score without a traceable basis can make subjective judgment look like a measurement, so the audit should preserve the reasoning and allow a second reviewer to challenge it.",
+            "If a composite index is used for internal triage, its weights must be disclosed. Weighting is a normative choice: assigning greater weight to enforceability than participation, or to speed than due process, reflects priorities that should be visible. The index may help operators decide where to seek legal review, but it should not determine a state's legal rights or substitute for consultation with the parties.",
+            "The rubric must also include a 'not assessed' option. A missing public record is not proof that no procedure exists, and a measure that cannot be computed reliably should not be assigned a neutral-looking zero. Record whether the information was unavailable, the source was inaccessible, the proposition was contested, or the dimension did not apply. This prevents gaps in research from being silently converted into findings about the agreement.",
+            "Comparative use requires consistent units and careful case selection. Two agreements may differ in subject matter, legal form, number of parties, conflict setting, or period of implementation. A direct score comparison can therefore be misleading unless the analyst explains what is comparable and what is not. Case studies are most useful for identifying mechanisms and questions to investigate, rather than producing a league table of treaty quality.",
+            "A peer reviewer can test an audit by selecting a sample of ratings, tracing them to sources, and asking whether another informed analyst could reproduce the reasoning. The reviewer should also examine who was not represented in the source record and whether an apparently neutral dimension shifts burdens toward one party. The final product should present the evidence, uncertainty, and limitations alongside any summary result.",
           ],
         },
         {
@@ -183,7 +304,7 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 1.1-B: An operational obligation lacking an automated sensor metric or cryptographic verification digest cannot be registered on the MissionEngine bus.",
+      statutoryRule: "Chancellery review rule 1.1-B: Where an operational commitment is represented in the MissionEngine, specify the relevant evidence and limitations. A missing automated metric does not establish that the underlying legal obligation is invalid or nonexistent.",
     },
     {
       heading: "III. The Five Invariants of Sovereign Drafting",
@@ -384,11 +505,45 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       heading: "VI. Practical Application in Treaty Deconstruction",
       subheading: "Comparative Analysis of Historical and Modern Covenants",
       paragraphs: [
-        "To illustrate the practical power of Relational Determinism, let us compare the 1994 Budapest Memorandum on Security Assurances with a deterministic Chancellery Covenant.",
-        "In the Budapest Memorandum, the signatory powers pledged to respect the independence and sovereignty and the existing borders of Ukraine and to refrain from the threat or use of force. However, the agreement provided no enforcement mechanism other than an obligation to seek immediate United Nations Security Council action to provide assistance if an act of aggression occurred.",
-        "Because the potential aggressor held a permanent veto on the UN Security Council, this assurance was mathematically void from the moment of signature. The treaty contained no automatic sanctions triggers, no third-party escrowed military guarantees, and no cryptographic tripwires. The reliance on diplomatic rhetoric rather than structural enforcement ultimately led to catastrophic territorial violation.",
+        "The 1994 Budapest Memorandum on Security Assurances is a useful case for examining the difference between a political instrument's stated commitments and the remedies or response mechanisms it actually provides. Its legal character has been debated, and the label 'memorandum' alone does not settle that question. It should not be presented as a ratified collective-defence pact or as a guarantee of automatic military intervention.",
+        "The Memorandum records assurances concerning respect for Ukraine's independence, sovereignty, and existing borders, refraining from the threat or use of force, and refraining from economic coercion. It also provides for consultations if a situation raises a question concerning those commitments, and records a commitment to seek immediate Security Council action if Ukraine becomes the victim of an act of aggression or the object of a threat or use of force in which nuclear weapons are used. The trigger in that latter clause is specific; it is not a general promise of automatic assistance after any act of aggression.",
+        "The text did not establish an automatic sanctions mechanism or a standing duty for the signatories to provide military intervention. That absence is important when assessing the instrument's scope, but it does not by itself establish that its assurances were legally meaningless or that their existence can be judged solely by whether they prevented later conduct. The legal status of the instrument, the meaning of its provisions, the conduct of its signatories, and the practical response to a breach are separate questions that require careful analysis.",
+        "A disciplined review therefore asks what the signatories undertook, what process the text specified, which contingencies it covered, and what it left to later diplomatic or institutional action. It then examines subsequent conduct and the relevant international-law framework without asserting that one omitted enforcement device mechanically caused later events. A comparison with a proposed Chancellery covenant can explore alternative design choices, but it cannot turn a counterfactual into proof that automatic triggers would have prevented a violation or produced a lawful and effective response.",
       ],
       subsections: [
+        {
+          title: "Read the Instrument's Commitments Before Evaluating Its Name",
+          paragraphs: [
+            "The word 'assurance' is often used in political and diplomatic contexts without functioning as a single technical category that determines legal effect. The Budapest Memorandum's title, signatures, and circumstances are relevant evidence, but none should be treated as a substitute for examining the complete text and the parties' intent. Under the general law of treaties, classification depends on whether an agreement is governed by international law, not simply on whether it is called a treaty, memorandum, declaration, or protocol. The analysis must also identify which parties and which provisions are being considered.",
+            "Students should separate the existence of a written commitment from its legal classification, then distinguish both from the question of what response the commitment requires. An instrument may include language that restates existing obligations, expresses political assurances, establishes consultation, or directs a party to pursue a particular institutional step. These functions can appear together. The memorandum's provisions should therefore be read one by one rather than compressed into the slogan that it either 'guaranteed Ukraine's security' or 'promised nothing.'",
+            "For every clause, identify the subject, the operative verb, the protected interest, the condition that activates the provision, and the named process. A promise to respect sovereignty is different from a promise to deploy forces; a commitment to consult is different from an obligation to reach agreement; a commitment to seek Security Council action under a specified nuclear-related contingency is different from a guarantee that the Council will adopt a particular measure. The text's distinctions matter even where a later political debate groups them under the same heading.",
+            "The memorandum also refers to undertakings concerning the UN Charter, the Helsinki Final Act, and nuclear weapons. A researcher should trace each cross-reference to the underlying instrument and ask whether the memorandum incorporates, reaffirms, or describes an existing duty. The answer affects what the text adds and what legal basis may exist independently. A summary that treats every referenced principle as a newly created enforcement mechanism will overstate the document.",
+            "A useful source worksheet includes the exact clause, its document location, the type of commitment apparently expressed, the applicable interpretive question, the evidence needed to assess performance, and any uncertainty about legal effect. The student then compares the worksheet with official state positions and careful legal scholarship. Where credible authorities disagree about classification or interpretation, the Academy should state that disagreement and explain which proposition is secure enough to teach.",
+            "The point is not to resolve a contested legal debate by assertion. It is to train analysts to avoid two opposite errors: assuming that a title proves a text is nonbinding, and assuming that the existence of signatures creates a military guarantee broader than the operative language. A disciplined conclusion can identify what the text plainly says, what the parties or later commentators dispute, and what cannot be inferred without further evidence.",
+          ],
+        },
+        {
+          title: "Consultation Is a Process Whose Design Must Be Examined",
+          paragraphs: [
+            "Consultation provisions are sometimes dismissed as weak because they do not themselves dictate a substantive outcome. That conclusion is too quick. A consultation clause can create a meaningful procedural commitment, establish a channel for urgent communication, clarify who must be contacted, and provide an opportunity to exchange evidence before a situation escalates. Its practical value depends on the text, the parties' willingness to participate, the speed of the process, and the consequences of unresolved disagreement.",
+            "To evaluate such a clause, ask who may request consultations, whether the request must be written, who represents each side, how soon the meeting should occur, what information may be shared, and whether the parties may issue a joint or separate record. If the instrument sets no deadline, identify that as a design feature and investigate how the parties understood the expected timing. Do not invent a binding deadline merely because prompt action would be desirable.",
+            "A consultation procedure should not be confused with mediation, arbitration, adjudication, or collective security action. Each has a different function and depends on a different legal basis. Consultation may help parties clarify facts or positions without obliging them to reach agreement. A mediator may facilitate a negotiated outcome but generally cannot impose one. An arbitral tribunal or court can act only within its jurisdiction. A Security Council response is governed by the Charter, the Council's procedures, and political decision-making rather than by a bilateral text alone.",
+            "The record of a consultation may itself become important evidence. Participants should know whether minutes are official, whether they create commitments, how corrections are made, and which versions are retained. The Qatar v. Bahrain case illustrates that labels such as 'minutes' do not automatically settle legal effect. A well-designed process can say whether meeting records are merely summaries, agreed interpretations, or instruments requiring formal approval before they alter obligations.",
+            "When testing a consultation clause, consider both an ordinary disagreement and an urgent, high-stakes scenario. In the first, the parties may have time to exchange technical material and convene a standing body. In the second, the clause may need a designated contact point, secure communication, an initial notification standard, and a process for preserving evidence while the parties seek advice. The correct details depend on consent and context; an analyst should present options rather than claim that one template is universally adequate.",
+            "The educational conclusion is precise: procedural mechanisms deserve evaluation on their own terms. They may reduce misperception or support peaceful settlement without guaranteeing compliance or resolving the merits. A fair assessment identifies what the mechanism commits participants to do, what it leaves undecided, and how the parties behaved when the process was invoked.",
+          ],
+        },
+        {
+          title: "Do Not Let Later Outcomes Rewrite the Earlier Text",
+          paragraphs: [
+            "A dramatic later event can tempt analysts to read the earlier instrument as if it had been designed to produce the event's eventual response. This is outcome bias. The researcher begins with what happened and silently assumes that the text promised a remedy matching the response the researcher now wishes had occurred. The remedy may be normatively appealing, but the historical question remains: what did the instrument say, what did its parties understand, and what legal obligations applied at the relevant time?",
+            "A disciplined chronology separates at least four records: the text adopted in 1994; contemporaneous statements about its meaning; later conduct and consultations; and later legal or political analysis. Each record can illuminate a different question. A statement by one signatory does not automatically establish a shared interpretation. Later practice may be relevant under applicable interpretive rules, but it does not mean that any later position retroactively formed part of the original text. The analyst should state whose position is being reported and when.",
+            "Causal claims require an additional step. To claim that the absence of a particular enforcement provision caused a later outcome, identify a plausible mechanism and show evidence that the provision would have changed incentives, capabilities, or decisions. Consider alternatives: the provision might not have been accepted; a required institution might have been blocked; the trigger might have been contested; or the response might have escalated the crisis. A counterfactual is informative when it makes these assumptions explicit rather than presenting an imagined outcome as fact.",
+            "The same caution applies to the absence of an automatic sanction. Its absence can be described directly from the text. Whether that absence made the assurance ineffective is a further evaluative conclusion, and whether it caused a particular later act is a causal claim. Those statements need different evidence. The first can be supported by the instrument; the second requires an account of the relevant political or legal function; the third requires a defensible causal analysis.",
+            "Students should practice writing conclusions at three confidence levels. First, a textual finding: 'The memorandum provides for consultations if a question arises concerning specified commitments.' Second, an interpretive question: 'The legal effect and scope of particular assurances have been debated.' Third, a causal hypothesis: 'A different response mechanism might have influenced later decisions, but that counterfactual cannot be established from the text alone.' This form makes uncertainty visible without treating every proposition as equally unknown.",
+            "This method is also a safeguard against political oversimplification. Governments and commentators may use strong labels to advance present arguments. The analyst can report those positions accurately while still distinguishing advocacy from an authoritative judgment or agreed interpretation. A source register should include the speaker, date, institutional role, and type of document so readers can evaluate what each source is capable of proving.",
+          ],
+        },
         {
           title: "Reading the Agreed Framework as a Multi-Actor Arrangement",
           paragraphs: [
@@ -448,6 +603,59 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
           ],
         },
         {
+          title: "Separate the Obligation, the Evidence, and the Decision Rule",
+          paragraphs: [
+            "A covenant audit becomes clearer when it separates three objects that are often collapsed in debate. The obligation is the conduct or result the parties have accepted. Evidence is the information offered to show what happened. The decision rule is the agreed or legally applicable method for determining whether the facts satisfy the obligation and what follows. A data stream can improve evidence without changing the obligation; a drafting change can clarify the obligation without establishing that the evidence is reliable; a tribunal can apply a legal standard even where the available measurements are incomplete.",
+            "Begin with the verb and the object of the clause. Does a party promise to achieve a result, to take specified steps, to exercise due diligence, to cooperate, or to refrain from particular conduct? These are not interchangeable. A duty to maintain a stated level at a named point may be framed as a result obligation, while a duty to take reasonable preventive measures may require assessment of effort in context. Replacing one with the other can alter the bargain, not merely improve its style. The parties should decide which kind of commitment they mean before choosing how it will be monitored.",
+            "Next, identify the facts that are necessary to apply the commitment. Some facts are directly observable, such as whether a report was filed by a date. Others require technical measurement or evaluation, such as whether a water-quality limit was exceeded, whether an inspection was adequate, or whether a party took reasonable steps. The agreement can specify what information must be produced, by whom, at what interval, and with what opportunity for verification. It should not imply that the chosen record exhausts every legally relevant fact unless the parties deliberately agree to that evidentiary rule.",
+            "Finally, state the consequence pathway in proportionate stages. A discrepancy might first prompt notice and correction of a clerical error; a material disagreement might trigger technical consultation; a persistent dispute might proceed to an agreed forum. Some commitments may require immediate protective action while the merits are unresolved. The instrument should distinguish a provisional safeguard from a final finding of breach, and should explain whether the parties retain access to other remedies under applicable law.",
+            "The practical test is to give two independent reviewers the same clause, records, and decision rule and ask them to identify where they agree, where judgment remains, and what institution is authorized to resolve that judgment. Agreement on arithmetic is useful, but it is not the same as agreement on legal classification. If the parties want a technical body to issue a binding determination, they must define its mandate, procedure, review, and relationship to other dispute mechanisms rather than infer those powers from the word 'monitor.'",
+            "In an exercise, students can mark each sentence of a sample provision with O for obligation, E for evidence, or D for decision rule. A sentence may serve more than one function, but the overlap should be explicit. They then identify missing links: an obligation with no evidence pathway, a dataset with no agreed use, or a decision rule with no authorized decision-maker. The exercise produces a targeted drafting agenda rather than a blanket instruction to replace every adjective with a number.",
+          ],
+        },
+        {
+          title: "Design a Measurement Protocol for Uncertainty, Not Just for Ideal Conditions",
+          paragraphs: [
+            "A technical threshold is only as useful as the process that produces and interprets its measurements. Before selecting a number, negotiators need to understand the underlying phenomenon, the available instruments, ordinary variation, the cost of observation, and who will be affected by false positives and false negatives. A threshold selected without that groundwork can create an appearance of objectivity while systematically misclassifying performance.",
+            "A measurement protocol should identify the quantity, unit, geographic or institutional scope, sampling frequency, reference period, instrument or method, calibration schedule, data custodian, and publication format. If the parties use different national systems, they should specify how values are converted and how rounding is handled. If a location cannot be observed continuously, the text can define a representative sampling method and state what happens when the required sample is unavailable. These details are not clerical: they determine whether two parties are comparing like with like.",
+            "Uncertainty should be represented rather than erased. A sensor has a stated accuracy range; a laboratory result may have a detection limit; a satellite estimate may depend on cloud cover or model assumptions. The parties can agree on confidence intervals, tolerance bands, duplicate samples, independent calibration, or a review procedure for readings near a threshold. They should not imply that a value outside an instrument's precision can support a categorical finding. Where uncertainty is material, the decision-maker may need additional evidence or a provisional rule.",
+            "The protocol should also account for tampering, malfunction, interruption, and disagreement about custody. A chain-of-custody record can show who handled a sample; an audit log can show which record changed; an independent inspection can provide corroboration. Each safeguard has limits. A cryptographic digest can detect that a particular digital file has changed since sealing, but it cannot establish that the source measurement was accurate, that the instrument was properly calibrated, or that the file represented the full record.",
+            "Data governance requires an explicit balance among transparency, confidentiality, safety, and sovereignty. Parties may need access to raw data to test a result, while some records contain personal, commercially sensitive, or security-relevant information. The agreement can define who may inspect which data, what may be published, how redactions are reviewed, and how long records are retained. It can also provide a route for affected communities to submit observations without allowing unverified submissions to be misrepresented as official measurements.",
+            "A robust protocol is tested against edge cases before adoption: the instrument fails on a critical date; one laboratory reports a value just above the limit and another just below; a party refuses access; a flood removes the sampling site; a measurement is later corrected. For each case, the parties should know whether the commitment remains in force, whether alternative evidence can be used, what interim protection applies, and who decides the unresolved question. This is how technical precision becomes a usable institution rather than a decorative formula.",
+          ],
+        },
+        {
+          title: "Match Remedies to the Type and Confidence of the Finding",
+          paragraphs: [
+            "A finding about performance and a choice of remedy are different decisions. Even if the parties agree that a deadline was missed, they may still need to determine whether the delay was material, whether it can be cured, what harm resulted, and which response is permitted by the instrument and applicable law. A dashboard that labels an event 'breach' should not silently select a sanction unless the parties have expressly authorized that consequence and defined its conditions.",
+            "Remedial design can distinguish correctable reporting errors, temporary operational deviations, repeated non-performance, and urgent threats to people or protected interests. A notification and cure period may be appropriate for a missing report; an immediate protective measure may be required where waiting would create serious harm. The agreement can define when consultation is mandatory, when interim measures are available, and whether an independent body may recommend or order a response. These choices must be made with regard to consent, proportionality, and the legal regime governing the commitment.",
+            "Automatic consequences have both benefits and costs. They can reduce the opportunity for a powerful party to delay every response through political pressure, but they can also turn a measurement error into an escalatory event, constrain a needed safety response, or impose costs on people who did not cause the deviation. A threshold-based mechanism should therefore include a method for correcting demonstrable data errors, a record of the basis for activation, and a route for prompt review. If the consequence is intended to be reversible, the terms for restoration should be stated clearly.",
+            "The parties should consider the consequences of inaction as carefully as the consequences of enforcement. A response that is too weak may make a commitment ineffective; one that is too severe may make the agreement unacceptable or encourage concealment. In some settings, technical assistance, replacement performance, or phased correction may be more effective than a penalty. In others, a remedy must protect a party from continuing harm while a dispute is heard. There is no single response ladder appropriate to every type of covenant.",
+            "A useful drafting table lists each potential event, the evidence needed to establish it, the immediate protective measure if any, the responsible decision-maker, the available cure, the final remedy, and the review route. Students should then challenge the table with a scenario in which the same measurement could reflect deliberate evasion, equipment failure, or an emergency. If the response is identical in all three situations, the mechanism may be too blunt; if the response depends on a fact nobody is responsible for establishing, the mechanism is incomplete.",
+          ],
+        },
+        {
+          title: "Assess Participation and Legitimacy Alongside Technical Clarity",
+          paragraphs: [
+            "An agreement can be carefully specified and still lack legitimacy among the people or institutions expected to live with its effects. Technical clarity answers questions about meaning and implementation; it does not answer who had authority to negotiate, whose interests were represented, or whether affected groups can raise concerns. A covenant audit should therefore map participants and affected parties separately. The signatories may be states, while the consequences are experienced by local communities, Indigenous peoples, businesses, workers, or public agencies that did not sit at the negotiating table.",
+            "Participation requirements vary with the legal framework, subject matter, and the parties' own commitments. Analysts should not assume that one consultation model applies everywhere. They should identify applicable treaties, domestic law, institutional policies, and agreed procedures, then ask what meaningful participation requires in the particular context. Relevant questions include whether information was accessible, whether translation and time were sufficient, whether participants could influence the decision, and whether the record explains how their submissions were addressed.",
+            "Distributional analysis makes visible who bears compliance costs and who receives benefits. A uniform numerical obligation may be harder for a state with limited monitoring capacity to meet, even where the underlying conduct is similar. Capacity support, shared infrastructure, staged implementation, or independent technical assistance can improve comparability without lowering the substantive protection the parties intend. Any differentiated approach should be transparent and agreed rather than introduced after the fact by an operator or software system.",
+            "Public reporting can support accountability, but disclosure can also expose vulnerable people, reveal sensitive information, or harden negotiating positions. The parties may need to distinguish public summaries from protected operational records and establish a review process for redactions. A public explanation should make clear which findings are established, which are disputed, and which body made the determination. A confident headline that conceals uncertainty can damage trust more than a careful report that explains its limits.",
+            "Students can test a proposed covenant by asking a person affected by it to explain the obligation and the complaint pathway in their own words. If only technical specialists can understand the procedure, the parties may need plain-language summaries, accessible reporting, or an independent assistance mechanism. These aids do not alter the authoritative text, but they can expose whether the implementation design is usable beyond the negotiating room.",
+          ],
+        },
+        {
+          title: "Build a Research Record That Another Analyst Can Reproduce",
+          paragraphs: [
+            "A strong covenant analysis is not measured by the number of sources it cites but by whether its central claims can be checked. Maintain a claim ledger with one row per material proposition: the exact claim, its source, the source type, the location within the source, the analyst's inference, and any uncertainty or contrary evidence. This prevents a widely repeated statement from being treated as established merely because several later authors repeat it.",
+            "Start with the authoritative instrument where one exists. Record the title, date, parties, document symbol or treaty-series citation, authentic languages, depositary, and version accessed. For a judicial decision, record the case name, court, date, paragraph number, and whether the proposition is a holding, a party's submission, or background. For a negotiation record, identify the speaker and setting. These distinctions allow readers to see what the evidence directly establishes and what remains interpretation.",
+            "Use secondary scholarship to understand context, competing explanations, and research debates; do not make a secondary source stand in for the primary text when the claim concerns the wording of that text. Conversely, do not treat an official source as neutral on every causal or evaluative question. An official instrument is authoritative for what it says, while a historical account may be better suited to reconstructing a contested sequence of events. Source authority is proposition-specific.",
+            "Check dates and versions. Treaty status pages can change as states sign, ratify, withdraw, or deposit reservations. Standards may be superseded. Court pages may contain a judgment, pleadings, orders, and press summaries that support different kinds of claims. A link that loads today is not enough: preserve a citation that identifies the underlying document and the relevant passage so future readers can retrieve it even if a landing page is redesigned.",
+            "When sources disagree, represent the disagreement rather than average it away. Explain which evidence is contemporaneous, which account is retrospective, whether the authors have access to different records, and what remains uncertain. If a claim cannot be verified after reasonable searching, either omit it or label it as a hypothesis. This is especially important when assigning intent, attributing blame, or asserting that a drafting choice caused a later conflict.",
+            "The final audit asks a peer who did not write the analysis to trace its three strongest claims back to source passages. The peer should be able to identify the evidence without relying on the author's paraphrase. If the source merely supports a weaker statement, revise the claim. Reproducibility in this context is not a promise that every reader will agree; it is a commitment that disagreement can be located in the evidence and reasoning rather than hidden behind confident prose.",
+          ],
+        },
+        {
           title: "The Chancellery Drafting Memorandum",
           paragraphs: [
             "A final applied exercise is a concise drafting memorandum addressed to a negotiating team. It should begin with the decision the team must make, not a long list of abstract principles. The author identifies the provision under review, the operational purpose it is meant to serve, the points on which the parties already agree, the interpretations that remain possible, and the interests at risk if the text is applied differently.",
@@ -473,23 +681,25 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
   ],
   practice: [
     {
-      problem: "A bilateral water sharing accord stipulates that the upstream riparian state shall release a fair and equitable volume of water during periods of seasonal drought to satisfy the vital human needs of downstream agricultural communities. Identify the three subjective vulnerabilities in this clause and rewrite it according to Chancellery Relational Determinism.",
+      problem: "A draft water-sharing provision requires cooperation to maintain adequate flows for downstream communities during a severe shortage. Identify what a reviewer should clarify before proposing a measurement threshold, and outline a process that keeps the parties' substantive allocation decision in their hands.",
       solution: [
-        "Step 1: Identify subjective vulnerabilities.",
-        "Vulnerability 1: fair and equitable volume is completely undefined and subject to conflicting hydrological calculations.",
-        "Vulnerability 2: periods of seasonal drought lacks an objective meteorological trigger or soil moisture index threshold.",
-        "Vulnerability 3: vital human needs is a qualitative standard that invites perpetual administrative litigation.",
-        "Step 2: Formulate the Chancellery Deterministic Replacement.",
-        "Replacement Clause: The upstream party shall maintain a minimum continuous discharge of 450 cubic meters per second as measured at Gauge Station Alpha (WGS-84: 4 deg 12 min 18 sec N, 38 deg 29 min 04 sec E). If the 30-day cumulative precipitation index falls below 35 mm, the discharge ceiling may adjust by no more than 12 per cent, provided that a joint telemetry verification signal is transmitted to the MissionEngine bus. Failure to sustain this minimum for 72 consecutive hours triggers an automated 25 per cent withholding from the upstream party shared hydroelectric escrow tranche.",
+        "Step 1: Identify the purpose of the provision and whose interests it is meant to protect. Distinguish the parties' negotiated allocation from any separate legal duties or protected uses that apply under the relevant law. Do not invent a flow figure or treat an illustrative number as evidence-based.",
+        "Step 2: Identify what information is available and who can validate it. Possible inputs may include agreed gauge records, reservoir information, rainfall observations, and documented community needs, but the parties must select appropriate indicators and methods with qualified technical advice.",
+        "Step 3: Ask whether the parties intend an outcome obligation, a duty to cooperate, a temporary emergency process, or a combination. Define the responsible institutions, notice and consultation steps, data access, treatment of measurement uncertainty, and process for contesting a finding.",
+        "Step 4: If a threshold is negotiated, define its units, locations, reference period, calibration, tolerance, and treatment of missing data. Establish a joint or independent review process and state what interim arrangement applies while a result is disputed.",
+        "Step 5: Match any remedy to the parties' consent and applicable law. Separate urgent protective measures from a final breach finding, and do not assume that an automated financial penalty is lawful, proportionate, or suitable.",
+        "Step 6: Have representatives of affected communities and the relevant technical and legal authorities review whether the proposed process is understandable, feasible, and consistent with the agreed allocation. The finished clause should document the parties' decision, not substitute a model's choice for it.",
       ],
     },
     {
-      problem: "Evaluate a draft ceasefire agreement stating that all heavy artillery must be withdrawn to a safe distance behind the line of contact within a reasonable timeframe. Why will this clause fail within 48 hours?",
+      problem: "A fictional de-escalation agreement asks parties to relocate designated equipment away from a mutually agreed sensitive area within a reasonable time. Explain how to review the clause for clarity without inventing operational details or assuming that a wording defect guarantees failure.",
       solution: [
-        "Step 1: Heavy artillery is ambiguous without explicit caliber specifications (e.g., artillery systems with a bore diameter exceeding 100 mm, including multiple launch rocket systems).",
-        "Step 2: Safe distance is non-geodesic. Modern rocket artillery has ranges exceeding 70 kilometers; what one party considers safe, the other recognizes as lethal strike range.",
-        "Step 3: Reasonable timeframe provides no UTC deadline, enabling bad-faith stalling while reinforcing forward positions.",
-        "Step 4: Chancellery Correction: All indirect fire systems with a caliber of 105 mm or greater must be redeployed to coordinates at least 35.0 kilometers westward of Demarcation Line Bravo by 12:00:00 UTC on 15 October. Compliance is verified by aerial radar telemetry; unverified units after the deadline constitute an immediate breach condition.",
+        "Step 1: Identify how the agreement defines the equipment and the sensitive area. If the parties rely on an annex or map, confirm that it is authenticated, complete, and shared in the relevant languages.",
+        "Step 2: Clarify what 'relocate' requires, which party is responsible for each step, when the obligation begins, and how the parties will confirm completion. The parties—not the analyst—must choose any boundaries, distances, or categories based on their agreement and safety requirements.",
+        "Step 3: Decide whether a fixed deadline is feasible. If the parties want flexibility, define how an extension may be requested, what notice and reasons are required, who reviews the request, and what interim precautions remain in force.",
+        "Step 4: Specify an agreed verification method and its limits, including access, records, independent observation if accepted, and a process for challenging an observation. Do not infer non-compliance solely from missing or inconclusive data unless the parties have adopted that rule.",
+        "Step 5: Define an escalation path that distinguishes an administrative discrepancy from a material, verified failure. State how urgent concerns are addressed and which consultation or dispute mechanism applies.",
+        "Step 6: Test the provision against delay, a disputed map, unavailable observers, and a safety emergency. The exercise should reveal questions for negotiation, not predict that the clause will fail on a particular timetable.",
       ],
     },
     {
@@ -529,72 +739,72 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
   quiz: [
     {
       id: "q1-1-1",
-      question: "Why does the Vinculum Security Doctrine classify constructive ambiguity as an active vulnerability rather than a diplomatic virtue?",
+      question: "Why can an unresolved term create an operational risk even when the parties intend to cooperate?",
       options: [
         {
           id: "opt-a",
           text: "Because it makes treaties too difficult for public citizens to read and understand.",
-          explanation: "Incorrect. While public readability is desirable, the doctrinal danger of constructive ambiguity lies in structural fragility and unilateral reinterpretation during crises, not general reading comprehension.",
+          explanation: "Incorrect. Accessibility matters, but the operational risk discussed here is the possibility of competing expectations about scope, evidence, or process.",
           correct: false,
         },
         {
           id: "opt-b",
-          text: "Because it creates latent textual fissures that stronger parties exploit during exogenous shocks to justify unilateral coercion.",
-          explanation: "Correct. Constructive ambiguity masks unresolved disputes. When stress hits the relationship, the stronger party invariably enforces its preferred reading, causing catastrophic structural collapse.",
+          text: "Because the parties may later disagree about the term's scope, evidence, or decision process, especially if no procedure was agreed.",
+          explanation: "Correct. Unresolved terms can produce competing expectations, but the result depends on the text, context, conduct, power relations, and available procedures; disagreement does not automatically prove bad faith or determine which interpretation is legally correct.",
           correct: true,
         },
         {
           id: "opt-c",
           text: "Because international law forbids the use of adjectives in multilateral treaties.",
-          explanation: "Incorrect. International law does not formally ban descriptive adjectives; rather, the UDCA identifies subjective terminology as an engineering defect that prevents deterministic auditing.",
+          explanation: "Incorrect. International law does not impose a general ban on adjectives; context and the applicable interpretive process determine how terms are applied.",
           correct: false,
         },
         {
           id: "opt-d",
           text: "Because it slows down the initial signing ceremony at international summits.",
-          explanation: "Incorrect. Constructive ambiguity actually accelerates treaty signing by postponing difficult compromises, which is precisely why short-sighted negotiators favor it.",
+          explanation: "Incorrect. The risk concerns later implementation and interpretation, not the logistics or speed of a signing ceremony.",
           correct: false,
         },
       ],
     },
     {
       id: "q1-1-2",
-      question: "Under the Chancellery Doctrine of Relational Determinism, what is the mandatory requirement for any treaty obligation?",
+      question: "How should an operator use the Chancellery's Relational Determinism framework when reviewing an international commitment?",
       options: [
         {
           id: "opt-a",
           text: "It must be unanimously approved by the United Nations General Assembly.",
-          explanation: "Incorrect. Multilateral consensus does not ensure operational or mathematical determinism.",
+          explanation: "Incorrect. The framework is an internal review aid and does not create a UN approval requirement.",
           correct: false,
         },
         {
           id: "opt-b",
-          text: "It must be mathematically falsifiable and tethered to deterministic telemetry or cryptographic digests.",
-          explanation: "Correct. An obligation is only structurally real if independent parties examining the exact same telemetry log reach an identical compliance conclusion without subjective interpretation.",
+          text: "Use measurable evidence where appropriate, while preserving the agreed legal standard and the authority of the relevant decision-maker.",
+          explanation: "Correct. The framework can clarify observable questions and evidence procedures; it is an internal design aid, not a universal rule that every international obligation must be reduced to a metric.",
           correct: true,
         },
         {
           id: "opt-c",
           text: "It must be renegotiated every twelve months to maintain political relevance.",
-          explanation: "Incorrect. The goal of Chancellery drafting is permanent intergenerational stability, not perpetual renegotiation.",
+          explanation: "Incorrect. A review schedule should be chosen for the particular commitment; the framework does not impose an annual renegotiation rule.",
           correct: false,
         },
         {
           id: "opt-d",
           text: "It must be kept confidential between heads of state to prevent media distortion.",
-          explanation: "Incorrect. Confidentiality does not solve textual elasticity; public deterministic verification protects all parties.",
+          explanation: "Incorrect. Confidentiality is not a universal requirement and does not replace clear evidence and decision procedures.",
           correct: false,
         },
       ],
     },
     {
       id: "q1-1-3",
-      question: "In the structural autopsy of UN Security Council Resolution 242, what specific drafting evasion caused six decades of diplomatic deadlock?",
+      question: "What is the soundest conclusion to draw from the debate over the wording of UN Security Council Resolution 242?",
       options: [
         {
           id: "opt-a",
-          text: "The translation discrepancy between English and French regarding the definite article before territories.",
-          explanation: "Correct. The English text omitted the while the French text included des (of the), creating mutually contradictory legal claims regarding the extent of required military withdrawal.",
+          text: "The wording is one part of a broader interpretive and political history; it should not be treated as the sole proven cause of later conflict.",
+          explanation: "Correct. The full resolution, its official-language texts, the negotiation record, later positions, and political context must be considered together; a grammatical difference alone does not establish a complete causal account.",
           correct: true,
         },
         {
@@ -605,14 +815,14 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
         },
         {
           id: "opt-c",
-          text: "The inclusion of excessive satellite telemetry coordinates.",
-          explanation: "Incorrect. Resolution 242 contained zero coordinates, which was the core defect.",
+          text: "The inclusion of a technical annex that specified every disputed boundary coordinate.",
+          explanation: "Incorrect. The resolution did not resolve the later political and legal disputes by means of a coordinate annex.",
           correct: false,
         },
         {
           id: "opt-d",
-          text: "A clerical error that omitted the signatures of the attending ambassadors.",
-          explanation: "Incorrect. The resolution was formally passed, but its language was intentionally elastic.",
+          text: "The Council never adopted the text, leaving it as an unapproved draft.",
+          explanation: "Incorrect. The Security Council adopted Resolution 242 on 22 November 1967; debates about its interpretation do not change that institutional fact.",
           correct: false,
         },
       ],
@@ -655,6 +865,11 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       note: "Contemporaneous Council record for examining how representatives described Resolution 242 at adoption; read speakers' statements as evidence of their positions, not as a substitute for the adopted text.",
     },
     {
+      citation: "International Court of Justice. Legal Consequences for States of the Continued Presence of South Africa in Namibia (South West Africa) notwithstanding Security Council Resolution 276 (1970), Advisory Opinion, I.C.J. Reports 1971, p. 16.",
+      url: "https://www.icj-cij.org/case/53",
+      note: "Primary advisory-opinion record illustrating interpretation of a Security Council resolution through its language, Charter context, adoption discussions, and institutional circumstances; it does not determine the meaning of Resolution 242.",
+    },
+    {
       citation: "United Nations Security Council. Resolution 242 (1967), S/RES/242 (22 November 1967).",
       url: "https://docs.un.org/en/S/RES/242(1967)",
       note: "Primary text for the chapter's discussion. Read the full resolution and distinguish its institutional form from a treaty between states.",
@@ -685,6 +900,11 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       note: "Primary text for the case study. Use alongside implementation records rather than treating later commentary as the agreement itself.",
     },
     {
+      citation: "Ukraine, Russian Federation, United Kingdom, and United States. Memorandum on Security Assurances in Connection with Ukraine's Accession to the Treaty on the Non-Proliferation of Nuclear Weapons, A/49/765 and S/1994/1399 (5 December 1994).",
+      url: "https://docs.un.org/en/A/49/765",
+      note: "UN-documented text of the Budapest Memorandum; distinguish its consultation and nuclear-specific Security Council language from an automatic general military-assistance guarantee.",
+    },
+    {
       citation: "Treaty between the Government of India and the Government of Pakistan concerning the Most Complete and Satisfactory Utilisation of the Waters of the Indus System of Rivers (Indus Waters Treaty), 19 September 1960.",
       url: "https://treaties.un.org/doc/Publication/UNTS/Volume%20419/volume-419-I-6032-English.pdf",
       note: "Primary treaty text for comparing allocation provisions, the Permanent Indus Commission, and the treaty's differentiated dispute procedures.",
@@ -705,6 +925,41 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       note: "Primary text for examining phased arrangements, interim institutions, and implementation dependencies in a peace process.",
     },
     {
+      citation: "International Court of Justice. Kasikili/Sedudu Island (Botswana/Namibia), Judgment, I.C.J. Reports 1999, p. 1045.",
+      url: "https://www.icj-cij.org/case/98",
+      note: "Primary case record for the Court's treatment of an undefined treaty term, technical evidence, subsequent practice, and uncertain maps.",
+    },
+    {
+      citation: "International Court of Justice. Maritime Delimitation and Territorial Questions between Qatar and Bahrain (Qatar v. Bahrain), Jurisdiction and Admissibility, Judgment, I.C.J. Reports 1994, p. 112.",
+      url: "https://www.icj-cij.org/case/87",
+      note: "Primary case record on when exchanges of letters and signed minutes can create international rights and obligations.",
+    },
+    {
+      citation: "International Court of Justice. Whaling in the Antarctic (Australia v. Japan: New Zealand intervening), Judgment, I.C.J. Reports 2014, p. 226.",
+      url: "https://www.icj-cij.org/case/148",
+      note: "Primary case record on applying a purpose-based treaty standard to evidence about a program's design and implementation.",
+    },
+    {
+      citation: "International Court of Justice. Gabčíkovo-Nagymaros Project (Hungary/Slovakia), Judgment, I.C.J. Reports 1997, p. 7.",
+      url: "https://www.icj-cij.org/case/92",
+      note: "Primary case record on suspension, termination, changed circumstances, reciprocal conduct, and continued treaty obligations.",
+    },
+    {
+      citation: "Abbott, Kenneth W., and Duncan Snidal. Hard and Soft Law in International Governance. International Organization 54, no. 3 (2000): 421–456.",
+      url: "https://doi.org/10.1162/002081800551280",
+      note: "Peer-reviewed framework for analyzing obligation, precision, and delegation as institutional design dimensions with context-dependent trade-offs.",
+    },
+    {
+      citation: "Koremenos, Barbara, Charles Lipson, and Duncan Snidal. The Rational Design of International Institutions. International Organization 55, no. 4 (2001): 761–799.",
+      url: "https://doi.org/10.1162/002081801317193592",
+      note: "Peer-reviewed comparative framework for relating institutional features to cooperation problems rather than assuming one universally optimal design.",
+    },
+    {
+      citation: "Downs, George W., David M. Rocke, and Peter N. Barsoom. Is the Good News About Compliance Good News About Cooperation? International Organization 50, no. 3 (1996): 379–406.",
+      url: "https://doi.org/10.1017/S0020818300033427",
+      note: "Peer-reviewed analysis cautioning against treating observed compliance as sufficient evidence that an agreement achieved deep cooperation.",
+    },
+    {
       citation: "Fortna, Virginia Page. Scraps of Paper? Agreements and the Durability of Peace. International Organization 57, no. 2 (2003): 337–372.",
       url: "https://doi.org/10.1017/S0020818303572046",
       note: "Peer-reviewed study of agreement design and peace duration; useful for testing broad claims about implementation provisions against comparative evidence.",
@@ -720,20 +975,13 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       note: "Scholarly account of timing and political conditions in negotiations; a counterweight to explanations that attribute outcomes solely to drafting.",
     },
     {
-      citation: "Caradon, H. et al. (1981). \"U.N. Security Council Resolution 242: A Case Study in Diplomatic Ambiguity.\" Georgetown University Institute for the Study of Diplomacy.",
-      note: "Primary historical exposition on how intentional vagueness was employed as a diplomatic negotiating device.",
-    },
-    {
-      citation: "Krasner, S. D. (1999). \"Sovereignty: Organized Hypocrisy.\" Princeton University Press.",
-      note: "Foundational analysis of how sovereign states routinely exploit legal ambiguities to pursue realist power objectives.",
+      citation: "Krasner, Stephen D. Sovereignty: Organized Hypocrisy. Princeton, NJ: Princeton University Press, 1999.",
+      url: "https://press.princeton.edu/books/paperback/9780691007113/sovereignty",
+      note: "A political-science analysis of sovereignty norms and state practice. Use it to examine tensions between formal rules and political conduct, not as evidence that every state exploits ambiguity or that a disputed term has one predetermined legal meaning.",
     },
     {
       citation: "Sigal, L. V. (1998). \"Disarming Strangers: Nuclear Diplomacy with North Korea.\" Princeton University Press.",
-      note: "Detailed empirical autopsy of the ambiguities and sequencing defects of the 1994 Agreed Framework.",
-    },
-    {
-      citation: "Vinculum Security Doctrine (2026). \"The Chancellery Treatise on Relational Invariants and Sovereign Redlines.\" Chancellery Working Papers Series.",
-      note: "The definitive operational manual detailing the mathematical requirements for deterministic covenant drafting.",
+      note: "Historical account of U.S.-DPRK nuclear negotiations; consult alongside the agreement and contemporaneous official records rather than treating it as the sole account of causation.",
     },
   ],
 };

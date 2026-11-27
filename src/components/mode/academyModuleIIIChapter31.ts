@@ -6,7 +6,7 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
   number: "3.1",
   eyebrow: "Module III · Chapter 3.1",
   title: "Browser-Local Architecture & the Deterministic Signal Bus",
-  estimatedMinutes: 52,
+  estimatedMinutes: 81,
   executiveLede: "Sensitive diplomatic analysis raises questions of jurisdiction, custody, endpoint trust, and the limits of browser security. This chapter studies a browser-local analytical design in which desk calculations share the MissionEngine signal bus rather than maintaining competing stores. Local computation can reduce routine disclosure to a remote application service, but it is not itself an air gap, a guarantee against browser or host compromise, or a substitute for deployment controls. The chapter therefore separates architectural choices visible in the code from risks that require institutional policy, independent testing, and physical safeguards.",
   synopsis: [
     "Remote services create data-custody, jurisdiction, and operational-dependency questions, but the existence of an overseas service does not by itself establish that a state can lawfully compel every record or defeat every diplomatic protection. Legal analysis depends on the provider, custodian, applicable process, data location, and the status of the records. The Vienna Convention's rules on mission archives do not automatically resolve a private provider's conflicts-of-law duties.",
@@ -14,18 +14,18 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
     "Deterministic calculation is a property to be established for defined code, inputs, and execution conditions; it is not a synonym for immutability or universal bit-for-bit identity across every device. Numeric guards in the repository provide bounded fallback behavior for specified non-finite values. They do not prove that an observation is accurate, nor do they guarantee that every source of corrupt or adversarial input has been removed.",
     "This chapter examines browser-local data-flow design, the MissionEngine's single signal chain, deterministic and auditable state transitions, and numeric guards. It also develops the limits of those controls: network and supply-chain boundaries, browser process isolation, concurrency, storage, accessibility, independent verification, and the institutional procedures needed before technical evidence can support a diplomatic decision.",
   ],
-  statutoryNotice: "Statutory Directive 3.1: No mission data, bond readings, or counterpart psychological profiles shall be transmitted across any network interface or persisted in any external cloud store. All desk computations must execute strictly within browser-local volatile memory.",
+  statutoryNotice: "Internal UDCA operating convention—not a statute or statement of international law: designated desk calculations use the browser-side MissionEngine signal bus. This code-level boundary does not by itself prohibit other network traffic or establish that all mission data remains only in volatile memory.",
   learningOutcomes: [
-    "Audit the structural counter-intelligence and extraterritorial subpoena vulnerabilities inherent in commercial SaaS diplomatic platforms.",
-    "Demonstrate how browser-local memory isolation satisfies the archives inviolability standard of Article 24 of the Vienna Convention on Diplomatic Relations.",
+    "Assess provider custody, legal process, and disclosure risks in a specified commercial service without generalizing beyond the evidence.",
+    "Explain why browser-local computation does not, by itself, establish compliance with Article 24 of the Vienna Convention on Diplomatic Relations.",
     "Analyze the unidirectional publish-and-subscribe architecture of the MissionEngine deterministic signal bus across all eighteen operational desks.",
     "Identify and remediate parallel state vulnerabilities, race conditions, and out-of-order publication risks in diplomatic telemetry.",
     "Implement canonical numeric input guards to prevent non-finite floating-point corruption from entering downstream treaty instruments.",
   ],
   sections: [
     {
-      heading: "I. The Counter-Intelligence Crisis of Commercial Cloud Diplomacy",
-      subheading: "Extraterritorial Jurisdiction, the CLOUD Act, and the Erosion of Sovereign Inviolability",
+      heading: "I. Cloud Custody, Jurisdiction, and Evidence",
+      subheading: "Extraterritorial Jurisdiction, the CLOUD Act, and Diplomatic Record Protections",
       paragraphs: [
         "In modern multilateral statecraft, foreign ministries and diplomatic delegations have increasingly surrendered computational independence to commercial cloud service providers. Proprietary SaaS collaboration suites, cloud databases, and centralized document repositories are routinely marketed as secure environments for high-stakes bilateral negotiations. This operational practice introduces an existential counter-intelligence vulnerability: data hosted on remote physical infrastructure is legally and physically tethered to the jurisdiction of the host nation and the corporate sovereign that administers the data center.",
         "The United States CLOUD Act amended federal law to clarify that a provider subject to United States jurisdiction may be required to preserve, back up, or disclose data within its possession, custody, or control regardless of whether the data is located inside or outside the United States, subject to statutory process and applicable challenges. That is a meaningful jurisdictional risk to assess, not a universal rule that every foreign court may obtain every record without notice or process. A sound assessment asks who controls the account, what the provider can access, which legal instruments apply, and what safeguards or conflicts procedures exist.",
@@ -34,16 +34,16 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
         "The practical design question is which calculations and records need to stay on the operator's device, which must be shared, and who can inspect the code that handles them. Browser execution can keep a particular signal calculation within a page process while the loaded application still depends on delivery infrastructure, identity services, browser updates, and the operating system. Locality narrows selected data paths; it does not confer absolute custody or make an endpoint trustworthy by declaration.",
       ],
       caseStudy: {
-        title: "Operation Rubicon and the Fallacy of Neutral Third-Party Custody",
-        jurisdiction: "International Bilateral Statecraft / Swiss-German Corporate Domain",
-        precedent: "Compromised diplomatic cryptography via Crypto AG (1970–2018)",
+        title: "Source Analysis: NIST Cybersecurity Supply Chain Risk Management",
+        jurisdiction: "United States federal cybersecurity guidance",
+        precedent: "NIST SP 800-161 Rev. 1, Cybersecurity Supply Chain Risk Management Practices",
         analysis: [
-          "In 2020, reporting based on declassified material described a long-running intelligence operation in which the CIA and West German BND secretly controlled Crypto AG and exploited weaknesses in some of its encryption products. Crypto AG equipment was used by governments around the world, but the history should not be reduced to the unsupported claim that every product or every customer's messages were readable in every period. The precise scope varied by machine, customer, and cryptographic configuration.",
-          "The case is relevant to architecture because users relied on a supplier whose assurances and ownership structure they could not independently assess. A hidden weakness in a cryptographic product can defeat the purpose of encryption even when a buyer sees ciphertext on a network. This is a supply-chain and governance failure, not direct evidence that every commercial cloud provider has comparable access or intent.",
-          "Popular accounts connect the intelligence operation to major diplomatic and military events, but a curriculum should avoid attributing specific negotiating outcomes or claiming complete, real-time access without a traceable source for each assertion. The case supports the narrower inference that vendor trust, independent evaluation, key custody, and oversight matter. It does not by itself establish what any particular delegation knew or why a particular policy decision was made.",
-          "Operation Rubicon is therefore a warning about opaque dependencies and concentrated trust, not proof that all third-party infrastructure will inevitably be subverted. A contemporary assessment must test the actual service and deployment, identify the adversary's capabilities, and weigh independent evidence. Local execution can reduce selected disclosures, while still requiring trusted code delivery, endpoint controls, identity protection, update governance, and recovery planning.",
+          "NIST SP 800-161 Rev. 1 frames cybersecurity supply-chain risk management as an organizational and system-level discipline. Its subject is the risk introduced through products and services, including the processes by which they are acquired, developed, integrated, deployed, and maintained. It is guidance for risk management, not evidence that a particular supplier is compromised.",
+          "Applied to a browser-local diplomatic tool, this guidance directs review beyond where a calculation executes. Relevant questions include who builds and signs the bundle, which dependencies are incorporated, who can release updates, how vulnerabilities are reported and remediated, and how the deployed artifact is matched to reviewed source. The answers require evidence from the actual supplier and release process.",
+          "A contract or vendor assurance can describe responsibilities but does not independently prove a technical property. Pair documentation with a dependency inventory, build provenance, review of security advisories, access-control evidence, and testing of the delivered artifact. Record which claims are verified, which remain supplier assertions, and which depend on institutional policy.",
+          "The source supports a structured assessment of supplier and lifecycle risk; it does not establish that every multi-tenant service is unsafe, that an adversary can read a neighboring customer's memory, or that browser-local execution creates a sovereign enclave. Those are separate claims requiring specific technical and deployment evidence.",
         ],
-        failureMechanism: "Customers could not independently detect that a trusted supplier was controlled by intelligence services and that weaknesses had been introduced into some products. The case illustrates supply-chain opacity and the limits of relying on vendor assurances alone.",
+        failureMechanism: "Supply-chain exposure can arise through opaque dependencies, update authority, or weak lifecycle controls; the NIST guidance provides a review framework, not proof of a compromise or an absolute prevention guarantee.",
       },
       subsections: [
         {
@@ -109,13 +109,95 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
             "Data transfers deserve their own review. Exports, screenshots, copied excerpts, email attachments, removable media, and printed handouts may bypass the MissionEngine's local data path. Before export, identify the recipient, purpose, classification, minimization, encryption, and logging requirement. A local calculation bus cannot constrain what a user later copies from the screen, so procedures and technical controls must cover the entire information lifecycle.",
           ],
         },
+        {
+          title: "Using a Control Catalog Without Turning It into a Compliance Claim",
+          paragraphs: [
+            "NIST SP 800-53 is a catalog of security and privacy controls, not a certificate that a particular cloud deployment is safe. Its control families provide a vocabulary for organizing requirements across access control, audit and accountability, contingency planning, system acquisition, system and communications protection, and supply-chain risk management. The catalog is deliberately broader than any one web application. A ministry should select and tailor controls for its system boundary, impact level, mission, and governing policy rather than copying every control into a checklist.",
+            "The 2025 Release 5.2.0 update adds and revises selected controls and discussion material, but the existence of a new release does not itself tell an operator which provisions apply. Maintain the catalog version used for the assessment and record the tailoring rationale. A future mapping should be reviewed against the current catalog and the organization's own baseline; otherwise, a table can preserve stale control language while appearing current.",
+            "For a cloud-hosted component, system acquisition and external-services controls raise questions about service descriptions, responsibility allocation, and ongoing oversight. Access controls call for review of identity, authorization, privileged roles, and account lifecycle. Audit controls lead to questions about which events are recorded, who can inspect the records, and how long they are kept. Contingency controls require a recovery and continuity plan. These are prompts for evidence collection, not proof that the provider satisfies any requirement.",
+            "A control mapping should distinguish the control objective from its implementation. For example, a requirement to restrict privileged access might be met partly by provider platform controls and partly by the ministry's account configuration, approval process, and monitoring. The map should identify the party responsible for each action, the system component in scope, the evidence available, and the residual dependency on another party. A control left with no named owner is a governance gap even if the contract uses reassuring language.",
+            "Avoid treating a framework crosswalk as equivalence. NIST's publication page cautions that mappings between SP 800-53 and other frameworks are indicative and may not be one-to-one. A cloud service may present a SOC report, ISO certificate, or government authorization, but the scope, period, services, regions, exclusions, and complementary customer controls determine its relevance. The ministry must compare that evidence with its own use case and threat model instead of accepting a badge as a universal guarantee.",
+            "A useful deliverable is a short control applicability record: control objective, mission asset, provider role, customer role, implementation evidence, assessment date, exception, and accountable risk owner. Keep factual findings distinct from judgments. 'The provider's report covers the production service through a stated date' is an evidence statement; 'this arrangement is acceptable for confidential negotiation records' is a risk decision that belongs to authorized officials and counsel.",
+          ],
+        },
+        {
+          title: "Shared Responsibility as an Explicit Allocation of Work",
+          paragraphs: [
+            "Cloud responsibility is not a single line that moves mechanically between infrastructure, platform, and software service models. The customer may retain responsibility for user enrollment, data classification, account configuration, endpoints, and deciding which information to place in the service, while the provider operates physical facilities, parts of the network, and some service components. The exact allocation depends on the product, contract, deployment, and selected options. Confirm it for the named service and region rather than infer it from the label 'SaaS' or 'private cloud.'",
+            "Construct a responsibility matrix around actual tasks. For each task—provisioning an account, enabling multifactor authentication, reviewing administrator grants, rotating a key, exporting records, responding to a subpoena, notifying the customer after an incident, or deleting a backup—name the actor, the evidence of completion, the service boundary, and any dependency. If the provider operates a control but the customer configures it, record both roles. If the customer cannot inspect an essential activity, record that limitation rather than assuming it is covered by the contract.",
+            "Key management is a particularly important boundary. Encryption at rest can reduce exposure to a party that lacks the relevant key, but it does not by itself establish that the service cannot access plaintext during normal processing. Determine who creates, stores, rotates, and can invoke each key; whether the provider controls a separate wrapping key; and what happens during support, recovery, export, and service termination. A customer-managed key is meaningful only to the extent that the customer retains the specified authority and the service architecture supports the intended separation.",
+            "Identity is another shared control. A ministry may operate its own identity provider yet depend on the cloud service's authorization model, account recovery, session policy, and privileged support process. A compromised identity administrator may cross a boundary that encryption at rest does not address. Review joiner-mover-leaver procedures, break-glass accounts, service identities, emergency access, and termination of supplier personnel. The security case should cover both routine access and exceptional access under incident or legal process.",
+            "The matrix should be tested against a concrete workflow. Follow a confidential draft from device entry through upload, editing, search indexing, backup, administrator support, export, and deletion. Ask which party can view content or metadata at every transition. Document what happens when the user loses access, the provider has an outage, a legal request arrives, or a customer administrator leaves. This process reveals responsibility gaps that a generic provider diagram can obscure.",
+            "A contractual promise is relevant but needs operational interpretation. Service terms may define notice, assistance, audit rights, data return, and deletion in ways that differ from an operator's assumption. Review incorporated documents and change mechanisms, not only the marketing summary. Record who has authority to accept changes in terms, approve a subprocessor, or transfer data to a new service. Legal review is necessary because technical architecture alone cannot define the parties' enforceable obligations.",
+          ],
+        },
+        {
+          title: "Assurance Evidence, Scope, and Independent Challenge",
+          paragraphs: [
+            "An assurance report is an evidence artifact with a defined scope, period, criteria, and intended audience. Before relying on it, identify the service and components included, the data center or region, the report period, exceptions, subservice organizations, and whether complementary customer controls are assumed. A report for a provider's general platform may not cover a particular feature, tenant configuration, support channel, or geography. The fact that a document exists is not evidence that the use under review falls within its scope.",
+            "Map each important assertion to the evidence that could support it. A claim that designated calculations remain in the browser may be tested by reviewing the deployed bundle, tracing data flow, and observing network activity in defined scenarios. A claim that provider access is restricted may depend on role design, access logs, approval records, and independent assessment. A claim that deletion is complete may require details about replicas, backups, retention windows, and legal holds. Different claims require different evidence; one general audit cannot answer all of them.",
+            "Supplier attestations are useful for discovering architecture and process, but they are statements by an interested party. Independent auditors can improve confidence within their stated scope, yet their work does not eliminate the need to examine exclusions and assumptions. Technical testing provides another perspective but is similarly bounded by the version, configuration, test account, and access available. Triangulate written terms, independent reports, configuration evidence, and direct tests where proportionate.",
+            "A gap should be expressed precisely. 'No evidence was provided that support personnel can access plaintext' is not the same as 'support personnel can access plaintext.' Likewise, a successful test of one tenant does not prove a system-wide negative. For each conclusion, record whether it is directly observed, independently assessed, contractually represented, inferred, or unknown. This vocabulary prevents uncertainty from being converted into either an unsupported accusation or an unwarranted assurance.",
+            "Assurance expires as the system changes. Provider architecture, ownership, subprocessors, software versions, and customer configuration may change during a contract. Define triggers for reassessment—new service features, region changes, significant incidents, changes to identity or key custody, contract amendments, or expiration of a report. A named owner should track those triggers and retain the evidence version that supported each risk decision.",
+            "The reviewer should ask what would falsify the security claim. If a data-flow assertion would be disproved by any unapproved network request, test error paths and telemetry as well as the normal save action. If access restriction is the claim, examine privileged and emergency paths, not just ordinary user roles. Predefining disconfirming evidence makes the assessment less vulnerable to confirmation bias and makes later reviews more reproducible.",
+          ],
+        },
+        {
+          title: "Provider Incidents, Notice, and Evidence Preservation",
+          paragraphs: [
+            "An incident involving a cloud service may span multiple organizations and telemetry systems. The provider may control infrastructure logs, the customer may control identity events, and the mission office may hold the affected local copies. Before an incident, establish which contact channel operates at all hours, who can authorize disclosure of technical details, what data the provider will preserve, and how the organization will obtain relevant records. A generic promise to 'cooperate' is not a forensic plan.",
+            "The response procedure should distinguish suspected exposure, confirmed unauthorized access, service interruption, integrity concern, and lawful disclosure. Each condition may require a different action. An integrity concern may call for freezing the current export and comparing it with an independently held checkpoint; a suspected credential compromise may call for disabling accounts and rotating secrets; an outage may require a continuity plan. Avoid treating every event as proof of exfiltration or assuming that a provider's notification has completed the customer's own assessment.",
+            "Preserve the minimum evidence needed to understand what happened: relevant account and access records, release versions, network observations, change approvals, provider notices, and copies of affected records under the approved evidence process. Record how each artifact was obtained, who handled it, and whether the clock source is trusted. If logs are mutable or provider-held, request preservation promptly through the authorized channel and document gaps. A hash can help compare a captured file later but does not authenticate the log source or establish the truth of every entry.",
+            "Notification terms must be interpreted operationally. Determine who at the provider receives notices, what event threshold triggers a report, the expected delay, and whether the customer can obtain details needed for legal obligations. Ensure that contact information is current and test the escalation route. If a third-party incident-response firm is involved, define its access to mission information and the approvals needed to share data, particularly when jurisdictions and diplomatic protections may be implicated.",
+            "Containment can conflict with preservation. Removing an account or deleting a workspace may reduce access while destroying context needed for investigation. The organization should define who decides whether to isolate, preserve, export, or purge and what to do when immediate confidentiality is more important than forensic completeness. A browser-local panic action is not a substitute for provider coordination, and a cloud provider's incident report does not determine the mission's legal position.",
+            "After recovery, make a documented disposition: what data was affected, which claims were verified, what remains uncertain, what credentials or keys were changed, which copies were restored, and who approved the return to service. Avoid promising that a service is 'clean' merely because the incident is closed. Retest the relevant controls against the recovered configuration and update the responsibility matrix, evidence inventory, and operator training.",
+          ],
+        },
+        {
+          title: "Exit Planning, Portability, and End-of-Service Custody",
+          paragraphs: [
+            "A cloud service should be evaluated not only at onboarding but at exit. Identify which records can be exported in a usable format, which metadata or audit histories cannot be returned, what fees or time limits apply, and whether an export preserves relationships among attachments, comments, identity records, and timestamps. A folder of files may not be a complete record if the service's semantics depend on an unavailable database or proprietary application.",
+            "Test portability before it becomes urgent. Export a representative synthetic workspace and verify its integrity, schema, attachment completeness, and ability to be interpreted without the original service. Record which fields require a proprietary reader and whether the recipient can validate hashes or signatures independently. A successful download is not the same as a usable transfer, and a visually similar replacement interface may not preserve the original decision history.",
+            "Termination must cover more than the active tenant. Ask how primary storage, replicas, search indexes, support exports, diagnostic data, and backups are handled, and what exceptions apply to legal holds or disaster recovery. Distinguish the date service access ends from the date each class of retained copy is scheduled for deletion. Require an attestation that identifies its scope and limits; do not imply that a provider can prove physical erasure from every medium unless the evidence and contract support that claim.",
+            "Encryption-key retirement can form part of exit, but only if the cryptographic design and key custody are understood. Revoking a key may render one encrypted copy inaccessible to an intended reader, yet plaintext exports, cached values, screenshots, and independently held keys may remain. Conversely, destroying a key too early can prevent an authorized records transfer. Coordinate key actions with data return, legal hold, and recovery requirements rather than treating key deletion as a universal erasure button.",
+            "The receiving system needs its own acceptance process. Verify the transferred inventory, compare file hashes where agreed, preserve the original export, record the receiving custodian, and identify any fields that could not be migrated. If the export omits audit history or relies on an undocumented transformation, record that gap. Do not repair missing provenance by assigning new timestamps or reconstructing events from memory without labeling them as later annotations.",
+            "Exit planning also covers operational dependencies: authentication, domain names, APIs, encryption keys, identity federation, support contacts, and staff knowledge. Maintain a transition window and a contingency route that does not require the incumbent provider to remain available indefinitely. Rehearse the process with non-sensitive data and measure whether the mission can continue safely. The ability to leave a service is part of custody assurance because it reduces pressure to accept changed terms or tolerate an unresolved control failure.",
+          ],
+        },
+        {
+          title: "A Lifecycle Assessment Record for Cloud Decisions",
+          paragraphs: [
+            "NIST SP 800-37 Rev. 2 presents the Risk Management Framework as a life-cycle process for managing security and privacy risk. Its relevance here is methodological: assess a defined information system, select and implement controls, evaluate evidence, authorize operation, and monitor changes. It is federal guidance, not a treaty rule or an automatic accreditation for a commercial product. An organization outside its direct governance context may adapt the method, but should state that it is doing so.",
+            "Start by drawing the system boundary in operational terms. Include the client application, identity service, hosting and content delivery, data stores, support tools, browser and operating system, export paths, and external services. Mark trust boundaries and data flows, then identify the information types and mission consequences of loss of confidentiality, integrity, or availability. If a component is omitted because it is assumed to be trustworthy, record that assumption and who accepts it.",
+            "Next, define the decision being made. Is the service proposed for public reference material, internal analysis, working drafts, or an official record? The same provider may be acceptable for one class and unacceptable for another. State the users, locations, operational period, access model, and required availability. Avoid collapsing all missions into a single sensitivity label when their counterpart identities, timing, and analytic conclusions carry different risks.",
+            "Select controls based on that boundary and decision, then tailor them. Identify which controls the provider implements, which the customer configures, which depend on both, and which are not applicable. A tailoring rationale should not merely say 'covered by vendor'; it should name the provider evidence and customer action that satisfy the objective. Where the product does not support a required control, decide whether another layer mitigates the risk or whether the service is unsuitable.",
+            "Implement the selected controls as concrete settings and procedures. Examples include named accounts, multifactor authentication, privileged-role review, approved regions, restricted exports, retention configuration, release validation, and an incident contact path. The exact set is organization-specific; a control family does not prescribe one universal configuration. Record the deployed values and the authority responsible for changes so the assessment can be repeated after an update.",
+            "Assess the controls against evidence rather than design documents alone. A reviewer may inspect configuration exports, sample access records, test results, release hashes, provider audit materials, and observed data flows. Record test scope, version, date, limitations, and exceptions. If an assertion cannot be tested because the provider controls the relevant logs or infrastructure, describe that evidence gap and decide whether the resulting uncertainty is acceptable.",
+            "Authorization is a management decision that accepts residual risk for a stated scope and period. It should identify the system, data categories, operating conditions, unresolved findings, compensating controls, and risk owner. It does not transform a weak technical claim into a fact. A change to region, key custody, access model, product feature, or legal terms may invalidate the basis for authorization and should trigger review.",
+            "Monitoring then checks whether the approved conditions continue to hold. Set review intervals and change triggers for provider reports, service incidents, vulnerability notices, contract amendments, subprocessor changes, and expiration of key or identity credentials. Monitoring should be proportionate: collect evidence needed to detect drift without creating unnecessary content logs or a second sensitive repository.",
+            "Finally, preserve a decision history that distinguishes the assessment at each point in time. Keep prior versions of the boundary, control mapping, evidence, approval, and exceptions according to records policy. A later reviewer should be able to tell whether a control was absent, unknown, or simply not in scope. This record supports accountability but does not prove that the service was secure at every instant between assessments.",
+            "This workflow makes risk acceptance visible and revisable. The provider may supply facts about its service; engineers may test the client and configuration; counsel may analyze applicable process and archive protections; and mission leadership may decide whether residual risk is compatible with the operation. No single report or code review can substitute for those distinct responsibilities.",
+          ],
+        },
+        {
+          title: "Classifying Metadata and Derived Mission State",
+          paragraphs: [
+            "A data inventory should not stop at document contents. Account identifiers, access timestamps, file sizes, source addresses, desk selection, signal updates, and export events can reveal relationships and activity even where no narrative text is transmitted. A derived score can also expose an analyst's judgment or a delegation's posture. Classify these records according to their context and potential combination, not merely their field names or byte count.",
+            "Begin with a map of observables at each boundary: page and browser, identity provider, application host, cloud service, support channel, clipboard, and receiving office. For each observable, state whether it is content, identity, timing, volume, configuration, or derived information. Then identify which actor can access it, whether it is retained, whether it is linked to other records, and how long the linkage persists. Unknown retention or access should remain an explicit gap.",
+            "Linkability is often more informative than a single datum. A sequence of logins may reveal delegation hours; a pattern of workspace revisions may reveal when a negotiation accelerated; a repeated identifier can connect otherwise separate records. This does not mean every timestamp reveals a secret or that a provider can infer the substance of a decision from traffic alone. It means the risk assessment should test plausible combinations and state the evidence and uncertainty behind any inference.",
+            "Derived state needs provenance and classification of its own. A signal bus can contain calculated values that are smaller than their source records but still sensitive because they summarize a negotiation posture. Preserve the distinction between source observation, analyst interpretation, canonical formula output, and a human decision. Access to a score should not automatically grant access to the underlying dossier, while a score's sensitivity should not be assumed low merely because it is numeric.",
+            "A proportionate control can reduce exposure without disabling legitimate analysis. Examples include limiting persistent identifiers, shortening retention of operational telemetry, restricting support access, aggregating where the decision permits, and separating public status from confidential content. Any aggregation or redaction must be checked for residual inference and must not corrupt the evidence needed for the decision. Anonymization should not be promised when a counterpart can be re-identified from context.",
+            "Use the NIST control-selection process to connect the classification to specific requirements, but do not claim that a control catalog supplies a universal diplomatic classification scheme. The organization defines its categories, harms, access rules, and retention obligations. The technical team can explain where data flows and what can be observed; the information owner and legal authority decide the appropriate handling level.",
+            "Review classification when context changes. A previously routine signal may become sensitive when linked to a named envoy, public announcement, ceasefire deadline, or newly disclosed party. Reassess the export, archive, and support workflow when a mission changes purpose or concludes. Record the decision and its rationale so a future user does not treat an old label as permanently valid.",
+          ],
+        },
       ],
       formulas: [F_STATE_VECTOR, F_LIEBIG],
-      statutoryRule: "Rule 3.1-A: No operational telemetry, state vector coordinates, or counterpart psychological profiles shall be transmitted across any network interface or persisted in any external database. All mission processing must execute within local browser memory.",
+      statutoryRule: "Internal UDCA design convention—not law: designated desk readings are published through the shared MissionEngine bus rather than recomputed in presentation views. Network traffic, persistence, and deployment boundaries require separate review.",
     },
     {
-      heading: "II. The Architecture of Zero-Cloud Computational Sovereignty",
-      subheading: "Volatile Memory Isolation, Air-Gapped Integrity, and Client-Side Invariance",
+      heading: "II. Browser-Local Computation and Deployment Boundaries",
+      subheading: "Client-Side Execution, Offline Testing, and Endpoint Assumptions",
       paragraphs: [
         "A browser-local design places the application logic and selected state in the client execution environment. In this repository the MissionEngine describes itself as a browser-side bus, and desk components use its publish/read abstractions. That is a statement about the computation and data flow represented by this code, not a claim that every route, authentication path, asset request, or storage feature is network-free. A production deployment must inspect network requests and hosting configuration before making a zero-cloud assurance.",
         "Browser security models provide origin isolation and implementation-specific process protections, but the web platform does not promise a dedicated hardware enclave for each page. A page shares a device with its browser, extensions, operating system, and other software. JavaScript objects may be copied, garbage-collected, serialized, or retained by debugging facilities. Clearing a reference or overwriting a typed array can reduce exposure for that buffer; it cannot prove that every copy has vanished from physical media or memory.",
@@ -125,18 +207,18 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
       ],
       subsections: [
         {
-          title: "The Failure of Multi-Tenancy in Sovereign Statecraft",
+          title: "Assessing Multi-Tenant Cloud Risk Without Overclaiming",
           paragraphs: [
-            "Multi-tenancy is the foundational economic architecture of commercial cloud computing. By pooling computational resources across thousands of distinct enterprise customers on shared physical hardware, cloud providers maximize hardware utilization and operational profitability. However, multi-tenancy introduces profound security vulnerabilities that are fundamentally incompatible with sovereign statecraft.",
-            "Microarchitectural side-channel attacks exploit speculative execution mechanisms within modern central processing units to leak memory contents across virtual machine boundaries. In a multi-tenant cloud environment, a sophisticated state-sponsored actor can lease a virtual machine on the same physical server as a targeted foreign ministry and extract sensitive cryptographic keys or mission telemetry directly from processor caches.",
-            "By enforcing zero-cloud client execution, the UDCA guarantees that the analytical workload executes exclusively on single-tenant physical hardware under the direct physical security perimeter of the sovereign delegation. The delegation does not share processor caches, memory controllers, or operating system kernels with unknown commercial or adversarial tenants.",
+            "Multi-tenancy is a common cloud deployment model in which provider infrastructure serves more than one customer. That arrangement creates shared responsibility and isolation questions, but the existence of shared hardware is not evidence that one customer can read another customer's memory. Isolation depends on the provider's architecture, configuration, access controls, vulnerability management, and the particular service being used.",
+            "Microarchitectural side-channel research has demonstrated that some processor behaviors can disclose information across security boundaries under particular conditions. Those results justify threat modeling and patch management; they do not establish that a state actor can simply rent a neighboring virtual machine and extract a particular ministry's keys. Any operational claim must identify the demonstrated vulnerability, affected hardware and software, required attacker access, mitigations, and evidence of applicability.",
+            "The MissionEngine's browser-side calculations avoid sending those calculations to a remote calculation service in the code path described by this repository. That does not prove a zero-cloud deployment or a dedicated physical endpoint. Authentication, static assets, optional enclave storage, browser updates, and other features have distinct data flows. Describe the inspected code path and tested deployment, not an absolute architectural guarantee.",
           ],
           callout: {
-            kind: "statutory",
-            title: "Statutory Air-Gap Mandate",
+            kind: "warning",
+            title: "An Air Gap Is a Deployment Condition",
             paragraphs: [
-              "When an operational mission is classified under Elevated or Critical sensitivity, the analytical terminal must be physically disconnected from all local area networks, cellular interfaces, Bluetooth controllers, and wireless antennas.",
-              "The browser-local runtime retains full analytical functionality in an air-gapped state, proving that mathematical rigor and operational security do not require network connectivity.",
+              "No statutory rule is asserted here. If an organization requires an offline deployment, it must define the boundary, test the packaged workflow without network access, and document removable media, update, identity, recovery, and device-custody controls.",
+              "This repository's browser-local calculations do not establish that every feature works offline. A successful offline assurance requires testing the exact build and required workflows on the intended managed device.",
             ],
           },
         },
@@ -188,7 +270,7 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.1-B: The analytical suite shall maintain full operational and mathematical functionality in a completely disconnected, air-gapped hardware state without performance degradation.",
+      statutoryRule: "Internal UDCA design convention—not law: an offline deployment is a separate, testable configuration. This codebase does not assert that every workflow remains available without network access.",
     },
     {
       heading: "III. The Deterministic Signal Bus (MissionEngine Architecture)",
@@ -201,30 +283,30 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
         "A single signal chain can reduce accidental divergence, duplicated calculations, and some classes of update inconsistency. It cannot eliminate all races or guarantee an identical view at every instant. Asynchronous persistence, event scheduling, component lifecycle, stale revisions, and partial updates still require tests and explicit state handling. Operators may also view different mission phases or workspace revisions, so the interface should disclose context when it matters.",
       ],
       caseStudy: {
-        title: "Rambouillet Negotiations: A Caution Against Treating Diplomatic Failure as a Data Problem",
-        jurisdiction: "International Diplomatic Mediation / Federal Republic of Yugoslavia & Kosovo",
-        precedent: "Interim Agreement for Peace and Self-Government in Kosovo (1999)",
+        title: "Source Analysis: Article 24 of the Vienna Convention on Diplomatic Relations",
+        jurisdiction: "International treaty law",
+        precedent: "Mission archives and documents are inviolable at any time and wherever they may be",
         analysis: [
-          "The February 1999 Rambouillet talks brought together representatives of the Federal Republic of Yugoslavia and Kosovo Albanian leadership under Contact Group mediation. The process addressed political arrangements, implementation, security, and the role of an international presence. The parties' positions and the proposed terms were contested; a technical account should distinguish the text of the draft from later political interpretations.",
-          "The negotiations are not evidence that parallel word processors or unsynchronized digital annexes caused the breakdown. Claims of a specific document-control failure require documentary sources, and the available account here does not establish one. The case is better used to examine how parties can disagree over connected political and military provisions, and how a proposal's legal and operational meaning depends on its complete text and negotiating context.",
-          "The military implementation provisions, including the proposed status and movement of an international force, became a major point of dispute. Characterizations such as 'total occupation' are interpretations, not neutral descriptions of the draft. The talks did not produce an agreement accepted by all parties; the subsequent Kosovo conflict and NATO air campaign had complex diplomatic, legal, and military causes that should not be reduced to a single drafting defect.",
-          "For software design, the cautious lesson is that shared access to a current document can reduce accidental version divergence, but cannot resolve disagreement about meaning, authority, or acceptable terms. A unified signal bus could make selected analytical values consistent within an application. It could not decide whether a proposal was fair, lawful, or politically acceptable, nor establish that a failed negotiation would have succeeded with better state synchronization.",
+          "Article 24 states that the archives and documents of a diplomatic mission are inviolable at any time and wherever they may be. This is the treaty text relevant to the legal status of mission archives; it should be read alongside the Convention's other provisions and any applicable law.",
+          "Article 24 does not prescribe a browser architecture, encryption algorithm, storage medium, cloud contract, or technical test. It does not by itself answer whether a particular outsourced copy is a mission archive, what duties apply to a private service provider, or which procedural remedies govern a specific demand. Those questions require legal advice tied to the facts and the applicable jurisdiction.",
+          "Legal protection and technical accessibility are different issues. A record may be protected under a legal rule while still being exposed through compromised credentials, an administrator, a vulnerable endpoint, or an insecure transfer. Conversely, local computation can reduce a data flow without deciding the record's legal classification.",
+          "An architecture review should therefore identify the record, its custodian, who can access it, where it is stored, the governing contract and law, and the technical controls. This is an analytical application of the treaty text, not a claim that Article 24 resolves every modern cloud-custody question.",
         ],
-        failureMechanism: "The negotiation failed to yield an accepted agreement amid substantive disputes over political arrangements and implementation. The case does not establish that a document synchronization failure caused the outcome.",
+        failureMechanism: "The Convention states a legal protection but does not specify technical controls or decide every third-party custody question; no technical failure or particular provider outcome is asserted.",
       },
       subsections: [
         {
           title: "The Prohibition Against Parallel Stores and View-Layer Math",
           paragraphs: [
             "In poorly architected software systems, user interface components frequently re-implement mathematical calculations locally to format displays or trigger visual alerts. For example, a status badge might calculate its own approximation of the Rupture Index using simplified logic rather than reading the authoritative figure from the core engine. Over time, as formulas are updated in the engine, the view layer becomes desynchronized, leading to situations where a gauge displays a green Viable status while the underlying mathematical engine has already tripped a red Critical alarm.",
-            "The UDCA enforces a zero-tolerance architectural invariant: no view component may ever calculate, approximate, or cache operational telemetry. All mathematical transformations occur within canonical engine functions, are published to the MissionEngine signal bus, and are consumed as read-only values by user interface components. The view layer is a purely passive mirror of mathematical reality.",
+            "The project architecture directs desks and views to use the MissionEngine signal bus and canonical engine functions rather than creating duplicate calculations. This is an application convention, not a law of nature. Verify each component against the implementation: the engine has defined publishers, consumers, and shell exceptions, and the bus does not independently establish the truth of a reading.",
             "This principle extends to the Chancellery Wire, the Signal Inspector, and the Decision Log. When an operator opens the Signal Inspector to examine live telemetry, the inspector queries the bus through the read-only monitor. It possesses no authority to modify signals, inject synthetic values, or override desk publications. Truth flows strictly from the analytical desks through the bus to the presentation layer.",
           ],
           callout: {
             kind: "definition",
             title: "The Deterministic Bus Invariant",
             paragraphs: [
-              "Let \\(S_{t}\\) represent the complete state vector of the MissionEngine bus at time \\(t\\). For any desk \\(D_{k}\\) and any valid operator input \\(I\\), the subsequent state \\(S_{t+1} = \\text{Engine}(S_{t}, D_{k}, I)\\) is a pure mathematical function possessing zero side effects, zero network dependencies, and complete reproducibility across all client runtimes.",
+              "The MissionEngine exposes shared browser-side readings to desk publishers and consumers. A deterministic desk calculation should produce the same result for the same supported inputs under the same implementation; this does not make the entire application pure, immutable, network-free, or identical across every runtime. Verify those broader properties separately.",
             ],
           },
         },
@@ -276,7 +358,7 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.1-C: Every operational reading is computed exactly once by its designated desk and consumed everywhere else via the signal bus. A component that re-implements formula logic constitutes an unlawful parallel store.",
+      statutoryRule: "Internal UDCA convention—not law: views should consume the canonical desk reading through the MissionEngine bus instead of implementing a second formula. Review exceptions and derived functions in the source before describing the data flow.",
     },
     {
       heading: "IV. Defensive Isolation, Numeric Guards, and Runtime Integrity",
@@ -300,7 +382,7 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
             kind: "proof",
             title: "Mathematical Guard Invariant",
             paragraphs: [
-              "For any raw input score \\(x\\), including undefined or non-finite inputs such as NaN or \\(\\pm \\infty\\), the guarded bond function \\(G(x)\\) satisfies: \\(G(x) = \\text{clamp}(\\text{finite}(x, 1.0), 1.0, 5.0)\\). This guarantees that the input domain of all downstream functions remains strictly compact and bounded within the statutory domain from 1.0 to 5.0.",
+              "The helpers have distinct contracts. finiteBond(x) returns x unchanged when x is finite and uses 1.0 only when x is non-finite. clampScore(x) applies finiteBond, clamps the result to [1.0, 5.0], and rounds to one decimal place. Therefore a finite out-of-range value is not bounded by finiteBond alone; claims about score limits must identify the actual clampScore input path.",
             ],
           },
         },
@@ -421,20 +503,18 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.1-D: All formula inputs must pass through canonical numeric guards. A non-finite bond defaults to the 1.0 baseline, and non-finite stress metrics default to zero. No NaN or Infinity may enter the MissionEngine signal bus.",
+      statutoryRule: "Internal UDCA numeric convention—not law: the documented helpers map non-finite bond values to 1.0 and non-finite loads, exposures, or penalties to 0 where those helpers are used. Confirm each value's call path; this statement is not a blanket proof that no non-finite value can enter any application state.",
     },
   ],
   practice: [
     {
-      problem: "An operational field team enters a raw relational bond vector of (4.2, NaN, 3.6, -0.5) alongside an unverified inscribed rupture load of Infinity. Explain how the canonical numeric guards in mathGuards.ts sanitize these inputs, calculate the resulting four-bond state vector, compute the arithmetic mean and Liebig limiting bond, and trace how these sanitized values propagate across the MissionEngine signal bus to Desk 02 without triggering downstream computational failure.",
+      problem: "A bond diagnostic receives the four values (4.2, NaN, 3.6, 2.2), and a separate load field receives Infinity. Trace how the application's score clamp and non-finite guards handle these values, calculate the resulting four-bond vector, mean, and limiting bond, and explain what the MissionEngine publication does and does not establish.",
       solution: [
-        "1. Sanitization of Relational Bonds: The canonical guard evaluates each bond coordinate sequentially against the statutory domain from 1.0 to 5.0. The first coordinate (4.2) is finite and within bounds, so it is preserved: \\(B_{\\text{interpersonal}} = 4.2\\). The second coordinate is NaN (Not-a-Number); the guard intercepts this non-finite anomaly and defaults it to the baseline failing score: \\(B_{\\text{communal}} = 1.0\\). The third coordinate (3.6) is valid and preserved: \\(B_{\\text{intergenerational}} = 3.6\\). The fourth coordinate is negative (-0.5); the guard clamps it to the minimum statutory boundary: \\(B_{\\text{institutional}} = 1.0\\).",
-        "2. Sanitized State Vector: The resulting sanitized four-bond state vector on Desk 01 is \\(B = (4.2, 1.0, 3.6, 1.0)\\).",
-        "3. Calculation of Arithmetic Mean: The desk computes the arithmetic mean from the sanitized coordinates: \\(\\mu_{B} = \\frac{4.2 + 1.0 + 3.6 + 1.0}{4} = \\frac{9.8}{4} = 2.45\\).",
-        "4. Calculation of the Liebig Limiting Bond: Applying the Justus von Liebig Law of the Relational Minimum yields \\(B_{\\min} = \\min(4.2, 1.0, 3.6, 1.0) = 1.0\\).",
-        "5. Sanitization of Inscribed Rupture Load: The unverified rupture load of Infinity is evaluated by the stress guard. Because Infinity is non-finite, the guard intercepts the value and normalizes it to zero: \\(L = 0\\).",
-        "6. Propagation to the MissionEngine Signal Bus: Desk 01 packages the sanitized vector, mean (2.45), variance, and Liebig minimum (1.0) into a desk publication and sends it to the signal bus. A publication is an application state update, not proof that the underlying observations are true or that the object is immutable against every runtime actor.",
-        "7. Ingestion by Desk 02 (The Eye of Humanity): Desk 02 consumes the published values from the bus. Because \\(B_{\\min} = 1.0\\) sits in the Failing band from 1.0 to 2.0, Desk 02 immediately trips Stage Gate 1 (Vector Integrity) as LOCKED. The application processes the entire calculation without throwing runtime exceptions, proving that numeric guards defend downstream instruments against catastrophic failure.",
+        "1. The input component applies clampScore to finite user-entered bond values, bounding them to 1.0–5.0 and rounding to one decimal place. A non-finite score is mapped by finiteBond to the 1.0 baseline. Therefore the example vector becomes \\(B=(4.2,1.0,3.6,2.2)\\). This distinction matters: finiteBond alone does not clamp a finite out-of-range value; the input path's clampScore does.",
+        "2. The arithmetic mean is \\(\\mu_B=(4.2+1.0+3.6+2.2)/4=11.0/4=2.75\\). The minimum is \\(B_{\\min}=1.0\\). These values are the outputs of the stated calculation on this illustrative input, not empirical findings about a real mission.",
+        "3. A non-finite or negative load handled by the relevant nonNegative guard reads as zero. The guard does not validate the source report or mean that no underlying load exists; it only prevents this non-finite value from propagating through that guarded calculation.",
+        "4. The desk publishes its readings through the MissionEngine. The consumer reads the shared state; the bus update does not establish the accuracy, provenance, or completeness of the analyst's inputs. Confirm the specific desk's input path and downstream function before making a claim about a gate or derived output.",
+        "5. The finite fallback is a defined implementation convention, not a statutory scale or an empirical guarantee that downstream code cannot fail. Tests should exercise the actual input component, canonical formula, and publication path together.",
       ],
     },
     {
@@ -530,6 +610,21 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
       note: "Practices for reducing software supply-chain risk and maintaining secure development and release processes.",
     },
     {
+      citation: "NIST. SP 800-161 Rev. 1: Cybersecurity Supply Chain Risk Management Practices for Systems and Organizations (2022).",
+      url: "https://doi.org/10.6028/NIST.SP.800-161r1",
+      note: "Guidance used here for supplier, dependency, and release-provenance risk; it supports risk management, not a claim that a particular supplier is compromised.",
+    },
+    {
+      citation: "National Institute of Standards and Technology. SP 800-53 Rev. 5, Security and Privacy Controls for Information Systems and Organizations; Release 5.2.0 update (2025).",
+      url: "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+      note: "Control catalog consulted for tailoring and responsibility mapping; NIST notes that framework crosswalks are indicative and not necessarily one-to-one. The citation page records the 2025 Release 5.2.0 update.",
+    },
+    {
+      citation: "Joint Task Force. (2018). NIST SP 800-37 Rev. 2: Risk Management Framework for Information Systems and Organizations: A System Life Cycle Approach for Security and Privacy.",
+      url: "https://csrc.nist.gov/pubs/sp/800/37/r2/final",
+      note: "Official NIST publication page consulted for the risk-management life-cycle approach; used as an adaptable method, not as a claim of accreditation or applicable law.",
+    },
+    {
       citation: "WHATWG. HTML Standard, Web Storage.",
       url: "https://html.spec.whatwg.org/multipage/webstorage.html",
       note: "Normative reference for the page-session and origin-scoped storage APIs; useful for distinguishing storage lifetime from RAM.",
@@ -604,8 +699,8 @@ export const CHAPTER_3_1: DetailedAcademyChapter = {
       options: [
         {
           id: "opt-a",
-          text: "The action violates Rule 3.1-C by introducing an unauthorized parallel store that can desynchronize the presentation layer from canonical mathematical reality.",
-          explanation: "Correct. All telemetry must be computed once by the designated desk and published to the bus. View-layer calculations create dangerous parallel stores.",
+          text: "It departs from the project's single-signal-chain convention and can create a second result that disagrees with the canonical desk output.",
+          explanation: "Correct. The convention reduces inconsistent formula copies; it is an architectural rule for this application, not a statutory rule or proof that the bus is immutable.",
           correct: true,
         },
         {

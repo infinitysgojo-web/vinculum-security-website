@@ -6,7 +6,7 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
   number: "3.2",
   eyebrow: "Module III · Chapter 3.2",
   title: "Canonical JSON Serialization, Tamper Evidence & Cryptographic Handover Sealing",
-  estimatedMinutes: 54,
+  estimatedMinutes: 80,
   executiveLede: "A cryptographic digest can make changes to a defined record detectable when the reference digest is independently protected and the bytes are prepared consistently. This chapter examines the UDCA handover payload, its recursive key ordering, browser Web Crypto SHA-256 operation, and local divergence display. It distinguishes this implementation's canonical JSON helper from IETF RFC 8785, and a hash from a digital signature, trusted timestamp, or legal ratification. A digest is not encryption, cannot establish factual truth, and provides no independent evidence if an adversary can replace both the record and its stored baseline.",
   synopsis: [
     "Historical negotiations illustrate how disputed drafts, translations, or side letters can create competing accounts of an agreement. Cryptographic integrity tools can help preserve one precisely defined digital record, but they cannot resolve semantic ambiguity in the record or prove that a party accepted its terms. A signed diplomatic instrument, its authentic copies, translations, and authoritative version clauses remain governed by applicable treaty practice and law.",
@@ -14,56 +14,56 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
     "The local helper recursively sorts object keys, drops undefined object members and functions, maps those values to null inside arrays, writes non-finite numbers as null, preserves array order, and delegates final textual formatting to JSON.stringify. Text entry handling uses NFC at paste and blur in relevant fields; canonicalJson does not normalize strings at hash time. These choices define this application's bytes and are not identical to every canonical JSON standard.",
     "The handover digest is calculated with SHA-256 over UTF-8 text through Web Crypto. It is useful for comparing a payload with a trusted reference. A hash alone does not authenticate who created the reference, hide its contents, prove when it existed, or make a mutable local record immutable. Divergence review can compare stored canonical text with current canonical text, but the result is only as trustworthy as the storage, code, and custody assumptions around both.",
   ],
-  statutoryNotice: "Statutory Directive 3.2: A Handover Seal establishes cryptographic custody and proves data integrity; it does not certify the objective truth of the underlying intelligence nor does it substitute for sovereign treaty ratification under international law.",
+  statutoryNotice: "Internal UDCA convention—not a statute or treaty rule: the Handover Seal is a local comparison aid over a defined payload. It does not by itself establish independent custody, factual truth, signer authority, or treaty consent.",
   learningOutcomes: [
-    "Analyze the historical failure modes of bilateral agreements caused by textual ambiguity, unverified drafts, and retrospective falsification.",
+    "Analyze how version control and textual ambiguity differ from integrity failure, using documented records without inferring unsupported causes.",
     "Deconstruct the mathematical prerequisites of deterministic canonical JSON serialization across deeply nested state objects.",
     "Explain what a SHA-256 digest can and cannot establish, and distinguish hashing from encryption, signatures, timestamping, and treaty consent.",
     "Diagnose and resolve Divergence Beacon alerts by conducting parameter-level differential audits of modified mission telemetry.",
-    "Enforce the statutory boundary separating cryptographic integrity verification from sovereign legal ratification and factual validation.",
+    "Distinguish the UDCA's internal digest convention from technical assurance, factual validation, and applicable treaty law.",
   ],
   sections: [
     {
-      heading: "I. The Historical Crisis of Retrospective Falsification in Statecraft",
-      subheading: "From Analog Redlines to the Structural Epistemology of Cryptographic Integrity",
+      heading: "I. Diplomatic Records, Version Disputes, and Textual Interpretation",
+      subheading: "Version control, documentary custody, and the limits of byte-level evidence",
       paragraphs: [
-        "Throughout the history of international diplomacy, the physical custody of treaty drafts and diplomatic dispatches has represented a primary vulnerability in bilateral relations. Negotiating delegations have frequently discovered that the text ratified in a distant capital diverged subtly yet decisively from the memorandum initialed at the negotiating table. In the absence of an immutable, tamper-evident record, stronger powers have historically exerted coercive pressure to revise concessions, reinterpret jurisdictional boundaries, or insert conditional clauses post-hoc.",
-        "Analog verification mechanisms, such as red wax seals, embossed ministerial stamps, and sovereign sign-manuals, were designed to solve this evidentiary problem within an agrarian and industrial communications paradigm. A wax seal verified that the parchment had not been unrolled and altered in transit by foreign couriers. However, analog seals possess zero structural defense against sophisticated state-sponsored forgery, duplicate drafting, or secret codicils appended behind closed doors. Furthermore, analog seals are completely incapable of safeguarding quantitative statecraft, where modern accords hinge upon dynamic mathematical variables, economic shock corridors, and staged escrow release schedules.",
-        "In the digital era, foreign ministries attempted to modernize documentation through electronic mail, shared network drives, and commercial cloud document collaboration tools. This transition did not solve the epistemological crisis of statecraft; it exacerbated it. Electronic documents are effortlessly mutable: an adversary or a domestic bureaucratic faction possessing system administrator privileges can alter a decimal point in a tariff schedule, delete a safeguarding caveat from a border protocol, or overwrite audit logs without leaving a visible physical trace.",
-        "When sovereign delegations lack a shared, immutable computational reference point, negotiation devolves into a contest of competing narratives. If State A claims that State B conceded a strategic buffer zone, while State B presents an internal memorandum claiming the zone remained sovereign territory, neutral mediation collapses. Diplomatic integrity therefore requires an architectural shift from institutional trust to cryptographic proof. The state of a negotiation must be reduced to a mathematically verifiable digest that neither party can manipulate, falsify, or disavow without immediate mathematical detection.",
+        "Diplomatic records can include negotiating drafts, exchanged notes, authenticated treaty texts, signed instruments, and internal memoranda. These categories have different legal status and custody requirements. A disagreement about which document is authoritative may arise from version control, translation, approval, or interpretation; it should not be described as falsification without evidence that a record was deliberately altered.",
+        "Seals, signatures, registries, witnesses, and controlled archives have historically served different evidentiary functions. A physical seal may indicate whether a closure appears disturbed, but does not prove that the contents are authentic or that the text was accepted. Modern cryptographic digests likewise provide only a bounded check: they compare selected bytes to a trusted reference under a defined serialization and custody process.",
+        "Digital records are editable, and privileged access can permit changes; neither property establishes that a particular record was altered. A reviewer should preserve the original artifact, identify the custody chain, examine version history and authorization, and distinguish a demonstrated change from a plausible risk. Logs may be incomplete or mutable, so their provenance also matters.",
+        "A digest can reduce uncertainty about whether two parties are examining the same defined representation. It cannot resolve a dispute over meaning, authority, omitted annexes, or consent. A sound process combines controlled drafting and approvals with a clearly selected payload, independent reference custody, reproducible verification, and the legal procedures governing the instrument.",
       ],
       caseStudy: {
-        title: "The 1915-1916 McMahon-Hussein Correspondence and the Disaster of Textual Ambiguity",
-        jurisdiction: "British Foreign Office / Hashemite Leadership of the Hejaz",
-        precedent: "Conflicting territorial exclusions in unsealed diplomatic correspondence",
+        title: "Source Analysis: RFC 8785 and the Limits of Canonicalization",
+        jurisdiction: "Internet Engineering Task Force JSON Canonicalization Scheme",
+        precedent: "RFC 8785 specifies a representation profile for constrained JSON data",
         analysis: [
-          "Between July 1915 and March 1916, Sir Henry McMahon, British High Commissioner in Egypt, and Hussein bin Ali, Sharif of Mecca, exchanged ten letters negotiating the terms of Arab military cooperation against the Ottoman Empire in exchange for British recognition of an independent Arab state.",
-          "The correspondence was plagued by calculated syntactic ambiguity, conflicting translation drafts between English and Arabic, and the absence of a unified, authoritative canonical record. In his letter of October 24, 1915, McMahon excluded from the proposed Arab frontiers the portions of Syria lying to the west of the districts of Damascus, Homs, Hama, and Aleppo, asserting they could not be said to be purely Arab.",
-          "Following the conclusion of World War I, the British Government argued that this reservation deliberately excluded Palestine from the promised Arab realm, whereas the Arab delegation maintained with equal textual justification that Palestine lay to the south, not the west, of Damascus and was therefore included. Concurrently, the British had entered into the secret 1916 Sykes-Picot Agreement with France, partitioning the exact territories under dispute.",
-          "The absence of an authoritative, immutable, and canonically sealed text allowed successive British administrations to offer conflicting retrospective interpretations. The resulting sense of betrayal undermined regional diplomatic legitimacy, catalyzed century-long geopolitical conflict, and permanently destroyed bilateral institutional trust across the Middle East.",
+          "RFC 8785 specifies the JSON Canonicalization Scheme for a constrained JSON data model. It defines details such as primitive serialization, property ordering, and string handling so independent implementations can derive a consistent representation. The RFC is the source for that scheme; it is not evidence that every JSON serializer or application-specific helper conforms to it.",
+          "Canonicalization answers a representation question: which bytes should a conforming process produce from accepted data? It does not decide which fields are authoritative, whether an array is chronologically meaningful, whether a statement is accurate, or whether a party agreed to its contents. Those choices belong to the schema, provenance process, human review, and applicable law.",
+          "The repository's canonicalJson helper recursively sorts object keys and then delegates text generation to JSON.stringify, but also transforms unsupported JavaScript values. As described in this chapter, functions and undefined array elements become null, while corresponding object properties are omitted; non-finite numbers become null; arrays preserve order. It is not claimed to implement the full RFC 8785 profile.",
+          "A verifier should therefore use the application's documented payload and test vectors, not infer conformance from the phrase 'sorted keys.' If cross-language interoperability is required, either adopt a standards-conformant implementation for the accepted data model or publish and test a versioned application-specific profile.",
         ],
-        failureMechanism: "Reliance on ambiguous linguistic syntax, uncoordinated translation copies, and unsealed bilateral dispatches enabled deliberate post-hoc reinterpretation, producing divergent political realities and structural diplomatic collapse.",
+        failureMechanism: "Canonicalization standardizes a representation but does not validate semantic meaning, authorship, completeness, agreement, or legal effect.",
       },
       subsections: [
         {
-          title: "The Structural Frailty of Analog Trust in Asymmetric Bargaining",
+          title: "Canonical Bytes Do Not Resolve Semantic Disagreement",
           paragraphs: [
-            "The McMahon-Hussein correspondence is an instructive record of contested wording, geography, translation, and later interpretation. It does not show that the absence of a digital digest caused the dispute, and a modern hash would not have selected the intended meaning of the correspondence. A canonical copy could help identify which textual version is under discussion while leaving interpretation to historical evidence and applicable legal reasoning.",
-            "A cryptographic digest can make later changes to a defined representation detectable when a trusted baseline exists. It cannot foreclose opportunistic interpretation, establish intent, or answer whether a promise was binding. In asymmetric negotiations, the stronger party may still contest the scope, authority, context, translation, or legal status of a statement even when every copy is byte-for-byte identical.",
+          "A digest can help identify whether two parties are examining the same defined representation when they use the same schema and canonicalization procedure. It cannot determine whether a term is ambiguous, whether a translation captures the same meaning, or which document governs. A stable record can preserve a disagreement without resolving it.",
+          "A hash comparison is also limited by the reference and the covered fields. If the parties select different attachments, omit a side letter, or store the only reference in a mutable browser profile, matching local values do not establish completeness or independent custody. Document selection and approval must precede sealing.",
           ],
           callout: {
             kind: "definition",
             title: "Cryptographic Tamper-Evidence",
             paragraphs: [
-              "A mathematical property of an information system wherein any modification of recorded data, regardless of magnitude, inevitably produces a detectable and irreversible divergence from an established cryptographic baseline digest.",
+              "A process for detecting whether a selected representation differs from a separately trusted reference, subject to the hash algorithm, payload scope, serialization, and custody assumptions. A digest is not collision-free in the mathematical sense, and an attacker able to replace both copies can defeat a local comparison.",
             ],
           },
         },
         {
-          title: "The Illusion of Good Faith in Unanchored Statecraft",
+          title: "Integrity, Good Faith, and Authorized Consent",
           paragraphs: [
             "Diplomatic doctrine frequently invokes the principle of pacta sunt servanda (agreements must be kept) codified in Article 26 of the Vienna Convention on the Law of Treaties. Yet good faith cannot enforce itself in the absence of evidentiary certainty. When the factual content of what was agreed remains contestable, appeals to good faith merely mask the exercise of raw power.",
-            "The UDCA establishes that good faith in modern statecraft must be anchored in verifiable computation. By establishing an automated audit trail of mission telemetry, sovereign negotiators eliminate the ambiguity that enables predatory renegotiation. Integrity is no longer an ethical aspiration; it is an architectural guarantee.",
+            "The UDCA's local seal is an implementation convention for comparing one selected payload with a stored baseline. It cannot eliminate ambiguity, compel good faith, or guarantee an audit trail against an attacker who can alter the application and its local storage. Any broader evidentiary process needs separately protected references, roles, and records.",
           ],
         },
         {
@@ -94,42 +94,42 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.2-A: An unsealed diplomatic assessment or handover draft possesses zero evidentiary weight in sovereign dispute resolution; integrity requires an immutable cryptographic digest computed over canonical state.",
+      statutoryRule: "Internal UDCA convention—not law: an unsealed assessment may still be evidence under applicable rules. A digest can support comparison of a defined payload but does not make that payload immutable or confer legal admissibility.",
     },
     {
       heading: "II. The Mathematics of Canonical JSON Serialization",
-      subheading: "Eliminating Object Key Ordering Variance, Whitespace Jitter, and Encoding Drift",
+      subheading: "Defining an interoperable representation without claiming standards conformance",
       paragraphs: [
-        "To hash digital records reliably, the underlying data structure must be converted into a standardized, deterministic sequence of bytes. In standard software environments, JavaScript Object Notation (JSON) is widely utilized for data interchange. However, the international standard governing JSON (ECMA-404 and RFC 8259) explicitly specifies that JSON objects represent unordered collections of zero or more name and value pairs. Consequently, naive JSON serialization engines exhibit profound non-determinism.",
+        "To compare structured records by digest, the data must be converted into a defined sequence of bytes. JSON is widely used for interchange, but RFC 8259 defines objects as unordered collections of name/value pairs. Producers can serialize equivalent objects differently, so a cross-language comparison needs an explicit representation rule rather than an assumption that all ordinary serializers emit identical bytes.",
         "Object member order is not a semantic part of a JSON object in RFC 8259, even though JavaScript serialization defines predictable property enumeration rules for many values. A system that hashes JSON should not rely on an informal expectation about insertion order across producers, runtimes, or languages. RFC 8785 addresses this interoperability problem with a defined scheme. For this application the relevant behavior is the registry helper's explicit sort and normalization logic, not the claim that V8 randomly permutes keys.",
-        "Because cryptographic hash functions operate strictly on raw binary input, passing two semantically equivalent but differently ordered JSON strings into the SHA-256 algorithm produces completely different output hashes. In an international diplomatic context, this technical failure would be catastrophic: two delegations possessing identical negotiation binders would observe conflicting hash digests, triggering false alarms of data tampering, espionage, or bad-faith sabotage.",
+        "A cryptographic hash operates on bytes: two different serialized strings ordinarily produce different digests, even when a human considers their JSON objects equivalent. That mismatch can cause a verification failure, but it does not by itself establish tampering, espionage, or bad faith. A defined canonicalization profile helps independent parties compare the intended representation.",
         "RFC 8785 is a useful comparison because it specifies a canonical representation based on ECMAScript primitive serialization, I-JSON constraints, and deterministic property sorting. The local canonicalJson function shares the recursive key-sorting idea but has its own treatment of unsupported values and does not claim full JCS conformance. Its numeric serialization comes from JSON.stringify after non-finite values are mapped to null; arrays retain their order. A standard's name should not be used as a conformance claim without implementing and testing all of its requirements.",
       ],
       formulas: [F_SEAL],
       caseStudy: {
-        title:         "The 2015 Minsk II Package of Measures and Competing Interpretations",
+        title:         "The 2015 Minsk II Package: Text, Sequence, and Implementation",
         jurisdiction: "Normandy Format (Germany, France, Russia, Ukraine) / OSCE",
-        precedent: "Conflicting operational sequences in the 13-point Package of Measures",
+        precedent: "The OSCE-published Package of Measures agreed on 12 February 2015",
         analysis: [
-          "Signed on February 12, 2015, the Package of Measures for the Implementation of the Minsk Agreements sought to halt the conflict in the Donbas region of eastern Ukraine. The agreement encompassed thirteen interlinked political, military, and administrative measures.",
-          "The protocol contained a fatal sequential ambiguity regarding the relationship between Point 9 (restoration of full control of the state border by the government of Ukraine) and Point 11 (implementation of constitutional reform granting permanent special status to certain areas of Donetsk and Luhansk).",
-          "Ukraine argued that border control must be restored prior to the holding of local elections and political institutionalization, as free elections could not occur under foreign military occupation. The Russian Federation insisted that political autonomy and local elections must precede border handover, quoting the literal textual sequence of the document.",
-          "The parties and observers disagreed over the sequencing and interpretation of provisions, while political and security conditions shaped implementation. A hash could have established that they were reading the same wording, but it could not have supplied a negotiated dependency graph or resolved the parties' disagreement. The case is therefore about interpretation and implementation governance, not a technical failure that canonical serialization alone could cure.",
+          "The Package of Measures for the Implementation of the Minsk Agreements was agreed by the Trilateral Contact Group at Minsk on 12 February 2015. The OSCE hosts the document and identifies it as the Russian-language version. It contains thirteen measures addressing, among other matters, a ceasefire, withdrawal of heavy weapons, elections, constitutional changes, and border control.",
+          "The package links restoration of Ukrainian control over the state border to local elections and a comprehensive political settlement, and separately sets out constitutional reform and decentralization provisions. The sequence and qualifications should be checked against the exact text and any agreed translation; the OSCE-hosted page identifies its copy as Russian-language. Describing these clauses as a single 'fatal ambiguity' would overstate what the document alone shows.",
+          "Disputes over the package's interpretation and implementation occurred in a wider political and security context. A careful account separates the agreed text from the positions of parties and later analysis. This chapter does not attribute implementation failure to serialization, document custody, or a particular digest mechanism.",
+          "The bounded technical analogy is that a digest could show whether two reviewers are examining the same file, provided they agree on the file and protect the reference. It cannot supply an agreed sequence beyond the text, settle disagreements about meaning, verify compliance on the ground, or cause implementation.",
         ],
-        failureMechanism: "Ambiguous sequencing and divergent political interpretations impeded implementation; a digest would preserve a version but would not itself resolve that disagreement.",
+        failureMechanism: "The package's implementation depended on political and security conditions and parties' actions. The text is a primary source for what was agreed, not proof that a serialization defect caused later disputes.",
       },
       subsections: [
         {
           title: "Lexicographical Sorting Across Arbitrary Nesting Depths",
           paragraphs: [
-            "The helper traverses values recursively. For an object, it obtains enumerable own keys with Object.keys, sorts the keys using JavaScript's default string sort, then copies supported values into a fresh object before JSON.stringify. That order is based on UTF-16 code units, not an abstract promise of Unicode code-point ordering. Arrays are mapped in sequence; undefined and function entries become null, while those properties are omitted from objects. Non-finite numbers become null. These details matter to independent implementations.",
+            "The helper traverses values recursively. For an object, it obtains enumerable own keys with Object.keys, sorts them using JavaScript's default string sort, then copies supported values into a fresh object before JSON.stringify. That string sort is based on UTF-16 code units. A further JavaScript detail matters: integer-index-like property names are enumerated numerically by JSON.stringify, so this helper should not be described as a general RFC 8785 implementation or assumed to produce a cross-language canonical ordering for every possible key. Arrays are mapped in sequence; undefined and function entries become null, while those properties are omitted from objects. Non-finite numbers become null.",
             "The implementation does not explicitly detect circular references; JSON.stringify will fail when it encounters a cycle. Nor does it preserve non-enumerable properties, symbol keys, prototypes, or arbitrary class semantics. The handover payload is deliberately constructed from a constrained set of plain records, so the intended input domain is narrower than all JavaScript values. An interoperable verifier should validate the expected schema and reject unsupported structures rather than silently pretending to serialize every possible object.",
           ],
           callout: {
             kind: "definition",
             title: "Canonical Serialization Invariant",
             paragraphs: [
-              "A deterministic mathematical transformation \\(C: S \\to B\\) mapping an abstract mission state \\(S\\) to a unique binary byte sequence \\(B\\), such that for any two states \\(S_1\\) and \\(S_2\\), \\(S_1 = S_2 \\iff C(S_1) = C(S_2)\\).",
+              "A versioned procedure that maps inputs accepted by a defined schema to bytes in a predictable way. The schema must define which differences are meaningful; the serializer's output alone does not prove that distinct real-world meanings remain distinct or that the resulting digest is collision-free.",
             ],
           },
         },
@@ -175,7 +175,7 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.2-B: Canonical serialization must sort object keys at every recursive tier while preserving array order; verifiers must hash the byte stream as received, without dynamic normalization that could conceal deliberate tampering.",
+      statutoryRule: "Internal UDCA implementation convention—not law: the current canonicalJson helper sorts object keys, preserves array order, and applies the specific value handling described in this chapter. Verification must use the same stated profile and must not silently normalize stored text.",
     },
     {
       heading: "III. The Web Crypto SHA-256 Pipeline & Handover Sealing Architecture",
@@ -187,14 +187,14 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
         "The seal payload is explicitly constructed from profile, binder, signals, and selected decision records; seal and reseal actions are filtered to avoid a self-reference. The digest and canonical payload are kept with the seal in tab sessionStorage. That local checkpoint can detect a later mismatch if the stored reference remains trustworthy, but the same browser environment can be manipulated. Independent verification requires a protected reference, and attribution requires an authenticated signature or another trusted custody mechanism.",
       ],
       caseStudy: {
-        title: "The 1994 US-DPRK Agreed Framework and the Inspection Gridlock",
+        title: "The 1994 US-DPRK Agreed Framework: Verification and Sequencing",
         jurisdiction: "Geneva Bilateral Talks / IAEA Safeguards Directorate",
         precedent: "Disputed nuclear facility baselines and delayed light-water reactor financing",
         analysis: [
-          "Negotiated in October 1994, the Agreed Framework between the United States and the Democratic People's Republic of Korea aimed to freeze and replace North Korea's indigenous nuclear power plant program with two proliferation-resistant light-water reactors.",
-          "The agreement relied on phased reciprocal steps: North Korea would freeze its graphite-moderated reactors and seal its spent fuel rods under International Atomic Energy Agency (IAEA) monitoring, while a US-led consortium would provide heavy fuel oil and construct the light-water reactors by a target date of 2003.",
-          "Crucially, the agreement failed to establish an authoritative, tamper-evident baseline detailing the exact historical operating records of the Yongbyon nuclear complex. When the IAEA requested special inspections of two undeclared waste sites to verify plutonium diversion, North Korea refused, asserting that the sites were military facilities outside the agreed bilateral monitoring scope.",
-          "As construction schedules slipped and political control shifted in Washington, both sides accused the other of violating the core bargain. By 2002, amid allegations of a parallel uranium enrichment program, the framework disintegrated completely, demonstrating that without verifiable cryptographic baselines and immutable inspection milestones, high-stakes non-proliferation pacts decay into acrimonious recrimination.",
+          "The Agreed Framework, concluded in October 1994 by the United States and the Democratic People's Republic of Korea (DPRK), set out reciprocal steps concerning the DPRK's graphite-moderated reactors and related facilities, a light-water-reactor project, fuel oil, and movement toward political and economic normalization. Its text provides the primary basis for describing those commitments; it was not a cryptographic record or a treaty audit log.",
+          "The framework assigned the International Atomic Energy Agency (IAEA) a role in monitoring the freeze and stated that the DPRK would come into full compliance with its safeguards agreement, including taking all steps the IAEA deemed necessary, before delivery of key nuclear components. The document's sequencing and verification provisions can be examined directly rather than recast as an absent digital baseline.",
+          "The text ties its commitments to the existing safeguards agreement and sets out the point at which the DPRK would take required safeguards steps. That provision illustrates why a verification arrangement must identify the inspecting institution, the applicable agreement, access requirements, and the relationship between technical findings and political decisions.",
+          "The text's implementation depended on reciprocal commitments, institutional verification, and political decisions. The case supports a bounded lesson: a digest can preserve a selected agreement or report, but cannot supply inspection rights, establish the completeness of a declaration, or cause compliance.",
         ],
         failureMechanism: "Absence of an immutable baseline and lack of continuous, tamper-evident inspection ledgers allowed both parties to exploit technical loopholes, culminating in treaty renunciation and regional nuclear crisis.",
       },
@@ -255,10 +255,10 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.2-C: Handover seals reside exclusively within volatile tab session storage and must be zeroized upon panic execution; resealing after divergence preserves the breakage record in the decision ledger.",
+      statutoryRule: "Internal UDCA implementation convention—not law: the seal is stored in this tab's sessionStorage, which is not a guarantee of RAM-only storage. Panic cleanup attempts to clear designated state; storage and clipboard operations can fail.",
     },
     {
-      heading: "IV. Divergence Detection, Lineage Auditability, and Statutory Limits",
+      heading: "IV. Divergence Detection, Lineage Auditability, and Legal Limits",
       subheading: "The Divergence Beacon, Parameter-Level Diffing, and the Epistemic Limits of Cryptography",
       paragraphs: [
         "The seal supports a comparison between a stored canonical baseline and the current selected payload when the application evaluates divergence. The comparison cadence and trigger are properties of the current UI wiring, not a guarantee of an always-running background monitor. Browser scheduling can pause work when a tab is hidden. A status indicator should therefore be read as the latest completed comparison, not as proof that no change has occurred since the last evaluation.",
@@ -267,16 +267,16 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
         "When legitimate operational revisions occur, the operator may execute a Reseal command. The UI can record replacement or break events in the local Decision Ledger, but that log is not independently immutable and does not guarantee permanent retention. If a legal or diplomatic process requires an unalterable record, it must establish protected custody, access control, preservation, and an external verification or signature mechanism beyond this local log.",
       ],
       caseStudy: {
-        title: "Hypothetical Exercise: Parallel Diplomatic Side Letters",
-        jurisdiction: "Fictional multilateral drafting exercise",
-        precedent: "Composite scenario, not an account of a specific Camp David instrument",
+        title: "Source Analysis: RFC 3161 and Trusted Timestamps",
+        jurisdiction: "IETF Internet X.509 Public Key Infrastructure",
+        precedent: "RFC 3161 defines a protocol for requesting and verifying time-stamp tokens",
         analysis: [
-          "This is a fictional training exercise about a multilateral negotiation in which separate delegations exchange side letters that refer to a disputed annex. It is not a historical description of the Camp David Accords or a claim that particular leaders exchanged the letters described in earlier versions of this example.",
-          "The exercise asks the reader to distinguish the signed framework, negotiating records, unilateral correspondence, and draft annotations. The first task is to preserve each version and identify its author, date, recipient, language, and relationship to the main text. A canonical digest can help compare a specific file but cannot establish whether a side letter was accepted as part of the agreement.",
-          "Participants then identify any conflict between the main instrument and the letters, ask which text the parties intended to control, and record the legal and political questions for authorized counsel and principals. A stable hash can prevent confusion about which text is being discussed; it cannot resolve the conflict or supply missing consent.",
-          "The scenario illustrates the limits of technical evidence. Hashing each letter and annex can maintain version integrity, while diplomatic negotiation, interpretation rules, and the parties' intent determine the substantive relationship among them. Those are different workstreams that should not be collapsed into a claim that cryptography alone creates a unified legal baseline.",
+          "RFC 3161 defines a time-stamp protocol in which a requester submits a message imprint and a time-stamp authority returns a signed token under the protocol. The verifier checks the token and the authority's certificate and policy. A timestamp can provide evidence that a digest was presented to that authority under the stated trust model.",
+          "A token does not reveal or authenticate the underlying document by itself. It does not show that the document was complete, that its claims were true, that a named official had authority, or that a party consented to a treaty. The result depends on the token, the authority's signing key, certificate status, policy, and verification procedure.",
+          "The current UDCA Handover Seal stores a local timestamp and digest in sessionStorage; it does not request or verify an RFC 3161 token. Therefore the local `sealedAt` value is application metadata, not trusted third-party time evidence. A display of an ISO-formatted date does not change that status.",
+          "If a mission requires independent time evidence, the parties must approve the authority, protocol, data disclosure, retention, and verification steps. Sending even a digest to an external service can create linkability or reveal operational timing. The use of a trusted timestamp is a separate policy and custody decision, not an automatic benefit of hashing.",
         ],
-        failureMechanism: "The fictional exercise demonstrates how separate records can remain textually intact while their legal relationship is unresolved.",
+        failureMechanism: "A timestamp can support a bounded claim about presentation of a digest to an authority; it cannot establish content truth, completeness, signer authority, or consent.",
       },
       subsections: [
         {
@@ -337,7 +337,7 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
           ],
           callout: {
             kind: "bridge",
-            title: "The Statutory Boundary of Cryptography",
+            title: "The Legal and Institutional Limits of Cryptography",
             paragraphs: [
               "Never confuse the mathematical integrity of a container with the political or moral truth of its contents. Cryptography protects statecraft against tampering; statecraft itself remains the sovereign responsibility of human leadership.",
             ],
@@ -460,8 +460,89 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
             "A second reviewer should independently check payload selection, canonical text, encoded bytes, digest, and trust anchor. Avoid using the same library and assumptions for both production and verification without cross-checks. Document known differences, warnings, and excluded attachments. If the records cannot be verified under the available evidence, label that limitation rather than silently accepting a green result.",
           ],
         },
+        {
+          title: "Certificate Transparency as a Specialized Append-Only Log",
+          paragraphs: [
+            "RFC 9162 specifies Certificate Transparency version 2.0 for publicly logging the existence of TLS server certificates so that certificate authority activity can be audited and suspect issuance can be noticed. It is an experimental IETF protocol, not an Internet Standards Track specification, and its purpose is narrower than a general diplomatic records archive. The protocol is a useful case study in how commitments, proofs, and independent monitors can work together; it is not evidence that this application's local Decision Ledger uses those mechanisms.",
+            "A Merkle tree organizes leaf entries and parent hashes so a log can commit to a particular ordered set of entries with a compact root. An inclusion proof allows a verifier to check that an entry is represented in a claimed tree. A consistency proof can support the claim that a later tree extends an earlier tree without rewriting its prior contents. These proofs depend on correctly specified tree construction, authenticated tree heads, verifier implementation, and a reliable way to obtain the proofs.",
+            "Append-only structure is not the same as truth. A transparency log can accurately preserve a certificate entry that was submitted while saying nothing about whether the certificate's subject had legitimate authority or whether the underlying facts are true. Likewise, a diplomatic digest placed in a log would not establish consent, completeness, or legal effect. The log would answer a bounded history question, not validate the mission's claims.",
+            "The public, multi-observer setting is central to Certificate Transparency's threat model. Monitors retrieve log data and look for entries that violate policy; clients and other participants can check signed tree heads and proofs. A private institutional log without independent monitors or a second trust path does not automatically gain the same detection properties just because it stores a Merkle root. The governance and observation model is part of the security design.",
+            "This distinction matters when comparing RFC 9162 with the current seal. The UDCA computes a selected-payload digest and stores a local baseline in sessionStorage. The repository does not submit that value to a CT service, create Merkle inclusion proofs, publish signed tree heads, or gossip them to other monitors. It would be inaccurate to describe the seal as a transparency log, append-only public record, or externally witnessed commitment.",
+            "An organization considering a transparency service should first identify the exact event to log, the observers allowed to query it, and the consequences of publishing an entry. Certificate Transparency logs public certificate artifacts for a defined ecosystem; a diplomatic record may contain sensitive timing, identities, or low-entropy values that should not be exposed. A mechanism suitable for public certificate accountability may be inappropriate for confidential negotiation records.",
+          ],
+        },
+        {
+          title: "Inclusion, Consistency, and Split-View Risk",
+          paragraphs: [
+            "An inclusion proof establishes a relationship between a candidate leaf, a tree position, and a claimed root according to the log protocol. It does not by itself prove that the log showed the same history to every observer. A malicious or faulty operator might present different signed tree heads to different clients. Detecting that split view requires parties to compare authenticated heads or use monitors and witnesses that can observe the log independently.",
+            "A consistency proof is a statement about two tree sizes and their roots: it allows a verifier to test whether the later tree is consistent with the earlier one under the specified append-only construction. A verifier must check the proof correctly and preserve the earlier trusted checkpoint. If it accepts an untrusted initial root, a later proof cannot reconstruct the provenance of that first trust decision. The checkpoint's source and custody therefore remain essential.",
+            "For a bilateral workflow, parties would need to agree on the log operator, public-key trust, proof retrieval, monitoring responsibility, response to an invalid proof, and a method for reconciling inconsistent views. They would also need to decide what an entry commits to, how a correction is represented, and whether a superseded record remains discoverable. These are policy and legal choices, not defaults supplied by the hashing algorithm.",
+            "Privacy analysis should precede any commitment publication. A digest of a small set of possible values can be tested by guessing candidates. A timestamped sequence of entries can expose the rhythm of negotiations, even if names and text are omitted. An external observer may correlate the log with public events or counterpart communications. Salting or keyed constructions change the verification and distribution model, and a secret value can itself become a new custody burden.",
+            "Operational tests should include more than a successful inclusion check. Verify deliberately malformed proofs, unknown tree sizes, stale heads, signature failures, delayed monitor observations, network partitions, and disagreement between independently obtained heads. Confirm that the interface reports 'not verified' or 'inconsistent view' rather than retaining a prior success state. Preserve the proof, signed head, retrieval time, verifier version, and trust-anchor source as part of the evidence record.",
+            "Even with sound proofs, availability and recovery need attention. If the log is unavailable, an already-held tree head may still support some local checks, but new submissions or proofs may be delayed. If a signing key is compromised, the institution needs a policy for identifying the affected interval and replacing the trust anchor. If a log is discontinued, future verifiers need archived heads, proof material, and operator documentation. External append-only services create dependencies that must be governed and rehearsed.",
+          ],
+        },
+        {
+          title: "Signing Authority, Key Custody, and Delegation",
+          paragraphs: [
+            "A digital signature binds a verification result to a private-key operation; it does not, on its own, prove that a named official controlled the key or had authority to approve the record. A complete workflow must bind a public key to an identity, establish the delegation's scope and duration, and provide a way to assess key status at the relevant time. NIST SP 800-57 Part 1 gives general key-management guidance, but applying it does not resolve a ministry's legal authorization rules.",
+            "Separate duties so one compromised account cannot silently create, approve, and archive a binding record. Depending on the threat model, enrollment, signing, key backup, revocation, and verification may belong to different roles. High-impact actions can require multiple approvals or a witnessed ceremony. The chosen design should remain operable during an emergency and should define how exceptions are recorded; a control that operators routinely bypass is not an effective assurance mechanism.",
+            "Enrollment records should state who verified the key holder's identity, which authority approved the credential, what purposes are permitted, which devices or signing services may use it, and when it expires. A certificate path or key fingerprint helps a verifier identify a cryptographic key, but it does not substitute for the mission's delegation instrument. Preserve the authorization evidence separately from the signed payload and make the binding discoverable to an authorized verifier.",
+            "Revocation and compromise procedures need an explicit time model. A key may be revoked after a device is lost, a private key is exposed, an official leaves office, or a delegation ends. The verifier then needs reliable evidence about when the signature was created and when the revocation became effective. A workstation's local timestamp is not sufficient to resolve a dispute about ordering; an approved trusted time or contemporaneous authenticated archive may be needed for that particular claim.",
+            "Key backup trades availability against exposure. A lost key can make old signatures difficult to verify or new records impossible to sign, while an overly broad backup can create additional copies and holders. Define backup encryption, access approval, restore testing, dual control, audit, and destruction. Non-extractable browser keys are a property of the Web Crypto interface and do not establish that the operating system, browser, or account is immune to compromise.",
+            "A key incident should not be handled by replacing the key and silently treating prior signatures as either valid or invalid. Preserve the affected key identifiers, authorization records, signature artifacts, incident timeline, and revocation evidence. Determine which records remain verifiable, which require corroboration, and what notice is due to recipients. Technical validation can report that a signature matches a key; an authorized institution must decide what that means for the record.",
+          ],
+        },
+        {
+          title: "A Verification Transcript That Can Be Repeated",
+          paragraphs: [
+            "A reliable verification record should let another reviewer reproduce each step without relying on a screenshot. Record the received artifact's exact bytes or a protected copy, its stated schema and canonicalization profile, the algorithm identifier, the signature or digest reference, and the source of the trust anchor. Include tool and version information, the verification date as observed by the verifier, warnings, and any unverified assumptions. Keep confidential payloads inside the approved records boundary.",
+            "For a local digest comparison, capture the selected payload, canonical text or a protected representation of it, UTF-8 byte length, digest output, and baseline provenance where policy allows. For a signature workflow, include the signed bytes, signature format, public-key identifier, certificate or authorization evidence, status result, and any timestamp token. For a transparency-log workflow, include the entry, inclusion proof, signed tree head, consistency proof when relevant, and the independently trusted checkpoint.",
+            "The transcript should distinguish mathematical outcomes from authority decisions. 'The digest matches the specified byte sequence' is a technical result. 'The signer was authorized for this act' is a conclusion that depends on credential and delegation evidence. 'This text is binding' is a legal conclusion under the applicable process. A combined report can present all three, but it should identify which reviewer or institution owns each judgment.",
+            "Reproducibility requires preserving error states as well as success. A missing attachment, expired certificate, unavailable revocation source, unknown schema, or unsupported algorithm should produce an explicit limitation. Do not silently drop fields, coerce unknown values, or accept a stale green indicator. If a verifier cannot process an older profile, label the artifact unresolved and retain the original rather than modifying it until it passes.",
+            "Use independent implementations for high-consequence verification where feasible, while recognizing that two implementations may share the same flawed specification or trust anchor. Compare payload bytes, not just UI labels. Validate each implementation against published test vectors and a local corpus that exercises edge cases. Keep the fixtures synthetic and ensure that test digests do not disclose guesses about actual low-entropy mission data.",
+            "A transcript is itself a record with its own retention, access, and integrity requirements. Protect it from unauthorized alteration, link it to the artifact using an authenticated reference, and preserve the software and authority sources needed to interpret it. A well-documented transcript does not make the original assertion true, but it allows a future reviewer to understand what was checked, by whom, under which profile, and with what unresolved questions.",
+          ],
+        },
+        {
+          title: "Validating a Time-Stamp Token Without Overstating Its Meaning",
+          paragraphs: [
+            "RFC 3161 defines a request and response protocol between a requester and a Time-Stamping Authority. The requester can submit a message imprint rather than the underlying record, and the authority returns a token under its signing and operating policy. A verifier must check the token's cryptographic signature and the authority's certificate and policy context; merely receiving a signed object or displaying a date does not complete verification.",
+            "The message imprint binds the token to a digest value and a named hash algorithm. A verifier should recompute the digest from the exact artifact and profile under review, then compare the result with the imprint. If the artifact is JSON, that comparison depends on agreed payload selection and canonicalization before hashing. A valid timestamp token attached to a digest of a different version or incomplete payload does not establish the time of the intended record.",
+            "The token's time assertion is bounded by the authority's trust model and practice. Review the TSA identity, certificate chain, certificate status at the relevant time, stated policy, accuracy claims, and any request-response correlation required by the workflow. Preserve the request and response, not just an extracted timestamp. Where a nonce or other correlation value is used, verify it according to the agreed protocol so that a response cannot be casually confused with one issued for another request.",
+            "A trusted timestamp can support a claim that the imprint was presented to the authority by a stated time. It does not show who authored the payload, whether the TSA saw the plaintext, whether the content was complete, or whether the underlying assertions were true. It also does not determine whether an official had authority to sign, whether a state consented to a treaty, or whether the record is admissible under a particular court's rules.",
+            "External timestamping creates a data-disclosure decision even when only a digest is submitted. The digest can be linkable across submissions or susceptible to candidate guessing when the underlying data is predictable. Timing of a request can also reveal activity. Before using a TSA, obtain approval for the service, jurisdiction, retention, privacy impact, and algorithm profile. The convenience of an API does not authorize publication of operational metadata.",
+            "If the service is unavailable, the application should not silently substitute the local device clock and label it trusted. Record the timestamp as unavailable, preserve the local time separately as an untrusted observation, and follow the approved fallback procedure. A later token can attest to the later submission time; it cannot retroactively prove the earlier local time unless the protocol and independent evidence support that conclusion.",
+            "Long-term verification requires preserving the token, the relevant TSA certificate and status evidence, the artifact bytes, the canonicalization profile, and a verifier capable of interpreting the protocol. A token can remain mathematically verifiable while the institutional basis for trusting its signer changes. Archive the authority policy and time of validation alongside the result, and note later revocation or compromise findings rather than reducing verification to a permanent green check.",
+          ],
+        },
+        {
+          title: "Bilateral Receipts and Checkpoints Without Public Disclosure",
+          paragraphs: [
+            "A public transparency log is not the only way to reduce unilateral rollback risk. Two parties can exchange authenticated receipts for a defined artifact, maintain separately controlled archives, or agree that a neutral custodian holds a checkpoint. These options have different trust assumptions. A receipt proves only that the receiving party acknowledged a particular reference under the agreed identity and procedure; it does not prove that the content was true or that no other version existed.",
+            "A bilateral receipt should identify the payload schema, canonicalization profile, hash algorithm, digest, document or mission identifier, and version purpose. It should also state whether the receiver confirms receipt, review, approval, or something narrower. Those verbs have different legal and operational meaning. Avoid an ambiguous 'accepted' marker when the party merely confirms that bytes arrived intact.",
+            "Authenticate the exchange independently of the payload. A signed receipt can help bind an action to a key, but the parties still need a trustworthy identity-to-key relationship, current delegation, key lifecycle, and a way to resolve compromise. A receipt transmitted alongside the artifact through an unauthenticated channel can be replaced with it. Establish the trust path before the dispute rather than during it.",
+            "An independently operated archive can preserve copies under separate access controls, but a second copy is not automatically independent. If both archives share a single administrator, identity provider, or backup account, their failure modes may be correlated. Map the custodians, encryption keys, recovery roles, physical and legal jurisdictions, and monitoring capabilities. The objective is not maximum duplication; it is a defensible separation matched to the risk.",
+            "For a negotiated instrument, a checkpoint process can record successive drafts without asserting that every draft is final. Define how a new version supersedes, supplements, or corrects the former one; who authorizes each transition; and how translation variants and appendices are represented. Preserve earlier checkpoints under the retention schedule. This provides a transparent lineage while leaving interpretation and consent to the authorized diplomatic and legal process.",
+            "A disagreement should trigger comparison and escalation, not automatic selection of the latest timestamp. Check each party's artifact, receipt, key evidence, canonical bytes, and any trusted time material. Identify whether the difference is substantive, representational, or caused by different profiles. If no independent reference resolves the conflict, record the uncertainty and seek an authorized determination. A new matching digest can establish a fresh checkpoint, but cannot settle disputed history.",
+            "Before deployment, rehearse recipient turnover, lost keys, delayed delivery, archive outage, conflicting receipts, and a request to delete or correct a record. Define who can issue replacement credentials, how past signatures are assessed, and how both parties are notified of a superseding version. A process that works only while the original envoy and IT administrator remain available is not a robust custody arrangement.",
+          ],
+        },
+        {
+          title: "Governance of an External Log and Its Operators",
+          paragraphs: [
+            "A transparency log is a service with operators, software, signing keys, monitoring, retention rules, and an incident process. Before relying on it, define which organization runs the service, who can deploy changes, who can access its infrastructure, and how the log's public key is distributed to verifiers. A protocol specification describes message formats and operations; it does not select a trustworthy operator or determine which institution is accountable when the service fails.",
+            "The log's entry policy must define accepted content, size, privacy review, rate limits, and correction handling. Certificate Transparency's intended object is the existence of TLS server certificates in a public ecosystem. A mission log would need its own rules for whether entries are public, pseudonymous, delayed, encrypted, or prohibited. Encrypting an entry while publishing its digest may still expose relationships or permit guessing, so classification must precede protocol design.",
+            "Operational separation can reduce unilateral control. A log operator, a monitor, a witness, and a relying party can have distinct roles, but each must have access to enough authenticated information to detect a violation. If all monitors rely on one operator's feed or one signing key, their apparent independence may be weak. Document the communication paths, trust anchors, software versions, and expected monitoring frequency rather than describing the service as decentralized without evidence.",
+            "Define how a signed tree head is produced, distributed, and retained, and what proof a client must obtain before treating an entry as included. Specify how stale heads are detected, what maximum delay is acceptable, and which independent party compares histories. A proof returned by the same endpoint that supplies an untrusted root does not independently establish that other clients received the same view. The verification design must include a trust source outside the claim being checked.",
+            "A log incident can involve a signing-key compromise, inconsistent views, an unavailable service, a faulty update, or an inappropriate entry. The response plan should state how operators preserve the last trusted checkpoint, notify relying parties, investigate affected intervals, rotate keys, and publish corrective information. If a legal order requires disclosure or deletion, counsel must determine the response and how it interacts with the log's append-only properties and retention obligations.",
+            "Service-level availability and data durability are separate from cryptographic integrity. A signed root may be valid even when clients cannot retrieve the associated entry or proof. Conversely, an accessible archive may have no independent integrity anchor. Set recovery objectives, backups, restore tests, and an archival process for proofs and tree heads. Rehearse migration to another operator without silently changing the meaning of historical references.",
+            "Governance should include a process for reviewing the protocol's status and ecosystem. RFC 9162 is experimental, so an organization should not cite it as a universal standard or assume every client implements the same operations. Track relevant errata, implementation behavior, policy changes, and interoperability. If the deployment adapts the design, label the adaptation and test its security properties rather than implying full protocol conformance.",
+            "Finally, make participation voluntary and authorized for sensitive records. A mission participant should understand what is submitted, who can observe it, how long it remains available, and what happens if a record is superseded. A public log can create durable exposure that cannot be undone by changing an application setting. Obtain approval from the data owner and counsel before logging a mission-derived commitment, and do not treat technical feasibility as institutional consent.",
+          ],
+        },
       ],
-      statutoryRule: "Rule 3.2-D: A cryptographic seal verifies data integrity and custody; it does not certify factual truth or replace sovereign ratification under Article 14 of the Vienna Convention on the Law of Treaties.",
+      statutoryRule: "Internal UDCA convention—not law: a local digest supports comparison of selected bytes under stated assumptions; it is not treaty authentication, ratification, or consent under the Vienna Convention on the Law of Treaties.",
     },
   ],
   practice: [
@@ -598,27 +679,14 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
       note: "Codifies the customary international law governing pacta sunt servanda, treaty interpretation, and the legal status of multi-lingual and authenticated texts.",
     },
     {
-      citation: "Merkle, R. C. (1979). Secrecy, authentication, and public key systems. Stanford University Technical Report No. 1979-1.",
-      note: "The foundational doctoral dissertation establishing tree-structured cryptographic authentication chains and secure digest verification.",
-    },
-    {
       citation: "Diffie, W., & Hellman, M. (1976). New directions in cryptography. IEEE Transactions on Information Theory, 22(6), 644-654.",
+      url: "https://doi.org/10.1109/TIT.1976.1055638",
       note: "The seminal paper introducing public-key cryptography, digital signatures, and the theoretical foundation of computational authentication.",
     },
     {
       citation: "Bray, T. (2017). RFC 8259: The JavaScript Object Notation (JSON) Data Interchange Format.",
       url: "https://www.rfc-editor.org/rfc/rfc8259",
       note: "Internet Standard describing JSON syntax, object semantics, numbers, strings, and interoperability considerations.",
-    },
-    {
-      citation: "Rundgren, A., Jordan, B., & Erdtman, S. (2020). RFC 8785: JSON Canonicalization Scheme.",
-      url: "https://www.rfc-editor.org/rfc/rfc8785",
-      note: "An informational IETF RFC specifying JCS; compare it to the repository helper without claiming the helper is fully JCS-conformant.",
-    },
-    {
-      citation: "National Institute of Standards and Technology. FIPS 180-4: Secure Hash Standard.",
-      url: "https://doi.org/10.6028/NIST.FIPS.180-4",
-      note: "Primary specification for SHA-256 and other Secure Hash Standard algorithms.",
     },
     {
       citation: "W3C. Web Cryptography API, Level 2.",
@@ -646,9 +714,29 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
       note: "Key-management guidance relevant to signatures, key custody, protection, and lifecycle claims.",
     },
     {
-      citation: "United Nations. Vienna Convention on the Law of Treaties (1969).",
-      url: "https://treaties.un.org/pages/ViewDetailsIII.aspx?src=TREATY&mtdsg_no=XXIII-1&chapter=23",
-      note: "Primary treaty source for consent, entry into force, interpretation, and authenticated texts; a local hash is not a treaty act.",
+      citation: "U.S. Department of State. (1994, October 21). Agreed Framework between the United States of America and the Democratic People's Republic of Korea.",
+      url: "https://2001-2009.state.gov/t/ac/rls/or/2004/31012.htm",
+      note: "The agreement text used here for its reciprocal commitments, safeguards language, and sequencing; it is not evidence that a digest would have resolved implementation disputes.",
+    },
+    {
+      citation: "Organization for Security and Co-operation in Europe. (2015, February 12). Package of Measures for the Implementation of the Minsk Agreements.",
+      url: "https://www.osce.org/cio/140156",
+      note: "OSCE-hosted primary text of the package (Russian-language version); used for the stated scope of measures. Any English rendering should be cross-checked against an agreed translation; this source does not establish why implementation later failed.",
+    },
+    {
+      citation: "Adams, C., Cain, P., Pinkas, D., & Zuccherato, R. (2001). RFC 3161: Internet X.509 Public Key Infrastructure Time-Stamp Protocol (TSP). IETF.",
+      url: "https://www.rfc-editor.org/rfc/rfc3161",
+      note: "Protocol specification for trusted timestamping; a timestamp token can attest to a presented digest under its trust model but not establish the underlying statement's truth.",
+    },
+    {
+      citation: "Laurie, B., Messeri, E., & Stradling, R. (2021). RFC 9162: Certificate Transparency Version 2.0. Internet Engineering Task Force.",
+      url: "https://www.rfc-editor.org/rfc/rfc9162",
+      note: "Experimental protocol for publicly logging TLS server certificates; used as a bounded comparison for Merkle inclusion and consistency proofs, not as a description of the UDCA ledger.",
+    },
+    {
+      citation: "National Institute of Standards and Technology. (2023). FIPS PUB 186-5: Digital Signature Standard (DSS).",
+      url: "https://doi.org/10.6028/NIST.FIPS.186-5",
+      note: "Primary standard for digital signature algorithms; signature validation remains distinct from verifying a signer's authority or the factual accuracy of signed content.",
     },
     {
       citation: "Vinculum Security Website source: src/components/desk/registry.ts, canonicalJson and apostilleBody.",
@@ -730,7 +818,7 @@ export const CHAPTER_3_2: DetailedAcademyChapter = {
     },
     {
       id: "q3-2-3",
-      question: "Under the Vinculum Security Doctrine, what does a verified Handover Seal legally and operationally certify?",
+      question: "In this application, what does a verified Handover Seal technically establish?",
       options: [
         {
           id: "q3-2-3-opt-a",
