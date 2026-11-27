@@ -6,53 +6,54 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
   number: "1.1",
   eyebrow: "Module I · Chapter 1.1",
   title: "The Fallacy of Constructive Ambiguity in Sovereign Statecraft",
-  estimatedMinutes: 35,
-  executiveLede: "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability that guarantees post-hoc divergence and treaty rupture.",
+  estimatedMinutes: 42,
+  executiveLede: "For over a century, diplomatic practice relied on constructive ambiguity: intentionally vague treaty language that allowed opposing parties to sign an agreement while retaining contradictory interpretations. In modern asymmetric statecraft, digital sovereignty, and cross-border resource covenants, constructive ambiguity is no longer a diplomatic virtue; it is an active vulnerability that guarantees post-hoc divergence, bad-faith exploitation, and catastrophic treaty rupture.",
   synopsis: [
-    "When crisis strikes, ambiguous clauses do not foster compromise. They become the fault line along which covenants rupture: the stronger party exploits the ambiguity to justify unilateral action, while the vulnerable party suffers institutional erosion.",
-    "The Unified Deterministic Chancellery Apparatus (UDCA) rejects linguistic elasticity. In its place it introduces Relational Determinism: statecraft defined not by aspirational rhetoric but by quantifiable, verifiable structural thresholds.",
-    "This chapter performs a structural autopsy on historical treaties, analyzes the mathematical mechanism by which semantic vagueness induces load concentration, and establishes the five statutory invariants required for permanent sovereign drafting.",
+    "When crisis strikes, ambiguous clauses do not foster compromise. They become the fault line along which covenants rupture: the stronger party exploits the ambiguity to justify unilateral action, while the vulnerable party suffers institutional erosion and domestic delegitimization.",
+    "The Unified Deterministic Chancellery Apparatus (UDCA) rejects linguistic elasticity. In its place it introduces Relational Determinism: statecraft defined not by aspirational rhetoric or malleable communiqués, but by quantifiable, verifiable structural thresholds.",
+    "This chapter performs an exhaustive structural autopsy on historical treaties, analyzes the mathematical mechanism by which semantic vagueness induces load concentration, deconstructs the fatal failures of twentieth-century accords, and establishes the five statutory invariants required for permanent sovereign drafting.",
   ],
-  statutoryNotice: "Statutory Invariant: Ambiguity is the mathematical precursor to treaty rupture. If an enforcement obligation cannot be computed, audited, or falsified, it does not exist as sovereign law.",
+  statutoryNotice: "Statutory Invariant: Ambiguity is the mathematical precursor to treaty rupture. If an enforcement obligation cannot be computed, audited, or falsified through deterministic telemetry, it does not exist as sovereign law.",
   learningOutcomes: [
-    "Deconstruct the historical reliance on diplomatic vagueness in twentieth-century accords.",
-    "Identify how asymmetric leverage converts linguistic ambiguity into unilateral exploitation.",
-    "Apply Relational Determinism to replace aspirational clauses with verifiable thresholds.",
-    "Master the Chancellery protocol for auditing covenant texts prior to sovereign ratification.",
+    "Deconstruct the historical reliance on diplomatic vagueness in twentieth-century bilateral and multilateral accords.",
+    "Identify how asymmetric leverage converts linguistic ambiguity into unilateral exploitation and strategic entrapment.",
+    "Apply Relational Determinism to replace aspirational clauses with mathematically falsifiable operational thresholds.",
+    "Master the Chancellery protocol for auditing covenant texts prior to sovereign ratification using the Sovereign Redliner.",
   ],
   sections: [
     {
       heading: "I. The Historical Genesis of Constructive Ambiguity",
       subheading: "Linguistic Compromise as an Instrument of Postponed Conflict",
       paragraphs: [
-        "In classical diplomacy, the mandate of the plenipotentiary was often measured by the achievement of a signed instrument rather than the long-term structural viability of the underlying covenants. When bilateral negotiations reached an impasse over foundational questions such as territorial borders, sovereign resource ownership, or mutual security guarantees, negotiators frequently resorted to what Lord Caradon famously termed constructive ambiguity. This practice entails the deliberate drafting of treaty provisions that permit competing sovereign entities to extract divergent, mutually incompatible legal interpretations from the exact same text.",
-        "The underlying assumption of constructive ambiguity was that the passage of time, accompanied by economic trade and normal diplomatic intercourse, would naturally soften ideological rivalries and reconcile conflicting parties. This assumption has been repeatedly disproven by modern geopolitical history. Rather than fostering trust, linguistic elasticity creates a latent constitutional fissure. While both sides celebrate a diplomatic triumph in domestic communiqués, each party begins acting on its own subjective interpretation of the accord.",
-        "As soon as an exogenous shock occurs, such as economic stagnation, leadership succession, natural resource depletion, or military realignment, the latent divergence becomes an active crisis. The stronger party inevitably enforces its preferred reading through coercive economic pressure or military mobilization, while the vulnerable party feels betrayed, claiming bad faith and unilateral breach. Consequently, constructive ambiguity does not prevent war; it merely schedules it for a later date under conditions of increased cynicism and diminished structural trust.",
+        "In classical twentieth-century diplomacy, the professional merit of the plenipotentiary was almost universally evaluated by the achievement of a signed instrument rather than the long-term structural viability of the underlying covenants. When bilateral or multilateral negotiations reached an intractable impasse over foundational questions such as territorial borders, sovereign resource ownership, military demilitarization, or mutual security guarantees, negotiators frequently resorted to what Lord Caradon famously termed constructive ambiguity. This practice entails the deliberate drafting of treaty provisions that permit competing sovereign entities to extract divergent, mutually incompatible legal interpretations from the exact same agreed text.",
+        "The underlying doctrinal assumption of constructive ambiguity was that the passage of time, accompanied by economic trade, diplomatic socialization, and commercial intercourse, would naturally soften ideological rivalries and reconcile conflicting parties. Diplomatic architects argued that securing signatures on a vaguely worded document created an irreversible momentum toward peace, allowing future generations of statesmen to resolve contentious details under conditions of enhanced mutual trust.",
+        "This foundational assumption has been decisively disproven by modern geopolitical history. Rather than fostering trust, linguistic elasticity creates a latent constitutional fissure within the international architecture. While both delegations celebrate a tactical diplomatic triumph in domestic press conferences and legislative assemblies, each party immediately begins acting upon its own subjective, self-serving interpretation of the accord.",
+        "As soon as an exogenous shock occurs, such as domestic economic contraction, political leadership succession, currency volatility, natural resource scarcity, or regional military realignment, the latent divergence rapidly metastasizes into an acute international crisis. The militarily or economically dominant party inevitably enforces its preferred reading through coercive pressure, financial sanctions, or military mobilization, while the vulnerable party feels betrayed, alleging bad faith and unilateral treaty breach. Consequently, constructive ambiguity does not prevent war; it merely schedules it for a later date under conditions of increased political cynicism and diminished structural trust.",
       ],
       caseStudy: {
         title: "The Structural Autopsy of United Nations Security Council Resolution 242 (1967)",
         jurisdiction: "International Multilateral Accord / Middle East Theatre",
         precedent: "The deliberate omission of the definite article in treaty provisions",
         analysis: [
-          "Following the Six-Day War of June 1967, diplomats drafted Resolution 242 to establish a framework for enduring peace. The English text called for the 'withdrawal of Israel armed forces from territories occupied in the recent conflict,' deliberately omitting the definite article 'the' before 'territories'. Conversely, the French text specified 'retrait des forces armées israéliennes des territoires occupés', which linguistically required total evacuation of all occupied lands.",
-          "Diplomats lauded this textual discrepancy as a masterstroke of constructive ambiguity that allowed all parties to vote in favor of the resolution. Yet over the subsequent six decades, this deliberate vagueness became the primary legal weapon in perpetual regional deadlock. One party argued that withdrawal was required only from a portion of the territories to secure defensible borders, while the opposing parties asserted that complete withdrawal was an unconditional prerequisite.",
-          "Because the resolution contained no deterministic boundary coordinates, no phased schedule, and no objective verification mechanism, the treaty lacked operational enforceability. Ambiguity ensured that peace was forever postponed.",
+          "Following the Six-Day War of June 1967, international diplomats drafted Resolution 242 to establish a comprehensive framework for enduring regional peace. The English text called for the withdrawal of Israel armed forces from territories occupied in the recent conflict, deliberately omitting the definite article the before territories. Conversely, the French text specified retrait des forces armées israéliennes des territoires occupés, which linguistically required total evacuation of all occupied lands.",
+          "Diplomats lauded this textual discrepancy as a masterstroke of constructive ambiguity that allowed all permanent members and regional parties to vote in favor of the resolution. Yet over the subsequent six decades, this deliberate vagueness became the primary legal weapon in perpetual regional deadlock. One party argued that withdrawal was required only from a portion of the territories to secure defensible borders, while the opposing parties asserted that complete withdrawal from every square kilometer was an unconditional prerequisite.",
+          "Because the resolution contained no deterministic boundary coordinates, no phased implementation schedule, no escrowed guarantees, and no objective verification mechanism, the treaty lacked operational enforceability. The linguistic ambiguity ensured that peace was forever postponed, transforming a diplomatic triumph into sixty years of continuous militarization and civilian suffering.",
         ],
-        failureMechanism: "The substitution of linguistic evasion for objective demarcation guaranteed sixty years of legal warfare and mutual recrimination.",
+        failureMechanism: "The substitution of linguistic evasion for objective territorial demarcation guaranteed sixty years of legal warfare and mutual recrimination.",
       },
       subsections: [
         {
           title: "The Asymmetry of Textual Exploitation",
           paragraphs: [
-            "Linguistic ambiguity is never neutral in its distribution of strategic risk. In any bilateral or multilateral treaty, the ability to exploit vague wording is directly proportional to a signatory state's economic, military, and institutional dominance. When an ambiguous treaty clause is invoked during a dispute, the hegemon possesses the unilateral legal apparatus, international lobbying power, and coercive capacity to assert its interpretation as the de facto reality.",
-            "For vulnerable and developing sovereign states, signing an ambiguous accord is tantamount to signing an open-ended concession. Lacking the naval power or financial leverage to enforce their own reading, they are forced to watch as the stronger signatory expands its operational footprint within the gray zones created by careless drafting.",
-            "In relational statecraft, this dynamic is understood as asymmetric load migration. The ambiguous clause acts as a structural conduit that shunts diplomatic stress away from the hegemon and deposits the entire relational burden upon the weaker partner's domestic institutions.",
+            "Linguistic ambiguity is never neutral in its distribution of strategic risk. In any bilateral or multilateral treaty, the ability to exploit vague wording is directly proportional to a signatory state economic, military, and institutional dominance. When an ambiguous treaty clause is invoked during a dispute, the hegemon possesses the unilateral legal apparatus, international lobbying power, and coercive capacity to assert its interpretation as the de facto operational reality.",
+            "For vulnerable and developing sovereign states, signing an ambiguous accord is tantamount to signing an open-ended concession. Lacking the naval power, currency dominance, or diplomatic leverage to enforce their own reading, they are forced to watch as the stronger signatory expands its operational footprint within the gray zones created by careless drafting.",
+            "In relational statecraft, this dynamic is understood as asymmetric load migration. The ambiguous clause acts as a structural conduit that shunts diplomatic stress away from the hegemon and deposits the entire relational burden upon the weaker partner domestic institutions, eventually provoking civil unrest or governmental collapse.",
           ],
           callout: {
             kind: "bridge",
             title: "Bridge to Desk 10: The Sovereign Redliner",
             paragraphs: [
-              "Inside Desk 10 (Treaty Drafting and Sovereign Redlines), the UDCA incorporates a real-time linguistic scanner that evaluates treaty drafts against the Ambiguity Vulnerability Index. The system highlights non-deterministic qualifiers such as 'reasonable', 'customary', 'equitable', and 'timely', requiring the operator to either replace them with hard numerical constants or assign a formal reservation before clearance can be granted.",
+              "Inside Desk 10 (Treaty Drafting and Sovereign Redlines), the UDCA incorporates a real-time linguistic scanner that evaluates treaty drafts against the Ambiguity Vulnerability Index. The system highlights non-deterministic qualifiers such as reasonable, customary, equitable, and timely, requiring the operator to either replace them with hard numerical constants or assign a formal reservation before clearance can be granted.",
             ],
           },
         },
@@ -71,14 +72,25 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       subheading: "Replacing Aspirational Rhetoric with Falsifiable Invariants",
       paragraphs: [
         "The Unified Deterministic Chancellery Apparatus (UDCA) departs radically from the tradition of diplomatic vagueness. In its place, the Vinculum Security Doctrine establishes the principle of Relational Determinism. Under Relational Determinism, every sovereign agreement is treated as a physical structure governed by immutable stress limits, load capacities, and conservation laws.",
-        "Relational Determinism requires that every treaty obligation be expressed in terms that are mathematically falsifiable. If an accord mandates that a signatory reduce military forces within a border corridor, the agreement must not state that forces shall be reduced to 'reasonable or defensive levels'. Instead, the covenant must stipulate exact Euclidean geographic coordinates, precise numerical ceilings, verified sensor telemetry, and an automated suspension of benefits if those parameters are breached.",
+        "Relational Determinism requires that every treaty obligation be expressed in terms that are mathematically falsifiable. If an accord mandates that a signatory reduce military forces within a border corridor, the agreement must not state that forces shall be reduced to reasonable or defensive levels. Instead, the covenant must stipulate exact Euclidean geographic coordinates, precise numerical ceilings, verified sensor telemetry, and an automated suspension of benefits if those parameters are breached.",
         "By eliminating linguistic latitude, the UDCA protects both parties. The weaker party is insulated from the unilateral reinterpretations of an aggressive neighbor, while the stronger party is provided with verifiable proof of compliance that cannot be undermined by bad-faith accusations. Statecraft is thereby elevated from rhetorical persuasion to rigorous relational engineering.",
       ],
+      caseStudy: {
+        title: "The Collapse of the 1994 US-DPRK Agreed Framework",
+        jurisdiction: "Bilateral Nuclear Non-Proliferation Accord / East Asian Theatre",
+        precedent: "Unsynchronized delivery schedules and non-deterministic financing obligations",
+        analysis: [
+          "The 1994 Agreed Framework between the United States and North Korea was hailed as a breakthrough that froze North Korea graphite-moderated nuclear reactors in exchange for two light-water reactors and 500,000 tons of heavy fuel oil annually.",
+          "However, the accord was riddled with constructive ambiguity regarding delivery milestones, financial responsibility, and the normalization of diplomatic relations. The text stated that the two sides would move toward full normalization as progress is made on issues of concern to each side, without defining what constituted progress or what specific concerns were paramount.",
+          "Congress delayed heavy fuel oil funding, the consortium encountered endless bureaucratic and financial hurdles that delayed reactor construction by years, and North Korea pursued covert enrichment activities. Because there were no synchronized, automated milestones and no independent telemetry bus, each side repeatedly accused the other of bad-faith default, leading to the total collapse of the framework in 2002.",
+        ],
+        failureMechanism: "Vague sequencing, unsynchronized political milestones, and absence of independent cryptographic telemetry led to mutual recrimination and systemic collapse.",
+      },
       subsections: [
         {
           title: "The Mathematical Representation of Treaty Obligations",
           paragraphs: [
-            "In classical law, obligations are expressed through deontic logic: 'Party A shall undertake all reasonable endeavors to maintain environmental standards.' Under Relational Determinism, the same obligation is formalized as an invariant function bounded by telemetry thresholds.",
+            "In classical law, obligations are expressed through deontic logic: Party A shall undertake all reasonable endeavors to maintain environmental standards. Under Relational Determinism, the same obligation is formalized as an invariant function bounded by telemetry thresholds.",
             "Let \\(B\\) represent the relational bond state and \\(L\\) represent the observed operational load. An obligation is valid if and only if there exists a deterministic mapping from observed state telemetry \\(T\\) to a binary compliance state \\(C \\in \\{0, 1\\}\\). If \\(C\\) requires subjective administrative adjudication without reference to hard sensory data, the obligation is functionally non-executable.",
           ],
           callout: {
@@ -107,11 +119,12 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
         {
           title: "The Danger of Riparian and Natural Boundary Markers",
           paragraphs: [
-            "Throughout diplomatic history, treaties that relied on natural markers such as 'the median thalweg of the river' or 'the crest of the mountain range' have generated chronic warfare. River courses change due to seasonal siltation and flooding; glaciers melt; mountain crests are contested depending on watershed versus ridgeline definitions.",
-            "The Chancellery mandates that all territorial demarcation must be anchored to fixed ellipsoidal World Geodetic System (WGS-84) coordinates, registered with multi-constellation satellite telemetry, and sealed into the covenant's immutable ledger.",
+            "Throughout diplomatic history, treaties that relied on natural markers such as the median thalweg of the river or the crest of the mountain range have generated chronic warfare. River courses change due to seasonal siltation and flooding; glaciers melt; mountain crests are contested depending on watershed versus ridgeline definitions.",
+            "The Chancellery mandates that all territorial demarcation must be anchored to fixed ellipsoidal World Geodetic System (WGS-84) coordinates, registered with multi-constellation satellite telemetry, and sealed into the covenant immutable ledger.",
           ],
         },
       ],
+      statutoryRule: "Rule 1.1-C: Territorial demarcations referencing uncalibrated riparian or natural features must be translated into WGS-84 geodesic polylines before Stage Gate 1 clearance.",
     },
     {
       heading: "IV. The Structural Anatomy of Diplomatic Rupture",
@@ -121,6 +134,17 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
         "In sovereign diplomacy, ambiguous clauses function as geopolitical stress notches. When financial panics, trade embargoes, or political regime changes occur, the resulting societal anxiety is channeled directly into the ambiguous clause.",
         "Because neither party has agreed on what constitutes compliance, every action taken by one signatory is viewed by the other as an intentional act of aggression. The resulting friction rapidly escalates into systemic rupture.",
       ],
+      subsections: [
+        {
+          title: "The Mechanics of Rupture Index Calculation",
+          paragraphs: [
+            "Inside Desk 02 (Sentinel Matrix / The Eye of Humanity), observed friction is converted into the Rupture Index \\(R\\). When treaty obligations are ambiguous, the latent load \\(L\\) compounds exponentially across the four bonds:",
+            "\\(R = \\text{clamp}\\left(R_{\\text{base}} + \\Delta L, 0, 100\\right) \\cdot \\gamma\\)",
+            "where \\(\\gamma\\) represents the observation trend multiplier. Ambiguous clauses introduce unhedged latent friction that accelerates the transition of \\(R\\) into the Critical band (60 per cent or greater), triggering automated covenant freeze protocols.",
+          ],
+        },
+      ],
+      statutoryRule: "Rule 1.1-D: When unhedged semantic ambiguity is detected on more than two core provisions, the Rupture Base must be penalized by a minimum of 15 percentage points.",
     },
     {
       heading: "V. The Chancellery Protocol for Covenant Auditing",
@@ -128,7 +152,7 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       paragraphs: [
         "Before any minister or sovereign plenipotentiary is permitted to affix an official seal to an international accord, the instrument must undergo formal algorithmic decomposition within the Chancellery workbench.",
         "The audit procedure executes three sequential validation passes:",
-        "First, the Semantic Token Scan parses the treaty text, extracting every qualifying adjective and adverb. Each token is cross-referenced against the Chancellery Lexicon of Subjective Vulnerabilities. Any match prompts an mandatory redline.",
+        "First, the Semantic Token Scan parses the treaty text, extracting every qualifying adjective and adverb. Each token is cross-referenced against the Chancellery Lexicon of Subjective Vulnerabilities. Any match prompts a mandatory redline.",
         "Second, the Counterparty Incentive Simulation projects the agreement across a fifty-year horizon under three stress conditions: commodity collapse, political succession, and asymmetric demographic migration. The model determines whether either party develops an economic incentive to exploit the clause.",
         "Third, the Escrow Verification Check ensures that all financial and territorial commitments are linked to automated escrow waterfalls. If a treaty requires unconditional unilateral compliance without counterpart escrow locking, the instrument is flagged as structurally defective.",
       ],
@@ -138,37 +162,37 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       subheading: "Comparative Analysis of Historical and Modern Covenants",
       paragraphs: [
         "To illustrate the practical power of Relational Determinism, let us compare the 1994 Budapest Memorandum on Security Assurances with a deterministic Chancellery Covenant.",
-        "In the Budapest Memorandum, the signatory powers pledged to 'respect the independence and sovereignty and the existing borders of Ukraine' and to 'refrain from the threat or use of force'. However, the agreement provided no enforcement mechanism other than an obligation to 'seek immediate United Nations Security Council action to provide assistance' if an act of aggression occurred.",
+        "In the Budapest Memorandum, the signatory powers pledged to respect the independence and sovereignty and the existing borders of Ukraine and to refrain from the threat or use of force. However, the agreement provided no enforcement mechanism other than an obligation to seek immediate United Nations Security Council action to provide assistance if an act of aggression occurred.",
         "Because the potential aggressor held a permanent veto on the UN Security Council, this assurance was mathematically void from the moment of signature. The treaty contained no automatic sanctions triggers, no third-party escrowed military guarantees, and no cryptographic tripwires. The reliance on diplomatic rhetoric rather than structural enforcement ultimately led to catastrophic territorial violation.",
       ],
     },
   ],
   practice: [
     {
-      problem: "A bilateral water sharing accord stipulates that 'the upstream riparian state shall release a fair and equitable volume of water during periods of seasonal drought to satisfy the vital human needs of downstream agricultural communities.' Identify the three subjective vulnerabilities in this clause and rewrite it according to Chancellery Relational Determinism.",
+      problem: "A bilateral water sharing accord stipulates that the upstream riparian state shall release a fair and equitable volume of water during periods of seasonal drought to satisfy the vital human needs of downstream agricultural communities. Identify the three subjective vulnerabilities in this clause and rewrite it according to Chancellery Relational Determinism.",
       solution: [
         "Step 1: Identify subjective vulnerabilities.",
-        "Vulnerability 1: 'fair and equitable volume' is completely undefined and subject to conflicting hydrological calculations.",
-        "Vulnerability 2: 'periods of seasonal drought' lacks an objective meteorological trigger or soil moisture index threshold.",
-        "Vulnerability 3: 'vital human needs' is a qualitative standard that invites perpetual administrative litigation.",
+        "Vulnerability 1: fair and equitable volume is completely undefined and subject to conflicting hydrological calculations.",
+        "Vulnerability 2: periods of seasonal drought lacks an objective meteorological trigger or soil moisture index threshold.",
+        "Vulnerability 3: vital human needs is a qualitative standard that invites perpetual administrative litigation.",
         "Step 2: Formulate the Chancellery Deterministic Replacement.",
-        "Replacement Clause: 'The upstream party shall maintain a minimum continuous discharge of 450 cubic meters per second as measured at Gauge Station Alpha (WGS-84: 4°12'18\"N, 38°29'04\"E). If the 30-day cumulative precipitation index falls below 35 mm, the discharge ceiling may adjust by no more than 12 per cent, provided that a joint telemetry verification signal is transmitted to the MissionEngine bus. Failure to sustain this minimum for 72 consecutive hours triggers an automated 25 per cent withholding from the upstream party's shared hydroelectric escrow tranche.'",
+        "Replacement Clause: The upstream party shall maintain a minimum continuous discharge of 450 cubic meters per second as measured at Gauge Station Alpha (WGS-84: 4 deg 12 min 18 sec N, 38 deg 29 min 04 sec E). If the 30-day cumulative precipitation index falls below 35 mm, the discharge ceiling may adjust by no more than 12 per cent, provided that a joint telemetry verification signal is transmitted to the MissionEngine bus. Failure to sustain this minimum for 72 consecutive hours triggers an automated 25 per cent withholding from the upstream party shared hydroelectric escrow tranche.",
       ],
     },
     {
-      problem: "Evaluate a draft ceasefire agreement stating that 'all heavy artillery must be withdrawn to a safe distance behind the line of contact within a reasonable timeframe.' Why will this clause fail within 48 hours?",
+      problem: "Evaluate a draft ceasefire agreement stating that all heavy artillery must be withdrawn to a safe distance behind the line of contact within a reasonable timeframe. Why will this clause fail within 48 hours?",
       solution: [
-        "Step 1: 'Heavy artillery' is ambiguous without explicit caliber specifications (e.g., artillery systems with a bore diameter exceeding 100 mm, including multiple launch rocket systems).",
-        "Step 2: 'Safe distance' is non-geodesic. Modern rocket artillery has ranges exceeding 70 kilometers; what one party considers safe, the other recognizes as lethal strike range.",
-        "Step 3: 'Reasonable timeframe' provides no UTC deadline, enabling bad-faith stalling while reinforcing forward positions.",
-        "Step 4: Chancellery Correction: 'All indirect fire systems with a caliber of 105 mm or greater must be redeployed to coordinates at least 35.0 kilometers westward of Demarcation Line Bravo by 12:00:00 UTC on 15 October. Compliance is verified by aerial radar telemetry; unverified units after the deadline constitute an immediate breach condition.'",
+        "Step 1: Heavy artillery is ambiguous without explicit caliber specifications (e.g., artillery systems with a bore diameter exceeding 100 mm, including multiple launch rocket systems).",
+        "Step 2: Safe distance is non-geodesic. Modern rocket artillery has ranges exceeding 70 kilometers; what one party considers safe, the other recognizes as lethal strike range.",
+        "Step 3: Reasonable timeframe provides no UTC deadline, enabling bad-faith stalling while reinforcing forward positions.",
+        "Step 4: Chancellery Correction: All indirect fire systems with a caliber of 105 mm or greater must be redeployed to coordinates at least 35.0 kilometers westward of Demarcation Line Bravo by 12:00:00 UTC on 15 October. Compliance is verified by aerial radar telemetry; unverified units after the deadline constitute an immediate breach condition.",
       ],
     },
   ],
   quiz: [
     {
       id: "q1-1-1",
-      question: "Why does the Vinculum Security Doctrine classify 'constructive ambiguity' as an active vulnerability rather than a diplomatic virtue?",
+      question: "Why does the Vinculum Security Doctrine classify constructive ambiguity as an active vulnerability rather than a diplomatic virtue?",
       options: [
         {
           id: "opt-a",
@@ -232,8 +256,8 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
       options: [
         {
           id: "opt-a",
-          text: "The translation discrepancy between English and French regarding the definite article before 'territories'.",
-          explanation: "Correct. The English text omitted 'the' while the French text included 'des' (of the), creating mutually contradictory legal claims regarding the extent of required military withdrawal.",
+          text: "The translation discrepancy between English and French regarding the definite article before territories.",
+          explanation: "Correct. The English text omitted the while the French text included des (of the), creating mutually contradictory legal claims regarding the extent of required military withdrawal.",
           correct: true,
         },
         {
@@ -259,15 +283,19 @@ export const CHAPTER_1_1: DetailedAcademyChapter = {
   ],
   readingList: [
     {
-      citation: "Caradon, H. et al. (1981). 'U.N. Security Council Resolution 242: A Case Study in Diplomatic Ambiguity.' Georgetown University Institute for the Study of Diplomacy.",
+      citation: "Caradon, H. et al. (1981). \"U.N. Security Council Resolution 242: A Case Study in Diplomatic Ambiguity.\" Georgetown University Institute for the Study of Diplomacy.",
       note: "Primary historical exposition on how intentional vagueness was employed as a diplomatic negotiating device.",
     },
     {
-      citation: "Krasner, S. D. (1999). 'Sovereignty: Organized Hypocrisy.' Princeton University Press.",
+      citation: "Krasner, S. D. (1999). \"Sovereignty: Organized Hypocrisy.\" Princeton University Press.",
       note: "Foundational analysis of how sovereign states routinely exploit legal ambiguities to pursue realist power objectives.",
     },
     {
-      citation: "Vinculum Security Doctrine (2026). 'The Chancellery Treatise on Relational Invariants and Sovereign Redlines.' Chancellery Working Papers Series.",
+      citation: "Sigal, L. V. (1998). \"Disarming Strangers: Nuclear Diplomacy with North Korea.\" Princeton University Press.",
+      note: "Detailed empirical autopsy of the ambiguities and sequencing defects of the 1994 Agreed Framework.",
+    },
+    {
+      citation: "Vinculum Security Doctrine (2026). \"The Chancellery Treatise on Relational Invariants and Sovereign Redlines.\" Chancellery Working Papers Series.",
       note: "The definitive operational manual detailing the mathematical requirements for deterministic covenant drafting.",
     },
   ],
