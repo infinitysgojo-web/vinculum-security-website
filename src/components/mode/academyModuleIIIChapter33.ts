@@ -4,8 +4,8 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
   id: "buffer-zeroization",
   number: "3.3",
   eyebrow: "Module III · Chapter 3.3",
-  title: "The Chancellery Sentinel: Air-Gap Integrity, DOM Canaries & Zeroization",
-  estimatedMinutes: 52,
+  title: "The Chancellery Sentinel: Inactivity, DOM Canaries & Best-Effort Data Clearing",
+  estimatedMinutes: 81,
   executiveLede: "A browser-based operational workspace must account for unattended sessions, unexpected document changes, clipboard exposure, and the limits of deleting sensitive data from a managed runtime. The Chancellery Sentinel is the dashboard component that owns the inactivity timer, panic-key handling, and DOM mutation observer; it reports to the dashboard, which decides what idle and panic events do. These controls can improve detection and reduce the lifetime of selected artifacts, but they do not prove that the host is uncompromised, that every copy of a string has been erased, or that the operating-system clipboard can always be overwritten. This chapter treats those boundaries as central engineering facts rather than footnotes.",
   synopsis: [
     "Endpoint risk includes physical observation and access, but broad claims about routine intelligence operations require verifiable evidence. A workstation can also be exposed through an unlocked screen, shared account, malicious extension, operating-system malware, or ordinary user error. Threat assessment should specify the adversary's capabilities and the data at risk rather than infer compromise from the venue alone.",
@@ -13,13 +13,13 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
     "The Sentinel checks elapsed time against an armed timestamp before activity can renew the deadline, uses a timeout for ordinary expiry, and checks expiry when focus or visibility returns. The implementation uses Date.now for its stored activity time and does not claim an independent hardware clock. These checks address important suspension cases, while browser scheduling, clock adjustment, race timing, and host compromise remain part of the residual risk.",
     "The Sentinel observes selected DOM mutations, maintains an alert count, owns panic keys, and exposes a reading to the dashboard; the dashboard determines the response. The application also has a clipboard eviction state machine and buffer-overwrite helpers, each with explicit browser limitations. The chapter explains what these mechanisms observe and clear, what they cannot observe or erase, and how to design testing and operational procedures around those boundaries.",
   ],
-  statutoryNotice: "Statutory Directive 3.3: Exactly one inactivity watchdog shall govern the mission workspace; it shall verify elapsed wall-clock time prior to renewing any deadline and shall never initiate navigation autonomously.",
+  statutoryNotice: "Internal UDCA implementation convention—not a statute: the Chancellery Sentinel owns the dashboard's inactivity timer, panic-key handling, and DOM canary. The dashboard chooses the response; timer expiry is checked against Date.now and is not an independent hardware-clock guarantee.",
   learningOutcomes: [
     "Analyze the physical and tactical attack vectors threatening sovereign diplomatic terminals in foreign and contested venues.",
     "Evaluate the vulnerability of conventional event-loop timers against laptop sleep modes and background tab throttling.",
     "Audit the single-timer architecture of the Chancellery Sentinel and its wall-clock delta verification engine.",
     "Evaluate the coverage and timing limits of DOM mutation canaries alongside browser and endpoint prevention controls.",
-    "Execute volatile buffer zeroization and configure the automated clipboard eviction lifecycle under emergency panic protocols.",
+    "Audit selected buffer overwriting, clipboard eviction, and panic-cleanup behavior while identifying browser and device limits.",
   ],
   sections: [
     {
@@ -32,7 +32,7 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
         "Software controls can shorten exposure and make selected events visible, but they cannot defend every part of an endpoint. Device management, screen locking, physical custody, browser policy, data minimization, and incident response complement application-level timers and cleanup. The chapter treats the Sentinel as one layer and identifies the assumptions that remain outside its authority.",
       ],
       caseStudy: {
-        title: "The 2009 G20 London Summit Workstation Interception Operations",
+        title: "Public Reporting on G20 Communications Surveillance",
         jurisdiction: "United Kingdom Sovereign Domain / Multilateral Diplomatic Delegations",
         precedent: "Clandestine cyber intelligence harvesting against foreign diplomatic terminals",
         analysis: [
@@ -45,10 +45,10 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
       },
       subsections: [
         {
-          title: "The Fallacy of the Friendly Perimeter in Multilateral Venues",
+          title: "Venue Risk Requires a Specific Threat Model",
           paragraphs: [
-            "Diplomatic delegations frequently suffer from an institutional bias known as the friendly perimeter fallacy, assuming that hotel conference rooms, convention center lounges, or neutral third-party chanceries are secure environments. In reality, international convention centers are deeply penetrated environments where building management systems, Wi-Fi networks, and physical access controls are accessible to host-state services.",
-            "A sovereign terminal must operate under zero-trust assumptions. It must treat its physical surroundings, the underlying host operating system, and the local local area network as potentially compromised. Protection cannot rely on physical security guards; it must be enforced by unyielding software invariants.",
+            "A conference venue, hotel, embassy, or transit checkpoint is not automatically secure or hostile. The relevant questions concern who controls the device, network, room, identity service, and physical access; what evidence exists about those controls; and which adversaries are in scope. Claims that a particular venue is penetrated by an intelligence service require specific evidence and should not be inferred from its location.",
+            "Threat modeling can conservatively consider untrusted networks and physical access without asserting that compromise has occurred. The response may include managed devices, screen positioning, locked storage, network controls, credential hygiene, and incident procedures. A browser page cannot enforce every physical or host-level control, and no software invariant makes the endpoint invulnerable.",
           ],
           callout: {
             kind: "definition",
@@ -93,35 +93,35 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.3-A: A diplomatic workstation operating in a foreign venue must presume host-environment compromise; terminal security requires continuous behavioral watchdog monitoring and instantaneous volatile zeroization.",
+      statutoryRule: "Internal UDCA convention—not law: an organization's endpoint controls should follow its threat model. The Sentinel provides application-level monitoring and cleanup attempts, not proof of host compromise or complete zeroization.",
     },
     {
-      heading: "II. The Sentinel Inactivity Engine & Wall-Clock Drift Verification",
+      heading: "II. The Sentinel Inactivity Engine and Wall-Clock Checks",
       subheading: "Single-Timer Ownership, Event-Loop Throttling Defenses, and Inactivity Expiry",
       paragraphs: [
-        "To protect abandoned terminals, software applications implement inactivity timeouts. However, conventional web development practices introduce fatal race conditions and timing vulnerabilities. In many enterprise applications, multiple components instantiate their own independent timers, creating timer races where one module locks while another attempts to synchronize state, corrupting local data.",
-        "The Vinculum Security Doctrine establishes the Single-Timer Invariant: exactly one inactivity watchdog, the Chancellery Sentinel, is instantiated within the operational workspace. Mounted exclusively on the root dashboard layout, the Sentinel owns the sole inactivity countdown, the panic key listeners, and the DOM canary. Child desks, telemetry panels, and status bars read the countdown state via the useSentinel hook; they are strictly forbidden from maintaining independent timers.",
-        "A far more insidious vulnerability in conventional software is event-loop suspension. Standard browser timers, including setInterval and setTimeout, depend on the JavaScript single-threaded event loop. When an operator closes their laptop lid, or when the operating system minimizes or backgrounds the browser tab, the operating system suspends process execution to conserve power. Modern browser engines aggressively throttle inactive tabs, firing timer callbacks only once every minute or pausing them entirely.",
-        "If an operator in a hostile capital closes their laptop lid with five minutes remaining on a fifteen-minute countdown and leaves the machine unattended in a hotel room for eight hours, an unhardened timer will pause in place. When an unauthorized party opens the laptop hours later, the application wakes with five minutes still remaining on the clock. The console remains completely unlocked, granting the intruder full access to sovereign intelligence.",
+        "An inactivity control is one layer against unattended access. Browser timer callbacks may be delayed by a busy event loop, page throttling, or process suspension, but the exact behavior depends on browser, operating system, and lifecycle state. A timer that only subtracts scheduled intervals can therefore misrepresent elapsed time after suspension. The application should compare an elapsed-time source when it resumes and state the clock's limitations.",
+        "In this repository, the Chancellery Sentinel owns the dashboard inactivity logic, panic-key handling, and DOM canary. It records an armed timestamp with Date.now, checks expiry before renewing activity, schedules an ordinary timeout, and checks relevant focus and visibility events. The dashboard decides what to do on expiry. This is a project architecture convention, not a statutory requirement or proof that all tabs, processes, or devices are governed by one timer.",
+        "A hypothetical sleep-and-resume failure illustrates why elapsed-time checks matter, but it is not presented here as a documented diplomatic incident. A real evaluation should test the supported browser and operating-system combinations, record clock changes and lifecycle events, and verify that an expired session is handled before it accepts renewed activity. Do not infer a real compromise or historical loss from the technical example.",
+        "A display countdown is distinct from the expiry authority. The Sentinel's one-second display interval updates the strip; expiry callbacks and event-driven checks govern the lock decision. A stale display after suspension is not itself proof that the session remained usable, nor does an updated display prove that cleanup succeeded. Both behavior and operator feedback need explicit tests.",
       ],
       caseStudy: {
-        title: "The Laptop Sleep Exploit in Field Diplomatic Operations",
-        jurisdiction: "International Peacekeeping Mission / Hostile Transit Enclave",
-        precedent: "Terminal seizure during overland checkpoint inspection",
+        title: "Web Timer Scheduling: A Standards-Based Failure Analysis",
+        jurisdiction: "WHATWG HTML Standard / Browser event-loop behavior",
+        precedent: "Timer callbacks are scheduled work, not hard real-time deadlines",
         analysis: [
-          "During an overland diplomatic mission in an active conflict zone, an international monitoring team was detained at a military checkpoint. The lead officer closed their laptop lid to conceal the active operational tracking map and entered the checkpoint station for interrogation.",
-          "Checkpoint personnel seized the vehicle and recovered the laptop. Because the application utilized standard JavaScript timers tied to event-loop cycles, the 10-minute inactivity timer ceased ticking when the operating system entered low-power sleep mode.",
-          "Upon opening the laptop lid forty-five minutes later, checkpoint technicians found the operating system resume screen bypassed via cached credentials. The browser window refreshed, the paused event-loop resumed, and the operational dashboard displayed the live deployment positions of allied monitors with five minutes of inactivity still showing on the interface.",
-          "The checkpoint authority photographed the screen, compromising field monitor safe-houses and forcing the emergency evacuation of the regional liaison mission. The failure underscored that software timers divorced from true wall-clock time provide zero security in operational field conditions.",
+          "The HTML Standard describes timer tasks in the context of browser event-loop processing; it does not promise that a callback runs at an exact real-world deadline. The actual delay can also depend on page visibility, throttling policies, a blocked main thread, and suspension by the operating system.",
+          "A conventional countdown that subtracts a fixed amount only when a timer callback runs can undercount elapsed time if callbacks are delayed or paused. This is a technical failure mode, not a claim that a particular delegation, device, or negotiating record was compromised.",
+          "The repository addresses part of this risk by comparing Date.now with the stored activity timestamp before renewing activity and by checking expiry when the page becomes visible or focused. Date.now is a wall-clock value that can be adjusted; the design does not establish a trusted hardware clock or guarantee execution while the process is stopped.",
+          "A defensible test records the configured timeout, activity timestamp, observed wall-clock time, page visibility, focus, resume events, and callback result. It covers clock adjustment, device sleep, background tabs, busy main-thread work, and repeated events. Test findings should be reported for the tested browser and device rather than generalized to every browser or described as a historical diplomatic case.",
         ],
-        failureMechanism: "Reliance on event-loop intervals rather than hardware wall-clock verification permitted a suspended terminal to wake in an unlocked, compromised state hours after physical abandonment.",
+        failureMechanism: "A timer-only countdown can misstate elapsed time when callbacks are delayed. Comparing an elapsed-time value on activity and lifecycle events mitigates that particular failure mode, while clock trust, host compromise, and process suspension remain outside a browser callback's control.",
       },
       subsections: [
         {
           title: "Wall-Clock Delta Verification: The idleDeadlineExpired Engine",
           paragraphs: [
             "The Chancellery Sentinel reduces a sleep-wake failure mode by comparing elapsed time before renewing activity. In the implementation, armedAt is set from Date.now(), which is a system wall-clock value and can be adjusted; it is not a hardware monotonic timestamp. The component also schedules a timeout and checks expiry on focus and visibility events. Those mechanisms improve detection after suspension without providing hard real-time scheduling.",
-            "Whenever practitioner activity is detected (mouse movement, keypress, touch, or scroll), the Sentinel invokes idleDeadlineExpired before renewing the deadline. This function calculates \\(now - armedAt \\ge idleMs\\). If the elapsed wall-clock duration meets or exceeds the statutory threshold (15 minutes by default), the session is instantly recognized as expired. The deadline is never renewed post-expiration, regardless of incoming mouse or keyboard activity.",
+            "Whenever the configured activity events are detected, the Sentinel invokes idleDeadlineExpired before renewing the deadline. This function compares \\(now - armedAt\\) with \\(idleMs\\). If the elapsed wall-clock duration meets or exceeds the configured timeout, expiry is reported and the dashboard callback runs; Date.now is not an independent time authority.",
           ],
           callout: {
             kind: "definition",
@@ -173,7 +173,7 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.3-B: Before renewing activity, the watchdog shall check elapsed wall-clock time; navigation policy remains with the dashboard.",
+      statutoryRule: "Internal UDCA convention—not law: before renewing activity, the Sentinel checks elapsed wall-clock time; the Dashboard owns the response, and Date.now is not a trusted hardware clock.",
     },
     {
       heading: "III. DOM Mutation Canaries and Hostile Script Injection Defenses",
@@ -185,16 +185,16 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
         "The current rules examine relevant script and embedded-content properties and can flag elements that fail the origin or execution checks. Same-origin resources are not automatically trustworthy, and an external resource is not automatically malicious. Content Security Policy and safe rendering practices can prevent or constrain some loads; dependency review, extension management, and endpoint defenses address other layers.",
       ],
       caseStudy: {
-        title: "Publicly Reported Information Operations and Client-Side Risk",
-        jurisdiction: "Eastern Europe; campaign attribution varies by public source",
-        precedent: "Illustrative threat context, not evidence that the UDCA or a specific extension was targeted",
+        title: "Cross-Site Scripting Guidance: Prevention Before Observation",
+        jurisdiction: "OWASP secure development guidance",
+        precedent: "Context-sensitive output encoding and safe DOM APIs reduce script-injection risk",
         analysis: [
-          "Operation Ghostwriter is a label used in public reporting for influence and intrusion activity affecting governments and audiences in parts of Europe. Attribution and technical details should be tied to the specific government or security research source consulted; broad campaign names do not prove a specific browser compromise.",
-          "This case is included as context for the possibility that information operations may combine content manipulation, compromised infrastructure, and targeted messaging. It should not be read as evidence that the campaign used the precise browser-extension, XSS, or form-interception mechanisms described in earlier versions of this section.",
-          "A browser page that executes hostile script may expose data accessible to that page, and TLS does not protect data from code already executing at the endpoint. That general platform principle is independent of the attribution of any particular campaign.",
-          "The engineering lesson is layered defense and careful evidence language: prevent unsafe script execution, constrain resource sources, manage extensions, monitor relevant changes, and investigate alerts. A DOM observer may contribute detection for selected changes, but this case does not prove that observer monitoring would have prevented a named operation.",
+          "OWASP's cross-site scripting prevention guidance prioritizes context-appropriate output encoding, safe sinks, and avoiding unsafe DOM operations. The exact defense depends on whether data is inserted into HTML, an attribute, a URL, CSS, or a JavaScript context; a single generic escaping function is not sufficient for every context.",
+          "The distinction between prevention and observation is central. A MutationObserver runs after a DOM mutation has been queued and delivered; it is not a substitute for safe rendering, Content Security Policy, dependency review, or managing browser extensions. If hostile code executes in the page, it may access information exposed to that page before the canary reports a relevant mutation.",
+          "OWASP guidance is general application-security material, not evidence that the UDCA was targeted or that a particular exploit occurred. The repository's domCanary implementation should be reviewed for exact selectors and mutation types, while secure coding and response headers should be reviewed as separate controls.",
+          "The operational lesson is layered prevention, narrow detection claims, and test evidence. A canary can add visibility into selected changes, but an alert does not identify an attacker, prove intent, or establish that all harmful activity was observed.",
         ],
-        failureMechanism: "The case motivates scrutiny of client-side trust; it does not establish that a DOM observer would have prevented a particular campaign or that this application was targeted.",
+        failureMechanism: "The guidance addresses script-injection prevention; it does not guarantee that all client-side threats are prevented or that a DOM observer can intercept execution.",
       },
       subsections: [
         {
@@ -255,7 +255,7 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
           ],
         },
       ],
-      statutoryRule: "Rule 3.3-C: The DOM canary shall continuously inspect inserted nodes for untrusted executable scripts or foreign frame origins, raising an alert that requires explicit operator dismissal.",
+      statutoryRule: "Internal UDCA convention—not law: the DOM canary observes selected mutations and reports findings under its implemented inspection rules. It is not a complete content monitor, pre-execution control, or guarantee that every finding requires a particular response.",
     },
     {
       heading: "IV. Buffer Zeroization, Ephemeral Clipboard Scrubbing & The Panic Purge",
@@ -267,16 +267,16 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
         "The clipboard is controlled by the operating system and browser permissions, so a web page cannot promise unconditional access to overwrite it. The application tracks text copied through its own guarded copy path and arms an eviction state machine when the window loses focus. If a browser refuses a background clipboard write, the guard attempts eviction when focus returns, before this application continues its normal focused interaction. Other clipboard producers and copies made outside the guarded path are outside that specific tracking guarantee.",
       ],
       caseStudy: {
-        title: "Hypothetical Training Scenario: Seizure of a Local Archive",
-        jurisdiction: "Fictional diplomatic venue used for instructional analysis",
-        precedent: "Composite exercise; not a claim about a documented historical operation",
+        title: "Source Analysis: NIST SP 800-88 Rev. 2 and Media Sanitization",
+        jurisdiction: "United States National Institute of Standards and Technology",
+        precedent: "Media-sanitization guidance applies to storage media, not JavaScript heap guarantees",
         analysis: [
-          "This training scenario is fictional. It asks a team to consider a device taken while an authenticated browser session and a copied working note remain accessible. It is not a report of a particular court seizure, an intelligence operation, or an observed recovery of specific records.",
-          "In the exercise, the operator closes the browser but does not yet know whether storage, operating-system swap, browser recovery, or clipboard history retained material. The correct response is to avoid assuming that closing a tab securely erased every copy and to follow the organization's device-loss and incident-reporting procedure.",
-          "Participants identify which assets may be in browser memory, sessionStorage, localStorage, IndexedDB, downloads, clipboard services, logs, backups, or operating-system caches. They classify each location by who controls it, what access is plausible, and which cleanup operation the application can actually request.",
-          "The instructional point is limited: deleting a user-interface view is not proof of media sanitization, and a clipboard write can be denied or observed before eviction. Teams should not turn a hypothetical into a claim that a particular forensic extraction occurred or that a browser purge can guarantee zero residual evidence.",
+          "NIST SP 800-88 Rev. 2 provides guidance for sanitizing storage media so that access to target data is infeasible for a defined level of effort. Its scope concerns media and organizational sanitization processes; it is not a browser API specification or a promise that a JavaScript heap can be erased.",
+          "The repository's zeroizeBuffer helper overwrites the supplied mutable view and then zeros it. That operation does not enumerate JavaScript strings, framework references, browser caches, storage copies, screenshots, operating-system artifacts, or backups. The panic purge issues application-level deletion requests, but does not demonstrate physical media sanitization.",
+          "A device sanitization plan must identify the media, data, method, verification evidence, custody, and applicable retention requirements. The choice may differ for a managed drive, browser profile, removable media, or a cloud-backed recovery copy. A page-level cleanup result cannot stand in for that device-level process.",
+          "The guidance therefore supports a boundary statement: the application attempts to clear named state and can overwrite selected mutable buffers; any claim about sanitizing the device requires separate methods and evidence appropriate to that medium. No particular seizure or forensic recovery is asserted here.",
         ],
-        failureMechanism: "The exercise exposes an assurance gap when a team confuses application-level cleanup with verified device-level data sanitization.",
+        failureMechanism: "Logical deletion and overwriting a selected view do not establish that every copy on the device or storage medium has been sanitized.",
       },
       subsections: [
         {
@@ -493,13 +493,93 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
             "When the cause remains unknown, communicate uncertainty and protect the user from unsafe experimentation. Do not instruct the operator to disable the canary, repeatedly trigger panic cleanup, or restore a backup until the consequences are understood. Escalate through an approved channel and preserve only authorized evidence.",
           ],
         },
+        {
+          title: "Browser Extensions as a Separate Privilege Boundary",
+          paragraphs: [
+            "A browser extension is not an ordinary element in the page's DOM. Extension platforms define permissions and host access through a manifest and user-agent policy; content scripts may be enabled for specified hosts, while other extension capabilities depend on requested APIs and browser rules. MDN and Chrome's developer documentation both describe permission declarations and host access as explicit parts of extension design. Those rules vary by browser and version, so a security assessment should identify the actual managed browser rather than generalize from one extension model.",
+            "An extension with relevant access may observe or alter page content through capabilities that the page's own origin checks do not describe. The Sentinel's MutationObserver inspects selected mutations in the document; it does not enumerate installed extensions, inspect their manifests, or monitor privileged extension APIs. A clean canary status therefore cannot establish that no extension can read or affect the user's session.",
+            "Permission labels are useful but incomplete as an operational decision. A request may be broad or narrow, optional or granted at runtime, scoped to a host, or tied to a specific API. Review the extension's declared permissions, host patterns, publisher, source, release history, and update channel. Then assess the browser's effective granted permissions and any enterprise policy overrides; a store listing or a user's memory of clicking 'allow' is not a current inventory.",
+            "The least-privilege principle applies to extensions as well as application accounts. A mission profile should install only approved extensions and grant only the hosts and APIs required for a documented function. Separate high-sensitivity work from general browsing when policy and operational practice support it. If an extension is required for accessibility or translation, evaluate a managed alternative rather than assuming that a broad permission request is harmless or that banning all extensions is workable.",
+            "Extensions may update independently of the web application. Record the approved identifier, version, publisher, permission set, and update policy in the deployment inventory. Establish who can approve an update, how urgent security fixes are handled, and whether a previous version can be restored safely. The application team should not imply that its release hash covers third-party browser add-ons or the browser binary.",
+            "An extension investigation should preserve evidence without exposing more content than necessary. Note the browser build, extension identifier and version, effective permissions, relevant policy, and time of observation. Do not export the mission document merely to demonstrate that a content script could see it. If a security incident is suspected, the incident authority should decide whether to disconnect, preserve, or reimage the endpoint before changing the extension set.",
+            "The existence of a powerful permission is not proof of malicious behavior, just as a benign purpose is not proof of safe implementation. Separate capability, observed action, attribution, and intent. A permission review estimates what the software could do; a runtime finding provides evidence about what it did; identifying the responsible actor requires additional evidence. This vocabulary prevents a canary alert or extension warning from becoming an unsupported accusation.",
+          ],
+        },
+        {
+          title: "Managed Extension Inventory and Assurance Tests",
+          paragraphs: [
+            "A managed-browser policy can provide a stronger operational boundary than asking each operator to make an independent choice. Define an approved extension list, a process for exceptions, controls over installation sources, and a way to detect unauthorized changes. The policy must be checked on the actual device because a written standard does not prove that the profile was applied or remains current.",
+            "Inventory should include extensions installed for the user and, where the management platform distinguishes them, force-installed or policy-installed components. Track version, publisher, permissions, host patterns, installation source, update channel, and business purpose. Review the inventory periodically and when the browser updates. Remove abandoned entries; each extra extension adds code and a permission relationship that must be trusted.",
+            "Test the enforcement boundary with a non-sensitive managed account. Attempt an unapproved installation, a permission expansion, a version update, and access to a disallowed host. Verify both the user-visible result and the administrative record. Also test what happens when the device is offline, the policy server is unavailable, or a user profile is restored from backup. The test should establish the behavior of that deployment, not make a universal claim about every browser.",
+            "The response plan should state whether an unexpected extension is an alert, a policy violation, or an incident requiring isolation. Preserve the observed identifier and permissions, determine whether the extension had access during the relevant period, and consult endpoint logs where authorized. A screenshot of an extension page may be incomplete evidence; administrative inventory and signed release information can help establish what was installed.",
+            "If a required extension can access page content, document its purpose, data handling, publisher, review owner, and renewal date. Assess whether it transmits information externally, stores local copies, or has its own synchronization or account system. If its behavior changes materially, suspend use pending review or follow the approved exception process. A vendor privacy statement is relevant evidence but does not replace code, configuration, or contractual review.",
+            "Assurance reports should name their boundary: the web application, browser, extension set, operating system, and management policy. A passing test of the DOM canary says nothing about an extension that does not create watched mutations; a managed extension inventory says nothing about a malicious script already served by the application origin. Layer the controls, but do not merge their claims.",
+            "Use the extension review to improve incident preparation. Keep a contact route for the browser administrator, know how to obtain the effective policy and extension list, and practice isolating a profile without destroying evidence needed for investigation. Recovery should use a known-good managed profile and revalidate the application release. Do not restore an unknown profile simply because it contains a convenient saved workspace.",
+          ],
+        },
+        {
+          title: "Idle Lock and Panic Use Different Clipboard Paths",
+          paragraphs: [
+            "The application has more than one reason to request clipboard clearing, and those paths have different preconditions. On a normal lock, the Sentinel calls clearAppClipboard. That helper first checks whether the application recorded a successful write through its own copyText path; if not, it returns without writing to the system clipboard. It also checks for document focus before attempting an empty write. The lock behavior is therefore scoped to a tracked app write and may defer or fail when the browser refuses access.",
+            "The emergency purge follows another route. Its synchronous cleanup drops the in-memory app-write marker, and the asynchronous panic path then calls overwriteClipboard regardless of that marker. That function checks whether navigator.clipboard.writeText exists and requests an empty string; it returns false if the API is absent or the promise rejects. A panic report includes this boolean separately from the vault-deletion result, making it possible to distinguish a requested operation from a confirmed API success.",
+            "The difference is deliberate at the policy level: an ordinary lock avoids overwriting clipboard material that the application did not place there, while an emergency purge attempts a broader empty write. It does not imply that panic can overwrite every clipboard implementation under every focus or permission condition. Browser policy, host state, and an external manager can still prevent or immediately replace the value. The report measures the helper's result, not the state of every device or synchronized copy.",
+            "Ordering is also relevant. The app-write marker is set only after copyText's write promise resolves, and the panic cleanup drops the marker before its separate overwrite operation. Asynchronous operations can overlap in real use. The security case should therefore include tests for a pending copy when lock or panic begins, a rejected write, and a delayed resolution. If a sequence can leave the marker or clipboard in an unexpected state, the interface must report uncertainty rather than imply that all prior writes were erased.",
+            "Tests should keep normal lock and panic scenarios separate. For lock, test no tracked write, a successful app copy, an unfocused page, a delayed eviction, and focus restoration. For panic, test an app-written value, an externally written value, a missing API, and a rejected empty write. Verify that the result returned to the dashboard accurately reflects the helper outcome and that the user is not shown a success state merely because the purge callback ran.",
+            "A boolean result has a narrow meaning. `true` means the browser API call to write empty text resolved; it cannot prove that the previous string was never read, that a clipboard history was cleared, or that a remote device did not receive it. `false` means the attempt was not confirmed, not necessarily that sensitive material remains in the current clipboard. Communicate the known result and the unresolved scope without exposing the original copied text.",
+            "Operational procedures should tell an operator what to do after a failed clear. A managed endpoint policy may disable clipboard history or synchronization, but only the device administrator can verify that configuration. If sensitive data was copied and a clear failed, follow the incident policy and assess whether the recipient or endpoint requires action. The application cannot determine whether a prior paste occurred or retract one from a destination.",
+          ],
+        },
+        {
+          title: "Clipboard API Models and the Application's Write-Only Scope",
+          paragraphs: [
+            "The W3C Clipboard API describes two broad interaction models: clipboard events associated with common cut, copy, and paste operations, and the asynchronous Clipboard API that can read or write clipboard data directly. The specification treats direct access as a powerful feature controlled by the user agent's permission model. The exact experience depends on browser, security context, focus, user action, and platform policy; application code should expect operations to be denied or unavailable and handle those outcomes explicitly.",
+            "The UDCA's guarded copy path uses `navigator.clipboard.writeText` to write plain text. The guard does not read the user's clipboard contents, enumerate other applications, or record the text it copied. Its in-memory state is a boolean marker that the application has written something since the marker was last cleared. This narrower scope reduces sensitive retention by the application, but it also means the page cannot determine whether a human or another program subsequently replaced or read the clipboard.",
+            "Writing text is not the same as controlling the whole clipboard. A browser page may request a clipboard operation, but operating-system services, clipboard managers, accessibility tools, remote-desktop clients, and other applications can participate in the broader data path. The specification's discussion of remote clipboard synchronization illustrates that clipboard data can cross device boundaries in some environments. That example is a use case, not evidence that a particular workstation has synchronization enabled.",
+            "Clipboard events and direct writes also have different integration points. An application handling a copy event may transform the selection or provide additional representations; a direct asynchronous write can place specified data without relying on the current text selection. The UDCA's copyText helper uses the latter for a text string. Do not infer from that helper that every browser copy gesture, system shortcut, screenshot, export, or extension-mediated transfer passes through the same guard.",
+            "The returned promise matters. A call may reject because the API is absent, the context is not permitted, focus or user-activation requirements are not met, or the browser refuses the operation. Marking a value as application-written only after the promise resolves is more honest than setting the marker before the write succeeds. A later clear attempt is a second API operation with its own failure conditions; success at copy time does not guarantee success at eviction time.",
+            "Policy should tell operators which actions are supported and what the indicator means. 'Copied by this application' describes a tracked write through its helper, not a complete audit of clipboard history. 'Clear requested' describes an attempt, while a resolved successful write of an empty string is stronger but still cannot retract earlier reads or prove that no synchronized copy remains. User-facing language should be as narrow as the observable API result.",
+          ],
+        },
+        {
+          title: "Clipboard Data Types, Representations, and Trust Boundaries",
+          paragraphs: [
+            "A clipboard item may carry more than a plain string. Rich editors can exchange HTML, images, files, structured data, or multiple representations of the same selection, and a recipient may choose a different representation than the sender expected. This chapter's implementation analysis is deliberately narrower: the application's guarded helper writes text through writeText. It does not claim that all content entering or leaving the browser is plain text or that every host clipboard strips other metadata.",
+            "When a user copies a displayed diplomatic value, the value may be interpreted differently by its destination. Text pasted into a word processor can acquire formatting, become part of a cloud-synchronized document, or be captured in an application history. A string placed into a shell, spreadsheet, or web form can also be interpreted as markup or a command by the receiving application. The sending page cannot enforce safe handling after the recipient accepts the text; guidance should identify intended destinations and warn against pasting sensitive content into unapproved tools.",
+            "A clipboard transfer is a data export, even when it feels temporary. Apply the same classification and minimization questions used for file export: which fields are necessary, who is the recipient, what device or account receives them, how long they persist, and whether onward transfer is permitted. A short redacted excerpt may meet the operational need better than copying an entire profile. The privacy mask can transform particular application copy text, but it cannot sanitize content copied through unrelated browser or operating-system pathways.",
+            "The application-level filter is a function, not a retained copy of the text. When the privacy mask is active, the privacy provider can install a filter for app-mediated copies; copyText applies that function before calling writeText. This is a useful point of control for the covered buttons, not a universal clipboard policy. Exports and files are intentionally not transformed by that helper, and a user can still select screen text and invoke native copy behavior outside its path.",
+            "Transformation policies should be explicit and testable. If a masked copy replaces an identifier, describe the output as a presentation-safe representation rather than as the original record. Never use the masked string for evidence or hashing when the authoritative record is required. Conversely, do not claim that the actual record was sanitized simply because a screen display or app-mediated clipboard value was masked.",
+            "A sound data-flow inventory traces the value from its source field through any display mask, copy handler, browser API, operating-system clipboard, destination application, and any synchronization service enabled by policy. Record which transitions the web application observes and which belong to endpoint management. This prevents a local helper from being credited with controls that must be enforced by the managed device or receiving application.",
+          ],
+        },
+        {
+          title: "Eviction State, Focus, and the Limits of an Empty Write",
+          paragraphs: [
+            "The clipboard guard's state machine tracks whether the application wrote a value and whether a blur-triggered eviction remains pending. On blur, if the marker is set, the helper arms one timer and records a local start time. Focus disarms that timer and checks whether the configured interval elapsed; if the timer previously failed to clear or the deadline is overdue, it attempts the clear. This is a bounded response to known app-mediated writes, not a timer that monitors all clipboard contents.",
+            "A page may not be allowed to write while it is unfocused. In that case, the eviction attempt can fail and remain pending for a later focus event. The design avoids assuming that an empty string was written merely because the timeout fired. A delayed or suspended callback can also run after the intended interval, and focus may return before or after that callback. Tests should assert the state transitions and reported result rather than treating wall-clock schedule as exact.",
+            "Overwriting the current clipboard entry with an empty string is not equivalent to deleting all historical copies. A recipient may already have pasted the previous text; a clipboard manager may retain history; a remote synchronization feature may have transmitted it; and a screenshot or application log may have captured it. A page does not have a general API to recall a value from every process that may have read it. The control reduces the opportunity for later casual paste where it succeeds.",
+            "The marker has deliberate limitations. If the application writes text and another application replaces it, the marker may still indicate an app write even though the current value differs. If another application writes sensitive text, the guard may not know about that value. Forgetting the marker drops the application's state but does not itself alter the operating-system clipboard. These behaviors are why a boolean should not be presented as a content-integrity check or a full clipboard inventory.",
+            "Failure messaging should differentiate four cases: no app-mediated text was tracked, an overwrite was attempted, the API confirmed a successful empty write, and the browser refused or lacked the API. A privacy status can show an unresolved clear without displaying the copied text. Avoid logging the text to explain a failure, because doing so creates a new copy that can outlive the clipboard operation.",
+            "A post-event review should ask whether the copied text was sensitive, whether the destination was approved, whether the page had focus, and whether device policy enables clipboard history or synchronization. The answers may determine whether credential rotation, incident reporting, or no further action is warranted. The browser's empty-write result alone cannot decide the institutional response.",
+          ],
+        },
+        {
+          title: "Clipboard Assurance Tests and Operator Acceptance",
+          paragraphs: [
+            "Test the exact helper with a synthetic string and instrument the clipboard API result. Confirm that the write marker changes only after an accepted write, the configured mask function is applied only while installed, and clearing the marker is distinct from changing the system clipboard. Test a rejected write, an absent clipboard API, an unfocused document, a second application write, and an external clipboard replacement. Do not use actual diplomatic text in a test harness.",
+            "Exercise timing boundaries with a controlled clock and timer implementation. Cover blur shortly before the deadline, focus before expiry, focus after expiry, a timer callback that runs late, and a failed clear followed by focus. Confirm that only one timer is active, cleanup disarms it, and a stale callback cannot clear a later unrelated clipboard value without the intended app-write state. Because the helper's timing function uses a wall clock by default, distinguish timer scheduling from the elapsed-time comparison in tests.",
+            "Run browser integration tests in the supported deployment contexts. Check secure versus unsupported contexts where applicable, permission prompts, keyboard and pointer copy paths, browser tab backgrounding, device sleep, and focus restoration. Record browser and operating-system versions because clipboard policy is implemented across both layers. An automated mock can verify application logic but cannot establish the host's clipboard-history or synchronization policy.",
+            "Accessibility testing should include keyboard-only copy, screen-reader actions, focus changes, and feedback after denial. A user who cannot use the pointer should not be forced into an unsafe workaround. Announce whether a copy succeeded without announcing the sensitive value itself. If the operation is blocked, provide an approved alternative such as a controlled export or manual transfer procedure rather than suggesting that the user disable security settings.",
+            "Acceptance criteria should be phrased as observable behaviors: app-mediated writes use the intended text filter; the application does not retain the copied string for eviction; the guard attempts to clear only the value it tracks; denied writes are reported as unresolved; and documentation warns that prior reads and external copies cannot be recalled. Do not use criteria such as 'clipboard securely wiped' unless an independently validated endpoint mechanism provides that guarantee.",
+            "Review the results with the data owner and endpoint administrator. The application team can explain its helper and report its API outcomes, but the institution controls managed clipboard history, synchronization, remote assistance, and retention. Keep that division visible in the assurance record so a successful browser test is not mistaken for a device-wide guarantee.",
+          ],
+        },
       ],
-      statutoryRule: "Rule 3.3-D: In an emergency panic event, all volatile mission state, cryptographic keys, and temporary tab storage must be purged and zeroized within milliseconds, leaving zero residual forensic artifacts.",
+      statutoryRule: "Internal UDCA convention—not law: panic cleanup attempts to clear named application state and overwrite the clipboard where the browser permits. It cannot guarantee complete memory sanitization, successful removal of all stored copies, or zero forensic residue.",
     },
   ],
   practice: [
     {
-      problem: "An envoy terminal is armed at wall-clock epoch \\(T_0 = 1000000\\text{ ms}\\) with a statutory inactivity threshold of \\(t_{idle} = 900000\\text{ ms}\\) (15 minutes). At timestamp \\(T_1 = 1200000\\text{ ms}\\), the operator copies a sensitive counterpart dossier excerpt to the clipboard, initiating the \\(t_{clip} = 60000\\text{ ms}\\) eviction timer, and immediately closes the laptop lid, suspending browser process execution. At timestamp \\(T_{wake} = 2500000\\text{ ms}\\), the operator opens the laptop lid in an unverified transit zone. Concurrently, a physical intruder attempts to access the console, prompting the operator to strike Escape three times at timestamps \\(T_{e1} = 2500100\\text{ ms}\\), \\(T_{e2} = 2500250\\text{ ms}\\), and \\(T_{e3} = 2500420\\text{ ms}\\). 1. Calculate the elapsed wall-clock delta at wake and determine whether standard event-loop timers versus the Sentinel wall-clock guard detect session expiry. 2. Verify the clipboard eviction state at timestamp \\(T_{wake}\\). 3. Evaluate whether the three Escape keypresses fall within the statutory panic purge window \\(\\Delta t_{panic} = 600\\text{ ms}\\).",
+      problem: "In a synthetic test, a Sentinel is armed at wall-clock epoch \\(T_0 = 1000000\\text{ ms}\\) with a configured timeout of \\(t_{idle} = 900000\\text{ ms}\\) (15 minutes). At timestamp \\(T_1 = 1200000\\text{ ms}\\), the application has copied text and the operator closes the laptop lid, suspending browser execution. At timestamp \\(T_{wake} = 2500000\\text{ ms}\\), the operator reopens it. Escape is pressed three times at timestamps \\(T_{e1} = 2500100\\text{ ms}\\), \\(T_{e2} = 2500250\\text{ ms}\\), and \\(T_{e3} = 2500420\\text{ ms}\\). Calculate the elapsed time, explain why a callback-only timer may be delayed, and state what the Sentinel's Date.now check can establish. Separately describe the clipboard eviction and panic-key behavior without treating this synthetic test as a historical event or legal rule.",
       solution: [
         "1. Wall-Clock Delta Verification: The elapsed duration between the assumed timestamps is \\(\\Delta T = T_{wake} - T_0 = 2500000\\text{ ms} - 1000000\\text{ ms} = 1500000\\text{ ms}\\). A timeout alone may not run while a page or process is suspended; the Sentinel's focus check calls idleDeadlineExpired using Date.now. Under the exercise's clock assumptions, \\(1500000\\text{ ms} \\ge 900000\\text{ ms}\\), so the check returns true and calls the dashboard's idle callback. This is not a guarantee of an independent hardware clock or of a particular UI outcome; the dashboard owns the response.",
         "2. Clipboard Eviction State: The nominal deadline is \\(T_{\\text{clip-exp}} = T_1 + t_{clip} = 1200000\\text{ ms} + 60000\\text{ ms} = 1260000\\text{ ms}\\). At wake, \\(T_{wake} = 2500000\\text{ ms}\\), so the elapsed time since copying is \\(1300000\\text{ ms}\\), greater than 60000 ms. The state machine should therefore consider eviction due and attempt a clipboard clear when browser focus permits. It cannot establish that the clipboard service accepts the write or that another process did not read the text earlier.",
@@ -601,28 +681,19 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
       note: "A historical discussion of overwriting storage media. Read alongside later storage research and current NIST guidance; it does not establish that a JavaScript buffer overwrite sanitizes physical media.",
     },
     {
-      citation: "Halderman, J. A., Schoen, S. D., Heninger, N., Clarkson, W., Paul, W., Calandrino, J. A., Feldman, A. J., Appelbaum, J., & Felten, E. W. (2009). Lest we remember: Cold-boot attacks on encryption keys. Communications of the ACM, 52(5), 91-98.",
+      citation: "Halderman, J. A., Schoen, S. D., Heninger, N., Clarkson, W., Paul, W., Calandrino, J. A., Feldman, A. J., Appelbaum, J., & Felten, E. W. (2009). Lest we remember: Cold-boot attacks on encryption keys. Communications of the ACM, 52(5), 91–98.",
       url: "https://doi.org/10.1145/1506409.1506429",
-      note: "Establishes empirical proof that DRAM retains cryptographic keys and memory plaintext across power cycles and physical device seizures.",
+      note: "Reports experiments on particular systems demonstrating recovery of data from DRAM after power loss; findings depend on hardware and conditions and do not establish that a JavaScript overwrite sanitizes a device.",
     },
     {
-      citation: "Zalewski, M. (2011). The Tangled Web: A Guide to Implementing Secure Web Applications. No Starch Press.",
+      citation: "Zalewski, M. (2011). The Tangled Web: A Guide to Securing Modern Web Applications. No Starch Press. ISBN 978-1-59327-388-0.",
+      url: "https://nostarch.com/tangledweb",
       note: "Rigorous exploration of browser security architectures, DOM isolation boundaries, execution contexts, and injection vectors.",
-    },
-    {
-      citation: "World Wide Web Consortium (W3C). (2021). Mutation Observer API Specification. W3C Recommendation.",
-      url: "https://dom.spec.whatwg.org/#mutation-observers",
-      note: "Normative DOM Standard description of queued mutation records and asynchronous observer callbacks; a canary is not a pre-execution firewall.",
-    },
-    {
-      citation: "National Institute of Standards and Technology (NIST). (2014). SP 800-88 Rev. 1: Guidelines for Media Sanitization. U.S. Department of Commerce.",
-      url: "https://doi.org/10.6028/NIST.SP.800-88r1",
-      note: "Superseded edition included for historical context; current media-sanitization guidance is SP 800-88 Rev. 2 and neither edition specifies erasing a JavaScript heap.",
     },
     {
       citation: "WHATWG. DOM Standard, Mutation observers.",
       url: "https://dom.spec.whatwg.org/#mutation-observers",
-      note: "Normative description of MutationObserver record queuing and callback delivery; useful for understanding asynchronous detection limits.",
+      note: "Normative DOM Standard description of queued mutation records and asynchronous observer callbacks; a canary is not a pre-execution firewall.",
     },
     {
       citation: "WHATWG. HTML Standard, timers and event loops.",
@@ -640,6 +711,11 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
       note: "A complementary prevention and containment policy for script and resource loading; not replaced by a DOM observer.",
     },
     {
+      citation: "OWASP Cheat Sheet Series. Cross Site Scripting Prevention Cheat Sheet.",
+      url: "https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html",
+      note: "Guidance used in the client-side case analysis on contextual output encoding, safe sinks, and prevention; it does not make a MutationObserver a pre-execution control.",
+    },
+    {
       citation: "National Institute of Standards and Technology. (2025). SP 800-88 Rev. 2: Guidelines for Media Sanitization.",
       url: "https://doi.org/10.6028/NIST.SP.800-88r2",
       note: "Current NIST guidance for sanitizing storage media; its scope differs from overwriting one JavaScript typed-array view.",
@@ -653,6 +729,26 @@ export const CHAPTER_3_3: DetailedAcademyChapter = {
       citation: "MDN Web Docs. Document.visibilityState.",
       url: "https://developer.mozilla.org/en-US/docs/Web/API/Document/visibilityState",
       note: "Implementation-oriented explanation of the visibility state and visibilitychange event.",
+    },
+    {
+      citation: "MDN Web Docs. Performance: now() method.",
+      url: "https://developer.mozilla.org/en-US/docs/Web/API/Performance/now",
+      note: "Explains the monotonic performance time origin and its distinction from Date.now; browser sleep behavior and application policy still require platform-specific testing.",
+    },
+    {
+      citation: "W3C. Clipboard API and events.",
+      url: "https://www.w3.org/TR/clipboard-apis/",
+      note: "Specification describing clipboard events and asynchronous clipboard access; used here to distinguish the application's plain-text write helper from broader system clipboard behavior.",
+    },
+    {
+      citation: "Mozilla. MDN Web Docs, WebExtensions manifest.json permissions.",
+      url: "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/permissions",
+      note: "Documents extension API and host permission declarations; browser-specific effective grants still need to be reviewed on the deployed profile.",
+    },
+    {
+      citation: "Google Chrome for Developers. Declare permissions.",
+      url: "https://developer.chrome.com/docs/extensions/develop/concepts/declare-permissions",
+      note: "Official Chrome extension documentation on API permissions, optional permissions, content-script matches, and host permissions; used for the bounded extension-management discussion.",
     },
     {
       citation: "MDN Web Docs. Crypto: subtle property.",
